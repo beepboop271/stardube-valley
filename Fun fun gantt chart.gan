@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Stardube Valley" company="McDonlads" webLink="http://" view-date="2019-12-10" view-index="0" gantt-divider-location="492" resource-divider-location="300" version="2.8.10" locale="en_CA">
+    <description><![CDATA[Its Stardube Valley]]></description>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Name" width="241" order="0"/>
+        <field id="tpd4" name="Begin date" width="119" order="1"/>
+        <field id="tpd5" name="End date" width="128" order="2"/>
+        <option id="color.recent"><![CDATA[#33ffff #00ffff #ff6600 #f4f4f4]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="true"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="20" name="Complete design" color="#ff6600" meeting="false" start="2019-12-11" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+            <depend id="19" type="2" difference="0" hardness="Strong"/>
+            <depend id="72" type="2" difference="0" hardness="Strong"/>
+            <task id="24" name="Finish UML" color="#ff6600" meeting="false" start="2019-12-11" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" priority="2" expand="true">
+                <depend id="71" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="25" name="Finish Gantt Chart" color="#ff6600" meeting="false" start="2019-12-11" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+                <depend id="19" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="19" name="Finish planning" color="#ff6600" meeting="true" start="2019-12-16" duration="0" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+            <depend id="27" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="27" name="Complete core game functionalities" color="#8cb6ce" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+            <task id="55" name="Implement grid, areas, movement" color="#8cb6ce" meeting="false" start="2019-12-16" duration="2" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+                <depend id="58" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="58" name="Create things on tiles" color="#8cb6ce" meeting="false" start="2019-12-18" duration="1" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+                <notes><![CDATA[Add debris]]></notes>
+                <depend id="104" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="104" name="Create basic items" color="#8cb6ce" meeting="false" start="2019-12-19" duration="2" complete="0" thirdDate="2019-12-16" thirdDate-constraint="0" expand="true">
+                <depend id="139" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="72" name="Create GUI" color="#8cb6ce" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true">
+                <depend id="139" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="139" name="Finish core game functionalities" color="#8cb6ce" meeting="true" start="2019-12-21" duration="0" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
+        <task id="70" name="Generate assets" color="#33ffff" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-16" thirdDate-constraint="0" expand="true">
+            <task id="71" name="Get base images" color="#00ffff" meeting="false" start="2019-12-16" duration="2" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true">
+                <depend id="131" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="131" name="Redesign images" color="#33ffff" meeting="false" start="2019-12-18" duration="3" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
+            <task id="115" name="Create map" color="#00ffff" meeting="false" start="2019-12-18" duration="3" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="4" name="Panda" function="Default:0" contacts="" phone=""/>
+        <resource id="5" name="Candy" function="Default:0" contacts="" phone=""/>
+        <resource id="6" name="Kale" function="Default:0" contacts="" phone=""/>
+        <resource id="7" name="Yosef" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="25" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="71" resource-id="4" function="Default:0" responsible="true" load="80.0"/>
+        <allocation task-id="115" resource-id="4" function="Default:0" responsible="true" load="20.0"/>
+        <allocation task-id="131" resource-id="4" function="Default:0" responsible="false" load="80.0"/>
+        <allocation task-id="24" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="72" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="55" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="58" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="71" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="131" resource-id="7" function="Default:0" responsible="true" load="80.0"/>
+        <allocation task-id="115" resource-id="7" function="Default:0" responsible="false" load="20.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
