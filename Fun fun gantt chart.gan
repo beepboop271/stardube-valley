@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Stardube Valley" company="McDonlads" webLink="http://" view-date="2019-12-10" view-index="0" gantt-divider-location="492" resource-divider-location="300" version="2.8.10" locale="en_CA">
+<?xml version="1.0" encoding="UTF-8"?><project name="Stardube Valley" company="McDonlads" webLink="http://" view-date="2020-01-08" view-index="0" gantt-divider-location="492" resource-divider-location="300" version="2.8.10" locale="en_CA">
     <description><![CDATA[Its Stardube Valley]]></description>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Name" width="241" order="0"/>
-        <field id="tpd4" name="Begin date" width="119" order="1"/>
-        <field id="tpd5" name="End date" width="128" order="2"/>
-        <option id="color.recent"><![CDATA[#33ffff #00ffff #ff6600 #f4f4f4]]></option>
+        <field id="tpd3" name="Name" width="233" order="0"/>
+        <field id="tpd4" name="Begin date" width="116" order="1"/>
+        <field id="tpd5" name="End date" width="124" order="2"/>
+        <option id="color.recent"><![CDATA[#33ffff #00ffff #000000 #ff6600 #666600 #ff0000 #006666 #ff00cc #ff99cc #330066]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="210" order="0"/>
@@ -37,6 +37,7 @@
         <task id="20" name="Complete design" color="#ff6600" meeting="false" start="2019-12-11" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
             <depend id="19" type="2" difference="0" hardness="Strong"/>
             <depend id="72" type="2" difference="0" hardness="Strong"/>
+            <depend id="325" type="2" difference="0" hardness="Strong"/>
             <task id="24" name="Finish UML" color="#ff6600" meeting="false" start="2019-12-11" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" priority="2" expand="true">
                 <depend id="71" type="2" difference="0" hardness="Strong"/>
             </task>
@@ -47,7 +48,7 @@
         <task id="19" name="Finish planning" color="#ff6600" meeting="true" start="2019-12-16" duration="0" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
             <depend id="27" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="27" name="Complete core game functionalities" color="#8cb6ce" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
+        <task id="27" name="Complete basic game functionalities" color="#8cb6ce" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
             <task id="55" name="Implement grid, areas, movement" color="#8cb6ce" meeting="false" start="2019-12-16" duration="2" complete="0" thirdDate="2019-12-11" thirdDate-constraint="0" expand="true">
                 <depend id="58" type="2" difference="0" hardness="Strong"/>
             </task>
@@ -62,14 +63,135 @@
                 <depend id="139" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="139" name="Finish core game functionalities" color="#8cb6ce" meeting="true" start="2019-12-21" duration="0" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
-        <task id="70" name="Generate assets" color="#33ffff" meeting="false" start="2019-12-16" duration="5" complete="0" thirdDate="2019-12-16" thirdDate-constraint="0" expand="true">
+        <task id="139" name="Finish fundamental functionalities" color="#8cb6ce" meeting="true" start="2019-12-21" duration="0" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true">
+            <depend id="140" type="2" difference="0" hardness="Strong"/>
+            <depend id="266" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="70" name="Generate assets" color="#33ffff" meeting="false" start="2019-12-16" duration="21" complete="0" thirdDate="2019-12-16" thirdDate-constraint="0" expand="true">
+            <depend id="321" type="2" difference="0" hardness="Strong"/>
             <task id="71" name="Get base images" color="#00ffff" meeting="false" start="2019-12-16" duration="2" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true">
                 <depend id="131" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="131" name="Redesign images" color="#33ffff" meeting="false" start="2019-12-18" duration="3" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
+            <task id="131" name="Redesign images" color="#33ffff" meeting="false" start="2019-12-18" duration="19" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
             <task id="115" name="Create map" color="#00ffff" meeting="false" start="2019-12-18" duration="3" complete="0" thirdDate="2019-12-10" thirdDate-constraint="0" expand="true"/>
+            <task id="346" name="Make music" color="#00ffff" meeting="false" start="2019-12-16" duration="21" complete="0" thirdDate="2019-12-15" thirdDate-constraint="0" expand="true"/>
+            <task id="350" name="Get sound effects" color="#33ffff" meeting="false" start="2019-12-16" duration="21" complete="0" thirdDate="2019-12-09" thirdDate-constraint="0" expand="true"/>
         </task>
+        <task id="140" name="Complete core game mechanics" color="#33ff33" meeting="false" start="2019-12-21" duration="14" complete="0" thirdDate="2019-12-13" thirdDate-constraint="0" expand="true">
+            <task id="143" name="Complete farming mechanics" color="#669900" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-13" thirdDate-constraint="0" expand="true">
+                <depend id="248" type="2" difference="0" hardness="Strong"/>
+                <task id="148" name="Implement Planting" color="#669900" meeting="false" start="2019-12-21" duration="2" complete="0" thirdDate="2019-12-13" thirdDate-constraint="0" expand="true">
+                    <depend id="156" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="156" name="Implement Growing" color="#669900" meeting="false" start="2019-12-23" duration="2" complete="0" thirdDate="2019-12-13" thirdDate-constraint="0" expand="true">
+                    <depend id="162" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="162" name="Implement Harvesting" color="#669900" meeting="false" start="2019-12-25" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="164" name="Create Items" color="#669900" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="152" name="Complete foraging mechanics" color="#00cc99" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-13" thirdDate-constraint="0" expand="true">
+                <depend id="248" type="2" difference="0" hardness="Strong"/>
+                <task id="178" name="Implement forageable spawning" color="#00cc99" meeting="false" start="2019-12-21" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <depend id="184" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="184" name="Implement forageable harvesting" color="#00cc99" meeting="false" start="2019-12-24" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="190" name="Create Items" color="#00cc99" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="176" name="Complete mining mechanics" color="#333300" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <depend id="255" type="2" difference="0" hardness="Strong"/>
+                <task id="193" name="Implement breaking rocks" color="#333300" meeting="false" start="2019-12-21" duration="1" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="197" name="Generate mine floors" color="#333300" meeting="false" start="2019-12-21" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <depend id="207" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="207" name="Implement inter-floor travel" color="#333300" meeting="false" start="2019-12-24" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="204" name="Create Items" color="#333300" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="200" name="Complete combat mechanics" color="#990000" meeting="false" start="2019-12-21" duration="12" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <depend id="255" type="2" difference="0" hardness="Strong"/>
+                <task id="208" name="Implement damaging enemies" color="#990000" meeting="false" start="2019-12-28" duration="1" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <depend id="215" type="2" difference="0" hardness="Strong"/>
+                    <depend id="219" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="215" name="Implement knockback" color="#990000" meeting="false" start="2019-12-29" duration="1" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="219" name="Implement killing enemy" color="#990000" meeting="false" start="2019-12-29" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="223" name="Create Items" color="#990000" meeting="false" start="2019-12-21" duration="12" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="226" name="Complete fishing mechanics" color="#0099ff" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <depend id="248" type="2" difference="0" hardness="Strong"/>
+                <task id="230" name="Implement casting" color="#0099ff" meeting="false" start="2019-12-21" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <depend id="233" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="233" name="Implement mini-game" color="#0099ff" meeting="false" start="2019-12-23" duration="4" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+                <task id="241" name="Create items" color="#0099ff" meeting="false" start="2019-12-21" duration="4" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <depend id="238" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="238" name="Implement fish generation" color="#0099ff" meeting="false" start="2019-12-25" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="248" name="Implement Farming, Fishing, and Foraging with System" color="#999999" meeting="false" start="2019-12-28" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <depend id="265" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="255" name="Implement Mining, Combat with the System" color="#999999" meeting="false" start="2020-01-02" duration="2" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
+                <depend id="265" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="265" name="Finish core game mechanics" color="#00ff00" meeting="true" start="2020-01-04" duration="0" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <depend id="289" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="266" name="Implement Quality of Life" color="#9900cc" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
+            <depend id="289" type="2" difference="0" hardness="Strong"/>
+            <task id="258" name="Implement Player Mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true">
+                <task id="259" name="Implement Crafting Mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true"/>
+                <task id="287" name="Implement Energy Transfers" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="261" name="Implement Capitalism" color="#ffff00" meeting="false" start="2019-12-30" duration="3" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="262" name="Implement Time" color="#ffffff" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
+            <depend id="289" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="289" name="Achievement Check / Testing" color="#330066" meeting="false" start="2020-01-04" duration="2" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
+            <depend id="291" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="291" name="Finish Essential Game Functions!!!!!" color="#330066" meeting="true" start="2020-01-06" duration="0" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
+            <depend id="295" type="2" difference="0" hardness="Strong"/>
+            <depend id="321" type="2" difference="0" hardness="Strong"/>
+            <depend id="329" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="295" name="Implement NPCs" color="#ff99cc" meeting="false" start="2020-01-06" duration="5" complete="0" thirdDate="2020-01-02" thirdDate-constraint="0" expand="true">
+            <depend id="329" type="2" difference="0" hardness="Strong"/>
+            <task id="301" name="Initialize NPCs" color="#ff99cc" meeting="false" start="2020-01-06" duration="1" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true">
+                <depend id="288" type="2" difference="0" hardness="Strong"/>
+                <depend id="304" type="2" difference="0" hardness="Strong"/>
+                <depend id="309" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="304" name="Generate NPC Habits" color="#ff99cc" meeting="false" start="2020-01-07" duration="4" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true"/>
+            <task id="309" name="Generate NPC Dialogue" color="#ff99cc" meeting="false" start="2020-01-07" duration="3" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true"/>
+            <task id="288" name="Implement Friendships" color="#ff99cc" meeting="false" start="2020-01-07" duration="4" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="329" name="Finish All Mechanics" color="#ff0000" meeting="true" start="2020-01-11" duration="0" complete="0" thirdDate="2020-01-01" thirdDate-constraint="0" expand="true">
+            <depend id="328" type="2" difference="0" hardness="Strong"/>
+            <depend id="334" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="321" name="Finalizing Visuals" color="#ff00cc" meeting="false" start="2020-01-06" duration="7" complete="0" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
+            <depend id="334" type="2" difference="0" hardness="Strong"/>
+            <task id="324" name="Create menus" color="#ff00cc" meeting="false" start="2020-01-06" duration="4" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true"/>
+            <task id="325" name="Finalize GUI" color="#ff00cc" meeting="false" start="2020-01-06" duration="3" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true">
+                <depend id="327" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="327" name="Finalize Visuals with Mechanics" color="#ff00cc" meeting="false" start="2020-01-09" duration="4" complete="0" thirdDate="2020-01-06" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="328" name="Implement game saving" color="#006666" meeting="false" start="2020-01-11" duration="2" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true">
+            <depend id="334" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="334" name="FINISH GAME!!!!" color="#ff6600" meeting="true" start="2020-01-13" duration="0" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true">
+            <depend id="333" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="333" name="Debugging/Testing" color="#666600" meeting="false" start="2020-01-13" duration="4" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true">
+            <depend id="340" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="340" name="HAND IN GAME!!!!!!" color="#ff6600" meeting="true" start="2020-01-17" duration="0" complete="0" thirdDate="2020-01-10" thirdDate-constraint="0" expand="true">
+            <depend id="343" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="343" name="c r y" color="#000000" meeting="false" start="2020-01-17" duration="3" complete="0" thirdDate="2020-01-10" thirdDate-constraint="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="4" name="Panda" function="Default:0" contacts="" phone=""/>
@@ -82,15 +204,69 @@
         <allocation task-id="71" resource-id="4" function="Default:0" responsible="true" load="80.0"/>
         <allocation task-id="115" resource-id="4" function="Default:0" responsible="true" load="20.0"/>
         <allocation task-id="131" resource-id="4" function="Default:0" responsible="false" load="80.0"/>
+        <allocation task-id="152" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="248" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="266" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="258" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="289" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="295" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="301" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="309" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="288" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="321" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="333" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="340" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="343" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="346" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="350" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="24" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="72" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="226" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="248" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="261" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="262" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="266" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="289" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="295" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="301" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="321" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="340" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="343" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="24" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="55" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="58" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="176" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="200" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="255" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="262" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="289" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="295" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="301" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="304" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="321" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="328" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="333" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="340" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="343" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="25" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="71" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="131" resource-id="7" function="Default:0" responsible="true" load="80.0"/>
         <allocation task-id="115" resource-id="7" function="Default:0" responsible="false" load="20.0"/>
+        <allocation task-id="143" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="248" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="266" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="258" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="289" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="295" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="301" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="304" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="288" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="321" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="333" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="340" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="343" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="346" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="350" resource-id="7" function="Default:0" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
