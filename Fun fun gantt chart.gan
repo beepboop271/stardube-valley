@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Stardube Valley" company="McDonlads" webLink="http://" view-date="2020-01-03" view-index="0" gantt-divider-location="408" resource-divider-location="300" version="2.8.10" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Stardube Valley" company="McDonlads" webLink="http://" view-date="2019-12-25" view-index="0" gantt-divider-location="248" resource-divider-location="300" version="2.8.10" locale="en_US">
     <description><![CDATA[Its Stardube Valley]]></description>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Name" width="190" order="0"/>
-        <field id="tpd4" name="Begin date" width="96" order="1"/>
-        <field id="tpd5" name="End date" width="103" order="2"/>
-        <option id="color.recent"><![CDATA[#99ff99 #66ff66 #99ffff #33ffff #00ffff #000000 #ff6600 #666600 #ff0000 #006666]]></option>
+        <field id="tpd3" name="Name" width="199" order="0"/>
+        <field id="tpd4" name="Begin date" width="15" order="1"/>
+        <field id="tpd5" name="End date" width="15" order="2"/>
+        <option id="color.recent"><![CDATA[#cc33ff #ffff00 #33cc00 #00ff00 #f4f4f4 #ffcccc #cc99ff #cc66ff #99ff99 #66ff66]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="210" order="0"/>
@@ -75,6 +75,7 @@
             <notes><![CDATA[Completed functionalities necessary for other game mechanics.]]></notes>
             <depend id="140" type="2" difference="0" hardness="Strong"/>
             <depend id="266" type="2" difference="0" hardness="Strong"/>
+            <depend id="392" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="70" name="Generate assets" color="#33ffff" meeting="false" start="2019-12-16" duration="21" complete="0" thirdDate="2019-12-16" thirdDate-constraint="0" expand="true">
             <notes><![CDATA[Make/get/edit all visuals and sound and everything related to the look of the game.]]></notes>
@@ -179,8 +180,15 @@
                     <notes><![CDATA[Make sure that the proper fish spawn depending on the player's fishing location.]]></notes>
                 </task>
             </task>
-            <task id="248" name="Implement Farming, Fishing, and Foraging with System" color="#999999" meeting="false" start="2019-12-28" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
-                <notes><![CDATA[Making sure the mechanics are useable and they don't break.]]></notes>
+            <task id="248" name="Implement some core mechanisms with System" color="#999999" meeting="false" start="2019-12-28" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                <notes><![CDATA[Making sure certain already-completed mechanics are useable and they don't break.
+
+This includes:
+Farming
+Fishing
+Foraging
+Animal Handling
+]]></notes>
                 <depend id="265" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="255" name="Implement Mining, Combat with the System" color="#999999" meeting="false" start="2020-01-02" duration="2" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
@@ -192,32 +200,77 @@
                 <depend id="289" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="266" name="Implement player core mechanics" color="#9900cc" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
-            <notes><![CDATA[These are secondary features related to making the player more realistic as well as few player features: sleeping, eating, loss of energy, crafting, buying/selling.]]></notes>
-            <depend id="289" type="2" difference="0" hardness="Strong"/>
-            <task id="258" name="Implement Player Mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true">
-                <task id="259" name="Implement non-energy-related item interaction mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true">
-                    <notes><![CDATA[BASICALLY:
-crafting
-forging
-storing (in chests, etc.)]]></notes>
+        <task id="392" name="Create less functional mechanics" color="#33cc00" meeting="false" start="2019-12-21" duration="14" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+            <notes><![CDATA[These are mechanics that aren't really "core" gameplay but are still needed for the full stardube valley experience]]></notes>
+            <depend id="395" type="2" difference="0" hardness="Strong"/>
+            <task id="355" name="Complete Animal Handling Mechanics" color="#cc99ff" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
+                <notes><![CDATA[Make all items related to farming -- all the crops, seeds, etc. and make sure that they work with everything else (tiles, etc.)]]></notes>
+                <depend id="248" type="2" difference="0" hardness="Strong"/>
+                <task id="359" name="Implement spawning" color="#cc99ff" meeting="false" start="2019-12-21" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
+                    <notes><![CDATA[Make the player able to buy an animal and have it select which farm building to appear in.]]></notes>
+                    <depend id="365" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="287" name="Implement Energy Transfers" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
-                    <notes><![CDATA[This includes:
-gaining energy from eating or sleeping or sitting on your bed
-losing energy from using certain tools (e.g. pickaxe)
+                <task id="365" name="Implement behaviours" color="#cc99ff" meeting="false" start="2019-12-23" duration="3" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
+                    <notes><![CDATA[This means making it move, run, prefer grass, etc]]></notes>
+                    <depend id="367" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="367" name="Implement harvesting" color="#cc99ff" meeting="false" start="2019-12-26" duration="2" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
+                    <notes><![CDATA[YOU CAN MILK COW NOW]]></notes>
+                </task>
+                <task id="368" name="Implement Items" color="#cc99ff" meeting="false" start="2019-12-21" duration="7" complete="0" thirdDate="2019-12-21" thirdDate-constraint="0" expand="true">
+                    <notes><![CDATA[Stuff that you need to use to interact with animals
+like:
+hay
+bucket
+
+But also stuff that you can get from animals
+like:
+love
+hay fever
+milk
 ]]></notes>
                 </task>
             </task>
-            <task id="261" name="Implement Capitalism" color="#ffff00" meeting="false" start="2019-12-30" duration="3" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
-                <notes><![CDATA[Implement buy/sell mechanics and the currency, including the worth of all sellable/buyable objects]]></notes>
+            <task id="378" name="Populate map with items" color="#ffcccc" meeting="false" start="2019-12-28" duration="7" complete="0" thirdDate="2019-12-26" thirdDate-constraint="0" expand="true">
+                <notes><![CDATA[Populating the map... with items
+
+like:
+houses
+trash bins
+trees
+fishing spots
+trash cans
+mines
+etc]]></notes>
+            </task>
+            <task id="266" name="Implement player core mechanics" color="#cc33ff" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
+                <notes><![CDATA[These are secondary features related to making the player more realistic as well as few player features: sleeping, eating, loss of energy, crafting, buying/selling.]]></notes>
+                <task id="258" name="Implement Player Mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true">
+                    <task id="259" name="Implement non-energy-related item interaction mechanics" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true">
+                        <notes><![CDATA[BASICALLY:
+crafting
+forging
+storing (in chests, etc.)]]></notes>
+                    </task>
+                    <task id="287" name="Implement Energy Transfers" color="#ffcc99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
+                        <notes><![CDATA[This includes:
+gaining energy from eating or sleeping or sitting on your bed
+losing energy from using certain tools (e.g. pickaxe)
+]]></notes>
+                    </task>
+                </task>
+                <task id="261" name="Implement Capitalism" color="#ffff00" meeting="false" start="2019-12-30" duration="3" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
+                    <notes><![CDATA[Implement buy/sell mechanics and the currency, including the worth of all sellable/buyable objects]]></notes>
+                </task>
+            </task>
+            <task id="352" name="Implement Luck" color="#99ff99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
+                <notes><![CDATA[Essencially anything that has to do with luck generation.]]></notes>
+            </task>
+            <task id="262" name="Implement Time" color="#ffffff" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
+                <notes><![CDATA[Implement days, seasons, general passing of time.]]></notes>
             </task>
         </task>
-        <task id="352" name="Implement Luck" color="#99ff99" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2020-01-04" thirdDate-constraint="0" expand="true" cost-manual-value="0.0" cost-calculated="true">
-            <notes><![CDATA[Essencially anything that has to do with luck generation.]]></notes>
-        </task>
-        <task id="262" name="Implement Time" color="#ffffff" meeting="false" start="2019-12-30" duration="5" complete="0" thirdDate="2019-12-23" thirdDate-constraint="0" expand="true">
-            <notes><![CDATA[Implement days, seasons, general passing of time.]]></notes>
+        <task id="395" name="Finish less fundamental mechanics" color="#33cc00" meeting="true" start="2020-01-04" duration="0" complete="0" thirdDate="2019-12-28" thirdDate-constraint="0" expand="true">
             <depend id="289" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="289" name="Achievement Check / Testing" color="#330066" meeting="false" start="2020-01-04" duration="2" complete="0" thirdDate="2019-12-24" thirdDate-constraint="0" expand="true">
@@ -324,6 +377,14 @@ All essential game mechanics/features are done!!!]]></notes>
         <allocation task-id="301" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="325" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="327" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="143" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="355" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="359" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="367" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="365" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="378" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="378" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="24" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="72" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="226" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
@@ -346,6 +407,8 @@ All essential game mechanics/features are done!!!]]></notes>
         <allocation task-id="327" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="333" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="352" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="378" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="392" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="24" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="55" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="58" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
@@ -371,6 +434,13 @@ All essential game mechanics/features are done!!!]]></notes>
         <allocation task-id="219" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="223" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="301" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="355" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="359" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="367" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="365" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="378" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="392" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="25" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="71" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="131" resource-id="7" function="Default:0" responsible="false" load="80.0"/>
@@ -402,6 +472,13 @@ All essential game mechanics/features are done!!!]]></notes>
         <allocation task-id="325" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="327" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="352" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="359" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="365" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="367" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="355" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="378" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="392" resource-id="7" function="Default:0" responsible="false" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
