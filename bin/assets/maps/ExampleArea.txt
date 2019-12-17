@@ -1,0 +1,13 @@
+Category    - The type
+Name        - Name
+width       - 
+height      -
+topArea     - Area above this area
+rightArea   - Area to the right
+bottomArea  - Area to the bottom
+leftArea    - Area to the left
+.......
+.......
+..map..
+.......
+.......
