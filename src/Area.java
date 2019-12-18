@@ -2,7 +2,7 @@ import java.util.LinkedHashSet;
 
 /**
  * [Area]
- * 2019-12-17
+ * 2019-12-18
  * @version 0.1
  * @author Kevin Qiao
  */
@@ -12,11 +12,10 @@ public abstract class Area {
   private LinkedHashSet<Moveable> moveables;
   private LinkedHashSet<TileComponent> components;
   private final int width, height;
-
+  private GatewayZone[] neighbourZone = new GatewayZone[4];
+  
   public Area(String name,
-              int width, int height,
-              Area topNeighbour, Area rightNeighbour,
-              Area bottomNeighbour, Area leftNeighbour) {
+              int width, int height) {
     this.name = name;
     this.width = width;
     this.height = height;
@@ -26,19 +25,31 @@ public abstract class Area {
   }
 
   public static Area constructArea(String category,
-                                   String name, char id,
+                                   String name,
                                    int width, int height) {
     if (category.equals("FarmArea")) {
-      return new FarmArea(name, id, width, height);
+      return new FarmArea(name, width, height);
     } else if (category.equals("WorldArea")) {
-      return new WorldArea(name, id, width, height);
+      return new WorldArea(name, width, height);
     } else {
       return null;
     }
   }
 
-  public char getID() {
-    return this.id;
+  public GatewayZone getNeighbourZone(int i) {
+    return this.neighbourZone[i];
+  }
+
+  public void setNeighbourZone(int i, GatewayZone g) {
+    this.neighbourZone[i] = g;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public boolean inMap(int x, int y) {
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
   public int getWidth() {

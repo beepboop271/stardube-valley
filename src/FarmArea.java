@@ -7,8 +7,8 @@
 public class FarmArea extends Area {
   // private FarmBuilding[] buildings;
 
-  public FarmArea(String name, char id,
+  public FarmArea(String name,
                   int width, int height) {
-    super(name, id, width, height);
+    super(name, width, height);
   }
 }

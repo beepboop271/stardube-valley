@@ -1,60 +1,115 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * [World]
- * 2019-12-17
+ * 2019-12-18
  * @version 0.1
  * @author Kevin Qiao
  */
 public class World {
-  private LinkedHashSet<Area> locations;
+  public static final int NORTH = 0;
+  public static final int EAST = 1;
+  public static final int SOUTH = 2;
+  public static final int WEST = 3;
 
-  public World(String[] locations) {
-    this.locations = new LinkedHashSet<Area>();
-    this.loadAreas(locations);
+  private LinkedHashMap<String, Area> locations;
+
+  public World() {
+    this.locations = new LinkedHashMap<String, Area>();
+    try {
+      this.loadAreas();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  public void loadAreas(String[] locations) {
-    BufferedReader reader;
-    Area newArea;
+  public void loadAreas() throws IOException {
+    String[] areaInfo;
     String nextLine;
-    Tile newTile;
-    for (int i = 0; i < locations.length; ++i) {
-      try {
-        reader = new BufferedReader(new FileReader(locations[i]));
-        newArea = Area.constructArea(reader.readLine(),
-                                     reader.readLine(),
-                                     reader.readLine().charAt(0),
-                                     Integer.parseInt(reader.readLine()),
-                                     Integer.parseInt(reader.readLine()));
-        this.locations.add(newArea);
-        for (int y = 0; y < newArea.getHeight(); ++y) {
-          nextLine = reader.readLine();
-          for (int x = 0; x < newArea.getWidth(); ++x) {
-            switch (nextLine.charAt(x)) {
-              case '.':
-                newTile = new GroundTile(x, y);
-                break;
-              case ' ':
-                newTile = null;
-                break;
-              default:
-                newTile = 
-            }
-            newArea.setMapAt(newTile);
-          }
+
+    BufferedReader input = new BufferedReader(new FileReader("assets/maps/Areas.txt"));
+    nextLine = input.readLine();
+    while (nextLine != null) {
+      areaInfo = nextLine.split(" ");
+      this.locations.put(areaInfo[1],
+                         Area.constructArea(areaInfo[0], areaInfo[1],
+                                            Integer.parseInt(areaInfo[2]),
+                                            Integer.parseInt(areaInfo[3])));
+      nextLine = input.readLine();
+    }
+    input.close();
+
+    Iterator<Area> locationAreas = this.locations.values().iterator();
+    while (locationAreas.hasNext()) {
+      World.loadAreaMap(locationAreas.next());
+    }
+
+    input = new BufferedReader(new FileReader("assets/maps/Connections.txt"));
+    nextLine = input.readLine();
+    while (nextLine != null) {
+      areaInfo = input.readLine().split(" ");
+      for (int i = 0; i < 4; ++i) {
+        if (!areaInfo[i].equals("null")) {
+          this.locations.get(nextLine)
+              .getNeighbourZone(i)
+              .setDestinationArea(this.locations.get(areaInfo[i]), i);
         }
-        reader.close();
-      } catch (FileNotFoundException e) {
-        System.out.println("Could not open file "+locations[i]);
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
+      }
+      nextLine = input.readLine();
+    }
+  }
+
+  public static void loadAreaMap(Area a) throws IOException {
+    BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
+                                                             + a.getName()
+                                                             + ".txt"));
+    String nextLine;
+
+    for (int y = 0; y < a.getHeight(); ++y) {
+      nextLine = input.readLine();
+      for (int x = 0; x < a.getWidth(); ++x) {
+        switch (nextLine.charAt(x)) {
+          case '.':
+            a.setMapAt(new GroundTile(x, y));
+            break;
+        }
       }
     }
+
+    a.setNeighbourZone(World.WEST,
+                       World.findNeighbourZone(a, 0, 1, false));
+    a.setNeighbourZone(World.EAST,
+                       World.findNeighbourZone(a, a.getWidth()-1, 1, false));
+    a.setNeighbourZone(World.NORTH,
+                       World.findNeighbourZone(a, 1, 0, true));
+    a.setNeighbourZone(World.SOUTH,
+                       World.findNeighbourZone(a, 1, a.getHeight()-1, true));
+
+    input.close();
+  }
+
+  public static GatewayZone findNeighbourZone(Area a,
+                                              int x, int y,
+                                              boolean isHorizontal) {
+    if (isHorizontal) {
+      while (x < a.getWidth()-1 && a.getMapAt(x, y) == null) {
+        ++x;
+      }
+      if (a.getMapAt(x, y) != null) {
+        return new GatewayZone(x, y);
+      }
+    } else {
+      while (y < a.getHeight()-1 && a.getMapAt(x, y) == null) {
+        ++y;
+      }
+      if (a.getMapAt(x, y) != null) {
+        return new GatewayZone(x, y);
+      }
+    }
+    return null;
   }
 }

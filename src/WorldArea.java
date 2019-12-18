@@ -8,8 +8,8 @@
 public class WorldArea extends Area {
   // private TownBuilding[] houses;
 
-  public WorldArea(String name, char id,
+  public WorldArea(String name,
                    int width, int height) {
-    super(name, id, width, height);
+    super(name, width, height);
   }
 }

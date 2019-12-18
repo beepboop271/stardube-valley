@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 
 /**
  * [GroundTile]
- * 2019-12-17
+ * 2019-12-18
  * @version 0.1
  * @author Kevin Qiao
  */
@@ -20,9 +20,14 @@ public class GroundTile extends Tile {
     super(x, y);
   }
 
+  @Override
+  public BufferedImage getImage() {
+    return GroundTile.groundTileImage;
+  }
+
   public static void setGroundTileImage() {
     try {
-      groundTileImage = ImageIO.read(new File("assets/images/tiles/ground1.png"));
+      GroundTile.groundTileImage = ImageIO.read(new File("assets/images/tiles/ground1.png"));
     } catch (IOException e) {
       e.printStackTrace();
     }
