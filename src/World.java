@@ -36,8 +36,9 @@ public class World {
     }
     this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
     
-    this.player = new Player(new Point(5, 13));
+    this.player = new Player(new Point(13, 5));
     this.playerArea = this.locations.get("Farm");
+    this.playerArea.addMoveable(this.player);
   }
 
   public void update() {
@@ -77,6 +78,7 @@ public class World {
         if (nextArea.collides(intersectingTiles.iterator())) {
           nextMoveable.setPos(lastPos);
         } else {
+          // System.out.println(intersectingTiles.toString());
           exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
           if (exitDirection > -1) {
             if (nextMoveable instanceof Player) {

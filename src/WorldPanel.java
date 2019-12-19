@@ -12,6 +12,7 @@ import javax.swing.JPanel;
  * @version 0.1
  * @author Kevin Qiao
  */
+@SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
   private World worldToDisplay;
   private int tileWidth, tileHeight;
@@ -20,6 +21,8 @@ public class WorldPanel extends JPanel {
     super();
     this.worldToDisplay = worldToDisplay;
     this.addKeyListener(new WorldPanelKeyListener());
+    this.setFocusable(true);
+    this.grabFocus();
     this.setPreferredSize(new Dimension(width, height));
     this.tileWidth = (int)Math.ceil(((double)width)/Tile.getSize());
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
@@ -35,26 +38,38 @@ public class WorldPanel extends JPanel {
 
     Point playerPos = this.worldToDisplay.getPlayer().getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
-    if ((playerPos.x < this.tileWidth/2.0)
-          || (playerArea.getWidth()-playerPos.x < this.tileWidth/2.0)
-          || (playerPos.y < this.tileHeight/2.0)
-          || (playerArea.getHeight()-playerPos.y < this.tileHeight/2.0)) {
-    } else {
-      int screenX = 0;
-      int screenY = 0;
-      g.setColor(Color.RED);
-      g.fillRect((int)(this.getWidth()/2-Tile.getSize()*Player.getSize()),
-                 (int)(this.getHeight()/2-Tile.getSize()*Player.getSize()),
-                 (int)(2*Player.getSize()),
-                 (int)(2*Player.getSize()));
-      for (int y = (int)(playerPos.y-this.tileHeight/2-1); y < playerPos.y+this.tileHeight/2+1; ++y) {
-        for (int x = (int)(playerPos.x-this.tileWidth/2-1); x < playerPos.x+this.tileWidth/2+1; ++x) {
-          if (playerArea.getMapAt(x, y) != null) {
-            g.drawImage(playerArea.getMapAt(x, y).getImage(), )
-          }
+    // if ((playerPos.x < this.tileWidth/2.0)
+    //       || (playerArea.getWidth()-playerPos.x < this.tileWidth/2.0)
+    //       || (playerPos.y < this.tileHeight/2.0)
+    //       || (playerArea.getHeight()-playerPos.y < this.tileHeight/2.0)) {
+    // } else {
+    
+    int originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-Math.floor(playerPos.x-this.tileWidth/2))));
+    int originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-Math.floor(playerPos.y-this.tileHeight/2))));
+
+    int screenX = 0;
+    int screenY = 0;
+
+    for (int y = (int)Math.floor(playerPos.y-this.tileHeight/2); y < playerPos.y+this.tileHeight/2+1; ++y) {
+      for (int x = (int)Math.floor(playerPos.x-this.tileWidth/2); x < playerPos.x+this.tileWidth/2+1; ++x) {
+        if (playerArea.inMap(x, y) && playerArea.getMapAt(x, y) != null) {
+          g.drawImage(playerArea.getMapAt(x, y).getImage(),
+                      originX+(screenX*Tile.getSize())-(Tile.getSize()/2),
+                      originY+(screenY*Tile.getSize())-(Tile.getSize()/2), null);
         }
+        ++screenX;
       }
+      screenX = 0;
+      ++screenY;
     }
+    
+    g.setColor(Color.RED);
+    g.fillRect((int)((this.getWidth()/2)-(Tile.getSize()*Player.getSize())),
+               (int)((this.getHeight()/2)-(Tile.getSize()*Player.getSize())),
+               (int)(2*Tile.getSize()*Player.getSize()),
+               (int)(2*Tile.getSize()*Player.getSize()));
+    g.setColor(Color.BLACK);
+    g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
   }
 
   private class WorldPanelKeyListener extends KeyAdapter {

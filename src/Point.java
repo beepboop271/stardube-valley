@@ -16,6 +16,11 @@ public class Point implements Cloneable {
   public Point(Point p) {
     this(p.x, p.y);
   }
+  
+  @Override
+  public String toString() {
+    return String.format("P(%.2f, %.2f)", this.x, this.y);
+  }
 
   public Point translate(double dx, double dy) {
     this.x += dx;

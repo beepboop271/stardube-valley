@@ -54,7 +54,7 @@ public abstract class Area {
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
       if (!this.inMap((int)nextPoint.x, (int)nextPoint.y)) {
-        return this.getExitDirection((int)nextPoint.x, (int)nextPoint.y));
+        return this.getExitDirection((int)nextPoint.x, (int)nextPoint.y);
       }
     }
     return -1;
@@ -78,6 +78,10 @@ public abstract class Area {
 
   public Iterator<Moveable> getMoveables() {
     return this.moveables.iterator();
+  }
+
+  public void addMoveable(Moveable m) {
+    this.moveables.add(m);
   }
 
   public String getName() {

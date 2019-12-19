@@ -7,7 +7,7 @@
  */
 public class Player extends Moveable {
   private static final double size = 0.35;
-  private static final double maxSpeed = 1.5;
+  private static final double maxSpeed = 4;
   private Vector2D velocity;
   private boolean inMenu = false;
 

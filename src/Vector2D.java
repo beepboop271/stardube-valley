@@ -57,13 +57,25 @@ public class Vector2D implements Cloneable {
       this.length = Math.sqrt((x*x)+(y*y));
     }
     if ((flags&Vector2D.ANGLE) > 0) {
-      this.angle = Math.atan2(this.y, this.x);
+      if (this.x == 0 && this.y == 0) {
+        this.angle = Double.NaN;
+      } else {
+        this.angle = Math.atan2(this.y, this.x); 
+      }
     }
     if ((flags&Vector2D.X) > 0) {
-      this.x = Math.cos(this.angle)*this.length;
+      if (Double.isNaN(this.angle)) {
+        this.x = 0;
+      } else {
+        this.x = Math.cos(this.angle)*this.length;
+      }
     }
     if ((flags&Vector2D.Y) > 0) {
-      this.y = Math.sin(this.angle)*this.length;
+      if (Double.isNaN(this.angle)) {
+        this.y = 0;
+      } else {
+        this.y = Math.sin(this.angle)*this.length;
+      }
     }
   }
   

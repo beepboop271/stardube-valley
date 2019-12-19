@@ -6,6 +6,7 @@ import javax.swing.JFrame;
  * @version 0.1
  * @author Kevin Qiao
  */
+@SuppressWarnings("serial")
 public class StardubeFrame extends JFrame {
   public StardubeFrame(World stardubeWorld) {
     super("Stardube Valley");
