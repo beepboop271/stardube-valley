@@ -1,8 +1,9 @@
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
  * [Area]
- * 2019-12-18
+ * 2019-12-19
  * @version 0.1
  * @author Kevin Qiao
  */
@@ -36,6 +37,37 @@ public abstract class Area {
     }
   }
 
+  public boolean collides(Iterator<Point> intersectingPoints) {
+    Point nextPoint;
+    while (intersectingPoints.hasNext()) {
+      nextPoint = intersectingPoints.next();
+      if (this.inMap((int)nextPoint.x, (int)nextPoint.y)
+            && this.getMapAt((int)nextPoint.x, (int)nextPoint.y) == null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public int canMoveAreas(Iterator<Point> intersectingPoints) {
+    Point nextPoint;
+    while (intersectingPoints.hasNext()) {
+      nextPoint = intersectingPoints.next();
+      if (!this.inMap((int)nextPoint.x, (int)nextPoint.y)) {
+        return this.getExitDirection((int)nextPoint.x, (int)nextPoint.y));
+      }
+    }
+    return -1;
+  }
+
+  public Area moveAreas(Moveable m, int direction) {
+    GatewayZone gateway = this.getNeighbourZone(direction);
+    m.setPos(gateway.toDestinationPoint(m.getPos()));
+    this.moveables.remove(m);
+    gateway.getDestinationArea().moveables.add(m);
+    return gateway.getDestinationArea();
+  }
+
   public GatewayZone getNeighbourZone(int i) {
     return this.neighbourZone[i];
   }
@@ -44,12 +76,30 @@ public abstract class Area {
     this.neighbourZone[i] = g;
   }
 
+  public Iterator<Moveable> getMoveables() {
+    return this.moveables.iterator();
+  }
+
   public String getName() {
     return this.name;
   }
 
   public boolean inMap(int x, int y) {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  public int getExitDirection(int x, int y) {
+    if (x < 0) {
+      return World.WEST;
+    } else if (x >= this.width) {
+      return World.EAST;
+    } else if (y < 0) {
+      return World.NORTH;
+    } else if (y >= this.height) {
+      return World.SOUTH;
+    } else {
+      return -1;
+    }
   }
 
   public int getWidth() {

@@ -1,12 +1,16 @@
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * [World]
- * 2019-12-18
+ * 2019-12-19
  * @version 0.1
  * @author Kevin Qiao
  */
@@ -17,6 +21,11 @@ public class World {
   public static final int WEST = 3;
 
   private LinkedHashMap<String, Area> locations;
+  private PriorityBlockingQueue<TimedEvent> eventQueue;
+  private Area playerArea;
+  private Player player;
+  private long lastUpdateTime = System.nanoTime();
+  private long inGameTime = 0;
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -25,6 +34,65 @@ public class World {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
+    
+    this.player = new Player(new Point(5, 13));
+    this.playerArea = this.locations.get("Farm");
+  }
+
+  public void update() {
+    Iterator<Area> areas = this.locations.values().iterator();
+    Area nextArea;
+    Iterator<Moveable> moveables;
+    Moveable nextMoveable;
+    LinkedHashSet<Point> intersectingTiles;
+    Point lastPos;
+    int exitDirection;
+
+    long currentUpdateTime = System.nanoTime();
+
+    // pygame_irl
+    // EventObject event;
+    // while (!this.eventQueue.isEmpty()
+    //        && (this.eventQueue.peek().getTime() <= this.inGameTime)) {
+    //   event = this.eventQueue.poll().getEvent();
+    // }
+
+    if (this.player.isInMenu()) {
+      this.lastUpdateTime = currentUpdateTime;
+      return;
+    }
+
+    this.inGameTime += currentUpdateTime-this.lastUpdateTime;
+    while (areas.hasNext()) {
+      nextArea = areas.next();
+      moveables = nextArea.getMoveables();
+
+      while (moveables.hasNext()) {
+        nextMoveable = moveables.next();
+        lastPos = nextMoveable.getPos();
+        nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
+
+        intersectingTiles = nextMoveable.getIntersectingTiles();
+        if (nextArea.collides(intersectingTiles.iterator())) {
+          nextMoveable.setPos(lastPos);
+        } else {
+          exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
+          if (exitDirection > -1) {
+            if (nextMoveable instanceof Player) {
+              this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
+            } else {
+              nextArea.moveAreas(nextMoveable, exitDirection);
+            }
+          }
+        }
+      }
+    }
+    this.lastUpdateTime = currentUpdateTime;
+  }
+
+  public void enqueueEvent(TimedEvent te) {
+    this.eventQueue.offer(te);
   }
 
   public void loadAreas() throws IOException {
@@ -111,5 +179,13 @@ public class World {
       }
     }
     return null;
+  }
+
+  public Player getPlayer() {
+    return this.player;
+  }
+
+  public Area getPlayerArea() {
+    return this.playerArea;
   }
 }

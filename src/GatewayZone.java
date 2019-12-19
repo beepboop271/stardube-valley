@@ -1,8 +1,6 @@
-import java.awt.Point;
-
 /**
  * [GatewayZone]
- * 2019-12-18
+ * 2019-12-19
  * @version 0.1
  * @author Kevin Qiao
  */
@@ -23,11 +21,14 @@ public class GatewayZone {
     this.destinationZone = destinationZone;
   }
 
-  public Point getDestinationPoint(int x, int y) {
-    Point p = new Point(x, y);
-    p.translate(-(int)this.originX, -(int)this.originY);
+  public Point toDestinationPoint(Point p) {
+    p.translate(-this.originX, -this.originY);
     p.translate(this.destinationZone.getX(), this.destinationZone.getY());
     return p;
+  }
+
+  public Area getDestinationArea() {
+    return this.destinationArea;
   }
 
   public void setDestinationArea(Area destinationArea, int direction) {
