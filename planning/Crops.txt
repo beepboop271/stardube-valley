@@ -1,0 +1,22 @@
+Crops:
+Spring:
+- parsnips
+- strawberries
+- garlic
+- lettuce
+- carrot
+- cauliflower
+Summer:
+- watermelon
+- mango BUSH
+- hot peppers
+- radish
+- wheat
+- blueberries
+Fall:
+- corn
+- pizza
+- bok choy
+- pumpkins
+- beets
+- cranberries

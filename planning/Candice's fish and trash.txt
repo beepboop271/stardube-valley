@@ -1,0 +1,20 @@
+Fish:
+River:
+- popcorn fish
+- burger fish
+- bobafish
+Lake:
+- carp
+- largemouth bass
+- smallmouth bass
+Ocean:
+- tuna
+- anchovies
+- sardine 
+
+Trash:
+- joseph's compsci mark
+- purple algae
+- ethics assignment
+- chair null
+- macbook
