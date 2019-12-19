@@ -1,0 +1,18 @@
+Image Planning:
+
+Joe:
+- crops
+- farm buildings (outside, and then coop and farmhouse interior)
+- minerals
+- beach
+
+Pail:
+- forageables (including trees)
+- npcs
+- town
+- mines 
+
+Cadmium:
+- fish and trash
+- bushes
+- outside (ground, grass, etc.)

@@ -1,0 +1,14 @@
+Animals and Pets:
+
+Pets:
+- python
+- cat named Scratch
+
+Coop Animals:
+- chicken
+- duck
+
+Normal Animals:
+- cow
+- pig
+- sheep

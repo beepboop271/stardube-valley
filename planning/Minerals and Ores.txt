@@ -1,0 +1,11 @@
+Minerals:
+- emeralds
+- rubies
+- diamonds
+- quartz
+- amethyst
+
+Ores:
+- copper
+- iron
+- gold

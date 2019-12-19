@@ -1,0 +1,19 @@
+Foragables:
+Spring:
+- turnip
+- daffodils
+- leeks
+Summer:
+- grapes
+- bluebells
+- ice cream
+Fall:
+- mushrooms
+- hazelnuts
+- blackberry
+Winter:
+- winterroot
+- coffee beans
+- oranges
+All season:
+- javacake
