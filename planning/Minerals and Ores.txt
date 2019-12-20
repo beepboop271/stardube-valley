@@ -1,11 +1,11 @@
 Minerals:
-- emeralds (done)
-- rubies
-- diamonds
-- quartz (done)
-- amethyst
+- emeralds (d/d)
+- rubies (n/n)
+- diamonds (d/n)
+- quartz (d)
+- amethyst (d/n)
 
 Ores:
-- copper (done)
-- iron
-- gold
+- copper (d/d)
+- iron (d/n)
+- gold (d/n)
