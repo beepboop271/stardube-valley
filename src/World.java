@@ -101,7 +101,7 @@ public class World {
     String[] areaInfo;
     String nextLine;
 
-    BufferedReader input = new BufferedReader(new FileReader("assets/maps/Areas.txt"));
+    BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Areas"));
     nextLine = input.readLine();
     while (nextLine != null) {
       areaInfo = nextLine.split(" ");
@@ -118,7 +118,7 @@ public class World {
       World.loadAreaMap(locationAreas.next());
     }
 
-    input = new BufferedReader(new FileReader("assets/maps/Connections.txt"));
+    input = new BufferedReader(new FileReader("assets/gamedata/Connections"));
     nextLine = input.readLine();
     while (nextLine != null) {
       areaInfo = input.readLine().split(" ");
@@ -131,12 +131,12 @@ public class World {
       }
       nextLine = input.readLine();
     }
+    input.close();
   }
 
   public static void loadAreaMap(Area a) throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
-                                                             + a.getName()
-                                                             + ".txt"));
+                                                             + a.getName()));
     String nextLine;
 
     for (int y = 0; y < a.getHeight(); ++y) {

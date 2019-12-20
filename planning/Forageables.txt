@@ -4,16 +4,16 @@ Spring:
 - daffodils
 - leeks
 Summer:
-- grapes
+- grapes (bush)
 - bluebells
 - ice cream
 Fall:
 - mushrooms
-- hazelnuts
-- blackberry
+- hazelnuts (bush)
+- blackberry (bush)
 Winter:
 - winterroot
-- coffee beans
-- oranges
+- coffee beans (bush)
+- oranges (bush)
 All season:
 - javacake
