@@ -1,22 +1,22 @@
 Crops:
 Spring:
-- parsnips (done)
-- strawberries
-- garlic
-- lettuce
-- carrot
-- cauliflower
+- parsnips (d5) - Grows in 4 days
+- strawberries (n7) - Grows in 8 days, regrow in 4
+- garlic (n5) - Grows in 4 days
+- lettuce (n6) - Grows in 6 days
+- potato (n6) - Grows in 6 days 
+- cauliflower (n6) - Grows in 12 days
 Summer:
-- watermelon
-- mango BUSH
-- hot peppers
-- radish
-- wheat
-- blueberries
+- watermelon (n6) - Grows in 10 days
+- mango BUSH (n5) - Grows in 7 days
+- hot peppers (n7) - Grows in 5 days, regrow in 3 days
+- radish (n5) - Grows in 4 days
+- wheat (n5) - Grows in 4 days
+- blueberries (n7) - Grows in 12 days, regrow in 4 days
 Fall:
-- corn
-- pizza
-- bok choy
-- pumpkins
-- beets
-- cranberries
+- corn - (n7) - Grows in 13 days, regrow in 4 days (can exist in both summer and fall)
+- pizza - (n5) - Grows in 6 days
+- bok choy (n5) - Grows in 4 days
+- pumpkins (n6) - Grows in 12 days
+- beets (n5) - Grows in 6 days
+- cranberries (n6) - Grows in 8 days, regrow in 4 days
