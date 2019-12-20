@@ -1,6 +1,6 @@
 Crops:
 Spring:
-- parsnips
+- parsnips (done)
 - strawberries
 - garlic
 - lettuce
