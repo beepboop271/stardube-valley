@@ -1,4 +1,8 @@
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 /**
  * [TileComponent]
@@ -7,6 +11,25 @@ import java.awt.image.BufferedImage;
  * @author Kevin Qiao
  */
 public abstract class TileComponent {
+  private String name;
   private BufferedImage image;
-  // private ItemDrop[] products;
+  private HoldableDrop[] products;
+
+  public TileComponent(String name, String imagePath, int numProducts) {
+    this.name = name;
+    this.products = new HoldableDrop[numProducts];
+    try {
+      this.image = ImageIO.read(new File(imagePath));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setProduct(int i, HoldableDrop product) {
+    this.products[i] = product;
+  }
 }

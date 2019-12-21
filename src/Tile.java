@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
  * @author Kevin Qiao
  */
 public abstract class Tile {
+  private static final int SIZE = 64;
   private int x;
   private int y;
   private TileComponent content;
@@ -22,6 +23,10 @@ public abstract class Tile {
 
   public int getY() {
     return this.y;
+  }
+
+  public static int getSize() {
+    return Tile.SIZE;
   }
   
   abstract BufferedImage getImage();

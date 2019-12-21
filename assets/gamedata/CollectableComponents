@@ -1,0 +1,16 @@
+12
+Ruby       /ores/Ruby              1 RubyItem       1
+Diamond    /ores/Diamond           1 DiamondItem    1
+Quartz     /ores/Quartz            1 QuartzItem     1
+Amethyst   /ores/Amethyst          1 AmethystItem   1
+Turnip     /forageables/Turnip     1 TurnipItem     1
+Daffodil   /forageables/Daffodil   1 DaffodilItem   1
+Leek       /forageables/Leek       1 LeekItem       1
+Bluebell   /forageables/Bluebell   1 BluebellItem   1
+IceCream   /forageables/IceCream   1 IceCreamItem   1
+Mushroom   /forageables/Mushroom   1 MushroomItem   1
+WinterRoot /forageables/WinterRoot 1 WinterRootItem 1
+Javacake   /forageables/Javacake   1 JavacakeItem   1
+
+name      img               numdrops [item quantity       ]
+          /assets/images/+           [item minquantity max] repeat numdrops times

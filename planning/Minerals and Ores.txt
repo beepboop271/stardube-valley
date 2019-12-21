@@ -1,0 +1,11 @@
+Minerals:
+- emeralds (d/d)
+- rubies (n/n)
+- diamonds (d/n)
+- quartz (d)
+- amethyst (d/n)
+
+Ores:
+- copper (d/d)
+- iron (d/n)
+- gold (d/n)

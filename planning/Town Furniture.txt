@@ -1,0 +1,6 @@
+Inside Furniture:
+- beds
+- table
+- couch
+- counter
+- fridge
