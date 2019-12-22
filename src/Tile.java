@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
  * [Tile]
  * 2019-12-17
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Paula Yuan
  */
 public abstract class Tile {
   private static final int SIZE = 64;
@@ -23,6 +23,14 @@ public abstract class Tile {
 
   public int getY() {
     return this.y;
+  }
+
+  public void setContent(TileComponent content) {
+    this.content = content;
+  }
+
+  public TileComponent getContent() {
+    return this.content;
   }
 
   public static int getSize() {

@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Paula Yuan
  */
 public class World {
   public static final int NORTH = 0;
@@ -41,8 +41,8 @@ public class World {
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
-    // day starts at 6 am
-    this.inGameNanoTime = (long)6*60*1_000_000_000;
+    // spawn first day items
+    this.doDayEndActions();
   }
 
   public void update() {
@@ -100,6 +100,7 @@ public class World {
   }
 
   public void doDayEndActions() {
+    // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
     Iterator<Area> areas = this.locations.values().iterator();

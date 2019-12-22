@@ -1,16 +1,16 @@
-12
-Ruby       /ores/Ruby              RubyItem
-Diamond    /ores/Diamond           DiamondItem
-Quartz     /ores/Quartz            QuartzItem
-Amethyst   /ores/Amethyst          AmethystItem
-Turnip     /forageables/Turnip     TurnipItem
-Daffodil   /forageables/Daffodil   DaffodilItem
-Leek       /forageables/Leek       LeekItem
-Bluebell   /forageables/Bluebell   BluebellItem
-IceCream   /forageables/IceCream   IceCreamItem
-Mushroom   /forageables/Mushroom   MushroomItem
-WinterRoot /forageables/WinterRoot WinterRootItem
-Javacake   /forageables/Javacake   JavacakeItem
+8
+Turnip     /forageables/Turnip     TurnipItem     y
+Daffodil   /forageables/Daffodil   DaffodilItem   y
+Leek       /forageables/Leek       LeekItem       y
+Bluebell   /forageables/Bluebell   BluebellItem   y
+IceCream   /forageables/IceCream   IceCreamItem   y
+Mushroom   /forageables/Mushroom   MushroomItem   y
+WinterRoot /forageables/WinterRoot WinterRootItem y
+Javacake   /forageables/Javacake   JavacakeItem   y
+Ruby       /ores/Ruby              RubyItem       n
+Diamond    /ores/Diamond           DiamondItem    n
+Quartz     /ores/Quartz            QuartzItem     n
+Amethyst   /ores/Amethyst          AmethystItem   n
 
-name      img                      item quantity=1
+name      img                      item quantity=1 whether or not it's forageable
           /assets/images/+         

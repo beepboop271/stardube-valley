@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -5,7 +6,7 @@ import java.util.LinkedHashSet;
  * [Area]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Paula Yuan
  */
 public abstract class Area {
   private String name;
@@ -14,6 +15,7 @@ public abstract class Area {
   private LinkedHashSet<TileComponent> components;
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
+  ArrayList<Tile> grassTiles = new ArrayList<>();
   
   public Area(String name,
               int width, int height) {
@@ -120,6 +122,9 @@ public abstract class Area {
 
   public void setMapAt(Tile t) {
     this.map[t.getY()][t.getX()] = t;
+    if (t instanceof GroundTile) { // to do: change to GrassTile
+      this.grassTiles.add(t);
+    }
   }
 
   public abstract void doDayEndActions();

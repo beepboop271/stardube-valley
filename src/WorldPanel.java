@@ -12,7 +12,7 @@ import javax.swing.JPanel;
  * [WorldPanel]
  * 2019-12-19
  * @version 0.3
- * @author Kevin Qiao, Candice Zhang
+ * @author Kevin Qiao, Candice Zhang, Paula Yuan
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
@@ -96,17 +96,22 @@ public class WorldPanel extends JPanel {
 
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
-        if (playerArea.inMap(x, y) && playerArea.getMapAt(x, y) != null) {
-          g.drawImage(playerArea.getMapAt(x, y).getImage(),
-                      originX+(screenTileX*Tile.getSize()),
-                      originY+(screenTileY*Tile.getSize()), null);
-          if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
-            Graphics2D g2 = (Graphics2D)g;
-            g2.setStroke(new BasicStroke(4));
-            g2.setColor(Color.RED);
-            g2.drawRect(originX+(screenTileX*Tile.getSize())+2,
-                        originY+(screenTileY*Tile.getSize())+2,
-                        Tile.getSize()-4, Tile.getSize()-6);
+        if (playerArea.inMap(x, y)) {
+          Tile currentTile = playerArea.getMapAt(x, y);
+          if (currentTile != null) {
+            int drawX = originX+(screenTileX*Tile.getSize());
+            int drawY = originY+(screenTileY*Tile.getSize());
+            g.drawImage(currentTile.getImage(), drawX, drawY, null);
+            TileComponent tileContent = currentTile.getContent();
+            if (tileContent != null) {
+              g.drawImage(tileContent.getImage(), drawX, drawY, null); 
+            }
+            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
+              Graphics2D g2 = (Graphics2D)g;
+              g2.setStroke(new BasicStroke(4));
+              g2.setColor(Color.RED);
+              g2.drawRect(drawX+2, drawY+2, Tile.getSize()-4, Tile.getSize()-6);
+            }
           }
         }
         ++screenTileX;

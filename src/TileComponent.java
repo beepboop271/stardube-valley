@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
  * [TileComponent]
  * 2019-12-17
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Paula Yuan
  */
 public abstract class TileComponent {
   private String name;
@@ -27,6 +27,10 @@ public abstract class TileComponent {
 
   public String getName() {
     return this.name;
+  }
+
+  public BufferedImage getImage() {
+    return this.image;  
   }
 
   public HoldableDrop[] getProducts() {

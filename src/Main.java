@@ -2,6 +2,7 @@ public class Main {
   public static void main(String[] args) {
     // sketchy
     GroundTile.setGroundTileImage();
+    TileComponentFactory.initializeComponents();
 
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);

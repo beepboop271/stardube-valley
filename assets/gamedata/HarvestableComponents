@@ -1,4 +1,4 @@
-9
+2
 CopperOre  /ores/CopperOre  Pickaxe 1 3 CopperItem  1 8 StoneItem -2 1 CoalItem -7 1
 IronOre    /ores/IronOre    Pickaxe 3 3 IronItem    1 8 StoneItem -1 2 CoalItem -2 1
 GoldOre    /ores/GoldOre    Pickaxe 6 3 GoldItem    1 8 StoneItem  0 3 CoalItem -2 2
