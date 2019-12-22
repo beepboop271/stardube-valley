@@ -125,12 +125,12 @@ public class StardubeEventListener implements KeyListener,
     // }
 
     if (!this.stardubePlayer.isInMenu()) {
-      // hotbar item selection (with dumb detection)
-      if ( (this.mousePos.x >= this.worldPanel.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)) &&
-           (this.mousePos.x <= this.worldPanel.getWidth()/2+6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)) &&
-           (this.mousePos.y >= this.worldPanel.getHeight()*7/8+WorldPanel.hotbarGap) &&
-           (this.mousePos.y <= this.worldPanel.getHeight()*7/8 + WorldPanel.hotbarCellSize) ) {
-        this.updateSelectedItemId();
+      // hotbar item selection
+      if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
+           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+           (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
+           (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE) ) {
+        this.updateSelectedItemIdx();
       }
     }
   }
@@ -169,13 +169,13 @@ public class StardubeEventListener implements KeyListener,
                                   .round());
 
   }
-  private void updateSelectedItemId() {
-    int selectedItemId = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)))
-                                              /(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap));
-    if (selectedItemId>=12) {
-      selectedItemId = 11;
+  private void updateSelectedItemIdx() {
+    int selectedItemIdx = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)))
+                                              /(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
+    if (selectedItemIdx>=12) {
+      selectedItemIdx = 11;
     }
-    this.stardubePlayer.setSelectedItemId(selectedItemId);
-    //System.out.println("selected item id: "+selectedItemId);
+    this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+    //System.out.println("selected item id: "+selectedItemIdx);
   }
 }

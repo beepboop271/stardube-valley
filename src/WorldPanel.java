@@ -14,12 +14,13 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
-  public static final int hotbarCellSize = 64;
-  public static final int hotbarGap = 4;
+  public static final int HOTBAR_CELLSIZE = 64;
+  public static final int HOTBAR_CELLGAP = 4;
 
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
+  private int hotbarX, hotbarY;
   
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
@@ -118,20 +119,34 @@ public class WorldPanel extends JPanel {
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
 
     // hotbar stuff :))
+    hotbarX = this.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP);
+    if (this.playerScreenPos.y > this.getHeight()/2){
+      hotbarY = WorldPanel.HOTBAR_CELLGAP*2;
+    } else {
+      hotbarY = this.getHeight()-WorldPanel.HOTBAR_CELLSIZE-WorldPanel.HOTBAR_CELLGAP*4;
+    }
     g.setColor(Color.GREEN);
-    g.fillRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize + WorldPanel.hotbarGap), this.getHeight()*7/8,
-              12*WorldPanel.hotbarCellSize + 13*WorldPanel.hotbarGap, WorldPanel.hotbarCellSize+WorldPanel.hotbarGap);
+    g.fillRect(hotbarX, hotbarY, 12*WorldPanel.HOTBAR_CELLSIZE + 13*WorldPanel.HOTBAR_CELLGAP,
+               WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP);
     for (int i = 0; i < 12; i++) {
       g.setColor(Color.BLACK);
-      g.fillRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)+i*WorldPanel.hotbarCellSize+(i+1)*WorldPanel.hotbarGap,
-                this.getHeight()*7/8+WorldPanel.hotbarGap/2, WorldPanel.hotbarCellSize, WorldPanel.hotbarCellSize);
+      g.fillRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
+                 hotbarY+WorldPanel.HOTBAR_CELLGAP/2, WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
       // outlines selected item
-      if (i == this.worldToDisplay.getPlayer().getSelectedItemId()){
+      if (i == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
         g.setColor(Color.RED);
-        g.drawRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)+i*WorldPanel.hotbarCellSize+(i+1)*WorldPanel.hotbarGap,
-                this.getHeight()*7/8+WorldPanel.hotbarGap/2, WorldPanel.hotbarCellSize, WorldPanel.hotbarCellSize);
+        g.drawRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
+                   hotbarY+WorldPanel.HOTBAR_CELLGAP/2, WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
       }
     }
+  }
+  
+  public int getHotbarX() {
+    return this.hotbarX;
+  }
+
+  public int getHotbarY() {
+    return this.hotbarY;
   }
 
   public Point getPlayerScreenPos() {

@@ -13,13 +13,13 @@ public class Player extends Moveable {
   private int inventorySize = 12;
   private HoldableStack[] inventory;
   private Point selectedTile;
-  private int selectedItemId;
+  private int selectedItemIdx;
 
   public Player(Point position) {
     super(position, Player.size);
     this.velocity = new Vector2D(0, 0);
     this.inventory = new HoldableStack[this.inventorySize];
-    this.selectedItemId = 0;
+    this.selectedItemIdx = 0;
   }
 
   public void makeMove(long elapsedNanoTime) {
@@ -72,11 +72,11 @@ public class Player extends Moveable {
     return Player.size;
   }
 
-  public int getSelectedItemId () {
-    return this.selectedItemId;
+  public int getSelectedItemIdx () {
+    return this.selectedItemIdx;
   }
 
-  public void setSelectedItemId( int selectedItemId ) {
-    this.selectedItemId = selectedItemId;
+  public void setSelectedItemIdx( int selectedItemIdx ) {
+    this.selectedItemIdx = selectedItemIdx;
   }
 }
