@@ -18,4 +18,8 @@ public class HoldableStack {
     this.containedHoldable = HoldableFactory.getHoldable(containedHoldable);
     this.quantity = quantity;
   }
+
+  Holdable getContainedHoldable() {
+    return this.containedHoldable;
+  }
 }
