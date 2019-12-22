@@ -36,7 +36,7 @@ public class World {
     }
     this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
     
-    this.player = new Player(new Point(13, 5));
+    this.player = new Player(new Point(13, 13));
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
   }
