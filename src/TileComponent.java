@@ -29,6 +29,10 @@ public abstract class TileComponent {
     return this.name;
   }
 
+  public HoldableDrop[] getProducts() {
+    return this.products;
+  }
+
   public void setProduct(int i, HoldableDrop product) {
     this.products[i] = product;
   }

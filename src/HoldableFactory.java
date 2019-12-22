@@ -9,6 +9,10 @@ import java.util.HashMap;
 public class HoldableFactory {
   private static HashMap<String, Holdable> holdablePool;
 
+  private HoldableFactory(){
+    // do not allow anyone to create an object of this class
+  }
+
   public static void initializeItems() {
     HoldableFactory.holdablePool = new HashMap<String, Holdable>();
   }

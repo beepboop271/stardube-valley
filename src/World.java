@@ -25,7 +25,8 @@ public class World {
   private Area playerArea;
   private Player player;
   private long lastUpdateTime = System.nanoTime();
-  private long inGameTime = 0;
+  private long inGameNanoTime;
+  private long inGameDay = 0;
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -39,6 +40,9 @@ public class World {
     this.player = new Player(new Point(13, 13));
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    // day starts at 6 am
+    this.inGameNanoTime = (long)6*60*1_000_000_000;
   }
 
   public void update() {
@@ -64,7 +68,9 @@ public class World {
       return;
     }
 
-    this.inGameTime += currentUpdateTime-this.lastUpdateTime;
+    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    this.inGameNanoTime %= (long)24*60*1_000_000_000;
+
     while (areas.hasNext()) {
       nextArea = areas.next();
       moveables = nextArea.getMoveables();
@@ -91,6 +97,15 @@ public class World {
       }
     }
     this.lastUpdateTime = currentUpdateTime;
+  }
+
+  public void doDayEndActions() {
+    this.inGameNanoTime = (long)6*60*1_000_000_000;
+    ++this.inGameDay;
+    Iterator<Area> areas = this.locations.values().iterator();
+    while (areas.hasNext()) {
+      areas.next().doDayEndActions();
+    }
   }
 
   public void enqueueEvent(TimedEvent te) {
@@ -170,14 +185,14 @@ public class World {
         ++x;
       }
       if (a.getMapAt(x, y) != null) {
-        return new GatewayZone(x, y);
+        return new GatewayZone(x, y, isHorizontal);
       }
     } else {
       while (y < a.getHeight()-1 && a.getMapAt(x, y) == null) {
         ++y;
       }
       if (a.getMapAt(x, y) != null) {
-        return new GatewayZone(x, y);
+        return new GatewayZone(x, y, isHorizontal);
       }
     }
     return null;
@@ -189,5 +204,13 @@ public class World {
 
   public Area getPlayerArea() {
     return this.playerArea;
+  }
+
+  public long getInGameNanoTime() {
+    return this.inGameNanoTime;
+  }
+
+  public long getInGameDay() {
+    return this.inGameDay;
   }
 }

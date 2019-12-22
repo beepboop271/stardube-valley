@@ -3,10 +3,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class StardubeEventListener implements KeyListener,
                                               MouseListener,
-                                              MouseMotionListener {
+                                              MouseMotionListener,
+                                              MouseWheelListener {
   private World stardubeWorld;
   private WorldPanel worldPanel;
   private Player stardubePlayer;
@@ -155,6 +158,16 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
     this.updateSelectedTile();
+  }
+
+  @Override
+  public void mouseWheelMoved(MouseWheelEvent e) {
+    int rotation = e.getWheelRotation();
+    if (rotation < 0) {
+      this.stardubePlayer.incrementSelectedItemIdx();
+    } else if (rotation > 0) {
+      this.stardubePlayer.decrementSelectedItemIdx();
+    }
   }
 
   private void updateSelectedTile() {

@@ -11,4 +11,8 @@ public class FarmArea extends Area {
                   int width, int height) {
     super(name, width, height);
   }
+
+  @Override
+  public void doDayEndActions() {
+  }
 }

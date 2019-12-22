@@ -7,23 +7,29 @@
 public class GatewayZone {
   private Area destinationArea;
   private GatewayZone destinationZone;
-  private int originX, originY;
+  private Point origin;
+  private boolean isHorizontal;
 
-  public GatewayZone(int originX, int originY) {
-    this.originX = originX;
-    this.originY = originY;
+  public GatewayZone(int originX, int originY, boolean isHorizontal) {
+    this.origin = new Point(originX, originY);
+    this.isHorizontal = isHorizontal;
   }
 
   public GatewayZone(Area destinationArea, GatewayZone destinationZone,
-                     int originX, int originY) {
-    this(originX, originY);
+                     int originX, int originY, boolean isHorizontal) {
+    this(originX, originY, isHorizontal);
     this.destinationArea = destinationArea;
     this.destinationZone = destinationZone;
   }
 
   public Point toDestinationPoint(Point p) {
-    p.translate(-this.originX, -this.originY);
-    p.translate(this.destinationZone.getX(), this.destinationZone.getY());
+    p.translate(-this.origin.x, -this.origin.y);
+    if (this.isHorizontal) {
+      p.y *= -1;
+    } else {
+      p.x *= -1;
+    }
+    p.translate(this.destinationZone.origin.x, this.destinationZone.origin.y);
     return p;
   }
 
@@ -42,13 +48,5 @@ public class GatewayZone {
     } else if (direction == World.EAST) {
       this.destinationZone = this.destinationArea.getNeighbourZone(World.WEST);
     }
-  }
-
-  public int getX() {
-    return this.originX;
-  }
-
-  public int getY() {
-    return this.originY;
   }
 }

@@ -10,9 +10,19 @@ import java.util.HashMap;
  * @author Kevin Qiao
  */
 public class TileComponentFactory {
+  private static boolean isInitialized = false;
   private static HashMap<String, TileComponent> componentPool;
   
+  private TileComponentFactory() {
+    // do not allow anyone to create an object of this class
+  }
+
   public static void initializeComponents() {
+    if (TileComponentFactory.isInitialized) {
+      return;
+    }
+    TileComponentFactory.isInitialized = true;
+
     TileComponentFactory.componentPool = new HashMap<String, TileComponent>();
     BufferedReader input;
 
@@ -44,23 +54,20 @@ public class TileComponentFactory {
         nextLine = input.readLine().split("\\s+");
         componentToAdd = new CollectableComponent(nextLine[0],
                                                   "/assets/images/"+nextLine[1]+".png",
-                                                  Integer.parseInt(nextLine[2]));
-        for (int j = 0; j < Integer.parseInt(nextLine[2]); ++j) {
-          componentToAdd.setProduct(j, new HoldableDrop(nextLine[3+(j*2)],
-                                                        Integer.parseInt(nextLine[4+(j*2)]),
-                                                        Integer.parseInt(nextLine[4+(j*2)])));
-        }
+                                                  1);
+        componentToAdd.setProduct(0, new HoldableDrop(nextLine[2], 1, 1));
         componentPool.put(componentToAdd.getName(), componentToAdd);
       }
       input.close();
-
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public static TileComponent getComponent(String component) {
-    return (TileComponent)TileComponentFactory.componentPool
-                                              .get(component);
+    if (!TileComponentFactory.isInitialized) {
+      return null;
+    }
+    return TileComponentFactory.componentPool.get(component);
   }
 }

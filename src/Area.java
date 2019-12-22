@@ -121,4 +121,6 @@ public abstract class Area {
   public void setMapAt(Tile t) {
     this.map[t.getY()][t.getX()] = t;
   }
+
+  public abstract void doDayEndActions();
 }

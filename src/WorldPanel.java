@@ -1,15 +1,17 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
 /**
  * [WorldPanel]
  * 2019-12-19
- * @version 0.1
+ * @version 0.3
  * @author Kevin Qiao, Candice Zhang
  */
 @SuppressWarnings("serial")
@@ -17,6 +19,7 @@ public class WorldPanel extends JPanel {
   public static final int HOTBAR_CELLSIZE = 64;
   public static final int HOTBAR_CELLGAP = 4;
 
+  private final Font timeFont;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
@@ -31,6 +34,7 @@ public class WorldPanel extends JPanel {
     this.addKeyListener(listener);
     this.addMouseListener(listener);
     this.addMouseMotionListener(listener);
+    this.addMouseWheelListener(listener);
 
     this.setFocusable(true);
     this.grabFocus();
@@ -38,6 +42,8 @@ public class WorldPanel extends JPanel {
     this.setPreferredSize(new Dimension(width, height));
     this.tileWidth = (int)Math.ceil(((double)width)/Tile.getSize());
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
+
+    this.timeFont = new Font("Comic Sans MS", Font.BOLD, 40);
 
     this.setOpaque(true);
   }
@@ -126,12 +132,14 @@ public class WorldPanel extends JPanel {
       hotbarY = this.getHeight()-WorldPanel.HOTBAR_CELLSIZE-WorldPanel.HOTBAR_CELLGAP*4;
     }
     g.setColor(Color.GREEN);
-    g.fillRect(hotbarX, hotbarY, 12*WorldPanel.HOTBAR_CELLSIZE + 13*WorldPanel.HOTBAR_CELLGAP,
+    g.fillRect(hotbarX, hotbarY,
+               12*WorldPanel.HOTBAR_CELLSIZE + 13*WorldPanel.HOTBAR_CELLGAP,
                WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP);
     for (int i = 0; i < 12; i++) {
       g.setColor(Color.BLACK);
       g.fillRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
-                 hotbarY+WorldPanel.HOTBAR_CELLGAP/2, WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+                 hotbarY+WorldPanel.HOTBAR_CELLGAP/2,
+                 WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
       // outlines selected item
       if (i == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
         g.setColor(Color.RED);
@@ -139,6 +147,16 @@ public class WorldPanel extends JPanel {
                    hotbarY+WorldPanel.HOTBAR_CELLGAP/2, WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
       }
     }
+
+    // time stuff
+    // one real world second is one in game minute
+    long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
+    Graphics2D g2 = (Graphics2D)g;
+    g2.setColor(Color.BLACK);
+    g2.setFont(this.timeFont);
+    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
   }
   
   public int getHotbarX() {

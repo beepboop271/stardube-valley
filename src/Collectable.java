@@ -5,5 +5,5 @@
  * @author Paula Yuan
  */
 public interface Collectable {
-    public Item[] getProducts();
+  public HoldableDrop[] getProducts();
 }

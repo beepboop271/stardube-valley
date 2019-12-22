@@ -5,11 +5,14 @@
  * @author Kevin Qiao, Paula Yuan
  */
 public class HarvestableComponent extends TileComponent implements Harvestable {
-  private String requiredTool;
-  private int hardness;
-  
-  // methods
-  public void setHardness(int hardness) {
+  private final String requiredTool;
+  private final int hardness;
+
+  public HarvestableComponent(String name, String imagePath,
+                              String requiredTool, int hardness,
+                              int numProducts) {
+    super(name, imagePath, numProducts);
+    this.requiredTool = requiredTool;
     this.hardness = hardness;
   }
 
@@ -17,20 +20,7 @@ public class HarvestableComponent extends TileComponent implements Harvestable {
     return this.hardness;
   }
 
-  public void setRequiredTool(String tool) {
-    this.requiredTool = tool;
-  }
-
   public String getRequiredTool() {
     return this.requiredTool;    
-  }
-
-  // constructors
-  public HarvestableComponent(String name, String imagePath,
-                              String requiredTool, int hardness,
-                              int numProducts) {
-    super(name, imagePath, numProducts);
-    this.requiredTool = requiredTool;
-    this.hardness = hardness;
   }
 }

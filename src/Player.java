@@ -76,6 +76,14 @@ public class Player extends Moveable {
     return this.selectedItemIdx;
   }
 
+  public void incrementSelectedItemIdx() {
+    this.selectedItemIdx = (this.selectedItemIdx+1)%12;
+  }
+
+  public void decrementSelectedItemIdx() {
+    this.selectedItemIdx = Math.floorMod(this.selectedItemIdx-1, 12);
+  }
+
   public void setSelectedItemIdx( int selectedItemIdx ) {
     this.selectedItemIdx = selectedItemIdx;
   }
