@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 public class StardubeFrame extends JFrame {
   public StardubeFrame(World stardubeWorld) {
     super("Stardube Valley");
-    this.setContentPane(new WorldPanel(stardubeWorld, 1366, 768));
+    this.setContentPane(new WorldPanel(stardubeWorld, 1408, 768));
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.pack();
     this.setVisible(true);

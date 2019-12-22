@@ -45,6 +45,11 @@ public class Vector2D implements Cloneable {
     }
   }
 
+  @Override
+  public String toString() {
+    return String.format("V(%.2f, %.2f), %.2f", this.x, this.y, Math.toDegrees(this.angle));
+  }
+
   
   /** 
    * [update]
@@ -96,8 +101,9 @@ public class Vector2D implements Cloneable {
    * Adds the given Vector2D to this Vector2D.
    * @param other The Vector2D to add.
    */
-  public void add(Vector2D other) {
+  public Vector2D add(Vector2D other) {
     this.setPos(this.x+other.x, this.y+other.y);
+    return this;
   }
 
   
@@ -149,7 +155,7 @@ public class Vector2D implements Cloneable {
    * Scales this Vector2D to the given length.
    * @param length The new length of this Vector2D.
    */
-  public void setLength(double length) {
+  public Vector2D setLength(double length) {
     if (length < 0) {
       this.length = Math.abs(length);
       this.update(Vector2D.POS);
@@ -158,6 +164,7 @@ public class Vector2D implements Cloneable {
       this.length = length;
       this.update(Vector2D.POS);
     }
+    return this;
   }
 
   

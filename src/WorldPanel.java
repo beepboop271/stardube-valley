@@ -1,8 +1,8 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
@@ -16,17 +16,30 @@ import javax.swing.JPanel;
 public class WorldPanel extends JPanel {
   private World worldToDisplay;
   private int tileWidth, tileHeight;
+  private Point playerScreenPos;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
-    this.addKeyListener(new WorldPanelKeyListener());
+    this.playerScreenPos = new Point(0, 0);
+
+    StardubeEventListener listener = new StardubeEventListener(worldToDisplay, this);
+    this.addKeyListener(listener);
+    this.addMouseListener(listener);
+    this.addMouseMotionListener(listener);
+
     this.setFocusable(true);
     this.grabFocus();
+
     this.setPreferredSize(new Dimension(width, height));
     this.tileWidth = (int)Math.ceil(((double)width)/Tile.getSize());
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
+
     this.setOpaque(true);
+  }
+
+  public static int clamp(int val, int min, int max) {
+    return Math.max(min, Math.min(val, max));
   }
 
   @Override
@@ -38,83 +51,71 @@ public class WorldPanel extends JPanel {
 
     Point playerPos = this.worldToDisplay.getPlayer().getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
-    // if ((playerPos.x < this.tileWidth/2.0)
-    //       || (playerArea.getWidth()-playerPos.x < this.tileWidth/2.0)
-    //       || (playerPos.y < this.tileHeight/2.0)
-    //       || (playerArea.getHeight()-playerPos.y < this.tileHeight/2.0)) {
-    // } else {
-    
-    int originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-Math.floor(playerPos.x-this.tileWidth/2))));
-    int originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-Math.floor(playerPos.y-this.tileHeight/2))));
 
-    int screenX = 0;
-    int screenY = 0;
+    int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2);
+    int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2);
 
-    for (int y = (int)Math.floor(playerPos.y-this.tileHeight/2); y < playerPos.y+this.tileHeight/2+1; ++y) {
-      for (int x = (int)Math.floor(playerPos.x-this.tileWidth/2); x < playerPos.x+this.tileWidth/2+1; ++x) {
+    int tileStartX = WorldPanel.clamp(unboundedTileStartX, 0, playerArea.getWidth()-this.tileWidth);
+    int tileStartY = WorldPanel.clamp(unboundedTileStartY, 0, playerArea.getHeight()-this.tileHeight);
+
+    int originX;
+    int originY;
+
+    if (playerPos.x < this.tileWidth/2-0.5) {
+      originX = 0;
+    } else if (playerPos.x > playerArea.getWidth()-this.tileWidth/2-0.5) {
+      originX = 0;
+    } else {
+      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX)))-(Tile.getSize()/2);
+    }
+
+    if (playerPos.y < this.tileHeight/2-0.5 || playerPos.y > playerArea.getHeight()-this.tileHeight/2-0.5) {
+      originY = 0;
+    } else {
+      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY)))-(Tile.getSize()/2);
+    }
+
+    // System.out.printf("%d %d, %d %d, %d %d, %.2f %.2f\n",
+    //    unboundedTileStartX, unboundedTileStartY, tileStartX, tileStartY, originX, originY, playerPos.x, playerPos.y);
+      
+    int screenTileX = 0;
+    int screenTileY = 0;
+
+    Point selectedTile = this.worldToDisplay.getPlayer().getSelectedTile();
+    // System.out.println(selectedTile);
+
+    for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
+      for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
         if (playerArea.inMap(x, y) && playerArea.getMapAt(x, y) != null) {
           g.drawImage(playerArea.getMapAt(x, y).getImage(),
-                      originX+(screenX*Tile.getSize())-(Tile.getSize()/2),
-                      originY+(screenY*Tile.getSize())-(Tile.getSize()/2), null);
+                      originX+(screenTileX*Tile.getSize()),
+                      originY+(screenTileY*Tile.getSize()), null);
+          if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
+            Graphics2D g2 = (Graphics2D)g;
+            g2.setStroke(new BasicStroke(4));
+            g2.setColor(Color.RED);
+            g2.drawRect(originX+(screenTileX*Tile.getSize())+2,
+                        originY+(screenTileY*Tile.getSize())+2,
+                        Tile.getSize()-4, Tile.getSize()-6);
+          }
         }
-        ++screenX;
+        ++screenTileX;
       }
-      screenX = 0;
-      ++screenY;
+      screenTileX = 0;
+      ++screenTileY;
     }
     
     g.setColor(Color.RED);
-    g.fillRect((int)((this.getWidth()/2)-(Tile.getSize()*Player.getSize())),
-               (int)((this.getHeight()/2)-(Tile.getSize()*Player.getSize())),
+    this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+(Player.getSize()/2.0))+originX);
+    this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+(Player.getSize()/2.0))+originY);
+    g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
                (int)(2*Tile.getSize()*Player.getSize()),
                (int)(2*Tile.getSize()*Player.getSize()));
     g.setColor(Color.BLACK);
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
   }
 
-  private class WorldPanelKeyListener extends KeyAdapter {
-    @Override
-    public void keyPressed(KeyEvent e) {
-      Player p = worldToDisplay.getPlayer();
-      switch (e.getKeyCode()) {
-        case KeyEvent.VK_W:
-          p.setVerticalSpeed(-1);
-          break;
-        case KeyEvent.VK_A:
-          p.setHorizontalSpeed(-1);
-          break;
-        case KeyEvent.VK_S:
-          p.setVerticalSpeed(1);
-          break;
-        case KeyEvent.VK_D:
-          p.setHorizontalSpeed(1);
-          break;
-        case KeyEvent.VK_E:
-          p.toggleInMenu();
-          break;
-        case KeyEvent.VK_ESCAPE:
-          p.setInMenu(false);
-          break;
-      }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-      Player p = worldToDisplay.getPlayer();
-      switch (e.getKeyCode()) {
-        case KeyEvent.VK_W:
-          p.setVerticalSpeed(0);
-          break;
-        case KeyEvent.VK_A:
-          p.setHorizontalSpeed(0);
-          break;
-        case KeyEvent.VK_S:
-          p.setVerticalSpeed(0);
-          break;
-        case KeyEvent.VK_D:
-          p.setHorizontalSpeed(0);
-          break;
-      }
-    }
+  public Point getPlayerScreenPos() {
+    return ((Point)this.playerScreenPos.clone());
   }
 }

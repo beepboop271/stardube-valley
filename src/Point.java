@@ -28,6 +28,10 @@ public class Point implements Cloneable {
     return this;
   }
 
+  public Point translate(Point p) {
+    return this.translate(p.x, p.y);
+  }
+
   public Point translateNew(double dx, double dy) {
     return new Point(this).translate(dx, dy);
   }

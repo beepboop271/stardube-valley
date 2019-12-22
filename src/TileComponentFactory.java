@@ -3,6 +3,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * [TileComponentFactory]
+ * 2019-12-20
+ * @version 0.1
+ * @author Kevin Qiao
+ */
 public class TileComponentFactory {
   private static HashMap<String, TileComponent> componentPool;
   
