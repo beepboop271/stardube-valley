@@ -107,6 +107,7 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void mouseClicked(MouseEvent e) {
+
   }
 
   @Override
@@ -115,11 +116,23 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void mouseReleased(MouseEvent e) {
+    this.mousePos.x = e.getX();
+    this.mousePos.y = e.getY();
     // if (!this.stardubePlayer.isInMenu()) {
     //   if (e.getButton() == MouseEvent.BUTTON1) {
     //     if (this.stardubePlayer.)
     //   }
     // }
+
+    if (!this.stardubePlayer.isInMenu()) {
+      // hotbar item selection (with dumb detection)
+      if ( (this.mousePos.x >= this.worldPanel.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)) &&
+           (this.mousePos.x <= this.worldPanel.getWidth()/2+6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)) &&
+           (this.mousePos.y >= this.worldPanel.getHeight()*7/8+WorldPanel.hotbarGap) &&
+           (this.mousePos.y <= this.worldPanel.getHeight()*7/8 + WorldPanel.hotbarCellSize) ) {
+        this.updateSelectedItemId();
+      }
+    }
   }
 
   @Override
@@ -155,5 +168,14 @@ public class StardubeEventListener implements KeyListener,
                                   .translate(this.stardubePlayer.getPos())
                                   .round());
 
+  }
+  private void updateSelectedItemId() {
+    int selectedItemId = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)))
+                                              /(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap));
+    if (selectedItemId>=12) {
+      selectedItemId = 11;
+    }
+    this.stardubePlayer.setSelectedItemId(selectedItemId);
+    //System.out.println("selected item id: "+selectedItemId);
   }
 }

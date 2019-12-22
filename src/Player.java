@@ -3,7 +3,7 @@
  * [Player]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Candice Zhang
  */
 public class Player extends Moveable {
   private static final double size = 0.35;
@@ -13,11 +13,13 @@ public class Player extends Moveable {
   private int inventorySize = 12;
   private HoldableStack[] inventory;
   private Point selectedTile;
+  private int selectedItemId;
 
   public Player(Point position) {
     super(position, Player.size);
     this.velocity = new Vector2D(0, 0);
     this.inventory = new HoldableStack[this.inventorySize];
+    this.selectedItemId = 0;
   }
 
   public void makeMove(long elapsedNanoTime) {
@@ -68,5 +70,13 @@ public class Player extends Moveable {
 
   public static double getSize() {
     return Player.size;
+  }
+
+  public int getSelectedItemId () {
+    return this.selectedItemId;
+  }
+
+  public void setSelectedItemId( int selectedItemId ) {
+    this.selectedItemId = selectedItemId;
   }
 }

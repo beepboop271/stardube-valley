@@ -10,14 +10,17 @@ import javax.swing.JPanel;
  * [WorldPanel]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Candice Zhang
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
+  public static final int hotbarCellSize = 64;
+  public static final int hotbarGap = 4;
+
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
-
+  
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
@@ -113,9 +116,26 @@ public class WorldPanel extends JPanel {
                (int)(2*Tile.getSize()*Player.getSize()));
     g.setColor(Color.BLACK);
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
+
+    // hotbar stuff :))
+    g.setColor(Color.GREEN);
+    g.fillRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize + WorldPanel.hotbarGap), this.getHeight()*7/8,
+              12*WorldPanel.hotbarCellSize + 13*WorldPanel.hotbarGap, WorldPanel.hotbarCellSize+WorldPanel.hotbarGap);
+    for (int i = 0; i < 12; i++) {
+      g.setColor(Color.BLACK);
+      g.fillRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)+i*WorldPanel.hotbarCellSize+(i+1)*WorldPanel.hotbarGap,
+                this.getHeight()*7/8+WorldPanel.hotbarGap/2, WorldPanel.hotbarCellSize, WorldPanel.hotbarCellSize);
+      // outlines selected item
+      if (i == this.worldToDisplay.getPlayer().getSelectedItemId()){
+        g.setColor(Color.RED);
+        g.drawRect(this.getWidth()/2-6*(WorldPanel.hotbarCellSize+WorldPanel.hotbarGap)+i*WorldPanel.hotbarCellSize+(i+1)*WorldPanel.hotbarGap,
+                this.getHeight()*7/8+WorldPanel.hotbarGap/2, WorldPanel.hotbarCellSize, WorldPanel.hotbarCellSize);
+      }
+    }
   }
 
   public Point getPlayerScreenPos() {
     return ((Point)this.playerScreenPos.clone());
   }
+  
 }
