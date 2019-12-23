@@ -24,4 +24,12 @@ public abstract class Holdable {
       e.printStackTrace();
     }
   }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public BufferedImage getImage() {
+    return this.image;
+  }
 }

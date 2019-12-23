@@ -7,6 +7,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * [World]
@@ -20,6 +21,8 @@ public class World {
   public static final int SOUTH = 2;
   public static final int WEST = 3;
 
+  private static final int DAYS_PER_SEASON = 30;
+
   private LinkedHashMap<String, Area> locations;
   private PriorityBlockingQueue<TimedEvent> eventQueue;
   private Area playerArea;
@@ -27,6 +30,7 @@ public class World {
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay = 0;
+  private double luckOfTheDay;
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -56,12 +60,7 @@ public class World {
 
     long currentUpdateTime = System.nanoTime();
 
-    // pygame_irl
-    EventObject event;
-    while (!this.eventQueue.isEmpty()
-            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
-       event = this.eventQueue.poll().getEvent();
-    }
+    this.processEvents();
 
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
@@ -70,6 +69,22 @@ public class World {
 
     this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
     this.inGameNanoTime %= (long)24*60*1_000_000_000;
+
+    Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
+    HoldableStackEntity nextItemEntity;
+    double itemDistance;
+    while (itemsNearPlayer.hasNext()) {
+      nextItemEntity = itemsNearPlayer.next();
+      itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
+      if (itemDistance < Player.getSize()) {
+        this.player.pickUp(nextItemEntity.getStack());
+      } else if (itemDistance < Player.getItemAttractionDistance()) {
+        nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
+                                   this.player.getPos().y-nextItemEntity.getPos().y, 
+                                   (double)Player.getItemAttractionDistance()/itemDistance);
+        nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+      }
+    }
 
     while (areas.hasNext()) {
       nextArea = areas.next();
@@ -84,7 +99,6 @@ public class World {
         if (nextArea.collides(intersectingTiles.iterator())) {
           nextMoveable.setPos(lastPos);
         } else {
-          // System.out.println(intersectingTiles.toString());
           exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
           if (exitDirection > -1) {
             if (nextMoveable instanceof Player) {
@@ -99,18 +113,58 @@ public class World {
     this.lastUpdateTime = currentUpdateTime;
   }
 
+  public void processEvents() {
+    // pygame_irl
+    EventObject event;
+    while (!this.eventQueue.isEmpty()
+           && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
+      event = this.eventQueue.poll().getEvent();
+      if (event instanceof UtilityToolUsedEvent) {
+        // design i think is solid, just need to clean up the code a bit?
+        this.player.setImmutable(false);
+        UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
+        TileComponent componentToHarvest = this.playerArea.getMapAt(toolEvent.getLocationUsed()).getContent();
+        if (componentToHarvest instanceof Harvestable
+              && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
+                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
+          // TODO: play breaking animation?
+          this.playerArea.removeComponent(componentToHarvest);
+
+          HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
+          for (int i = 0; i < drops.length; ++i) {
+            this.playerArea.addItemOnGround(
+                new HoldableStackEntity(
+                    drops[i].resolveDrop(this.luckOfTheDay),
+                    toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
+                )
+            );
+          }
+        }
+      }
+    }
+  }
+
   public void doDayEndActions() {
     // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
+    this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
     while (areas.hasNext()) {
       areas.next().doDayEndActions();
     }
   }
 
-  public void enqueueEvent(TimedEvent te) {
+  public void queueEvent(TimedEvent te) {
     this.eventQueue.offer(te);
+  }
+
+  public void emplaceEvent(long time, EventObject event) {
+    this.eventQueue.offer(new TimedEvent(time, event));
+  }
+
+  public void emplaceFutureEvent(long timeIntoFuture, EventObject event) {
+    this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+timeIntoFuture, event));
   }
 
   public void loadAreas() throws IOException {

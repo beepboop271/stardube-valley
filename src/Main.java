@@ -3,6 +3,7 @@ public class Main {
     // sketchy
     GroundTile.setGroundTileImage();
     TileComponentFactory.initializeComponents();
+    HoldableFactory.initializeItems();
 
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);

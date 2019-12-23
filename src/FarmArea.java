@@ -6,13 +6,17 @@
  */
 public class FarmArea extends Area {
   // private FarmBuilding[] buildings;
-
+  //Hashset<> = new Hashset<>();
   public FarmArea(String name,
                   int width, int height) {
     super(name, width, height);
   }
 
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> master
 
   @Override
   public void doDayEndActions() {

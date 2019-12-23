@@ -167,6 +167,18 @@ public class Vector2D implements Cloneable {
     return this;
   }
 
+  public Vector2D scale(double multiplier) {
+    if (length < 0) {
+      this.length *= Math.abs(multiplier);
+      this.update(Vector2D.POS);
+      this.flip();
+    } else {
+      this.length *= multiplier;
+      this.update(Vector2D.POS); 
+    }
+    return this;
+  }
+
   
   /** 
    * [getAngle]

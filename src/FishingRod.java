@@ -8,4 +8,9 @@ public class FishingRod extends Tool {
   FishingRod(){
     super("Fishing Rod", "best tool:)", null);
   }
+
+  @Override
+  public Point[] getUseLocation(Point selectedTile) {
+    return null;
+  }
 }
