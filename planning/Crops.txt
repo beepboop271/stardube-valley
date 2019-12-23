@@ -7,7 +7,7 @@ Spring:
 - potato (n6) - Grows in 6 days 
 - cauliflower (n6) - Grows in 12 days
 Summer:
-- watermelon (n6) - Grows in 10 days
+- watermelon (d7) - Grows in 10 days
 - mango BUSH (n5) - Grows in 7 days
 - hot peppers (n7) - Grows in 5 days, regrow in 3 days
 - radish (n5) - Grows in 4 days

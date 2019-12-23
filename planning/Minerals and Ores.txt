@@ -7,5 +7,5 @@ Minerals:
 
 Ores:
 - copper (d/d)
-- iron (d/n)
-- gold (d/n)
+- iron (d/d)
+- gold (d/d)
