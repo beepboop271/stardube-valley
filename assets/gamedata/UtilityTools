@@ -1,4 +1,6 @@
-1
-Pickaxe /holdables/Pickaxe asdf
+3
+Pickaxe         /holdables/Pickaxe      asdf
+Hoe             /holdables/Hoe          till dirt because fun  
+WateringCan     /holdables/WateringCan  water dirt cause bad water
 
-name    description img
+name        description   img

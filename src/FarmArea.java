@@ -4,19 +4,14 @@
  * @version 0.1
  * @author Kevin Qiao, Joseph Wang
  */
+
 public class FarmArea extends Area {
-  // private FarmBuilding[] buildings;
+  //private FarmBuilding[] buildings;
   //Hashset<> = new Hashset<>();
   public FarmArea(String name,
                   int width, int height) {
     super(name, width, height);
   }
-
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> master
 
   @Override
   public void doDayEndActions() {
