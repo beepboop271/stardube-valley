@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * [Area]
@@ -13,6 +14,7 @@ public abstract class Area {
   private Tile[][] map;
   private LinkedHashSet<Moveable> moveables;
   private LinkedHashSet<TileComponent> components;
+  private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
   ArrayList<Tile> grassTiles = new ArrayList<>();
@@ -25,6 +27,7 @@ public abstract class Area {
     this.map = new Tile[this.height][this.width];
     this.components = new LinkedHashSet<TileComponent>();
     this.moveables = new LinkedHashSet<Moveable>();
+    this.itemsOnGround = new LinkedList<HoldableStackEntity>();
   }
 
   public static Area constructArea(String category,
@@ -86,6 +89,18 @@ public abstract class Area {
     this.moveables.add(m);
   }
 
+  public void removeComponent(TileComponent component) {
+    this.components.remove(component);
+  }
+
+  public Iterator<HoldableStackEntity> getItemsOnGround() {
+    return this.itemsOnGround.iterator();
+  }
+
+  public void addItemOnGround(HoldableStackEntity e) {
+    this.itemsOnGround.addLast(e);
+  }
+
   public String getName() {
     return this.name;
   }
@@ -118,6 +133,10 @@ public abstract class Area {
 
   public Tile getMapAt(int x, int y) {
     return this.map[y][x];
+  }
+
+  public Tile getMapAt(Point pos) {
+    return this.map[(int)pos.y][(int)pos.x];
   }
 
   public void setMapAt(Tile t) {

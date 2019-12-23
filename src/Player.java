@@ -6,9 +6,9 @@
  * @author Kevin Qiao, Candice Zhang
  */
 public class Player extends Moveable {
-  private static final double size = 0.35;
-  private static final double maxSpeed = 6;
-  private Vector2D velocity;
+  private static final double SIZE = 0.35;
+  private static final double MAX_SPEED = 6;
+  private static final double ITEM_ATTRACTION_DISTANCE = 3;
   private boolean inMenu = false;
   private int inventorySize = 12;
   private HoldableStack[] inventory;
@@ -17,25 +17,46 @@ public class Player extends Moveable {
   private boolean isImmutable;
 
   public Player(Point position) {
-    super(position, Player.size);
-    this.velocity = new Vector2D(0, 0);
+    super(position, Player.SIZE);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
+
+    this.inventory[0] = new HoldableStack("Pickaxe", 1);
   }
   
+  @Override
   public void makeMove(long elapsedNanoTime) {
     if (this.isImmutable()) {
       return;
     }
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
-    Vector2D positionChange = (Vector2D)this.velocity.clone();
-    positionChange.setLength(Player.maxSpeed*elapsedSeconds);
-    this.translatePos(positionChange.getX(), positionChange.getY());
+    Vector2D positionChange = this.getVelocity();
+    positionChange.setLength(Player.MAX_SPEED*elapsedSeconds);
+    this.translatePos(positionChange);
   }
   
   public HoldableStack[] getInventory() {
     return this.inventory;
+  }
+
+  public void pickUp(HoldableStack items) {
+    // could replace with set, just need to test out
+    // hashing holdablestacks later
+    for (int i = 0; i < inventory.length; ++i) {
+      // can use primitive equals because all holdables are shared
+      if ((this.inventory[i] != null)
+            && (this.inventory[i].getContainedHoldable() == items.getContainedHoldable())) {
+        this.inventory[i].addHoldables(items.getQuantity());
+        return;
+      }
+    }
+    for (int i = 0; i < inventory.length; ++i) {
+      if (this.inventory != null) {
+        this.inventory[i] = items;
+        return;
+      }
+    }
   }
 
   public Point getSelectedTile() {
@@ -47,22 +68,6 @@ public class Player extends Moveable {
 
   public void setSelectedTile(Point selectedTile) {
     this.selectedTile = selectedTile;
-  }
-
-  public int getHorizontalSpeed() {
-    return (int)this.velocity.getX();
-  }
-
-  public void setHorizontalSpeed(int dx) {
-    this.velocity.setPos(dx, this.velocity.getY());
-  }
-
-  public int getVerticalSpeed() {
-    return (int)this.velocity.getY();
-  }
-
-  public void setVerticalSpeed(int dy) {
-    this.velocity.setPos(this.velocity.getX(), dy);
   }
 
   public boolean isInMenu() {
@@ -77,12 +82,12 @@ public class Player extends Moveable {
     this.inMenu = inMenu;
   }
 
-  public static double getSize() {
-    return Player.size;
+  public int getSelectedItemIdx() {
+    return this.selectedItemIdx;
   }
 
-  public int getSelectedItemIdx () {
-    return this.selectedItemIdx;
+  public HoldableStack getSelectedItem() {
+    return this.inventory[this.selectedItemIdx];
   }
 
   public void incrementSelectedItemIdx() {
@@ -99,7 +104,7 @@ public class Player extends Moveable {
     this.selectedItemIdx = Math.floorMod(this.selectedItemIdx-1, 12);
   }
 
-  public void setSelectedItemIdx( int selectedItemIdx ) {
+  public void setSelectedItemIdx(int selectedItemIdx) {
     if (this.isImmutable()) {
       return;
     }
@@ -109,12 +114,16 @@ public class Player extends Moveable {
   public boolean isImmutable() {
     return this.isImmutable;
   }
-
-  public void toggleIsImmutable() {
-    this.isImmutable = !this.isImmutable;
-  }
   
-  public void setIsImmutable( boolean isImmutable ){
+  public void setImmutable( boolean isImmutable ){
     this.isImmutable = isImmutable;
+  }
+
+  public static double getSize() {
+    return Player.SIZE;
+  }
+
+  public static double getItemAttractionDistance() {
+    return Player.ITEM_ATTRACTION_DISTANCE;
   }
 }

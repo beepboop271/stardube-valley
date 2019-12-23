@@ -19,7 +19,15 @@ public class HoldableStack {
     this.quantity = quantity;
   }
 
-  Holdable getContainedHoldable() {
+  public Holdable getContainedHoldable() {
     return this.containedHoldable;
+  }
+
+  public int getQuantity() {
+    return this.quantity;
+  }
+
+  public void addHoldables(int quantity) {
+    this.quantity += quantity;
   }
 }
