@@ -8,10 +8,17 @@ import java.util.LinkedHashSet;
  */
 public abstract class Moveable {
   private Point position;
+  private Vector2D velocity;
   private double size;
+
+  // should probably have made new abstract subclass
+  // for moveables that follow certain velocity bc
+  // not all moveables will be like this but thats
+  // for another time
 
   public Moveable(Point position, double size) {
     this.position = position;
+    this.velocity = new Vector2D(0, 0);
     this.size = size;
   }
 
@@ -33,8 +40,37 @@ public abstract class Moveable {
     this.position.translate(dx, dy);
   }
 
+  public void translatePos(Vector2D positionChange) {
+    this.position.translate(positionChange.getX(), positionChange.getY());
+  }
+
   public void setPos(Point position) {
     this.position = ((Point)position.clone());
+  }
+
+  public Vector2D getVelocity() {
+    return (Vector2D)this.velocity.clone();
+  }
+
+  public void setVelocity(double dx, double dy, double length) {
+    this.velocity.setPos(dx, dy);
+    this.velocity.setLength(length);
+  }
+
+  public int getHorizontalSpeed() {
+    return (int)this.velocity.getX();
+  }
+
+  public void setHorizontalSpeed(double dx) {
+    this.velocity.setPos(dx, this.velocity.getY());
+  }
+
+  public int getVerticalSpeed() {
+    return (int)this.velocity.getY();
+  }
+
+  public void setVerticalSpeed(double dy) {
+    this.velocity.setPos(this.velocity.getX(), dy);
   }
 
   abstract void makeMove(long elapsedNanoTime);

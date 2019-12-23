@@ -169,11 +169,23 @@ public class StardubeEventListener implements KeyListener,
   public void mouseReleased(MouseEvent e) {
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
-    // if (!this.stardubePlayer.isInMenu()) {
-    //   if (e.getButton() == MouseEvent.BUTTON1) {
-    //     if (this.stardubePlayer.)
-    //   }
-    // }
+    if (!this.stardubePlayer.isInMenu()) {
+      if (e.getButton() == MouseEvent.BUTTON1) {
+        Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
+        if (selectedItem instanceof UtilityTool) {
+          this.stardubePlayer.setImmutable(true);
+          // TODO: play animation
+          // scuffed line
+          this.stardubeWorld.emplaceFutureEvent(
+              (long)(0.5*1_000_000_000),
+              new UtilityToolUsedEvent(
+                  (UtilityTool)selectedItem,
+                  ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+              )
+          );
+        }
+      }
+    }
 
   }
 

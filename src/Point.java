@@ -36,6 +36,10 @@ public class Point implements Cloneable {
     return new Point(this).translate(dx, dy);
   }
 
+  public double distanceTo(Point other) {
+    return Math.sqrt(Math.pow(other.x-this.x, 2) + Math.pow(other.y-this.y, 2));
+  }
+
   public Point round() {
     this.x = Math.round(this.x);
     this.y = Math.round(this.y);

@@ -17,7 +17,7 @@ public class HoldableDrop {
     this.maxDropQuantity = maxDropQuantity;
   }
 
-  public HoldableStack resolveDrop() {
+  public HoldableStack resolveDrop(double luck) {
     return new HoldableStack(this.holdableToDrop, 
                              (int)((Math.random()  // TODO: luck
                                     * (this.maxDropQuantity-this.minDropQuantity+1))
