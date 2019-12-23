@@ -22,10 +22,11 @@ public class HoldableFactory {
     String[] nextLine;
     UtilityTool tool;
     try {
-      input = new BufferedReader(new FileReader("/assets/gamedata/UtilityTools"));
-      for (int i = 0; i < Integer.parseInt(input.readLine()); ++i) {
+      input = new BufferedReader(new FileReader("assets/gamedata/UtilityTools"));
+      int n = Integer.parseInt(input.readLine());
+      for (int i = 0; i < n; ++i) {
         nextLine = input.readLine().split("\\s+");
-        tool = new UtilityTool(nextLine[0], nextLine[2], "/assets/images/holdables/"+nextLine[1]+".png");
+        tool = new UtilityTool(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
         HoldableFactory.holdablePool.put(tool.getName(), tool);
       }
     } catch (IOException e) {

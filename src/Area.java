@@ -27,6 +27,7 @@ public abstract class Area {
     this.map = new Tile[this.height][this.width];
     this.components = new LinkedHashSet<TileComponent>();
     this.moveables = new LinkedHashSet<Moveable>();
+    this.itemsOnGround = new LinkedList<HoldableStackEntity>();
   }
 
   public static Area constructArea(String category,

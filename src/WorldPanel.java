@@ -61,7 +61,8 @@ public class WorldPanel extends JPanel {
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-    Point playerPos = this.worldToDisplay.getPlayer().getPos();
+    Player worldPlayer = this.worldToDisplay.getPlayer();
+    Point playerPos = worldPlayer.getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
 
     int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2);
@@ -93,7 +94,7 @@ public class WorldPanel extends JPanel {
     int screenTileX = 0;
     int screenTileY = 0;
 
-    Point selectedTile = this.worldToDisplay.getPlayer().getSelectedTile();
+    Point selectedTile = worldPlayer.getSelectedTile();
     // System.out.println(selectedTile);
 
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
@@ -147,8 +148,13 @@ public class WorldPanel extends JPanel {
       g.fillRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
                  hotbarY+WorldPanel.HOTBAR_CELLGAP/2,
                  WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+      if (worldPlayer.getInventory()[i] != null) {
+        g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
+                    hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
+                    hotbarY+WorldPanel.HOTBAR_CELLGAP/2, null);
+      }
       // outlines selected item
-      if (i == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+      if (i == worldPlayer.getSelectedItemIdx()){
         g.setColor(Color.RED);
         g.drawRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
                    hotbarY+WorldPanel.HOTBAR_CELLGAP/2, WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
@@ -166,10 +172,10 @@ public class WorldPanel extends JPanel {
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
 
     // inventory menu stuff
-    if ( worldToDisplay.getPlayer().isInMenu() ) {
-      g.setColor(new Color(0,0,0,100));
+    if (worldPlayer.isInMenu()) {
+      g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
-      g.setColor(new Color(150,75,0));
+      g.setColor(new Color(150, 75, 0));
       g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
       // *to-do: inv tab buttons (y: this.menuY)
       // inventory display (y:this.menuY+1~3(cellgap+cellsize))

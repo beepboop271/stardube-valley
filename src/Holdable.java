@@ -28,4 +28,8 @@ public abstract class Holdable {
   public String getName() {
     return this.name;
   }
+
+  public BufferedImage getImage() {
+    return this.image;
+  }
 }
