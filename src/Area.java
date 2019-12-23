@@ -141,7 +141,7 @@ public abstract class Area {
 
   public void setMapAt(Tile t) {
     this.map[t.getY()][t.getX()] = t;
-    if (t instanceof GroundTile) { // to do: change to GrassTile
+    if (t instanceof GrassTile) {
       this.grassTiles.add(t);
     }
   }
