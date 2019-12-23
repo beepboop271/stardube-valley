@@ -18,17 +18,21 @@ import javax.swing.JPanel;
 public class WorldPanel extends JPanel {
   public static final int HOTBAR_CELLSIZE = 64;
   public static final int HOTBAR_CELLGAP = 4;
-
+  
   private final Font timeFont;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
-  
+  private int menuX, menuY, menuW, menuH;
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
     this.playerScreenPos = new Point(0, 0);
+    this.menuW = 13*WorldPanel.HOTBAR_CELLGAP+12*WorldPanel.HOTBAR_CELLSIZE;
+    this.menuH = 8*(WorldPanel.HOTBAR_CELLGAP+WorldPanel.HOTBAR_CELLSIZE);
+    this.menuX = (width-this.menuW)/2;
+    this.menuY = (height-this.menuH)/2;
 
     StardubeEventListener listener = new StardubeEventListener(worldToDisplay, this);
     this.addKeyListener(listener);
@@ -56,8 +60,6 @@ public class WorldPanel extends JPanel {
   public void paintComponent(Graphics g) {
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-    // rip
 
     Point playerPos = this.worldToDisplay.getPlayer().getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
@@ -162,6 +164,33 @@ public class WorldPanel extends JPanel {
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
+
+    // inventory menu stuff
+    if ( worldToDisplay.getPlayer().isInMenu() ) {
+      g.setColor(new Color(0,0,0,100));
+      g.fillRect(0, 0, this.getWidth(), this.getHeight());
+      g.setColor(new Color(150,75,0));
+      g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+      // *to-do: inv tab buttons (y: this.menuY)
+      // inventory display (y:this.menuY+1~3(cellgap+cellsize))
+      for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 12; j++) {
+          g.setColor(Color.BLACK);
+          g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                     this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                    WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+          // outlines selected item
+          if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+            g.setColor(Color.RED);
+            g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                       this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                       WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+          }
+        }
+      }
+      // *to-do: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+    }
+
   }
   
   public int getHotbarX() {
@@ -170,6 +199,22 @@ public class WorldPanel extends JPanel {
 
   public int getHotbarY() {
     return this.hotbarY;
+  }
+
+  public int getMenuX() {
+    return this.menuX;
+  }
+
+  public int getMenuY() {
+    return this.menuY;
+  }
+
+  public int getMenuW() {
+    return this.menuW;
+  }
+
+  public int getMenuH() {
+    return this.menuH;
   }
 
   public Point getPlayerScreenPos() {

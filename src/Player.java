@@ -14,19 +14,28 @@ public class Player extends Moveable {
   private HoldableStack[] inventory;
   private Point selectedTile;
   private int selectedItemIdx;
+  private boolean isImmutable;
 
   public Player(Point position) {
     super(position, Player.size);
     this.velocity = new Vector2D(0, 0);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
+    this.isImmutable = false;
   }
-
+  
   public void makeMove(long elapsedNanoTime) {
+    if (this.isImmutable()) {
+      return;
+    }
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = (Vector2D)this.velocity.clone();
     positionChange.setLength(Player.maxSpeed*elapsedSeconds);
     this.translatePos(positionChange.getX(), positionChange.getY());
+  }
+  
+  public HoldableStack[] getInventory() {
+    return this.inventory;
   }
 
   public Point getSelectedTile() {
@@ -77,14 +86,35 @@ public class Player extends Moveable {
   }
 
   public void incrementSelectedItemIdx() {
+    if (this.isImmutable()) {
+      return;
+    }
     this.selectedItemIdx = (this.selectedItemIdx+1)%12;
   }
 
   public void decrementSelectedItemIdx() {
+    if (this.isImmutable()) {
+      return;
+    }
     this.selectedItemIdx = Math.floorMod(this.selectedItemIdx-1, 12);
   }
 
   public void setSelectedItemIdx( int selectedItemIdx ) {
+    if (this.isImmutable()) {
+      return;
+    }
     this.selectedItemIdx = selectedItemIdx;
+  }
+
+  public boolean isImmutable() {
+    return this.isImmutable;
+  }
+
+  public void toggleIsImmutable() {
+    this.isImmutable = !this.isImmutable;
+  }
+  
+  public void setIsImmutable( boolean isImmutable ){
+    this.isImmutable = isImmutable;
   }
 }

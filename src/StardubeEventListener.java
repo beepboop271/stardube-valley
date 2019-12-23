@@ -115,6 +115,54 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void mousePressed(MouseEvent e) {
+    this.mousePos.x = e.getX();
+    this.mousePos.y = e.getY();
+    if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
+      // hotbar item selection
+      if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
+           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+           (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
+           (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE) ) {
+        int selectedItemIdx = Math.min((int)(Math.floor((this.mousePos.x-this.worldPanel.getHotbarX())/
+                              (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
+        this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+        return;
+      }
+
+      // *to-do
+      // - if is entrance, move area, return
+      // - if has collectable, get items from collectable, return
+
+      if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
+        HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
+        if (selectedHoldableStack.getContainedHoldable() != null){
+          // casting
+          if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod){
+            // System.out.println("fishing rod!");
+            // Tile castedTile = something something idk;
+            // if tileisfishable {}
+          } // else {System.out.println("not rod!");}
+        }
+      }
+    } else {
+      // menu tab buttons
+      if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
+           (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+           (this.mousePos.y >= this.worldPanel.getMenuY()) &&
+           (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
+        // *to do: process button (update selected button id or sth);
+      // full inventory
+      } else if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
+                  (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+                  (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
+                  (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
+        int selectedItemIdx = Math.min((int)(Math.floor(this.mousePos.x-this.worldPanel.getMenuX())/
+                                      (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
+                              + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
+                                           (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
+        this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+      }
+    }
   }
 
   @Override
@@ -127,15 +175,6 @@ public class StardubeEventListener implements KeyListener,
     //   }
     // }
 
-    if (!this.stardubePlayer.isInMenu()) {
-      // hotbar item selection
-      if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-           (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-           (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE) ) {
-        this.updateSelectedItemIdx();
-      }
-    }
   }
 
   @Override
@@ -151,6 +190,7 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void mouseDragged(MouseEvent e) {
+    //System.out.println("mouse drag detected");
   }
 
   @Override
@@ -182,13 +222,13 @@ public class StardubeEventListener implements KeyListener,
                                   .round());
 
   }
-  private void updateSelectedItemIdx() {
-    int selectedItemIdx = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)))
-                                              /(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
-    if (selectedItemIdx>=12) {
-      selectedItemIdx = 11;
-    }
-    this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
-    //System.out.println("selected item id: "+selectedItemIdx);
-  }
+  // private void updateSelectedItemIdx() {
+  //   int selectedItemIdx = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)))
+  //                                             /(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
+  //   if (selectedItemIdx>=12) {
+  //     selectedItemIdx = 11;
+  //   }
+  //   this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+  //   //System.out.println("selected item id: "+selectedItemIdx);
+  // }
 }

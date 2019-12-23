@@ -57,11 +57,11 @@ public class World {
     long currentUpdateTime = System.nanoTime();
 
     // pygame_irl
-    // EventObject event;
-    // while (!this.eventQueue.isEmpty()
-    //        && (this.eventQueue.peek().getTime() <= this.inGameTime)) {
-    //   event = this.eventQueue.poll().getEvent();
-    // }
+    EventObject event;
+    while (!this.eventQueue.isEmpty()
+            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
+       event = this.eventQueue.poll().getEvent();
+    }
 
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
