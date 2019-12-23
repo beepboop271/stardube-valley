@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
  * [Holdable]
  * 2019-12-20
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Joseph Wang
  */
 public abstract class Holdable {
   private String name;
@@ -27,6 +27,10 @@ public abstract class Holdable {
 
   public String getName() {
     return this.name;
+  }
+
+  public String getDescription() {
+    return this.description;
   }
 
   public BufferedImage getImage() {

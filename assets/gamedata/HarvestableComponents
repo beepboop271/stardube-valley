@@ -3,7 +3,7 @@ CopperOre  /ores/CopperOre  Pickaxe 1 3 CopperItem  1 8 StoneItem -2 1 CoalItem 
 IronOre    /ores/IronOre    Pickaxe 3 3 IronItem    1 8 StoneItem -1 2 CoalItem -2 1
 GoldOre    /ores/GoldOre    Pickaxe 6 3 GoldItem    1 8 StoneItem  0 3 CoalItem -2 2
 EmeraldOre /ores/EmeraldOre Pickaxe 3 3 EmeraldItem 1 1 StoneItem -1 2 CoalItem -7 1
-Rock       //Rock           Pickaxe 1 2 StoneItem   1 4 CoalItem  -7 1
+Rock       /ores/Rock       Pickaxe 1 2 StoneItem   1 4 CoalItem  -7 1
 HardRock   //HardRock       Pickaxe 3 2 StoneItem   3 7 CoalItem  -2 2
 RockDebris //RockDebris     Pickaxe 1 2 StoneItem   1 2 CoalItem  -7 1
 WoodDebris //WoodDebris     Axe     1 1 WoodItem    1 2

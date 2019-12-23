@@ -13,7 +13,7 @@ import java.util.LinkedList;
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @author Kevin Qiao, Paula Yuan, Joseph Wang
  */
 public class World {
   public static final int NORTH = 0;
