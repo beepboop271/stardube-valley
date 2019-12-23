@@ -2,6 +2,7 @@ public class Main {
   public static void main(String[] args) {
     // sketchy
     GroundTile.setGroundTileImage();
+    GrassTile.setGrassTileImage();
     TileComponentFactory.initializeComponents();
     HoldableFactory.initializeItems();
 

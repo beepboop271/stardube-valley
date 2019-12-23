@@ -216,6 +216,9 @@ public class World {
           case '.':
             a.setMapAt(new GroundTile(x, y));
             break;
+          case 'x':
+            a.setMapAt(new GrassTile(x, y));
+            break;
         }
       }
     }
