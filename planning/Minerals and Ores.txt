@@ -1,9 +1,9 @@
 Minerals:
 - emeralds (d/d)
-- rubies (n/n)
-- diamonds (d/n)
+- rubies (d/d)
+- diamonds (d/d)
 - quartz (d)
-- amethyst (d/n)
+- amethyst (d/d)
 
 Ores:
 - copper (d/d)
