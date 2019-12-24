@@ -1,4 +1,7 @@
-Parsnip      /crops/Parsnip       5       4
-Watermelon   /crops/Watermelon    7       10
+3
+Parsnip      /crops/Parsnip       5       4          0
+Watermelon   /crops/Watermelon    7       10         0
+Corn         /crops/Corn          7       13         4
 
-name        path                  stages  daystogrow
+name        path                  stages  daystogrow regrow
+                                                    (0 means no regrow)

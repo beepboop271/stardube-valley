@@ -17,7 +17,6 @@ public abstract class Area {
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
-  ArrayList<Tile> grassTiles = new ArrayList<>();
   
   public Area(String name,
               int width, int height) {
@@ -141,9 +140,6 @@ public abstract class Area {
 
   public void setMapAt(Tile t) {
     this.map[t.getY()][t.getX()] = t;
-    if (t instanceof GrassTile) {
-      this.grassTiles.add(t);
-    }
   }
 
   public abstract void doDayEndActions();

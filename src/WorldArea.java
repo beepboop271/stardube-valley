@@ -34,4 +34,13 @@ public class WorldArea extends Area {
   public void doDayEndActions() {
     spawnForageables();
   }
+
+  @Override
+  public void setMapAt(Tile t) {
+    this.map[t.getY()][t.getX()] = t;
+    if (t instanceof GrassTile) {
+      this.grassTiles.add(t);
+    }
+  }
+
 }
