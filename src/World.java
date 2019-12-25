@@ -59,8 +59,10 @@ public class World {
     int exitDirection;
 
     long currentUpdateTime = System.nanoTime();
-
     this.processEvents();
+
+    this.player.updateCurrentFishingGame();
+
 
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;

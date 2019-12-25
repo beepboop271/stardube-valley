@@ -15,6 +15,7 @@ public class Player extends Moveable {
   private Point selectedTile;
   private int selectedItemIdx;
   private boolean isImmutable;
+  private FishingGame currentFishingGame;
 
   public Player(Point position) {
     super(position, Player.SIZE);
@@ -57,6 +58,36 @@ public class Player extends Moveable {
         return;
       }
     }
+  }
+  public void updateCurrentFishingGame() {
+    if( this.currentFishingGame == null ){
+      return;
+    }
+
+    this.currentFishingGame.update();
+    //System.out.println("game updated by player");
+    int fishingGameStatus = this.currentFishingGame.getCurrentStatus();
+    if(fishingGameStatus == FishingGame.WIN_STATUS) {
+      currentFishingGame.returnFishingProduct();
+      System.out.println("the player gets a prouduct");
+      this.currentFishingGame = null;
+      this.isImmutable = false;
+    } else if (fishingGameStatus == FishingGame.LOSE_STATUS) {
+      System.out.println("game lost, nothing is gained"); 
+      this.currentFishingGame = null;
+      this.isImmutable = false;
+    } else {
+      this.isImmutable = true;
+      //System.out.println("in game...");
+    }
+  }
+
+  public void setCurrentFishingGame( FishingGame fishingGame ){
+    this.currentFishingGame = fishingGame;
+  }
+
+  public FishingGame getCurrentFishingGame(){
+    return this.currentFishingGame;
   }
 
   public Point getSelectedTile() {

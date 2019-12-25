@@ -177,7 +177,7 @@ public class WorldPanel extends JPanel {
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       g.setColor(new Color(150, 75, 0));
       g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-      // *to-do: inv tab buttons (y: this.menuY)
+      // TODO: inv tab buttons (y: this.menuY)
       // inventory display (y:this.menuY+1~3(cellgap+cellsize))
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 12; j++) {
@@ -194,7 +194,34 @@ public class WorldPanel extends JPanel {
           }
         }
       }
-      // *to-do: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+      // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+    }
+    
+    // if player is in fishing game, draw mini game stuff
+    // TODO: make the display postion beside the player
+    if (worldPlayer.getCurrentFishingGame()!=null) {
+      // draw background
+      g.setColor(new Color(255,255,255, 100));
+      g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
+      
+      double subAreaScale = (this.getHeight()/2)/FishingGame.MAX_HEIGHT;
+
+      // draw player fishing area
+      FishingGameBar playerFishingArea = worldPlayer.getCurrentFishingGame().getPlayerBar();
+      g.setColor(Color.BLUE);
+      g.fillRect(0, (int)(playerFishingArea.getY()*subAreaScale),
+                 this.getWidth()/40, (int)(playerFishingArea.getHeight()*subAreaScale));
+
+      // draw target fishing area
+      FishingGameBar targetFishingArea = worldPlayer.getCurrentFishingGame().getTargetBar();
+      g.setColor(Color.GREEN);
+      g.fillRect(0, (int)(targetFishingArea.getY()*subAreaScale),
+                 this.getWidth()/40, (int)(targetFishingArea.getHeight()*subAreaScale));
+
+      // draw progress bar
+      g.setColor(Color.RED);
+      g.fillRect(this.getWidth()/40, this.getHeight()/2-this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100,
+                 this.getWidth()/40, this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100);
     }
 
   }
