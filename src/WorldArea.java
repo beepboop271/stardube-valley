@@ -3,8 +3,8 @@ import java.util.Random;
 import java.util.ArrayList;
 
 /**
- * [WorldArea] 2019-12-17
- * 
+ * [WorldArea] 
+ * 2019-12-17
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan
  */
@@ -41,6 +41,10 @@ public class WorldArea extends Area {
   @Override
   public void setMapAt(Tile t) {
     super.setMapAt(t);
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
     if (t instanceof GrassTile) {
       this.grassTiles.add(t);
     }
