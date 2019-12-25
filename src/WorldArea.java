@@ -41,10 +41,6 @@ public class WorldArea extends Area {
   @Override
   public void setMapAt(Tile t) {
     super.setMapAt(t);
-<<<<<<< Updated upstream
-=======
-    
->>>>>>> Stashed changes
     if (t instanceof GrassTile) {
       this.grassTiles.add(t);
     }

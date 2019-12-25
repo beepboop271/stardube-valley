@@ -172,7 +172,9 @@ public class StardubeEventListener implements KeyListener,
                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
                               + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
                                            (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
-        this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+        if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
+          this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+        }
       }
     }
   }
@@ -181,29 +183,33 @@ public class StardubeEventListener implements KeyListener,
   public void mouseReleased(MouseEvent e) {
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
-    
-    if (!this.stardubePlayer.isInMenu()) {
+
+    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+      fishingGame.setMouseDown(false);
+    } else if (!this.stardubePlayer.isInMenu()) {
       if (e.getButton() == MouseEvent.BUTTON1) {
-        Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
-        if (selectedItem instanceof UtilityTool) {
-          this.stardubePlayer.setImmutable(true);
-          // TODO: play animation
-          // scuffed line
-          this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
-              new UtilityToolUsedEvent(
-                  (UtilityTool)selectedItem,
-                  ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
-              )
-          );
+        if (this.stardubePlayer.getSelectedItem() != null) {
+          if(this.stardubePlayer.getSelectedItem().getContainedHoldable() != null) {
+            Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
+            if (selectedItem instanceof UtilityTool) {
+              this.stardubePlayer.setImmutable(true);
+              // TODO: play animation
+              // scuffed line
+              this.stardubeWorld.emplaceFutureEvent(
+                  (long)(0.5*1_000_000_000),
+                  new UtilityToolUsedEvent(
+                      (UtilityTool)selectedItem,
+                      ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                  )
+              );
+            }
+          }
         }
       }
     }
     
-    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
-      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-      fishingGame.setMouseDown(false);
-    }
+    
 
   }
 

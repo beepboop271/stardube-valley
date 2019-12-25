@@ -12,7 +12,7 @@ class FishingGame {
   public static final int INGAME_STATUS = 0;
   public static final int WIN_STATUS = 1;
   public static final int LOSE_STATUS = 2;
-  public static final int MAX_HEIGHT = 100;
+  public static final int MAX_HEIGHT = 200;
 
   private int initialProgress;
   private int maxProgress;
@@ -55,9 +55,11 @@ class FishingGame {
     
     // move the player bar according to mouse input
     if (this.mouseDown == false) {
-      this.playerBar.setY(Math.min(this.playerBar.getY()+1, FishingGame.MAX_HEIGHT));
+      // release: go down
+      this.playerBar.setY(Math.min(this.playerBar.getY()+1, FishingGame.MAX_HEIGHT-this.playerBar.getHeight()));
       this.mouseHoldNanoTime = 0;
     } else {
+      // hold: go up
       this.playerBar.setY(Math.max(this.playerBar.getY()-1, 0));
       this.mouseHoldNanoTime = System.nanoTime()-this.lastPressNanoTime;
     }
@@ -65,7 +67,7 @@ class FishingGame {
     // move the target bar randomly
     int moveChoice = random.nextInt(2); // 0: up; 1: down
     if (moveChoice == 1) {
-      this.targetBar.setY(Math.min(this.targetBar.getY()+1, FishingGame.MAX_HEIGHT));
+      this.targetBar.setY(Math.min(this.targetBar.getY()+1, FishingGame.MAX_HEIGHT-this.targetBar.getHeight()));
     } else {
       this.targetBar.setY(Math.max(this.targetBar.getY()-1, 0));
     }
