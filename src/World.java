@@ -123,10 +123,13 @@ public class World {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
-        TileComponent componentToHarvest = this.playerArea.getMapAt(toolEvent.getLocationUsed()).getContent();
+        Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        TileComponent componentToHarvest = selectedTile.getContent();
+
         if (componentToHarvest instanceof Harvestable
               && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
+                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(
+                        toolEvent.getHoldableUsed().getName()))) {
           // TODO: play breaking animation?
           this.playerArea.removeComponent(componentToHarvest);
 
@@ -139,6 +142,17 @@ public class World {
                 )
             );
           }
+        } else if (selectedTile instanceof GroundTile) {
+          if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+            ((GroundTile)selectedTile).setTilledStatus(true);
+          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+            ((GroundTile)selectedTile).setTilledStatus(false);
+          } else if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
+                      (((GroundTile)selectedTile).getTilledStatus() == true)) {
+            ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+          }
+
+          ((GroundTile)selectedTile).determineImage(this.inGameDay);
         }
       }
     }
