@@ -3,7 +3,7 @@
  * [Player]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Candice Zhang
+ * @author Kevin Qiao, Candice Zhang, Joseph Wang
  */
 public class Player extends Moveable {
   private static final double SIZE = 0.35;
@@ -23,6 +23,8 @@ public class Player extends Moveable {
     this.isImmutable = false;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
+    this.inventory[1] = new HoldableStack("Hoe", 1);
+    this.inventory[2] = new HoldableStack("WateringCan", 1);
   }
   
   @Override
