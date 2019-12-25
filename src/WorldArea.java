@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * [WorldArea] 2019-12-17
@@ -12,6 +13,7 @@ public class WorldArea extends Area {
 
   HashSet<Tile> forageables = new HashSet<>();
   Random random = new Random();
+  ArrayList<Tile> grassTiles = new ArrayList<>();
 
   public WorldArea(String name,
                    int width, int height) {
@@ -26,6 +28,7 @@ public class WorldArea extends Area {
       Tile spawnTile = grassTiles.get(random.nextInt(grassTiles.size()));
       if (spawnTile.getContent() == null) {
         spawnTile.setContent(forageable);
+        forageables.add(spawnTile);
       }
     }
   }
