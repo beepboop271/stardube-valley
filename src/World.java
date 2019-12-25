@@ -21,7 +21,7 @@ public class World {
   public static final int SOUTH = 2;
   public static final int WEST = 3;
 
-  private static final int DAYS_PER_SEASON = 30;
+  private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
   private PriorityBlockingQueue<TimedEvent> eventQueue;
