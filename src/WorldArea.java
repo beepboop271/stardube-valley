@@ -40,7 +40,7 @@ public class WorldArea extends Area {
 
   @Override
   public void setMapAt(Tile t) {
-    this.map[t.getY()][t.getX()] = t;
+    super.setMapAt(t);
     if (t instanceof GrassTile) {
       this.grassTiles.add(t);
     }
