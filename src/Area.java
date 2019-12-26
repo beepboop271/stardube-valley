@@ -142,5 +142,6 @@ public abstract class Area {
     this.map[t.getY()][t.getX()] = t;
   }
 
-  public abstract void doDayEndActions();
+  public void doDayEndActions() {
+  }
 }

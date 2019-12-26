@@ -11,18 +11,14 @@ import javax.imageio.ImageIO;
  * @author Kevin Qiao, Paula Yuan
  */
 public abstract class TileComponent {
-  private String name;
-  private BufferedImage image;
-  private HoldableDrop[] products;
+  private final String name;
+  private final BufferedImage image;
+  private final HoldableDrop[] products;
 
-  public TileComponent(String name, String imagePath, int numProducts) {
+  public TileComponent(String name, String imagePath, int numProducts) throws IOException {
     this.name = name;
     this.products = new HoldableDrop[numProducts];
-    try {
-      this.image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    this.image = ImageIO.read(new File(imagePath));
   }
 
   public String getName() {

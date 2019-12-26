@@ -187,7 +187,7 @@ public class StardubeEventListener implements KeyListener,
     if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(false);
-    } else if (!this.stardubePlayer.isInMenu()) {
+    } else if (!(this.stardubePlayer.isInMenu() || this.stardubePlayer.isImmutable())) {
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();

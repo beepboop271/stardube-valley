@@ -1,6 +1,8 @@
+import java.io.IOException;
+
 /**
- * HarvestableComponent
- * 2019-12-21
+ * HarvestableComponent 2019-12-21
+ * 
  * @version 0.2
  * @author Kevin Qiao, Paula Yuan
  */
@@ -10,7 +12,7 @@ public class HarvestableComponent extends TileComponent implements Harvestable {
 
   public HarvestableComponent(String name, String imagePath,
                               String requiredTool, int hardness,
-                              int numProducts) {
+                              int numProducts) throws IOException {
     super(name, imagePath, numProducts);
     this.requiredTool = requiredTool;
     this.hardness = hardness;

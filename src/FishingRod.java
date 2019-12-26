@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * [FishingRod]
  * 2019-12-22
@@ -5,7 +7,7 @@
  * @author Candice Zhang
  */
 public class FishingRod extends Tool {
-  FishingRod(){
+  public FishingRod() throws IOException {
     super("Fishing Rod", "best tool:)", null);
   }
 

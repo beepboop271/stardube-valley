@@ -163,8 +163,8 @@ public class World {
     this.eventQueue.offer(new TimedEvent(time, event));
   }
 
-  public void emplaceFutureEvent(long timeIntoFuture, EventObject event) {
-    this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+timeIntoFuture, event));
+  public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
+    this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
   }
 
   public void loadAreas() throws IOException {
