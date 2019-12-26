@@ -105,6 +105,14 @@ public class StardubeEventListener implements KeyListener,
           this.stardubePlayer.setHorizontalSpeed(0);
         }
         break;
+      
+      // p r e s s  F  t o  F I S H
+      // (temp thing, dont beat me too hard lol - candice)
+      case KeyEvent.VK_F:
+        if (this.stardubePlayer.getCurrentFishingGame() == null) {
+          this.stardubePlayer.setCurrentFishingGame( new FishingGame() );
+        }
+        break;
     }
   }
 
@@ -117,8 +125,12 @@ public class StardubeEventListener implements KeyListener,
   public void mousePressed(MouseEvent e) {
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
-    if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
-      // hotbar item selection
+    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+      fishingGame.setMouseDown(true);
+      fishingGame.updateLastPressNanoTime();
+    } else if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
+      // if the mousepress is within the hotbar, update item selection
       if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
            (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
            (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
@@ -145,13 +157,13 @@ public class StardubeEventListener implements KeyListener,
         }
       }
     } else {
-      // menu tab buttons
+      // if the mousepress is within the menu tab buttons, change the inventory menu display mode
       if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
            (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
            (this.mousePos.y >= this.worldPanel.getMenuY()) &&
            (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
         // *to do: process button (update selected button id or sth);
-      // full inventory
+      // if the mousepress is within the full inventory area, change the selected item index according to the mouse position
       } else if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
                   (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
                   (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
@@ -160,7 +172,9 @@ public class StardubeEventListener implements KeyListener,
                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
                               + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
                                            (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
-        this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+        if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
+          this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
+        }
       }
     }
   }
@@ -169,23 +183,31 @@ public class StardubeEventListener implements KeyListener,
   public void mouseReleased(MouseEvent e) {
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
-    if (!this.stardubePlayer.isInMenu()) {
+
+    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+      fishingGame.setMouseDown(false);
+    } else if (!this.stardubePlayer.isInMenu()) {
       if (e.getButton() == MouseEvent.BUTTON1) {
-        Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
-        if (selectedItem instanceof UtilityTool) {
-          this.stardubePlayer.setImmutable(true);
-          // TODO: play animation
-          // scuffed line
-          this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
-              new UtilityToolUsedEvent(
-                  (UtilityTool)selectedItem,
-                  ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
-              )
-          );
+        if (this.stardubePlayer.getSelectedItem() != null) {
+          Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
+          if (selectedItem instanceof UtilityTool) {
+            this.stardubePlayer.setImmutable(true);
+            // TODO: play animation
+            // scuffed line
+            this.stardubeWorld.emplaceFutureEvent(
+                (long)(0.5*1_000_000_000),
+                new UtilityToolUsedEvent(
+                    (UtilityTool)selectedItem,
+                    ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                )
+            );
+          }
         }
       }
     }
+    
+    
 
   }
 

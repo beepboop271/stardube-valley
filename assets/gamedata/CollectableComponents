@@ -9,8 +9,8 @@ WinterRoot /forageables/WinterRoot WinterRootItem y
 Javacake   /forageables/Javacake   JavacakeItem   y
 Ruby       /ores/Ruby              RubyItem       n
 Diamond    /ores/Diamond           DiamondItem    n
-Quartz     /ores/Quartz            Quartz         n
 Amethyst   /ores/Amethyst          AmethystItem   n
+Quartz     /ores/Quartz            QuartzItem     n
 
 name      img                      item quantity=1 whether or not it's forageable
           /assets/images/+         

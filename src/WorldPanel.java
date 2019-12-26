@@ -148,10 +148,15 @@ public class WorldPanel extends JPanel {
       g.fillRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
                  hotbarY+WorldPanel.HOTBAR_CELLGAP/2,
                  WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+      // draw inventory item correspondingly
       if (worldPlayer.getInventory()[i] != null) {
-        g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
-                    hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
-                    hotbarY+WorldPanel.HOTBAR_CELLGAP/2, null);
+        if (worldPlayer.getInventory()[i].getContainedHoldable() != null) {
+          if (worldPlayer.getInventory()[i].getContainedHoldable().getImage()!=null) {
+            g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
+                      hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
+                      hotbarY+WorldPanel.HOTBAR_CELLGAP/2, null);
+          }
+        }
       }
       // outlines selected item
       if (i == worldPlayer.getSelectedItemIdx()){
@@ -177,7 +182,7 @@ public class WorldPanel extends JPanel {
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       g.setColor(new Color(150, 75, 0));
       g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-      // *to-do: inv tab buttons (y: this.menuY)
+      // TODO: inv tab buttons (y: this.menuY)
       // inventory display (y:this.menuY+1~3(cellgap+cellsize))
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 12; j++) {
@@ -185,16 +190,57 @@ public class WorldPanel extends JPanel {
           g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
                      this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
                     WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-          // outlines selected item
+          
+          // outline selected item
           if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
             g.setColor(Color.RED);
             g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
                        this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
           }
+
+          // draw inventory item correspondingly
+          if ((i*12+j)<worldPlayer.getInventory().length){
+            if (worldPlayer.getInventory()[i*12+j] != null) {
+              if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
+                if (worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage()!=null) {
+                  g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
+                              this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                              this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
+                }
+              }
+            }
+          }
         }
       }
-      // *to-do: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+      // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+    }
+    
+    // if player is in fishing game, draw mini game stuff
+    // TODO: make the display postion beside the player
+    if (worldPlayer.getCurrentFishingGame()!=null) {
+      // draw background
+      g.setColor(new Color(255,255,255, 100));
+      g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
+      
+      double BarScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
+
+      // draw player fishing bar
+      FishingGameBar playerBar = worldPlayer.getCurrentFishingGame().getPlayerBar();
+      g.setColor(Color.BLUE);
+      g.fillRect(0, (int)(playerBar.getY()*BarScale),
+                 this.getWidth()/40, (int)(playerBar.getHeight()*BarScale));
+
+      // draw target fishing bar
+      FishingGameBar targeBar = worldPlayer.getCurrentFishingGame().getTargetBar();
+      g.setColor(Color.GREEN);
+      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*BarScale),
+                 this.getWidth()/80, (int)(targeBar.getHeight()*BarScale));
+
+      // draw progress bar
+      g.setColor(Color.RED);
+      g.fillRect(this.getWidth()/40, this.getHeight()/2-this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100,
+                 this.getWidth()/40, this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100);
     }
 
   }
