@@ -110,7 +110,7 @@ public class StardubeEventListener implements KeyListener,
       // (temp thing, dont beat me too hard lol - candice)
       case KeyEvent.VK_F:
         if (this.stardubePlayer.getCurrentFishingGame() == null) {
-          this.stardubePlayer.setCurrentFishingGame( new FishingGame() );
+          this.stardubePlayer.setCurrentFishingGame(new FishingGame());
         }
         break;
     }
@@ -132,10 +132,10 @@ public class StardubeEventListener implements KeyListener,
       fishingGame.updateLastPressNanoTime();
     } else if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
       // if the mousepress is within the hotbar, update item selection
-      if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-           (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-           (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE) ) {
+      if ((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
+          (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+          (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
+          (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)) {
         int selectedItemIdx = Math.min((int)(Math.floor((this.mousePos.x-this.worldPanel.getHotbarX())/
                               (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
         this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
@@ -166,16 +166,16 @@ public class StardubeEventListener implements KeyListener,
       }
     } else {
       // if the mousepress is within the menu tab buttons, change the inventory menu display mode
-      if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
-           (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-           (this.mousePos.y >= this.worldPanel.getMenuY()) &&
-           (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
-        // *to do: process button (update selected button id or sth);
+      if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
+          (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+          (this.mousePos.y >= this.worldPanel.getMenuY()) &&
+          (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
+        // *TODO: process the button (update selected button id or sth);
       // if the mousepress is within the full inventory area, change the selected item index according to the mouse position
-      } else if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
-                  (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-                  (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
-                  (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
+      } else if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
+                 (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+                 (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
+                 (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
         int selectedItemIdx = Math.min((int)(Math.floor(this.mousePos.x-this.worldPanel.getMenuX())/
                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
                               + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/

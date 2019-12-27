@@ -12,7 +12,7 @@ public class FishingRod extends Tool {
   }
 
   @Override
-  public Point[] getUseLocation(Point selectedTile) {
+  public Point[] getUseLocation(Point tileUsed) {
     return null;
   }
 }
