@@ -5,10 +5,10 @@ from PIL import Image
 image_folder = os.getcwd()+"\\"
 
 # demo how to use glob for finding files
-#print glob.glob(image_folder+"crops\\*.png")
-#print glob.glob(image_folder+"forageables\\*.png")
-#print glob.glob(image_folder+"ores\\*.png")
-#print glob.glob(image_folder+"ores\\*Item.png")
+# print glob.glob(image_folder+"crops\\*.png")
+# print glob.glob(image_folder+"forageables\\*.png")
+# print glob.glob(image_folder+"ores\\*.png")
+# print glob.glob(image_folder+"ores\\*Item.png")
 
 image_paths_to_resize = glob.glob(image_folder+"crops\\*Item.png")
 for path in image_paths_to_resize:

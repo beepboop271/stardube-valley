@@ -10,6 +10,7 @@ import java.util.HashMap;
  * @author Kevin Qiao
  */
 public class HoldableFactory {
+  private static boolean isInitialized = false;
   private static HashMap<String, Holdable> holdablePool;
 
   private HoldableFactory(){
@@ -17,6 +18,11 @@ public class HoldableFactory {
   }
 
   public static void initializeItems() {
+    if (HoldableFactory.isInitialized) {
+      return;
+    }
+    HoldableFactory.isInitialized = true;
+
     HoldableFactory.holdablePool = new HashMap<String, Holdable>();
     BufferedReader input;
     String[] nextLine;
@@ -35,6 +41,9 @@ public class HoldableFactory {
   }
 
   public static Holdable getHoldable(String holdable) {
+    if (!HoldableFactory.isInitialized) {
+      throw new RuntimeException("HoldableFactory not initialized");
+    }
     return (Holdable)HoldableFactory.holdablePool.get(holdable);
   }
 }

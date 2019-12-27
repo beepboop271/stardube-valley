@@ -59,7 +59,7 @@ public class TileComponentFactory {
         componentToAdd = new CollectableComponent(nextLine[0],
                                                   "assets/images/"+nextLine[1]+".png",
                                                   1);
-        // to do: uncomment when drops added
+        // TODO: uncomment when drops added
         // componentToAdd.setProduct(0, new HoldableDrop(nextLine[2], 1, 1));
         if (nextLine[3].equals("y")) {
           forageables.add((CollectableComponent)componentToAdd);
@@ -74,7 +74,7 @@ public class TileComponentFactory {
 
   public static TileComponent getComponent(String component) {
     if (!TileComponentFactory.isInitialized) {
-      return null;
+      throw new RuntimeException("TileComponentFactory not initialized");
     }
     return TileComponentFactory.componentPool.get(component);
   }
