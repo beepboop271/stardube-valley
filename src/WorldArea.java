@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class WorldArea extends Area {
   // private TownBuilding[] houses;
 
-  HashSet<Tile> forageables = new HashSet<>();
+  HashSet<Tile> forageables = new HashSet<>(); // TODO: replace with int
   Random random = new Random();
   ArrayList<Tile> grassTiles = new ArrayList<>();
 
