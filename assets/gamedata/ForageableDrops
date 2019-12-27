@@ -1,0 +1,13 @@
+8
+TurnipItem     /forageables/TurnipItem          
+DaffodilItem   /forageables/Daffodil      
+LeekItem       /forageables/LeekItem              
+BluebellItem   /forageables/Bluebell      
+IceCreamItem   /forageables/IceCream      
+MushroomItem   /forageables/Mushroom      
+WinterRootItem /forageables/WinterRoot  
+JavacakeItem   /forageables/Javacake      
+QuartzItem     /ores/Quartz                 
+
+name          img                      
+              /assets/images/+         

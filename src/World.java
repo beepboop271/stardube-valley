@@ -140,6 +140,20 @@ public class World {
             );
           }
         }
+      } else if (event instanceof UtilityUsedEvent) {
+        //TODO: make this not just for forageables but also doors and stuff i guess
+        Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
+        if (this.playerArea instanceof WorldArea) {
+          ((WorldArea)this.playerArea).forageables.remove(currentTile);
+        }
+        //TODO: play foraging animation?
+        TileComponent currentContent = currentTile.getContent();
+        HoldableDrop[] currentProducts = currentContent.getProducts();
+        // also for some reason the above is sometimes null and i don't know why :D
+        HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
+        new HoldableStackEntity(drop, null); // TODO: change the pos
+        this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
+        currentTile.setContent(null);
       }
     }
   }

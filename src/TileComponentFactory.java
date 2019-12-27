@@ -60,7 +60,7 @@ public class TileComponentFactory {
                                                   "assets/images/"+nextLine[1]+".png",
                                                   1);
         // TODO: uncomment when drops added
-        // componentToAdd.setProduct(0, new HoldableDrop(nextLine[2], 1, 1));
+        componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLine[2]));
         if (nextLine[3].equals("y")) {
           forageables.add((CollectableComponent)componentToAdd);
         }
