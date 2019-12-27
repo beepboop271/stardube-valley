@@ -1,3 +1,4 @@
+import java.io.IOException;
 
 /**
  * [CollectableComponent]
@@ -5,9 +6,10 @@
  * @version 0.1
  * @author Kevin Qiao
  */
-public class CollectableComponent extends TileComponent {
-  public CollectableComponent(String name, String imagePath,
-                              int numProducts) {
+public class CollectableComponent extends IntrinsicTileComponent {
+  public CollectableComponent(String name,
+                              String imagePath,
+                              int numProducts) throws IOException {
     super(name, imagePath, numProducts);
   }
 }
