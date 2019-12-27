@@ -220,22 +220,22 @@ public class WorldPanel extends JPanel {
     // TODO: make the display postion beside the player
     if (worldPlayer.getCurrentFishingGame()!=null) {
       // draw background
-      g.setColor(new Color(255,255,255, 100));
+      g.setColor(new Color(255, 255, 255, 100));
       g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
       
-      double BarScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
+      double barScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
 
       // draw player fishing bar
       FishingGameBar playerBar = worldPlayer.getCurrentFishingGame().getPlayerBar();
       g.setColor(Color.BLUE);
-      g.fillRect(0, (int)(playerBar.getY()*BarScale),
-                 this.getWidth()/40, (int)(playerBar.getHeight()*BarScale));
+      g.fillRect(0, (int)(playerBar.getY()*barScale),
+                 this.getWidth()/40, (int)(playerBar.getHeight()*barScale));
 
       // draw target fishing bar
       FishingGameBar targeBar = worldPlayer.getCurrentFishingGame().getTargetBar();
       g.setColor(Color.GREEN);
-      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*BarScale),
-                 this.getWidth()/80, (int)(targeBar.getHeight()*BarScale));
+      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*barScale),
+                 this.getWidth()/80, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
       g.setColor(Color.RED);

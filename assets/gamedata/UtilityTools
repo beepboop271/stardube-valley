@@ -1,4 +1,7 @@
 1
 Pickaxe /holdables/Pickaxe asdf
+Hoe /holdables/Hoe ghjk
+WateringCan /holdables/WateringCan qwer
 
-name    description img
+name    img                description
+        /assets/images/+

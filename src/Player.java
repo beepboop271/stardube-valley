@@ -62,7 +62,7 @@ public class Player extends Moveable {
     }
   }
   public void updateCurrentFishingGame() {
-    if( this.currentFishingGame == null ){
+    if(this.currentFishingGame == null){
       return;
     }
 
@@ -84,7 +84,7 @@ public class Player extends Moveable {
     }
   }
 
-  public void setCurrentFishingGame( FishingGame fishingGame ){
+  public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
   }
 
@@ -148,7 +148,7 @@ public class Player extends Moveable {
     return this.isImmutable;
   }
   
-  public void setImmutable( boolean isImmutable ){
+  public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
   }
 

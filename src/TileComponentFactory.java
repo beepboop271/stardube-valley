@@ -42,7 +42,7 @@ public class TileComponentFactory {
                                                   nextLine[2],
                                                   Integer.parseInt(nextLine[3]),
                                                   Integer.parseInt(nextLine[4]));
-        // to do: uncomment after holdables added
+        // TODO: uncomment after holdables added
         // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
         //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
         //                                                 Integer.parseInt(nextLine[6+(j*3)]),
