@@ -143,11 +143,13 @@ public class StardubeEventListener implements KeyListener,
       }
 
       // general player interactions (AKA doors and foraging)
-      if (this.stardubePlayer.getSelectedTile() != null) {
-        this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
-              // idk what to name this lol
-              new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+      if (e.getButton() == MouseEvent.BUTTON3) {
+        if (this.stardubePlayer.getSelectedTile() != null) {
+          this.stardubeWorld.emplaceFutureEvent(
+                (long)(0.5*1_000_000_000),
+                // idk what to name this lol
+                new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+      }
     }
       // *to-do
       // - if is entrance, move area, return
@@ -215,9 +217,7 @@ public class StardubeEventListener implements KeyListener,
             ((FishingRod)selectedItem).endCasting();
           }
         }
-      } else if (e.getButton() == MouseEvent.BUTTON2) {
-        // TODO: make hands work
-      }
+      } 
     }
     
     
