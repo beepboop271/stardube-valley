@@ -52,6 +52,32 @@ public class HoldableFactory {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    // load other tool(s)
+    // fishing rod
+    try {
+      input = new BufferedReader(new FileReader("assets/gamedata/FishingRod"));
+      nextLine = input.readLine().split("\\s+");
+        FishingRod rod = new FishingRod(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
+        HoldableFactory.holdablePool.put(rod.getName(), rod);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // load consumables
+    //try {
+    //  input = new BufferedReader(new FileReader("assets/gamedata/Consumables"));
+    //  while((lineToRead = input.readLine()) != null){
+    //    if (lineToRead.length()==0){
+    //      break;
+    //    }
+    //    nextLineData = lineToRead.split("\\s+");
+    //    Consumable consumable = new Consumable(stuff);
+    //    HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+    //  }
+    //} catch (IOException e) {
+    //  e.printStackTrace();
+    //}
   }
 
   public static Holdable getHoldable(String holdable) {
