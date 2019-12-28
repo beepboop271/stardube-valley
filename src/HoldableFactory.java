@@ -3,6 +3,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import java.util.Arrays;
+
 /**
  * [HoldableFactory]
  * 2019-12-20
@@ -21,6 +23,7 @@ public class HoldableFactory {
     BufferedReader input;
     String[] nextLine;
     UtilityTool tool;
+    Seeds seed;
     try {
       input = new BufferedReader(new FileReader("assets/gamedata/UtilityTools"));
       int n = Integer.parseInt(input.readLine());
@@ -28,6 +31,15 @@ public class HoldableFactory {
         nextLine = input.readLine().split("\\s+");
         tool = new UtilityTool(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
         HoldableFactory.holdablePool.put(tool.getName(), tool);
+      }
+
+      input.close();
+      input = new BufferedReader(new FileReader("assets/gamedata/Seeds"));
+      int m = Integer.parseInt(input.readLine());
+      for (int i = 0; i < m; ++i) {
+        nextLine = input.readLine().split("\\s+");
+        seed = new Seeds(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png", nextLine[3]);
+        HoldableFactory.holdablePool.put(seed.getName(), seed);
       }
     } catch (IOException e) {
       e.printStackTrace();

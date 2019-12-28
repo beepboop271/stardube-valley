@@ -1,4 +1,3 @@
-
 /**
  * [CollectableComponent]
  * 2019-12-20
@@ -6,8 +5,8 @@
  * @author Kevin Qiao
  */
 public class CollectableComponent extends TileComponent {
-  public CollectableComponent(String name, String imagePath,
+  public CollectableComponent(String name, String imagesPath,
                               int numProducts) {
-    super(name, imagePath, numProducts);
+    super(name, imagesPath, numProducts);
   }
 }

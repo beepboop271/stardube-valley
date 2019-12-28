@@ -8,10 +8,10 @@ public class HarvestableComponent extends TileComponent implements Harvestable {
   private final String requiredTool;
   private final int hardness;
 
-  public HarvestableComponent(String name, String imagePath,
+  public HarvestableComponent(String name, String imagesPath,
                               String requiredTool, int hardness,
                               int numProducts) {
-    super(name, imagePath, numProducts);
+    super(name, imagesPath, numProducts);
     this.requiredTool = requiredTool;
     this.hardness = hardness;
   }

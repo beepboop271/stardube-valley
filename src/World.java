@@ -19,6 +19,8 @@ public class World {
   public static final int SOUTH = 2;
   public static final int WEST = 3;
 
+  private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
+
   private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
@@ -28,6 +30,7 @@ public class World {
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay = 0;
+  private int inGameSeason;
   private double luckOfTheDay;
 
   public World() {
@@ -42,6 +45,8 @@ public class World {
     this.player = new Player(new Point(13, 13));
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    this.inGameSeason = 1;
 
     // spawn first day items
     this.doDayEndActions();

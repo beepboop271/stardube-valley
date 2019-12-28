@@ -38,11 +38,11 @@ public class TileComponentFactory {
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
         componentToAdd = new HarvestableComponent(nextLine[0],
-                                                  "assets/images/"+nextLine[1]+".png",
+                                                  "assets/images/"+nextLine[1],
                                                   nextLine[2],
                                                   Integer.parseInt(nextLine[3]),
                                                   Integer.parseInt(nextLine[4]));
-        // to do: uncomment after holdables added
+        // TODO: uncomment after holdables added
         // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
         //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
         //                                                 Integer.parseInt(nextLine[6+(j*3)]),
@@ -57,7 +57,7 @@ public class TileComponentFactory {
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
         componentToAdd = new CollectableComponent(nextLine[0],
-                                                  "assets/images/"+nextLine[1]+".png",
+                                                  "assets/images/"+nextLine[1],
                                                   1);
         // to do: uncomment when drops added
         // componentToAdd.setProduct(0, new HoldableDrop(nextLine[2], 1, 1));
