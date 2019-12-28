@@ -110,7 +110,7 @@ public class StardubeEventListener implements KeyListener,
       // (temp thing, dont beat me too hard lol - candice)
       case KeyEvent.VK_F:
         if (this.stardubePlayer.getCurrentFishingGame() == null) {
-          this.stardubePlayer.setCurrentFishingGame( new FishingGame() );
+          this.stardubePlayer.setCurrentFishingGame(new FishingGame());
         }
         break;
     }
@@ -124,23 +124,33 @@ public class StardubeEventListener implements KeyListener,
   @Override
   public void mousePressed(MouseEvent e) {
     this.mousePos.x = e.getX();
-    this.mousePos.y = e.getY();
-    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+    this.mousePos.y = e.getY();    
+
+    if (this.stardubePlayer.getCurrentFishingGame() != null) { // in fishing game
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(true);
       fishingGame.updateLastPressNanoTime();
     } else if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
       // if the mousepress is within the hotbar, update item selection
-      if ( (this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-           (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-           (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE) ) {
+      if ((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
+          (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+          (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
+          (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)) {
         int selectedItemIdx = Math.min((int)(Math.floor((this.mousePos.x-this.worldPanel.getHotbarX())/
                               (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
         this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         return;
       }
 
+      // general player interactions (AKA doors and foraging)
+      if (e.getButton() == MouseEvent.BUTTON3) {
+        if (this.stardubePlayer.getSelectedTile() != null) {
+          this.stardubeWorld.emplaceFutureEvent(
+                (long)(0.5*1_000_000_000),
+                // idk what to name this lol
+                new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+      }
+    }
       // *to-do
       // - if is entrance, move area, return
       // - if has collectable, get items from collectable, return
@@ -149,25 +159,25 @@ public class StardubeEventListener implements KeyListener,
         HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
         if (selectedHoldableStack.getContainedHoldable() != null){
           // casting
+          // TODO: change this to a start casting event
           if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod){
-            // System.out.println("fishing rod!");
-            // Tile castedTile = something something idk;
-            // if tileisfishable {}
-          } // else {System.out.println("not rod!");}
+            ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
+          }
         }
       }
-    } else {
+
+    } else { // player is in menu
       // if the mousepress is within the menu tab buttons, change the inventory menu display mode
-      if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
-           (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-           (this.mousePos.y >= this.worldPanel.getMenuY()) &&
-           (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
-        // *to do: process button (update selected button id or sth);
+      if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
+          (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+          (this.mousePos.y >= this.worldPanel.getMenuY()) &&
+          (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
+        // TODO: process the button (update selected button id or sth);
       // if the mousepress is within the full inventory area, change the selected item index according to the mouse position
-      } else if ( (this.mousePos.x >= this.worldPanel.getMenuX()) &&
-                  (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-                  (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
-                  (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) ) {
+      } else if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
+                 (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
+                 (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
+                 (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
         int selectedItemIdx = Math.min((int)(Math.floor(this.mousePos.x-this.worldPanel.getMenuX())/
                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
                               + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
@@ -187,7 +197,7 @@ public class StardubeEventListener implements KeyListener,
     if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(false);
-    } else if (!this.stardubePlayer.isInMenu()) {
+    } else if (!(this.stardubePlayer.isInMenu() || this.stardubePlayer.isImmutable())) {
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
@@ -211,9 +221,12 @@ public class StardubeEventListener implements KeyListener,
                 ((Seeds)selectedItem).getCropToMake()
               )
             );
+          } else if (selectedItem instanceof FishingRod) { // is casting
+            // TODO: change this to a end casting event
+            ((FishingRod)selectedItem).endCasting();
           }
         }
-      }
+      } 
     }
     
     

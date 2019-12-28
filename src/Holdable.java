@@ -11,18 +11,14 @@ import javax.imageio.ImageIO;
  * @author Kevin Qiao, Joseph Wang
  */
 public abstract class Holdable {
-  private String name;
-  private String description;
-  private BufferedImage image;
+  private final String name;
+  private final String description;
+  private final BufferedImage image;
 
-  public Holdable(String name, String description, String imagePath) {
+  public Holdable(String name, String description, String imagePath) throws IOException {
     this.name = name;
     this.description = description;
-    try {
-      this.image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    this.image = ImageIO.read(new File(imagePath));
   }
 
   public String getName() {

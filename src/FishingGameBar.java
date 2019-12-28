@@ -9,12 +9,12 @@ class FishingGameBar {
   private int y;
   private int height;
 
-  FishingGameBar( int y, int height ) {
+  FishingGameBar(int y, int height) {
     this.y = y;
     this.height = height;
   }
 
-  public boolean isInside( FishingGameBar otherBar ) {
+  public boolean isInside(FishingGameBar otherBar) {
     return ((this.y>=otherBar.getY()) && ((this.y+this.height)<=(otherBar.getY()+otherBar.getHeight())));
   }
 
@@ -22,7 +22,7 @@ class FishingGameBar {
     return this.y;
   }
 
-  public void setY( int y ) {
+  public void setY(int y) {
     this.y = y;
   }
 

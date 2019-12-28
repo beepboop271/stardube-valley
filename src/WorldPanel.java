@@ -107,7 +107,7 @@ public class WorldPanel extends JPanel {
             g.drawImage(currentTile.getImage(), drawX, drawY, null);
             TileComponent tileContent = currentTile.getContent();
             if (tileContent != null) {
-              g.drawImage(tileContent.getImage(), drawX, drawY, null); 
+              g.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null); 
             }
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
               Graphics2D g2 = (Graphics2D)g;
@@ -216,26 +216,41 @@ public class WorldPanel extends JPanel {
       // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
     }
     
+    if (worldPlayer.getSelectedItem() != null) {
+      Holdable selectedItem = worldPlayer.getSelectedItem().getContainedHoldable();
+      if (selectedItem instanceof FishingRod) {
+        FishingRod playerCurrentRod = (FishingRod)selectedItem;
+        if (playerCurrentRod.isCasting()){
+        // if player is casting, draw casting meter
+        // TODO: make the display postion beside the player
+        g.setColor(Color.BLACK);
+        g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
+        g.setColor(Color.GREEN);
+        g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
+        }
+      }
+    }
+
     // if player is in fishing game, draw mini game stuff
     // TODO: make the display postion beside the player
     if (worldPlayer.getCurrentFishingGame()!=null) {
       // draw background
-      g.setColor(new Color(255,255,255, 100));
+      g.setColor(new Color(255, 255, 255, 100));
       g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
       
-      double BarScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
+      double barScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
 
       // draw player fishing bar
       FishingGameBar playerBar = worldPlayer.getCurrentFishingGame().getPlayerBar();
       g.setColor(Color.BLUE);
-      g.fillRect(0, (int)(playerBar.getY()*BarScale),
-                 this.getWidth()/40, (int)(playerBar.getHeight()*BarScale));
+      g.fillRect(0, (int)(playerBar.getY()*barScale),
+                 this.getWidth()/40, (int)(playerBar.getHeight()*barScale));
 
       // draw target fishing bar
       FishingGameBar targeBar = worldPlayer.getCurrentFishingGame().getTargetBar();
       g.setColor(Color.GREEN);
-      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*BarScale),
-                 this.getWidth()/80, (int)(targeBar.getHeight()*BarScale));
+      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*barScale),
+                 this.getWidth()/80, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
       g.setColor(Color.RED);

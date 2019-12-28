@@ -1,16 +1,13 @@
 8
-Turnip     /forageables/            TurnipItem     y
-Daffodil   /forageables/            DaffodilItem   y
-Leek       /forageables/            LeekItem       y
-Bluebell   /forageables/            BluebellItem   y
-IceCream   /forageables/            IceCreamItem   y
-Mushroom   /forageables/            MushroomItem   y
-WinterRoot /forageables/            WinterRootItem y
-Javacake   /forageables/            JavacakeItem   y
-Ruby       /ores                   RubyItem       n
-Diamond    /ores                   DiamondItem    n
-Amethyst   /ores                   AmethystItem   n
-Quartz     /ores                   QuartzItem     n
+Turnip     /forageables/      TurnipItem     y
+Daffodil   /forageables/      DaffodilItem   y
+Leek       /forageables/      LeekItem       y
+Bluebell   /forageables/      BluebellItem   y
+IceCream   /forageables/      IceCreamItem   y
+Mushroom   /forageables/      MushroomItem   y
+WinterRoot /forageables/      WinterRootItem y
+Javacake   /forageables/      JavacakeItem   y
+Quartz     /ores              QuartzItem     n
 
-name      img                      item quantity=1 whether or not it's forageable
+name      img                item quantity=1 whether or not it's forageable
           /assets/images/+         

@@ -136,7 +136,7 @@ public class World {
                   || ((Harvestable)componentToHarvest).getRequiredTool().equals(
                         toolEvent.getHoldableUsed().getName()))) {
           // TODO: play breaking animation?
-          this.playerArea.removeComponent(componentToHarvest);
+          this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
           HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
           for (int i = 0; i < drops.length; ++i) {
@@ -158,6 +158,23 @@ public class World {
           }
 
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
+        }
+      } else if (event instanceof UtilityUsedEvent) {
+        //TODO: make this not just for forageables but also doors and stuff i guess
+        Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
+        if (this.playerArea instanceof WorldArea) {
+          ((WorldArea)this.playerArea).forageables.remove(currentTile);
+        }
+        //TODO: play foraging animation?
+        TileComponent currentContent = currentTile.getContent();
+        if (currentContent instanceof Collectable) {
+        //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+          HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
+          // also for some reason the above is sometimes null and i don't know why :D
+          HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
+          new HoldableStackEntity(drop, null); // TODO: change the pos
+          this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
+          currentTile.setContent(null);
         }
       }
     }
@@ -182,8 +199,8 @@ public class World {
     this.eventQueue.offer(new TimedEvent(time, event));
   }
 
-  public void emplaceFutureEvent(long timeIntoFuture, EventObject event) {
-    this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+timeIntoFuture, event));
+  public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
+    this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
   }
 
   public void loadAreas() throws IOException {

@@ -1,5 +1,7 @@
+import java.io.IOException;
+
 public class UtilityTool extends Tool {
-  public UtilityTool(String name, String description, String imagePath) {
+  public UtilityTool(String name, String description, String imagePath) throws IOException {
     super(name, description, imagePath);
   }
 

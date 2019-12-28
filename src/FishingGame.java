@@ -92,7 +92,7 @@ class FishingGame {
     //System.out.println("Game updated. FishingGame progress: "+this.currentProgress+", status: "+this.currentStatus);
   }
 
-  public void setMouseDown( boolean mouseDown ) {
+  public void setMouseDown(boolean mouseDown) {
     this.mouseDown = mouseDown;
   }
 
