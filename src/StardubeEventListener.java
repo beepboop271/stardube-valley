@@ -212,6 +212,8 @@ public class StardubeEventListener implements KeyListener,
             );
           }
         }
+      } else if (e.getButton() == MouseEvent.BUTTON2) {
+        // TODO: make hands work
       }
     }
     

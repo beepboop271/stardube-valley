@@ -128,7 +128,7 @@ public class World {
               && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
                   || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
           // TODO: play breaking animation?
-          this.playerArea.removeComponent(componentToHarvest);
+          this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
           HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
           for (int i = 0; i < drops.length; ++i) {
@@ -148,7 +148,8 @@ public class World {
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
-        HoldableDrop[] currentProducts = currentContent.getProducts();
+        //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+        HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
         // also for some reason the above is sometimes null and i don't know why :D
         HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
         new HoldableStackEntity(drop, null); // TODO: change the pos

@@ -38,7 +38,7 @@ public class IntrinsicTileComponentFactory {
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
         componentToAdd = new IntrinsicHarvestableComponent(nextLine[0],
-                                                           "assets/images/"+nextLine[1]+".png",
+                                                           "assets/images/"+nextLine[1],
                                                            nextLine[2],
                                                            Integer.parseInt(nextLine[3]),
                                                            Integer.parseInt(nextLine[4]));
@@ -57,7 +57,7 @@ public class IntrinsicTileComponentFactory {
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
         componentToAdd = new CollectableComponent(nextLine[0],
-                                                  "assets/images/"+nextLine[1]+".png",
+                                                  "assets/images/"+nextLine[1],
                                                   1);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLine[2]));

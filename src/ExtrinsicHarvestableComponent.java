@@ -6,7 +6,7 @@ import java.io.IOException;
  * @version 0.2
  * @author Kevin Qiao, Paula Yuan
  */
-public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent implements Harvestable {
+public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent {
   private int hardnessLeft;
 
   public ExtrinsicHarvestableComponent(String name) throws IOException {

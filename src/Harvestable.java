@@ -5,5 +5,5 @@
  * @author Paula Yuan
  */
 public interface Harvestable extends Collectable {
-  //public String getRequiredTool();
+  public String getRequiredTool();
 }

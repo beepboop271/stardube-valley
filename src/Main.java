@@ -3,8 +3,8 @@ public class Main {
     // sketchy
     GroundTile.setGroundTileImage();
     GrassTile.setGrassTileImage();
-    IntrinsicTileComponentFactory.initializeComponents();
     HoldableFactory.initializeItems();
+    IntrinsicTileComponentFactory.initializeComponents();
 
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);

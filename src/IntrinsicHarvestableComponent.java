@@ -18,6 +18,7 @@ public class IntrinsicHarvestableComponent extends IntrinsicTileComponent implem
     return this.hardness;
   }
 
+  @Override
   public String getRequiredTool() {
     return this.requiredTool;
   }
