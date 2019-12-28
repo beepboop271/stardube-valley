@@ -16,12 +16,12 @@ public class RiverTile extends WaterTile {
 
   public static void setFishableFish() {
     RiverTile.fishableFish = new ArrayList<String>();
-    RiverTile.fishableFish.add("Popcorn Fish");
+    RiverTile.fishableFish.add("PopcornFish");
     RiverTile.fishableFish.add("BurgerFish");
     RiverTile.fishableFish.add("BobaFish");
   }
   
-  public static ArrayList<String> getFishableFish() {
+  public ArrayList<String> getFishableFish() {
     return RiverTile.fishableFish;
   }
 }

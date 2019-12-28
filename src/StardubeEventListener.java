@@ -141,7 +141,7 @@ public class StardubeEventListener implements KeyListener,
         return;
       }
 
-      // *to-do
+      // TODO
       // - if is entrance, move area, return
       // - if has collectable, get items from collectable, return
 
@@ -149,20 +149,20 @@ public class StardubeEventListener implements KeyListener,
         HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
         if (selectedHoldableStack.getContainedHoldable() != null){
           // casting
+          // TODO: change this to a start casting event
           if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod){
-            // System.out.println("fishing rod!");
-            // Tile castedTile = something something idk;
-            // if tileisfishable {}
-          } // else {System.out.println("not rod!");}
+            ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
+          }
         }
       }
-    } else {
+
+    } else { // player is in menu
       // if the mousepress is within the menu tab buttons, change the inventory menu display mode
       if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
           (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
           (this.mousePos.y >= this.worldPanel.getMenuY()) &&
           (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
-        // *TODO: process the button (update selected button id or sth);
+        // TODO: process the button (update selected button id or sth);
       // if the mousepress is within the full inventory area, change the selected item index according to the mouse position
       } else if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
                  (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
@@ -202,6 +202,9 @@ public class StardubeEventListener implements KeyListener,
                     ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
                 )
             );
+          } else if (selectedItem instanceof FishingRod) { // is casting
+            // TODO: change this to a end casting event
+            ((FishingRod)selectedItem).endCasting();
           }
         }
       }

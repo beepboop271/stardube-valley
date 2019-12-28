@@ -216,6 +216,21 @@ public class WorldPanel extends JPanel {
       // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
     }
     
+    if (worldPlayer.getSelectedItem() != null) {
+      Holdable selectedItem = worldPlayer.getSelectedItem().getContainedHoldable();
+      if (selectedItem instanceof FishingRod) {
+        FishingRod playerCurrentRod = (FishingRod)selectedItem;
+        if (playerCurrentRod.isCasting()){
+        // if player is casting, draw casting meter
+        // TODO: make the display postion beside the player
+        g.setColor(Color.BLACK);
+        g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
+        g.setColor(Color.GREEN);
+        g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
+        }
+      }
+    }
+
     // if player is in fishing game, draw mini game stuff
     // TODO: make the display postion beside the player
     if (worldPlayer.getCurrentFishingGame()!=null) {

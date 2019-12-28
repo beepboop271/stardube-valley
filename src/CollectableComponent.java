@@ -1,3 +1,4 @@
+import java.io.IOException;
 
 /**
  * [CollectableComponent]
@@ -7,7 +8,7 @@
  */
 public class CollectableComponent extends TileComponent {
   public CollectableComponent(String name, String imagePath,
-                              int numProducts) {
+                              int numProducts) throws IOException {
     super(name, imagePath, numProducts);
   }
 }

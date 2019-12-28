@@ -44,4 +44,6 @@ public abstract class WaterTile extends Tile {
   public static ArrayList<String> getFishableTrash() {
     return WaterTile.fishableTrash;
   }
+
+  abstract public ArrayList<String> getFishableFish();
 }
