@@ -7,7 +7,7 @@ import java.util.HashMap;
  * [HoldableFactory]
  * 2019-12-20
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Paula Yuan
  */
 public class HoldableFactory {
   private static boolean isInitialized = false;
@@ -25,18 +25,30 @@ public class HoldableFactory {
 
     HoldableFactory.holdablePool = new HashMap<String, Holdable>();
     BufferedReader input;
-    String lineToRead;
-    String[] nextLineData;
-
-    // load utility tools
+    String[] nextLine;
+    UtilityTool tool;
+    HoldableConsumable drop;
     try {
       input = new BufferedReader(new FileReader("assets/gamedata/UtilityTools"));
       int n = Integer.parseInt(input.readLine());
       for (int i = 0; i < n; ++i) {
-        nextLineData = input.readLine().split("\\s+");
-        UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+        nextLine = input.readLine().split("\\s+");
+        tool = new UtilityTool(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
         HoldableFactory.holdablePool.put(tool.getName(), tool);
       }
+      
+      input.close();
+
+      input = new BufferedReader(new FileReader("assets/gamedata/ForageableDrops"));
+      n = Integer.parseInt(input.readLine());
+      for (int i = 0; i < n; ++i) {
+        nextLine = input.readLine().split("\\s+");
+        // TODO: fix description
+        drop = new HoldableConsumable(nextLine[0]+"Item", "eh?", 
+                                      "assets/images/"+nextLine[1]+".png"); 
+      }
+
+      input.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -45,8 +57,8 @@ public class HoldableFactory {
     // fishing rod
     try {
       input = new BufferedReader(new FileReader("assets/gamedata/FishingRod"));
-        nextLineData = input.readLine().split("\\s+");
-        FishingRod rod = new FishingRod(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+      nextLine = input.readLine().split("\\s+");
+        FishingRod rod = new FishingRod(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
         HoldableFactory.holdablePool.put(rod.getName(), rod);
     } catch (IOException e) {
       e.printStackTrace();

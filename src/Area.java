@@ -13,7 +13,6 @@ public abstract class Area {
   private String name;
   private Tile[][] map;
   private LinkedHashSet<Moveable> moveables;
-  private LinkedHashSet<TileComponent> components;
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
@@ -24,7 +23,6 @@ public abstract class Area {
     this.width = width;
     this.height = height;
     this.map = new Tile[this.height][this.width];
-    this.components = new LinkedHashSet<TileComponent>();
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
   }
@@ -88,8 +86,8 @@ public abstract class Area {
     this.moveables.add(m);
   }
 
-  public void removeComponent(TileComponent component) {
-    this.components.remove(component);
+  public void removeComponentAt(Point pos) {
+    this.getMapAt(pos).setContent(null);
   }
 
   public Iterator<HoldableStackEntity> getItemsOnGround() {

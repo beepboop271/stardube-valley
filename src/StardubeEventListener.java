@@ -124,8 +124,9 @@ public class StardubeEventListener implements KeyListener,
   @Override
   public void mousePressed(MouseEvent e) {
     this.mousePos.x = e.getX();
-    this.mousePos.y = e.getY();
-    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+    this.mousePos.y = e.getY();    
+
+    if (this.stardubePlayer.getCurrentFishingGame() != null) { // in fishing game
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(true);
       fishingGame.updateLastPressNanoTime();
@@ -141,7 +142,14 @@ public class StardubeEventListener implements KeyListener,
         return;
       }
 
-      // TODO
+      // general player interactions (AKA doors and foraging)
+      if (this.stardubePlayer.getSelectedTile() != null) {
+        this.stardubeWorld.emplaceFutureEvent(
+              (long)(0.5*1_000_000_000),
+              // idk what to name this lol
+              new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+    }
+      // *to-do
       // - if is entrance, move area, return
       // - if has collectable, get items from collectable, return
 
