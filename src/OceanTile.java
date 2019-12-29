@@ -1,27 +1,22 @@
-import java.util.ArrayList;
-
 /**
  * [OceanTile]
  * 2019-12-27
- * @version 0.1
+ * @version 0.2
  * @author Candice Zhang
  */
 
 public class OceanTile extends WaterTile {
-  private static ArrayList<String> fishableFish;
+  private static String[] fishableFish;
 
   public OceanTile(int x, int y) {
     super(x, y);
   }
 
   public static void setFishableFish() {
-    OceanTile.fishableFish = new ArrayList<String>();
-    OceanTile.fishableFish.add("Tuna");
-    OceanTile.fishableFish.add("Anchovy");
-    OceanTile.fishableFish.add("Sardine");
+    OceanTile.fishableFish = new String[] {"Tuna", "Anchovy", "Sardine"};
   }
   
-  public ArrayList<String> getFishableFish() {
+  public String[] getFishableFish() {
     return OceanTile.fishableFish;
   }
 }

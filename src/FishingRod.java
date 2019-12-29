@@ -8,6 +8,7 @@ import java.io.IOException;
  */
 public class FishingRod extends Tool {
   public final static int MAX_PROGRESS_NANOSEC = 2_000_000_000;;
+  public final static int MAX_CASTING_DISTANCE = 3;
 
   private boolean isCasting;
   private long castingBeginNanoTime;
@@ -30,11 +31,14 @@ public class FishingRod extends Tool {
     this.castingBeginNanoTime = System.nanoTime();
   }
 
-  public void endCasting() {
-    System.out.println(this.getCastingProgressPercentage());
-    this.isCasting = false;
-    // TODO: determine tile to cast, if is water place a fishing game event (should this be done by the tool itself?)
-  }
+  //public void endCasting() {
+  //  if(this.isCasting == false){
+  //    return;
+  //  }
+  //  System.out.println(this.getCastingProgressPercentage());
+  //  this.isCasting = false;
+  //  // TODO: determine tile to cast, if is water place a fishing game event (should this be done by the tool itself?)
+  //}
 
   public int getCastingProgressPercentage() {
     if(this.isCasting == false){
@@ -48,4 +52,7 @@ public class FishingRod extends Tool {
     return this.isCasting;
   }
 
+  public void setIsCasting(boolean isCasting) {
+    this.isCasting = isCasting;
+  }
 }

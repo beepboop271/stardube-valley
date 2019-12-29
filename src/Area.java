@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * [Area]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang
  */
 public abstract class Area {
   private String name;
@@ -140,6 +140,14 @@ public abstract class Area {
     this.map[t.getY()][t.getX()] = t;
   }
 
+  public boolean hasValidXYAt(int x, int y) {
+    return (((y >= 0) && (y < this.height) && (x >= 0) && (x < this.width)));
+  }
+  
+  public boolean hasValidPointAt(Point pos) {
+    return ((((int)pos.y >= 0) && ((int)pos.y < this.height) && ((int)pos.x >= 0) && ((int)pos.x < this.width)));
+  }
+  
   public void doDayEndActions() {
   }
 }

@@ -233,7 +233,7 @@ public class WorldPanel extends JPanel {
 
     // if player is in fishing game, draw mini game stuff
     // TODO: make the display postion beside the player
-    if (worldPlayer.getCurrentFishingGame()!=null) {
+    if (worldPlayer.isInFishingGame()) {
       // draw background
       g.setColor(new Color(255, 255, 255, 100));
       g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);

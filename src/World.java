@@ -59,8 +59,14 @@ public class World {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
 
-    this.player.updateCurrentFishingGame();
-
+    if (this.player.isInFishingGame()) {
+      this.player.getCurrentFishingGame().update();
+      this.player.setImmutable(true);
+      if(this.player.getCurrentFishingGame().getCurrentStatus() != FishingGame.INGAME_STATUS) {
+        this.emplaceFutureEvent((long)(0.5*1_000_000_000), new FishingGameEndedEvent(this.player.getCurrentFishingGame()));
+        this.player.endCurrentFishingGame();
+      }
+    }
 
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
@@ -157,7 +163,41 @@ public class World {
           this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
           currentTile.setContent(null);
         }
+      } else if (event instanceof CastingEndedEvent) {
+        this.player.setImmutable(false);
+        FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
+        int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
+        int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
+        int destX = (int)this.player.getPos().x;
+        int destY = (int)this.player.getPos().y;
+        if (this.player.getOrientation() == World.NORTH) {
+          destY -= castDistance;
+        } else if (this.player.getOrientation() == World.SOUTH) {
+          destY += castDistance;
+        } else if (this.player.getOrientation() == World.WEST) {
+          destX -= castDistance;
+        } else {
+          destX += castDistance;
+        }
+        if (playerArea.hasValidXYAt(destX, destY)) {
+          if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
+            // TODO: change this to a start game event (emplaced at a random future time and waits for mouseclick)
+            // TODO: there is a random chance that a trash is returned, and the game will not start
+            this.player.setCurrentFishingGame(new FishingGame((WaterTile)(playerArea.getMapAt(destX, destY))));
+          }// else {
+          //  System.out.println("not a fishable tile");
+          //}
+        }
+      } else if (event instanceof FishingGameEndedEvent) {
+        FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();
+        if (gameEnded.getCurrentStatus() == FishingGame.WIN_STATUS) {
+          Holdable fishEarned = ((FishingGameEndedEvent)event).getFishReturned();
+          this.player.pickUp(new HoldableStack(fishEarned, 1));          
+        }
+        this.player.setImmutable(false);
+        
       }
+
     }
   }
 
@@ -235,6 +275,18 @@ public class World {
             break;
           case 'x':
             a.setMapAt(new GrassTile(x, y));
+            break;
+          case 'p':
+            a.setMapAt(new PondTile(x, y));
+            break;
+          case 'r':
+            a.setMapAt(new RiverTile(x, y));
+            break;
+          case 'l':
+            a.setMapAt(new LakeTile(x, y));
+            break;
+          case 'o':
+            a.setMapAt(new OceanTile(x, y));
             break;
         }
       }

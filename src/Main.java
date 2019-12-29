@@ -3,6 +3,12 @@ public class Main {
     // sketchy
     GroundTile.setGroundTileImage();
     GrassTile.setGrassTileImage();
+    WaterTile.setWaterTileImage();
+    WaterTile.setFishableTrash();
+    PondTile.setFishableFish();
+    RiverTile.setFishableFish();
+    LakeTile.setFishableFish();
+    OceanTile.setFishableFish();
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();
 

@@ -24,27 +24,34 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if (this.stardubePlayer.isImmutable()) {
+      return;
+    }
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
       case KeyEvent.VK_W:
         if (this.stardubePlayer.getVerticalSpeed() != -1) {
           this.stardubePlayer.setVerticalSpeed(-1);
         }
+        this.stardubePlayer.setOrientation(World.NORTH);
         break;
       case KeyEvent.VK_A:
         if (this.stardubePlayer.getHorizontalSpeed() != -1) {
           this.stardubePlayer.setHorizontalSpeed(-1);
         }
+        this.stardubePlayer.setOrientation(World.WEST);
         break;
       case KeyEvent.VK_S:
         if (this.stardubePlayer.getVerticalSpeed() != 1) {
           this.stardubePlayer.setVerticalSpeed(1);
         }
+        this.stardubePlayer.setOrientation(World.SOUTH);
         break;
       case KeyEvent.VK_D:
         if (this.stardubePlayer.getHorizontalSpeed() != 1) {
           this.stardubePlayer.setHorizontalSpeed(1);
         }
+        this.stardubePlayer.setOrientation(World.EAST);
         break;
       case KeyEvent.VK_E:
         this.stardubePlayer.toggleInMenu();
@@ -105,14 +112,6 @@ public class StardubeEventListener implements KeyListener,
           this.stardubePlayer.setHorizontalSpeed(0);
         }
         break;
-      
-      // p r e s s  F  t o  F I S H
-      // (temp thing, dont beat me too hard lol - candice)
-      case KeyEvent.VK_F:
-        if (this.stardubePlayer.getCurrentFishingGame() == null) {
-          this.stardubePlayer.setCurrentFishingGame(new FishingGame());
-        }
-        break;
     }
   }
 
@@ -126,11 +125,11 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();    
 
-    if (this.stardubePlayer.getCurrentFishingGame() != null) { // in fishing game
+    if (this.stardubePlayer.isInFishingGame()) {
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(true);
       fishingGame.updateLastPressNanoTime();
-    } else if (!this.stardubePlayer.isInMenu()) {    // && (e.getButton() == MouseEvent.BUTTON1)) {
+    } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
       // if the mousepress is within the hotbar, update item selection
       if ((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
           (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
@@ -149,8 +148,9 @@ public class StardubeEventListener implements KeyListener,
                 (long)(0.5*1_000_000_000),
                 // idk what to name this lol
                 new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+          return;
+        }
       }
-    }
       // *to-do
       // - if is entrance, move area, return
       // - if has collectable, get items from collectable, return
@@ -166,7 +166,9 @@ public class StardubeEventListener implements KeyListener,
         }
       }
 
-    } else { // player is in menu
+    // TODO: click to catch a fish
+
+    } else if (this.stardubePlayer.isInMenu()) {
       // if the mousepress is within the menu tab buttons, change the inventory menu display mode
       if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
           (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
@@ -194,7 +196,7 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
 
-    if (this.stardubePlayer.getCurrentFishingGame()!=null) { // in fishing game
+    if (this.stardubePlayer.isInFishingGame()) {
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(false);
     } else if (!(this.stardubePlayer.isInMenu() || this.stardubePlayer.isImmutable())) {
@@ -213,8 +215,13 @@ public class StardubeEventListener implements KeyListener,
                 )
             );
           } else if (selectedItem instanceof FishingRod) { // is casting
-            // TODO: change this to a end casting event
-            ((FishingRod)selectedItem).endCasting();
+            // TODO: play animation
+            if(((FishingRod)selectedItem).isCasting()) {
+              this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
+                                new CastingEndedEvent((FishingRod)selectedItem));
+              ((FishingRod)selectedItem).setIsCasting(false);
+              //((FishingRod)selectedItem).endCasting();
+            }
           }
         }
       } 

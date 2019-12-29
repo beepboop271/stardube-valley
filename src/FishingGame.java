@@ -21,7 +21,7 @@ class FishingGame {
   private long lastPressNanoTime;
   private long mouseHoldNanoTime;
   private int currentStatus;
-
+  private WaterTile tileToFish;
   private Random random;
 
   private FishingGameBar playerBar;
@@ -31,7 +31,7 @@ class FishingGame {
   //private FishingRod fishingRod;
   //private Tile tileToFish;
 
-  public FishingGame() {
+  public FishingGame(WaterTile tileToFish) {
     //this.player = player;
     //this.fishingRod = (FishingRod)(player.getInventory()[player.getSelectedItemIdx()].getContainedHoldable());
     //this.tileToFish = tileToFish;
@@ -42,6 +42,7 @@ class FishingGame {
     this.mouseDown = false;
     this.mouseHoldNanoTime = 0;
     this.lastPressNanoTime = System.nanoTime();
+    this.tileToFish = tileToFish;
 
     this.random = new Random();
 
@@ -92,6 +93,23 @@ class FishingGame {
     //System.out.println("Game updated. FishingGame progress: "+this.currentProgress+", status: "+this.currentStatus);
   }
 
+  public Holdable getFishReturned() {
+    String[] fishableFish = this.tileToFish.getFishableFish();
+    if(fishableFish.length == 0) {
+      return null;
+    }
+    System.out.println("the player gets a "+fishableFish[this.random.nextInt(fishableFish.length)]);
+    return HoldableFactory.getHoldable(fishableFish[this.random.nextInt(fishableFish.length)]);
+  }
+
+  public Holdable getTrashReturned() {
+    String[] fishableTrash = WaterTile.getFishableTrash();
+    if(fishableTrash.length == 0) {
+      return null;
+    }
+    return HoldableFactory.getHoldable(fishableTrash[this.random.nextInt(fishableTrash.length)]);
+  }
+
   public void setMouseDown(boolean mouseDown) {
     this.mouseDown = mouseDown;
   }
@@ -120,7 +138,4 @@ class FishingGame {
     return this.targetBar;
   }
 
-  public void returnFishingProduct() { //Holdable getFishingProduct() {
-    
-  }
 }
