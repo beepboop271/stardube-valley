@@ -112,9 +112,11 @@ public class WorldPanel extends JPanel {
             int drawY = originY+(screenTileY*Tile.getSize());
             g.drawImage(currentTile.getImage(), drawX, drawY, null);
             TileComponent tileContent = currentTile.getContent();
+            
             if (tileContent != null) {
               g.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null); 
             }
+
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
               Graphics2D g2 = (Graphics2D)g;
               g2.setStroke(new BasicStroke(4));

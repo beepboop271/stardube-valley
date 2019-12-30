@@ -39,8 +39,8 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
     this.requiredTool = requiredTool; 
   }
 
-  public int getStageToDisplay(int day) {
-    return stageToDisplay[day];
+  public int getStageToDisplay(int stage) {
+    return stageToDisplay[stage];
   }
 
   public int getMaxGrowthStage() {

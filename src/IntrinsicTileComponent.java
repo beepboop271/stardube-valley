@@ -27,22 +27,17 @@ public abstract class IntrinsicTileComponent extends TileComponent
     this.name = name;
     this.products = new HoldableDrop[numProducts];
     File fileSystem = new File(imagesPath);
-    // System.out.println(imagesPath);
     String[] allFiles = fileSystem.list();
-    // System.out.println(Arrays.toString(allFiles));
     this.images = new BufferedImage[allFiles.length];
 
     try {
       for (int i = 0, j = 0; i < allFiles.length; i++) {
-        // System.out.println(imagesPath + allFiles[i]);
         this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
         j++;
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    // System.out.println("Done loading " + name);
   }
 
   public String getName() {
