@@ -6,7 +6,7 @@ IceCreamItem   /forageables/IceCreamItem
 MushroomItem   /forageables/MushroomItem      
 WinterRootItem /forageables/WinterRootItem  
 JavacakeItem   /forageables/JavacakeItem      
-QuartzItem     /ores/Quartz                 
+QuartzItem     /ores/QuartzItem
 
 name          img                      
               /assets/images/+         
