@@ -1,14 +1,14 @@
-Purple-Algae      /holdables/TestImg           nice-fish       1          10 15                       10 15                       5 5
-Popcorn-Fish      /holdables/Popcorn-Fish      nice-fish       3          10 15                       10 15                       5 5
-Burger-Fish       /holdables/Burger-Fish       nice-fish       3          10 15                       10 15                       5 5
-Boba-Fish         /holdables/Boba-Fish         nice-fish       3          10 15                       10 15                       5 5
-Carp              /holdables/Carp              nice-fish       3          10 15                       10 15                       5 5
-Smallmouth-Bass   /holdables/Smallmouth-Bass   nice-fish       3          10 15                       10 15                       5 5
-Largemouth-Bass   /holdables/Largemouth-Bass   nice-fish       3          10 15                       10 15                       5 5
-Tuna              /holdables/Tuna              nice-fish       3          10 15                       10 15                       5 5
-Anchovy           /holdables/TestImg           nice-fish       3          10 15                       10 15                       5 5
-Sardine           /holdables/TestImg           nice-fish       3          10 15                       10 15                       5 5
+Purple-Algae      /holdables/TestImg           nice-fish       1          10 15                       5 5
+Popcorn-Fish      /holdables/Popcorn-Fish      nice-fish       3          10 15                       5 5
+Burger-Fish       /holdables/Burger-Fish       nice-fish       3          10 15                       5 5
+Boba-Fish         /holdables/Boba-Fish         nice-fish       3          10 15                       5 5
+Carp              /holdables/Carp              nice-fish       3          10 15                       5 5
+Smallmouth-Bass   /holdables/Smallmouth-Bass   nice-fish       3          10 15                       5 5
+Largemouth-Bass   /holdables/Largemouth-Bass   nice-fish       3          10 15                       5 5
+Tuna              /holdables/Tuna              nice-fish       3          10 15                       5 5
+Anchovy           /holdables/TestImg           nice-fish       3          10 15                       5 5
+Sardine           /holdables/TestImg           nice-fish       3          10 15                       5 5
 
 
-name              imagePath                    description     maxRank    min health gain for rank1   min energy gain for rank1   health increment per rank
-                                                                          max health gain for rank1   max energy gain for rank1   energy increment per rank
+name              imagePath                    description     maxRank    health gain for rank1      health increment per rank
+                                                                          energy gain for rank1      energy increment per rank
