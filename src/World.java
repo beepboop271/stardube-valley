@@ -12,13 +12,15 @@ import java.util.Random;
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan, Candice Zhang
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 public class World {
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
   public static final int WEST = 3;
+
+  private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
 
   private static final int DAYS_PER_SEASON = 28;
 
@@ -29,6 +31,7 @@ public class World {
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay = 0;
+  private int inGameSeason;
   private double luckOfTheDay;
 
   private Random random = new Random();
@@ -45,6 +48,8 @@ public class World {
     this.player = new Player(new Point(13, 13));
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    this.inGameSeason = 1;
 
     // spawn first day items
     this.doDayEndActions();
@@ -132,10 +137,13 @@ public class World {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
-        TileComponent componentToHarvest = this.playerArea.getMapAt(toolEvent.getLocationUsed()).getContent();
+        Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        TileComponent componentToHarvest = selectedTile.getContent();
+
         if (componentToHarvest instanceof Harvestable
               && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
+                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(
+                        toolEvent.getHoldableUsed().getName()))) {
           // TODO: play breaking animation?
           this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
@@ -147,7 +155,18 @@ public class World {
                     toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
                 )
             );
+          } //TODO: make these tools not dependant on world
+        } else if (selectedTile instanceof GroundTile) {
+          if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+            ((GroundTile)selectedTile).setTilledStatus(true);
+          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+            ((GroundTile)selectedTile).setTilledStatus(false);
+          } else if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
+                      (((GroundTile)selectedTile).getTilledStatus() == true)) {
+            ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
           }
+
+          ((GroundTile)selectedTile).determineImage(this.inGameDay);
         }
       } else if (event instanceof UtilityUsedEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
@@ -211,8 +230,24 @@ public class World {
       } else if (event instanceof HoldableStackGainedEvent) {
         HoldableStack stackGained = (HoldableStack)(((HoldableStackGainedEvent)event).getSource());
         this.player.pickUp(stackGained);
+      } else if (event instanceof ComponentPlacedEvent) {
+        Tile currentTile = this.playerArea.getMapAt(
+                                        ((ComponentPlacedEvent)event).getLocationUsed());
+        TileComponent currentContent = currentTile.getContent();
+        if (currentContent == null) { //- Anything that you can place must not be placed over something
+          //- We need to make sure that the tile is both a ground tile and is tilled if
+          //- we're trying to plant a crop in that tile
+          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+            if (currentTile instanceof GroundTile) {
+              if (((GroundTile)currentTile).getTilledStatus()) {
+                currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+              }
+            }
+          } else { //- If it's not a crop, you can place it anywhere
+            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+          }
+        }
       }
-
     }
   }
 

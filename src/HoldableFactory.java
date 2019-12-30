@@ -6,8 +6,8 @@ import java.util.HashMap;
 /**
  * [HoldableFactory]
  * 2019-12-20
- * @version 0.1
- * @author Kevin Qiao, Paula Yuan, Candice Zhang
+ * @version 0.3
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 public class HoldableFactory {
   private static boolean isInitialized = false;
@@ -33,7 +33,7 @@ public class HoldableFactory {
       input = new BufferedReader(new FileReader("assets/gamedata/UtilityTools"));
       lineToRead = input.readLine();
       while(lineToRead != null){
-        if (lineToRead.length()==0){
+        if (lineToRead.length() == 0){
           break;
         }
         nextLineData = lineToRead.split("\\s+");
@@ -51,6 +51,22 @@ public class HoldableFactory {
       HoldableFactory.holdablePool.put(rod.getName(), rod);
       input.close();
 
+      // initialize seeds
+      input = new BufferedReader(new FileReader("assets/gamedata/Seeds"));
+      lineToRead = input.readLine();
+      while (lineToRead != null) {
+        if (lineToRead.length() == 0){
+          break;
+        }
+
+        nextLineData = lineToRead.split("\\s+");
+        Seeds seed = new Seeds(nextLineData[0], nextLineData[2], 
+                        "assets/images/" + nextLineData[1] + ".png", nextLineData[3]);
+
+        HoldableFactory.holdablePool.put(seed.getName(), seed);                
+      }
+
+      input.close();
       // initialize consumables
       // - forageable drops
       input = new BufferedReader(new FileReader("assets/gamedata/ForageableDrops"));
@@ -97,7 +113,6 @@ public class HoldableFactory {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
   }
 
   public static Holdable getHoldable(String holdable) {

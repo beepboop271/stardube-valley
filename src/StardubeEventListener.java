@@ -204,18 +204,24 @@ public class StardubeEventListener implements KeyListener,
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
           if (selectedItem instanceof UtilityTool) {
-            if (!this.stardubePlayer.isImmutable()) {
-              this.stardubePlayer.setImmutable(true);
-              // TODO: play animation
-              // scuffed line
-              this.stardubeWorld.emplaceFutureEvent(
-                  (long)(0.5*1_000_000_000),
-                  new UtilityToolUsedEvent(
-                      (UtilityTool)selectedItem,
-                      ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
-                  )
-              );
-            }
+            this.stardubePlayer.setImmutable(true);
+            // TODO: play animation
+            // scuffed line
+            this.stardubeWorld.emplaceFutureEvent(
+                (long)(0.5*1_000_000_000),
+                new UtilityToolUsedEvent(
+                    (UtilityTool)selectedItem,
+                    ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                )
+            );
+          } else if (selectedItem instanceof Seeds) {
+            this.stardubeWorld.emplaceFutureEvent(
+              (long)(0.5*1_000_000_000),
+              new ComponentPlacedEvent(
+                ((Seeds)selectedItem).createCrop(),
+                this.stardubePlayer.getSelectedTile()
+              )
+            );
           } else if (selectedItem instanceof FishingRod) { // is casting
             // TODO: play animation
             if(((FishingRod)selectedItem).isCasting()) {

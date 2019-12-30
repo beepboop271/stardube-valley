@@ -1,0 +1,7 @@
+3
+ParsnipSeeds        /crops/ParsnipSeeds        Seeds to start a new parsnip crop            Parsnip
+WatermelonSeeds     /crops/WatermelonSeeds     Seeds to start a new watermelon crop         Watermelon
+CornSeeds           /crops/CornSeeds           Seeds to start a new corn crop               Corn
+
+name                directory path to assets  Description                                  what it summons once clicked
+                                                                                                    (null for nothing)

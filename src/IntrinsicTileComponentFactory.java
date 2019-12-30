@@ -1,16 +1,18 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 /**
- * [TileComponentFactory]
+ * [IntrinsicTileComponentFactory]
  * 2019-12-20
- * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @version 0.3
+ * @author Kevin Qiao, Paula Yuan, Joseph Wang
  */
+
 public class IntrinsicTileComponentFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, IntrinsicTileComponent> componentPool;
@@ -37,8 +39,9 @@ public class IntrinsicTileComponentFactory {
       numComponents = Integer.parseInt(input.readLine());
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
+        // System.out.println("Loading" + nextLine[0]);
         componentToAdd = new IntrinsicHarvestableComponent(nextLine[0],
-                                                           "assets/images/"+nextLine[1],
+                                                           "assets/images"+nextLine[1],
                                                            nextLine[2],
                                                            Integer.parseInt(nextLine[3]),
                                                            Integer.parseInt(nextLine[4]));
@@ -56,8 +59,9 @@ public class IntrinsicTileComponentFactory {
       numComponents = Integer.parseInt(input.readLine());
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
+        // System.out.println("Loading" + nextLine[0]);
         componentToAdd = new CollectableComponent(nextLine[0],
-                                                  "assets/images/"+nextLine[1],
+                                                  "assets/images"+nextLine[1],
                                                   1);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLine[2]));
@@ -67,6 +71,19 @@ public class IntrinsicTileComponentFactory {
         componentPool.put(componentToAdd.getName(), componentToAdd);
       }
       input.close();
+
+      input = new BufferedReader(new FileReader("assets/gamedata/Crops"));
+      numComponents = Integer.parseInt(input.readLine());
+      for (int i = 0; i < numComponents; ++i) {
+        nextLine = input.readLine().split("\\s+");
+        // System.out.println("Loading" + nextLine[0]);
+        componentToAdd = new IntrinsicCrop(nextLine[0], 
+                                          "assets/images" + nextLine[1], 
+                                          nextLine[3], 
+                                          Arrays.copyOfRange(nextLine, 5, nextLine.length));
+        componentToAdd.setProduct(0, 
+                                  new HoldableDrop(1, Integer.parseInt(nextLine[4]), nextLine[2]));
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }
