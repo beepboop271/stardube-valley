@@ -65,7 +65,7 @@ public class HoldableFactory {
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         // TODO: fix description
-        Consumable drop = new Consumable(nextLineData[0]+"Item", "eh?", 
+        Consumable drop = new Consumable(nextLineData[0], "eh?", 
                                       "assets/images/"+nextLineData[1]+".png"); 
         HoldableFactory.holdablePool.put(drop.getName(), drop);
         lineToRead = input.readLine();
