@@ -59,6 +59,9 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_ESCAPE:
         this.stardubePlayer.setInMenu(false);
         break;
+      case KeyEvent.VK_P:
+        this.stardubeWorld.doDayEndActions();
+        break;
     }
   }
 

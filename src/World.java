@@ -166,15 +166,16 @@ public class World {
                         (((GroundTile)selectedTile).getTilledStatus() == true)) {
               ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
             }
-            ((GroundTile)selectedTile).determineImage(this.inGameDay);
           } else {
             if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-                //TODO: make sure to remove the tile from growables once implemented
+              if (selectedTile.getContent() instanceof ExtrinsicCrop) {
+                ((FarmArea)this.playerArea).removeTileWithCrop(selectedTile);
+              }
               selectedTile.setContent(null);
               ((GroundTile)selectedTile).setTilledStatus(false);
             }
-          }
-          ((GroundTile)selectedTile).determineImage(this.inGameDay); //- Ground tile changes image based on what happened
+          } //- Ground tile changes image based on what happened
+          ((GroundTile)selectedTile).determineImage(this.inGameDay);
         }
       } else if (event instanceof UtilityUsedEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
@@ -250,7 +251,7 @@ public class World {
               if (((GroundTile)currentTile).getTilledStatus()) {
                 if (this.playerArea instanceof FarmArea) {
                   currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
-                  //((FarmArea)this.playerArea).addTileWithCrop(currentTile);
+                  ((FarmArea)this.playerArea).addTileWithCrop(currentTile);
                 }
               }
             }
