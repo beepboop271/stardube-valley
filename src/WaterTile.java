@@ -32,7 +32,7 @@ public abstract class WaterTile extends Tile {
   }
   
   public static void setFishableTrash() {
-    WaterTile.fishableTrash = new String[] {"Joseph's-Compsci-Mark", "Purple-Algae", "Ethics-Assignment", "Chair-NULL", "Makbooc"};
+    WaterTile.fishableTrash = new String[] {"Joseph's-Compsci-Mark", "Purple-Algae", "Ethics-Assignment", "Chair-NULL", "MakBooc"};
   }
 
   public static String[] getFishableTrash() {

@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import sun.net.www.content.audio.wav;
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -214,12 +217,12 @@ public class World {
           currentTile.setContent(null);
         }
       } else if (event instanceof CastingEndedEvent) {
-        this.player.setImmutable(false);
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
         int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
-        int destX = (int)this.player.getPos().x;
-        int destY = (int)this.player.getPos().y;
+        Point roundedPlayerPos = player.getPos().round();
+        int destX = (int)roundedPlayerPos.x;
+        int destY = (int)roundedPlayerPos.y;
         if (this.player.getOrientation() == World.NORTH) {
           destY -= castDistance;
         } else if (this.player.getOrientation() == World.SOUTH) {
@@ -231,21 +234,33 @@ public class World {
         }
         if (playerArea.hasValidXYAt(destX, destY)) {
           if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
-            // TODO: change this to a start game event (emplaced at a random future time and waits for mouseclick)
-            int fishableChoice = random.nextInt(100); 
-            if ((((WaterTile)(playerArea.getMapAt(destX, destY))).getFishableFish().length==0)
-                || (fishableChoice <= 30)) { // TODO: make this associated with luck
-              System.out.println("the player gets a "+WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
-              Holdable trashEarned = HoldableFactory.getHoldable(
-                                     WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
-              this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(trashEarned, 1)));
-            } else {
-              this.player.setCurrentFishingGame(new FishingGame((WaterTile)(playerArea.getMapAt(destX, destY))));
-            }
-          }// else {
-          //  System.out.println("not a fishable tile");
-          //}
+            rodUsed.setTileToFish((WaterTile)(playerArea.getMapAt(destX, destY)));
+            rodUsed.setCurrentStatus(FishingRod.WAITING_STATUS);
+          } else {
+            // TODO: play animation
+            this.player.setImmutable(false);
+          }
+        } else {
+          // TODO: play animation
+          this.player.setImmutable(false);
         }
+        
+      } else if (event instanceof CatchFishEvent) {
+        FishingRod rodUsed = ((CatchFishEvent)event).getRodUsed();
+        long catchNanoTime = ((CatchFishEvent)event).getCatchNanoTime();
+        if (true) {
+          int fishableChoice = random.nextInt(100); 
+          if ((rodUsed.getTileToFish().getFishableFish().length==0)
+              || (fishableChoice <= 30)) { // TODO: make this associated with luck
+            Holdable trashEarned = HoldableFactory.getHoldable(
+                                   WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
+            this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(trashEarned, 1)));
+          } else {
+            this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
+          }
+        }
+        this.player.setImmutable(false);
+        rodUsed.setCurrentStatus(FishingRod.IDLING_STATUS);
       } else if (event instanceof FishingGameEndedEvent) {
         FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();
         if (gameEnded.getCurrentStatus() == FishingGame.WIN_STATUS) {
@@ -253,9 +268,10 @@ public class World {
           this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(fishEarned, 1)));
         }
         this.player.setImmutable(false);
-        
+
       } else if (event instanceof HoldableStackGainedEvent) {
         HoldableStack stackGained = (HoldableStack)(((HoldableStackGainedEvent)event).getSource());
+        //System.out.println(stackGained.getContainedHoldable().getName()+" is gained");
         this.player.pickUp(stackGained);
       } else if (event instanceof ComponentPlacedEvent) {
         Tile currentTile = this.playerArea.getMapAt(

@@ -98,7 +98,6 @@ class FishingGame {
     if(fishableFish.length == 0) {
       return null;
     }
-    System.out.println("the player gets a "+fishableFish[this.random.nextInt(fishableFish.length)]);
     return HoldableFactory.getHoldable(fishableFish[this.random.nextInt(fishableFish.length)]);
   }
 

@@ -1,4 +1,4 @@
-Purple-Algae      /holdables/TestImg           nice-fish       1          10 15                       5 5
+Purple-Algae      /holdables/Purple-Algae      nice-fish       1          10 15                       5 5
 Popcorn-Fish      /holdables/Popcorn-Fish      nice-fish       3          10 15                       5 5
 Burger-Fish       /holdables/Burger-Fish       nice-fish       3          10 15                       5 5
 Boba-Fish         /holdables/Boba-Fish         nice-fish       3          10 15                       5 5
@@ -6,8 +6,8 @@ Carp              /holdables/Carp              nice-fish       3          10 15 
 Smallmouth-Bass   /holdables/Smallmouth-Bass   nice-fish       3          10 15                       5 5
 Largemouth-Bass   /holdables/Largemouth-Bass   nice-fish       3          10 15                       5 5
 Tuna              /holdables/Tuna              nice-fish       3          10 15                       5 5
-Anchovy           /holdables/TestImg           nice-fish       3          10 15                       5 5
-Sardine           /holdables/TestImg           nice-fish       3          10 15                       5 5
+Anchovy           /holdables/Anchovy           nice-fish       3          10 15                       5 5
+Sardine           /holdables/Sardine           nice-fish       3          10 15                       5 5
 ParsnipItem       /crops/ParsnipItem           gamer-crop      3          15 30                       10 20
 WatermelonItem    /crops/WatermelonItem        lamer-crop      3          40 60                       10 20
 CornItem          /crops/CornItem              tamer-crop      3          30 40                       10 20

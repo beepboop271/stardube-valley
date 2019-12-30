@@ -127,25 +127,24 @@ public class StardubeEventListener implements KeyListener,
   public void mousePressed(MouseEvent e) {
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();    
-
-    if (this.stardubePlayer.isInFishingGame()) {
-      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-      fishingGame.setMouseDown(true);
-      fishingGame.updateLastPressNanoTime();
-    } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
-      if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
-        HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
-        if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod) { // if is not inside hotbar, start casting
-          if (!((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-               (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-               (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-               (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE))) {
-          ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
-          this.stardubePlayer.setImmutable(true);
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      if (this.stardubePlayer.isInFishingGame()) {
+        FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+        fishingGame.setMouseDown(true);
+        fishingGame.updateLastPressNanoTime();
+      } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
+        if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
+          HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
+          if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod) {
+            if (!this.isMousePosInHotbar()) {
+            ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
+            this.stardubePlayer.setImmutable(true);
+            }
           }
         }
       }
     }
+
   }
 
   @Override
@@ -170,10 +169,7 @@ public class StardubeEventListener implements KeyListener,
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection
-        if ((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-        (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-        (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-        (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)) {
+        if (this.isMousePosInHotbar()) {
           int selectedItemIdx = Math.min((int)(Math.floor((this.mousePos.x-this.worldPanel.getHotbarX())/
                                 (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
@@ -210,11 +206,12 @@ public class StardubeEventListener implements KeyListener,
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
           if (selectedItem instanceof FishingRod) { // is casting
             // TODO: play animation
-            if(((FishingRod)selectedItem).isCasting()) {
-              //System.out.println("casting ended");
+            if (((FishingRod)selectedItem).getCurrentStatus() == FishingRod.CASTING_STATUS) {
               this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
                                 new CastingEndedEvent((FishingRod)selectedItem));
-              ((FishingRod)selectedItem).setIsCasting(false);
+              ((FishingRod)selectedItem).setCurrentStatus(FishingRod.IDLING_STATUS);
+            } else if (((FishingRod)selectedItem).getCurrentStatus() == FishingRod.WAITING_STATUS) {
+              this.stardubeWorld.emplaceFutureEvent(0, new CatchFishEvent((FishingRod)selectedItem));
             }
           }
         }
@@ -288,13 +285,12 @@ public class StardubeEventListener implements KeyListener,
                                   .round());
 
   }
-  // private void updateSelectedItemIdx() {
-  //   int selectedItemIdx = (int)(Math.floor(this.mousePos.x-(this.worldPanel.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)))
-  //                                             /(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
-  //   if (selectedItemIdx>=12) {
-  //     selectedItemIdx = 11;
-  //   }
-  //   this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
-  //   //System.out.println("selected item id: "+selectedItemIdx);
-  // }
+
+  private boolean isMousePosInHotbar() {
+    return (((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
+            (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+            (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
+            (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)));
+  }
+
 }
