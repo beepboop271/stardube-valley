@@ -1,12 +1,20 @@
-import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-public class IntrinsicCrop extends TileComponent implements Harvestable {
+/**
+ * [ExtrinsicCrop]
+ * 2019-12-23
+ * @version 0.1
+ * @author Joseph Wang
+ */
+
+public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable {
   private String requiredTool;
   private int[] stageToDisplay;
-  private int maxGrowthStage;
+  private int maxGrowthStage, regrowTime;
   
-  public IntrinsicCrop(String name, String imagesPath, String requiredTool, String[] growthData) {
-    super(name, imagesPath, 1);
+  public IntrinsicCrop(String name, String imagesPath, String requiredTool,
+                       String[] growthData) throws IOException {
+    super(name, imagesPath, 1); // All crops only drop 1 product, the item.
     
     int totalStages = Integer.parseInt(growthData[0]);
     this.maxGrowthStage = Integer.parseInt(growthData[1]);
@@ -18,7 +26,7 @@ public class IntrinsicCrop extends TileComponent implements Harvestable {
     */   
     this.stageToDisplay = new int[this.maxGrowthStage];
     for (int i = 0, k = 0; i < totalStages - 1; ++i) {
-      for (int j = 0; j < Integer.parseInt(growthData[1 + i]); j++) {
+      for (int j = 0; j < Integer.parseInt(growthData[2 + i]); j++) {
         this.stageToDisplay[k] = i;
         k++;
       }
@@ -26,12 +34,24 @@ public class IntrinsicCrop extends TileComponent implements Harvestable {
 
     //- totalStages convieniently contains the last stage, which is the finished crop
     this.stageToDisplay[this.maxGrowthStage - 1] = totalStages; 
+    this.regrowTime = Integer.parseInt(growthData[growthData.length - 1]);
 
-    this.requiredTool = requiredTool;
+    this.requiredTool = requiredTool; 
   }
 
   public int getStageToDisplay(int day) {
     return stageToDisplay[day];
+  }
+
+  public int getMaxGrowthStage() {
+    return this.maxGrowthStage;
+  }
+
+  /**
+   * @return the regrowTime
+   */
+  public int getRegrowTime() {
+    return this.regrowTime;
   }
 
   @Override

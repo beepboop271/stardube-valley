@@ -215,10 +215,9 @@ public class StardubeEventListener implements KeyListener,
           } else if (selectedItem instanceof Seeds) {
             this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*1_000_000_000),
-              new SeedsUsedEvent(
-                (Seeds)selectedItem, 
-                ((Seeds)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0], 
-                ((Seeds)selectedItem).getCropToMake()
+              new ComponentPlacedEvent(
+                ((Seeds)selectedItem).createCrop(),
+                this.stardubePlayer.getSelectedTile()
               )
             );
           } else if (selectedItem instanceof FishingRod) { // is casting

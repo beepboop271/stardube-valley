@@ -1,19 +1,28 @@
-@SuppressWarnings("serial")
-public class SeedsUsedEvent extends UseableUsedEvent {
-  private Point locationUsed;
-  private String cropToPlant;
+import java.util.EventObject;
 
-  public SeedsUsedEvent(Seeds seedUsed, Point locationUsed, String cropToPlant) {
-    super(seedUsed);
+/**
+ * [ComponentPlacedEvent]
+ * 2019-12-26
+ * @version 0.1
+ * @author Joseph Wang
+ */
+
+@SuppressWarnings("serial")
+public class ComponentPlacedEvent extends EventObject {
+  private Point locationUsed;
+  private TileComponent componentToPlace;
+
+  public ComponentPlacedEvent(TileComponent component, Point locationUsed) {
+    super(component); //wth is the source
+    this.componentToPlace = component;
     this.locationUsed = locationUsed;
-    this.cropToPlant = cropToPlant;
   }
 
   public Point getLocationUsed() {
     return (Point)this.locationUsed.clone();
   }
 
-  public String getCropToPlant() {
-    return this.cropToPlant;
+  public TileComponent getComponentToPlace() {
+    return this.componentToPlace;
   }
 }

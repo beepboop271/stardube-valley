@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @author Kevin Qiao, Paula Yuan, Joseph Wang
  */
 public class World {
   public static final int NORTH = 0;
@@ -146,7 +146,7 @@ public class World {
                     toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
                 )
             );
-          }
+          } //TODO: make these tools not dependant on world
         } else if (selectedTile instanceof GroundTile) {
           if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
             ((GroundTile)selectedTile).setTilledStatus(true);
@@ -175,6 +175,23 @@ public class World {
           new HoldableStackEntity(drop, null); // TODO: change the pos
           this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
           currentTile.setContent(null);
+        }
+      } else if (event instanceof ComponentPlacedEvent) {
+        Tile currentTile = this.playerArea.getMapAt(
+                                        ((ComponentPlacedEvent)event).getLocationUsed());
+        TileComponent currentContent = currentTile.getContent();
+        if (currentContent == null) { //- Anything that you can place must not be placed over something
+          //- We need to make sure that the tile is both a ground tile and is tilled if
+          //- we're trying to plant a crop in that tile
+          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+            if (currentTile instanceof GroundTile) {
+              if (((GroundTile)currentTile).getTilledStatus()) {
+                currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+              }
+            }
+          } else { //- If it's not a crop, you can place it anywhere
+            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+          }
         }
       }
     }

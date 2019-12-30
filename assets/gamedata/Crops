@@ -1,7 +1,7 @@
 3
-Parsnip      /crops      ParsnipItem       any     5       4   1 1 1            0 
-Watermelon   /crops      WatermelonItem    any     7       10  1 1 2 2 1 2      0    
-Corn         /crops      CornItem          any     7       13  1 2 3 3 2 2      4      
+Parsnip      /crops/Parsnip/         ParsnipItem       any       1       5       4   1 1 1            0 
+Watermelon   /crops/Watermelon/      WatermelonItem    any       1       7       10  1 1 2 2 1 2      0    
+Corn         /crops/Corn/            CornItem          any       3       7       13  1 2 3 3 2 2      4      
 
-name        path        drop            tool needed stages   daystogrow       regrow  
-                                                                          (0 means no regrow)
+name        path                 drop           toolneeded  maxdrops  stages   daystogrow         regrow  
+                                                                                                  (0 means no regrow)

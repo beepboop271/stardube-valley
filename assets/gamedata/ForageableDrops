@@ -1,12 +1,12 @@
 8
 TurnipItem     /forageables/TurnipItem          
-DaffodilItem   /forageables/Daffodil      
+DaffodilItem   /forageables/DaffodilItem      
 LeekItem       /forageables/LeekItem              
-BluebellItem   /forageables/Bluebell      
-IceCreamItem   /forageables/IceCream      
-MushroomItem   /forageables/Mushroom      
-WinterRootItem /forageables/WinterRoot  
-JavacakeItem   /forageables/Javacake      
+BluebellItem   /forageables/BluebellItem      
+IceCreamItem   /forageables/IceCreamItem     
+MushroomItem   /forageables/MushroomItem      
+WinterRootItem /forageables/WinterRootItem  
+JavacakeItem   /forageables/JavacakeItem      
 QuartzItem     /ores/Quartz                 
 
 name          img                      
