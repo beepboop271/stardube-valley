@@ -270,9 +270,9 @@ public class StardubeEventListener implements KeyListener,
   public void mouseWheelMoved(MouseWheelEvent e) {
     int rotation = e.getWheelRotation();
     if (rotation < 0) {
-      this.stardubePlayer.incrementSelectedItemIdx();
-    } else if (rotation > 0) {
       this.stardubePlayer.decrementSelectedItemIdx();
+    } else if (rotation > 0) {
+      this.stardubePlayer.incrementSelectedItemIdx();
     }
   }
 
