@@ -27,6 +27,6 @@ public class FarmArea extends Area {
 
   @Override
   public void doDayEndActions() {
-    Iterator<Tile> allTilesWithCrops = this.tilesWithCrops.iterator();
+    //Iterator<Tile> allTilesWithCrops = this.tilesWithCrops.iterator();
   }
 }

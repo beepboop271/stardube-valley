@@ -252,7 +252,7 @@ public class WorldPanel extends JPanel {
       Holdable selectedItem = worldPlayer.getSelectedItem().getContainedHoldable();
       if (selectedItem instanceof FishingRod) {
         FishingRod playerCurrentRod = (FishingRod)selectedItem;
-        if (playerCurrentRod.isCasting()){
+        if (playerCurrentRod.getCurrentStatus() == FishingRod.CASTING_STATUS){
         // if player is casting, draw casting meter
         // TODO: make the display postion beside the player
         g.setColor(Color.BLACK);
@@ -291,7 +291,7 @@ public class WorldPanel extends JPanel {
     }
 
   }
-  
+
   public int getHotbarX() {
     return this.hotbarX;
   }
