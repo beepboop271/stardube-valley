@@ -4,10 +4,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-import java.util.Arrays; //temp
-
 /**
  * [IntrinsicTileComponent]
  * 2019-12-17
@@ -26,6 +22,7 @@ public abstract class IntrinsicTileComponent extends TileComponent
                                 int numProducts) throws IOException {
     this.name = name;
     this.products = new HoldableDrop[numProducts];
+    
     File fileSystem = new File(imagesPath);
     String[] allFiles = fileSystem.list();
     this.images = new BufferedImage[allFiles.length];

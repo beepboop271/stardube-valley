@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
  * [ExtrinsicTileComponent]
  * 2019-12-26
  * @version 0.1
- * @author Kevin Qiao, Joseph Wwang
+ * @author Kevin Qiao, Joseph Wang
  */
 
 public abstract class ExtrinsicTileComponent extends TileComponent 

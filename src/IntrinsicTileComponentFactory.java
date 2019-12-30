@@ -30,59 +30,64 @@ public class IntrinsicTileComponentFactory {
 
     IntrinsicTileComponentFactory.componentPool = new HashMap<String, IntrinsicTileComponent>();
     BufferedReader input;
+    String lineToRead;
+    String[] nextLineData;
 
     int numComponents;
     IntrinsicTileComponent componentToAdd;
-    String[] nextLine;
+    
     try {
       input = new BufferedReader(new FileReader("assets/gamedata/HarvestableComponents"));
-      numComponents = Integer.parseInt(input.readLine());
-      for (int i = 0; i < numComponents; ++i) {
-        nextLine = input.readLine().split("\\s+");
-        // System.out.println("Loading" + nextLine[0]);
-        componentToAdd = new IntrinsicHarvestableComponent(nextLine[0],
-                                                           "assets/images"+nextLine[1],
-                                                           nextLine[2],
-                                                           Integer.parseInt(nextLine[3]),
-                                                           Integer.parseInt(nextLine[4]));
-        // TODO: uncomment after holdables added
-        // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
-        //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
-        //                                                 Integer.parseInt(nextLine[6+(j*3)]),
-        //                                                 Integer.parseInt(nextLine[7+(j*3)])));
-        // }
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        componentToAdd = new IntrinsicHarvestableComponent(nextLineData[0],
+                                                           "assets/images"+nextLineData[1],
+                                                           nextLineData[2],
+                                                           Integer.parseInt(nextLineData[3]),
+                                                           Integer.parseInt(nextLineData[4]));
+
         componentPool.put(componentToAdd.getName(), componentToAdd);
+        // TODO: uncomment after holdables added (this may not be relevant anymore)
+          // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
+          //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
+          //                                                 Integer.parseInt(nextLine[6+(j*3)]),
+          //                                                 Integer.parseInt(nextLine[7+(j*3)])));
+          // }  
+        lineToRead = input.readLine();  
       }
       input.close();
 
       input = new BufferedReader(new FileReader("assets/gamedata/CollectableComponents"));
-      numComponents = Integer.parseInt(input.readLine());
-      for (int i = 0; i < numComponents; ++i) {
-        nextLine = input.readLine().split("\\s+");
-        // System.out.println("Loading" + nextLine[0]);
-        componentToAdd = new CollectableComponent(nextLine[0],
-                                                  "assets/images"+nextLine[1],
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        componentToAdd = new CollectableComponent(nextLineData[0],
+                                                  "assets/images"+nextLineData[1],
                                                   1);
         // TODO: uncomment when drops added
-        componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLine[2]));
-        if (nextLine[3].equals("y")) {
+        componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLineData[2]));
+        if (nextLineData[3].equals("y")) {
           forageables.add((CollectableComponent)componentToAdd);
         }
         componentPool.put(componentToAdd.getName(), componentToAdd);
+
+        lineToRead = input.readLine();
       }
       input.close();
 
       input = new BufferedReader(new FileReader("assets/gamedata/Crops"));
-      numComponents = Integer.parseInt(input.readLine());
-      for (int i = 0; i < numComponents; ++i) {
-        nextLine = input.readLine().split("\\s+");
-        // System.out.println("Loading" + nextLine[0]);
-        componentToAdd = new IntrinsicCrop(nextLine[0], 
-                                          "assets/images" + nextLine[1], 
-                                          nextLine[3], 
-                                          Arrays.copyOfRange(nextLine, 5, nextLine.length));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        componentToAdd = new IntrinsicCrop(nextLineData[0], 
+                                          "assets/images" + nextLineData[1], 
+                                          nextLineData[3], 
+                                          Arrays.copyOfRange(nextLineData, 5, nextLineData.length));
         componentToAdd.setProduct(0, 
-                                  new HoldableDrop(1, Integer.parseInt(nextLine[4]), nextLine[2]));
+                                  new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
+        
+        lineToRead = input.readLine();
       }
     } catch (IOException e) {
       e.printStackTrace();

@@ -25,6 +25,7 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
      * until the specified duration is over.
     */   
     this.stageToDisplay = new int[this.maxGrowthStage];
+    
     for (int i = 0, k = 0; i < totalStages - 1; ++i) {
       for (int j = 0; j < Integer.parseInt(growthData[2 + i]); j++) {
         this.stageToDisplay[k] = i;
