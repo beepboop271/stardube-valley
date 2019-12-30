@@ -18,13 +18,18 @@ import javax.swing.JPanel;
 public class WorldPanel extends JPanel {
   public static final int HOTBAR_CELLSIZE = 64;
   public static final int HOTBAR_CELLGAP = 4;
+  public static final Color INVENTORY_BKGD_COLOR = new Color(155, 60, 0);
+  public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
+  public static final Color INVENTORY_QUANTITY_COLOR = new Color(60, 20, 0);
   
   private final Font timeFont;
+  private final Font quantityFont;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
   private int menuX, menuY, menuW, menuH;
+
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
@@ -48,6 +53,7 @@ public class WorldPanel extends JPanel {
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
 
     this.timeFont = new Font("Comic Sans MS", Font.BOLD, 40);
+    this.quantityFont = new Font("Comic Sans MS", Font.BOLD, 18);
 
     this.setOpaque(true);
   }
@@ -139,25 +145,35 @@ public class WorldPanel extends JPanel {
     } else {
       hotbarY = this.getHeight()-WorldPanel.HOTBAR_CELLSIZE-WorldPanel.HOTBAR_CELLGAP*4;
     }
-    g.setColor(Color.GREEN);
+    g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
     g.fillRect(hotbarX, hotbarY,
                12*WorldPanel.HOTBAR_CELLSIZE + 13*WorldPanel.HOTBAR_CELLGAP,
                WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP);
     for (int i = 0; i < 12; i++) {
-      g.setColor(Color.BLACK);
+      g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
       g.fillRect(hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
                  hotbarY+WorldPanel.HOTBAR_CELLGAP/2,
                  WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-      // draw inventory item correspondingly
+      // draw inventory holdables correspondingly
       if (worldPlayer.getInventory()[i] != null) {
         if (worldPlayer.getInventory()[i].getContainedHoldable() != null) {
-          if (worldPlayer.getInventory()[i].getContainedHoldable().getImage()!=null) {
-            g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
-                      hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
-                      hotbarY+WorldPanel.HOTBAR_CELLGAP/2, null);
-          }
+          g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
+                    hotbarX+i*WorldPanel.HOTBAR_CELLSIZE+(i+1)*WorldPanel.HOTBAR_CELLGAP,
+                    hotbarY+WorldPanel.HOTBAR_CELLGAP/2, null);
+        }
+        // displays the quantity of the holdable (if > 1)
+        if (worldPlayer.getInventory()[i].getQuantity() > 1) {
+          Graphics2D hotbarQuantityGraphics = (Graphics2D)g;
+          hotbarQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+          hotbarQuantityGraphics.setFont(this.quantityFont);
+          hotbarQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                              RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+          hotbarQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i].getQuantity()),
+                        hotbarX+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/5,
+                        hotbarY+WorldPanel.HOTBAR_CELLSIZE);
         }
       }
+      
       // outlines selected item
       if (i == worldPlayer.getSelectedItemIdx()){
         g.setColor(Color.RED);
@@ -184,32 +200,46 @@ public class WorldPanel extends JPanel {
       g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
       // TODO: inv tab buttons (y: this.menuY)
       // inventory display (y:this.menuY+1~3(cellgap+cellsize))
+      g.setColor(INVENTORY_BKGD_COLOR);
+      g.fillRect(this.menuX, this.menuY, this.menuW, 3*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 12; j++) {
-          g.setColor(Color.BLACK);
-          g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                     this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
-                    WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-          
+          // draw inventory item correspondingly
+          if ((i*12+j)<worldPlayer.getInventory().length){
+            g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+            g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                      this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                      WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+            if (worldPlayer.getInventory()[i*12+j] != null) {
+              if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
+                g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
+                            this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                            this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
+                // displays the quantity of the holdable (if > 1)
+                if (worldPlayer.getInventory()[i].getQuantity() > 1) {
+                  Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
+                  invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+                  invMenuQuantityGraphics.setFont(this.quantityFont);
+                  invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/5,
+                                this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
+                }
+              }
+            }
+          } else { // display locked slots in a different color
+            g.setColor(new Color(230, 165, 100));
+            g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                      this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                      WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+          }
           // outline selected item
           if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
             g.setColor(Color.RED);
             g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
                        this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-          }
-
-          // draw inventory item correspondingly
-          if ((i*12+j)<worldPlayer.getInventory().length){
-            if (worldPlayer.getInventory()[i*12+j] != null) {
-              if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
-                if (worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage()!=null) {
-                  g.drawImage(worldPlayer.getInventory()[i].getContainedHoldable().getImage(),
-                              this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                              this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
-                }
-              }
-            }
           }
         }
       }

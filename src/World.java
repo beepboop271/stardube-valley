@@ -6,12 +6,13 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Random;
 
 /**
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang
  */
 public class World {
   public static final int NORTH = 0;
@@ -29,6 +30,8 @@ public class World {
   private long inGameNanoTime;
   private long inGameDay = 0;
   private double luckOfTheDay;
+
+  private Random random = new Random();
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -160,7 +163,8 @@ public class World {
           // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           new HoldableStackEntity(drop, null); // TODO: change the pos
-          this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
+          this.emplaceFutureEvent(0, new HoldableStackGainedEvent(drop));
+          //this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
           currentTile.setContent(null);
         }
       } else if (event instanceof CastingEndedEvent) {
@@ -182,8 +186,16 @@ public class World {
         if (playerArea.hasValidXYAt(destX, destY)) {
           if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
             // TODO: change this to a start game event (emplaced at a random future time and waits for mouseclick)
-            // TODO: there is a random chance that a trash is returned, and the game will not start
-            this.player.setCurrentFishingGame(new FishingGame((WaterTile)(playerArea.getMapAt(destX, destY))));
+            int fishableChoice = random.nextInt(100); 
+            if ((((WaterTile)(playerArea.getMapAt(destX, destY))).getFishableFish().length==0)
+                || (fishableChoice <= 30)) { // TODO: make this associated with luck
+              System.out.println("the player gets a "+WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
+              Holdable trashEarned = HoldableFactory.getHoldable(
+                                     WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
+              this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(trashEarned, 1)));
+            } else {
+              this.player.setCurrentFishingGame(new FishingGame((WaterTile)(playerArea.getMapAt(destX, destY))));
+            }
           }// else {
           //  System.out.println("not a fishable tile");
           //}
@@ -192,10 +204,13 @@ public class World {
         FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();
         if (gameEnded.getCurrentStatus() == FishingGame.WIN_STATUS) {
           Holdable fishEarned = ((FishingGameEndedEvent)event).getFishReturned();
-          this.player.pickUp(new HoldableStack(fishEarned, 1));          
+          this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(fishEarned, 1)));
         }
         this.player.setImmutable(false);
         
+      } else if (event instanceof HoldableStackGainedEvent) {
+        HoldableStack stackGained = (HoldableStack)(((HoldableStackGainedEvent)event).getSource());
+        this.player.pickUp(stackGained);
       }
 
     }

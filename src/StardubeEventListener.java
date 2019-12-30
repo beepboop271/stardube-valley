@@ -159,9 +159,9 @@ public class StardubeEventListener implements KeyListener,
         HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
         if (selectedHoldableStack.getContainedHoldable() != null){
           // casting
-          // TODO: change this to a start casting event
           if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod){
             ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
+            this.stardubePlayer.setImmutable(true);
           }
         }
       }
@@ -199,28 +199,30 @@ public class StardubeEventListener implements KeyListener,
     if (this.stardubePlayer.isInFishingGame()) {
       FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
       fishingGame.setMouseDown(false);
-    } else if (!(this.stardubePlayer.isInMenu() || this.stardubePlayer.isImmutable())) {
+    } else if (!this.stardubePlayer.isInMenu()) {
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
           if (selectedItem instanceof UtilityTool) {
-            this.stardubePlayer.setImmutable(true);
-            // TODO: play animation
-            // scuffed line
-            this.stardubeWorld.emplaceFutureEvent(
-                (long)(0.5*1_000_000_000),
-                new UtilityToolUsedEvent(
-                    (UtilityTool)selectedItem,
-                    ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
-                )
-            );
+            if (!this.stardubePlayer.isImmutable()) {
+              this.stardubePlayer.setImmutable(true);
+              // TODO: play animation
+              // scuffed line
+              this.stardubeWorld.emplaceFutureEvent(
+                  (long)(0.5*1_000_000_000),
+                  new UtilityToolUsedEvent(
+                      (UtilityTool)selectedItem,
+                      ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                  )
+              );
+            }
           } else if (selectedItem instanceof FishingRod) { // is casting
             // TODO: play animation
             if(((FishingRod)selectedItem).isCasting()) {
+              //System.out.println("casting ended");
               this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
                                 new CastingEndedEvent((FishingRod)selectedItem));
               ((FishingRod)selectedItem).setIsCasting(false);
-              //((FishingRod)selectedItem).endCasting();
             }
           }
         }

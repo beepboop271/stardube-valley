@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * [SharedTileComponent]
+ * [IntrinsicTileComponent]
  * 2019-12-17
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan

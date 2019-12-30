@@ -68,6 +68,7 @@ public class Player extends Moveable {
         return;
       }
     }
+    System.out.println("inventory full");
   }
 
   public void setCurrentFishingGame(FishingGame fishingGame){
@@ -161,4 +162,5 @@ public class Player extends Moveable {
   public boolean isInFishingGame() {
     return (this.currentFishingGame != null);
   }
+
 }
