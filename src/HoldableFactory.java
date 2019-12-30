@@ -72,7 +72,7 @@ public class HoldableFactory {
       }
       input.close();
       // - fishable consumables
-      input = new BufferedReader(new FileReader("assets/gamedata/FishableConsumables"));
+      input = new BufferedReader(new FileReader("assets/gamedata/Consumables"));
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");

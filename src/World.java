@@ -21,7 +21,6 @@ public class World {
   public static final int WEST = 3;
 
   private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
-
   private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
@@ -157,22 +156,29 @@ public class World {
             );
           } //TODO: make these tools not dependant on world
         } else if (selectedTile instanceof GroundTile) {
-          if (selectedTile.getContent() == null) {
+          if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
+              (((GroundTile)selectedTile).getTilledStatus() == true)) {
+                ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+
+          } else if (selectedTile.getContent() == null) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
               ((GroundTile)selectedTile).setTilledStatus(true);
+              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               ((GroundTile)selectedTile).setTilledStatus(false); 
-            } else if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
-                        (((GroundTile)selectedTile).getTilledStatus() == true)) {
-              ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+
+              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              }
             }
           } else {
             if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               if (selectedTile.getContent() instanceof ExtrinsicCrop) {
-                ((FarmArea)this.playerArea).removeTileWithCrop(selectedTile);
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
               selectedTile.setContent(null);
-              ((GroundTile)selectedTile).setTilledStatus(false);
             }
           } //- Ground tile changes image based on what happened
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
@@ -185,7 +191,19 @@ public class World {
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
-        if (currentContent instanceof Collectable) {
+        if (currentContent instanceof ExtrinsicCrop) {
+          if (((ExtrinsicCrop)currentContent).canHarvest()) {
+            System.out.println(((ExtrinsicCrop)currentContent).getProduct());
+            HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
+            HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+            this.emplaceFutureEvent(0, new HoldableStackGainedEvent(product));
+            if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
+              ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
+            } else {
+              currentTile.setContent(null);
+            }
+          }
+        } else if (currentContent instanceof Collectable) {
         //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           // also for some reason the above is sometimes null and i don't know why :D
@@ -251,7 +269,7 @@ public class World {
               if (((GroundTile)currentTile).getTilledStatus()) {
                 if (this.playerArea instanceof FarmArea) {
                   currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
-                  ((FarmArea)this.playerArea).addTileWithCrop(currentTile);
+                  ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
                 }
               }
             }
@@ -269,8 +287,11 @@ public class World {
     ++this.inGameDay;
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
+    Area nextArea;
     while (areas.hasNext()) {
-      areas.next().doDayEndActions();
+      nextArea = areas.next();
+      nextArea.doDayEndActions();
+      nextArea.setCurrentDay(this.inGameDay);
     }
   }
 

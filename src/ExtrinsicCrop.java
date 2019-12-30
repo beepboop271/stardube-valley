@@ -25,7 +25,7 @@ public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
   }
 
   public boolean canHarvest() {
-    if (this.stage == ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage()) {
+    if (this.stage == ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
       return true;
     }
     return false;
@@ -48,16 +48,19 @@ public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
 
   @Override
   public BufferedImage getImage() {
-    if (this.getIntrinsicSelf() == null) {
-      System.out.println("You have an issue");
+    if (regrowCooldown == 0) {
+      return this.getIntrinsicSelf().getImages()[
+              ((IntrinsicCrop)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
     }
+
     return this.getIntrinsicSelf().getImages()[
-            ((IntrinsicCrop)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
+              this.getIntrinsicSelf().getImages().length - 2]; 
+              //- .length - 1 gives the full harvested image. We want .length - 2
   }
 
   @Override
   public void grow() {
-    if (this.stage < ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage()) { 
+    if (this.stage < ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) { 
       this.stage++;
     }
 

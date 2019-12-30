@@ -87,7 +87,6 @@ public class IntrinsicTileComponentFactory {
         componentToAdd.setProduct(0, 
                                   new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
         
-        System.out.println(componentToAdd.getName());
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();
       }
