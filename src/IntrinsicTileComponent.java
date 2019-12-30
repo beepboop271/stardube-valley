@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -26,7 +27,6 @@ public abstract class IntrinsicTileComponent extends TileComponent
     File fileSystem = new File(imagesPath);
     String[] allFiles = fileSystem.list();
     this.images = new BufferedImage[allFiles.length];
-
     try {
       for (int i = 0, j = 0; i < allFiles.length; i++) {
         this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));

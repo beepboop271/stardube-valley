@@ -48,6 +48,9 @@ public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
 
   @Override
   public BufferedImage getImage() {
+    if (this.getIntrinsicSelf() == null) {
+      System.out.println("You have an issue");
+    }
     return this.getIntrinsicSelf().getImages()[
             ((IntrinsicCrop)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
   }

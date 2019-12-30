@@ -157,16 +157,24 @@ public class World {
             );
           } //TODO: make these tools not dependant on world
         } else if (selectedTile instanceof GroundTile) {
-          if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
-            ((GroundTile)selectedTile).setTilledStatus(true);
-          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-            ((GroundTile)selectedTile).setTilledStatus(false);
-          } else if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
-                      (((GroundTile)selectedTile).getTilledStatus() == true)) {
-            ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+          if (selectedTile.getContent() == null) {
+            if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+              ((GroundTile)selectedTile).setTilledStatus(true);
+            } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+              ((GroundTile)selectedTile).setTilledStatus(false); 
+            } else if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
+                        (((GroundTile)selectedTile).getTilledStatus() == true)) {
+              ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+            }
+            ((GroundTile)selectedTile).determineImage(this.inGameDay);
+          } else {
+            if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+                //TODO: make sure to remove the tile from growables once implemented
+              selectedTile.setContent(null);
+              ((GroundTile)selectedTile).setTilledStatus(false);
+            }
           }
-
-          ((GroundTile)selectedTile).determineImage(this.inGameDay);
+          ((GroundTile)selectedTile).determineImage(this.inGameDay); //- Ground tile changes image based on what happened
         }
       } else if (event instanceof UtilityUsedEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
@@ -240,7 +248,10 @@ public class World {
           if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
             if (currentTile instanceof GroundTile) {
               if (((GroundTile)currentTile).getTilledStatus()) {
-                currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                if (this.playerArea instanceof FarmArea) {
+                  currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                  //((FarmArea)this.playerArea).addTileWithCrop(currentTile);
+                }
               }
             }
           } else { //- If it's not a crop, you can place it anywhere

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * [ExtrinsicCrop]
@@ -25,7 +26,7 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
      * until the specified duration is over.
     */   
     this.stageToDisplay = new int[this.maxGrowthStage];
-    
+
     for (int i = 0, k = 0; i < totalStages - 1; ++i) {
       for (int j = 0; j < Integer.parseInt(growthData[2 + i]); j++) {
         this.stageToDisplay[k] = i;
@@ -34,7 +35,7 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
     }
 
     //- totalStages convieniently contains the last stage, which is the finished crop
-    this.stageToDisplay[this.maxGrowthStage - 1] = totalStages; 
+    this.stageToDisplay[this.maxGrowthStage - 1] = totalStages - 1; 
     this.regrowTime = Integer.parseInt(growthData[growthData.length - 1]);
 
     this.requiredTool = requiredTool; 
