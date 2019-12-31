@@ -11,12 +11,9 @@ import java.util.ArrayList;
 public class WorldArea extends Area {
   // private TownBuilding[] houses;
 
-  HashSet<Tile> forageableTiles = new HashSet<>(); // TODO: replace with int
+  HashSet<Tile> forageables = new HashSet<>(); // TODO: replace with int
   Random random = new Random();
   ArrayList<Tile> grassTiles = new ArrayList<>();
-  String[] forageables = {"Bluebell", "Daffodil", "IceCream", "Javacake", 
-                          "Leek", "Mushroom", "Turnip", "WinterRoot"}; 
-  // TODO: add other forageables to ^^
 
   public WorldArea(String name,
                    int width, int height) {
@@ -24,14 +21,14 @@ public class WorldArea extends Area {
   }
 
   private void spawnForageables() {
-    int maxToSpawn = 6 - forageableTiles.size();
+    int maxToSpawn = 6 - forageables.size();
     int spawnNum = Math.min(random.nextInt(3) + 2, maxToSpawn);
     for (int i = 0; i < spawnNum; i++) {
-      TileComponent forageable = IntrinsicTileComponentFactory.getComponent(forageables[random.nextInt(8)]);
+      TileComponent forageable = IntrinsicTileComponentFactory.getRandomForageable(random);
       Tile spawnTile = grassTiles.get(random.nextInt(grassTiles.size()));
       if (spawnTile.getContent() == null) {
         spawnTile.setContent(forageable);
-        forageableTiles.add(spawnTile);
+        forageables.add(spawnTile);
       }
     }
   }

@@ -16,6 +16,7 @@ import java.util.Random;
 public class IntrinsicTileComponentFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, IntrinsicTileComponent> componentPool;
+  private static ArrayList<CollectableComponent> forageables = new ArrayList<>(); 
   
   private IntrinsicTileComponentFactory() {
     // do not allow anyone to create an object of this class
@@ -66,6 +67,9 @@ public class IntrinsicTileComponentFactory {
                                                   1);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLineData[2]));
+        if (nextLineData[3].equals("y")) {
+          forageables.add((CollectableComponent)componentToAdd);
+        }
         componentPool.put(componentToAdd.getName(), componentToAdd);
 
         lineToRead = input.readLine();
@@ -96,5 +100,10 @@ public class IntrinsicTileComponentFactory {
       throw new RuntimeException("IntrinsicTileComponentFactory not initialized");
     }
     return IntrinsicTileComponentFactory.componentPool.get(component);
+  }
+
+  public static CollectableComponent getRandomForageable(Random random) {
+    return IntrinsicTileComponentFactory.forageables.get(
+              random.nextInt(IntrinsicTileComponentFactory.forageables.size()));
   }
 }
