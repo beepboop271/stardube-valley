@@ -193,7 +193,11 @@ public class WorldPanel extends JPanel {
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
-
+    g2.drawString(this.worldToDisplay.getSeasons()[this.worldToDisplay.getInGameSeason()],
+                  this.getWidth()-500, 45); 
+    g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay()%28), 
+                  this.getWidth()-300, 45);
+                  
     // inventory menu stuff
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
