@@ -218,7 +218,7 @@ public class WorldPanel extends JPanel {
                             this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
                             this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
                 // displays the quantity of the holdable (if > 1)
-                if (worldPlayer.getInventory()[i].getQuantity() > 1) {
+                if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
                   Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
                   invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
                   invMenuQuantityGraphics.setFont(this.quantityFont);

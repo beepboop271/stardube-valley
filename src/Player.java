@@ -52,26 +52,45 @@ public class Player extends Moveable {
   public void pickUp(HoldableStack items) {
     // could replace with set, just need to test out
     // hashing holdablestacks later
-    if (items == null) {
+    if (!this.canPickUp(items.getContainedHoldable())) {
       return;
     }
-    for (int i = 0; i < inventory.length; ++i) {
+    // if the items of the same type exists, add on to the quantity of the type
+    for (int i = 0; i < this.inventorySize; ++i) {
       // can use primitive equals because all holdables are shared
       if ((this.inventory[i] != null)
             && (this.inventory[i].getContainedHoldable() == items.getContainedHoldable())) {
         this.inventory[i].addHoldables(items.getQuantity());
-        //System.out.println(items.getContainedHoldable().getName()+" added to slot index "+i);
         return;
       }
     }
-    for (int i = 0; i < inventory.length; ++i) {
+    // otherwise, store it in a new slot if there is space
+    
+    for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] == null) {
         this.inventory[i] = items;
-        //System.out.println(items.getContainedHoldable().getName()+" added to slot index "+i);
         return;
       }
     }
-    System.out.println("inventory full");
+  }
+
+  public boolean canPickUp(Holdable item) {
+    if (item == null) {
+      return false;
+    }
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          return true;
+        }
+      }
+    }
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] == null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void setCurrentFishingGame(FishingGame fishingGame){

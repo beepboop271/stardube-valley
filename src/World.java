@@ -199,11 +199,13 @@ public class World {
             System.out.println(((ExtrinsicCrop)currentContent).getProduct());
             HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-            this.emplaceFutureEvent(0, new HoldableStackGainedEvent(product));
-            if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
-              ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
-            } else {
-              currentTile.setContent(null);
+            if (this.player.canPickUp(product.getContainedHoldable())) {
+              this.player.pickUp(product);
+              if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
+                ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
+              } else {
+                currentTile.setContent(null);
+              }
             }
           }
         } else if (currentContent instanceof Collectable) {
@@ -212,9 +214,10 @@ public class World {
           // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           new HoldableStackEntity(drop, null); // TODO: change the pos
-          this.emplaceFutureEvent(0, new HoldableStackGainedEvent(drop));
-          //this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
-          currentTile.setContent(null);
+          if (this.player.canPickUp(drop.getContainedHoldable())) {
+            this.player.pickUp(drop);
+            currentTile.setContent(null);
+          }
         }
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
@@ -254,7 +257,9 @@ public class World {
               || (fishableChoice <= 30)) { // TODO: make this associated with luck
             Holdable trashEarned = HoldableFactory.getHoldable(
                                    WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
-            this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(trashEarned, 1)));
+            if (this.player.canPickUp(trashEarned)) {
+              this.player.pickUp(new HoldableStack(trashEarned, 1));
+            }
           } else {
             this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
           }
@@ -265,14 +270,12 @@ public class World {
         FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();
         if (gameEnded.getCurrentStatus() == FishingGame.WIN_STATUS) {
           Holdable fishEarned = ((FishingGameEndedEvent)event).getFishReturned();
-          this.emplaceFutureEvent(0, new HoldableStackGainedEvent(new HoldableStack(fishEarned, 1)));
+          if (this.player.canPickUp(fishEarned)) {
+            this.player.pickUp(new HoldableStack(fishEarned, 1));
+          }
         }
         this.player.setImmutable(false);
 
-      } else if (event instanceof HoldableStackGainedEvent) {
-        HoldableStack stackGained = (HoldableStack)(((HoldableStackGainedEvent)event).getSource());
-        //System.out.println(stackGained.getContainedHoldable().getName()+" is gained");
-        this.player.pickUp(stackGained);
       } else if (event instanceof ComponentPlacedEvent) {
         Tile currentTile = this.playerArea.getMapAt(
                                         ((ComponentPlacedEvent)event).getLocationUsed());
