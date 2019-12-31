@@ -252,13 +252,18 @@ public class WorldPanel extends JPanel {
       Holdable selectedItem = worldPlayer.getSelectedItem().getContainedHoldable();
       if (selectedItem instanceof FishingRod) {
         FishingRod playerCurrentRod = (FishingRod)selectedItem;
-        if (playerCurrentRod.getCurrentStatus() == FishingRod.CASTING_STATUS){
-        // if player is casting, draw casting meter
-        // TODO: make the display postion beside the player
-        g.setColor(Color.BLACK);
-        g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
-        g.setColor(Color.GREEN);
-        g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
+        if (playerCurrentRod.getCurrentStatus() == FishingRod.CASTING_STATUS) {
+          // if player is casting, draw casting meter
+          // TODO: make the display postion beside the player
+          g.setColor(Color.BLACK);
+          g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
+          g.setColor(Color.GREEN);
+          g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
+        } else if (playerCurrentRod.getCurrentStatus() == FishingRod.WAITING_STATUS) {
+          g.setColor(Color.WHITE);
+          g.drawLine((int)Math.round(playerScreenPos.x), (int)Math.round(playerScreenPos.y+Player.getSize()*Tile.getSize()/10),
+                     Tile.getSize()*(playerCurrentRod.getTileToFish().getX()-tileStartX)+originX+Tile.getSize()/2,
+                     Tile.getSize()*(playerCurrentRod.getTileToFish().getY()-tileStartY)+originY+Tile.getSize()/2);
         }
       }
     }

@@ -3,13 +3,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import sun.net.www.content.audio.wav;
-
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.HashMap;
+import java.util.Timer;
 
 /**
  * [World]
@@ -17,6 +17,7 @@ import java.util.Random;
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
+
 public class World {
   public static final int NORTH = 0;
   public static final int EAST = 1;
@@ -35,6 +36,7 @@ public class World {
   private long inGameDay = 0;
   private int inGameSeason;
   private double luckOfTheDay;
+  private HashMap<Player, Timer> fishingTimers;
 
   private Random random = new Random();
 
@@ -69,6 +71,14 @@ public class World {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
 
+    if (this.player.isInMenu()) {
+      this.lastUpdateTime = currentUpdateTime;
+      return;
+    }
+    
+    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    this.inGameNanoTime %= (long)24*60*1_000_000_000;
+
     if (this.player.isInFishingGame()) {
       this.player.getCurrentFishingGame().update();
       this.player.setImmutable(true);
@@ -77,14 +87,6 @@ public class World {
         this.player.endCurrentFishingGame();
       }
     }
-
-    if (this.player.isInMenu()) {
-      this.lastUpdateTime = currentUpdateTime;
-      return;
-    }
-
-    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
-    this.inGameNanoTime %= (long)24*60*1_000_000_000;
 
     Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
     HoldableStackEntity nextItemEntity;
