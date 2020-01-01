@@ -33,7 +33,7 @@ public class World {
   private Player player;
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
-  private long inGameDay = 0;
+  private long inGameDay;
   private int inGameSeason;
   private double luckOfTheDay;
   private HashMap<Player, Timer> fishingTimers;
@@ -53,6 +53,7 @@ public class World {
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
+    this.inGameDay = 0;
     this.inGameSeason = 0;
 
     // spawn first day items
