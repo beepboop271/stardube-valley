@@ -53,7 +53,7 @@ public class World {
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
-    this.inGameSeason = 1;
+    this.inGameSeason = 0;
 
     // spawn first day items
     this.doDayEndActions();
@@ -76,8 +76,13 @@ public class World {
       return;
     }
     
-    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;
     this.inGameNanoTime %= (long)24*60*1_000_000_000;
+
+    // check for end of day
+    if (this.inGameNanoTime >= 2*60*1_000_000_000l && this.inGameNanoTime <= 6*60*1_000_000_000l) {
+      this.doDayEndActions();
+    }
 
     if (this.player.isInFishingGame()) {
       this.player.getCurrentFishingGame().update();
@@ -192,7 +197,7 @@ public class World {
         //TODO: make this not just for forageables but also doors and stuff i guess
         Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
         if (this.playerArea instanceof WorldArea) {
-          ((WorldArea)this.playerArea).forageables.remove(currentTile);
+          ((WorldArea)this.playerArea).forageableTiles.remove(currentTile);
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
@@ -443,5 +448,13 @@ public class World {
 
   public long getInGameDay() {
     return this.inGameDay;
+  }
+
+  public int getInGameSeason() {
+    return this.inGameSeason;
+  }
+
+  public String[] getSeasons() {
+    return seasons;
   }
 }
