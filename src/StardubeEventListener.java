@@ -201,15 +201,15 @@ public class StardubeEventListener implements KeyListener,
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
-          if (selectedItem instanceof UtilityTool) {
+          if (selectedItem instanceof Tool) {
             this.stardubePlayer.setImmutable(true);
             // TODO: play animation
             // scuffed line
             this.stardubeWorld.emplaceFutureEvent(
                 (long)(0.5*1_000_000_000),
-                new UtilityToolUsedEvent(
-                    (UtilityTool)selectedItem,
-                    ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                new ToolUsedEvent(
+                    (Tool)selectedItem,
+                    ((Tool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())
                 )
             );
           } else if (selectedItem instanceof FishingRod) { // is casting

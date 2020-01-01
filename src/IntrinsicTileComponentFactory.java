@@ -14,7 +14,7 @@ import java.util.Random;
 public class IntrinsicTileComponentFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, IntrinsicTileComponent> componentPool;
-  private static ArrayList<CollectableComponent> forageables = new ArrayList<>(); 
+  private static ArrayList<CollectableTileComponent> forageables = new ArrayList<>(); 
   
   private IntrinsicTileComponentFactory() {
     // do not allow anyone to create an object of this class
@@ -37,7 +37,7 @@ public class IntrinsicTileComponentFactory {
       numComponents = Integer.parseInt(input.readLine());
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
-        componentToAdd = new IntrinsicHarvestableComponent(nextLine[0],
+        componentToAdd = new IntrinsicHarvestableTileComponent(nextLine[0],
                                                            "assets/images/"+nextLine[1],
                                                            nextLine[2],
                                                            Integer.parseInt(nextLine[3]),
@@ -56,13 +56,13 @@ public class IntrinsicTileComponentFactory {
       numComponents = Integer.parseInt(input.readLine());
       for (int i = 0; i < numComponents; ++i) {
         nextLine = input.readLine().split("\\s+");
-        componentToAdd = new CollectableComponent(nextLine[0],
+        componentToAdd = new CollectableTileComponent(nextLine[0],
                                                   "assets/images/"+nextLine[1],
                                                   1);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLine[2]));
         if (nextLine[3].equals("y")) {
-          forageables.add((CollectableComponent)componentToAdd);
+          forageables.add((CollectableTileComponent)componentToAdd);
         }
         componentPool.put(componentToAdd.getName(), componentToAdd);
       }
@@ -79,7 +79,7 @@ public class IntrinsicTileComponentFactory {
     return IntrinsicTileComponentFactory.componentPool.get(component);
   }
 
-  public static CollectableComponent getRandomForageable(Random random) {
+  public static CollectableTileComponent getRandomForageable(Random random) {
     return IntrinsicTileComponentFactory.forageables.get(
               random.nextInt(IntrinsicTileComponentFactory.forageables.size()));
   }
