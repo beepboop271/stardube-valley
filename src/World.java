@@ -285,8 +285,7 @@ public class World {
         this.player.setImmutable(false);
 
       } else if (event instanceof ComponentPlacedEvent) {
-        Tile currentTile = this.playerArea.getMapAt(
-                                        ((ComponentPlacedEvent)event).getLocationUsed());
+        Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
         TileComponent currentContent = currentTile.getContent();
         if (currentContent == null) { //- Anything that you can place must not be placed over something
           //- We need to make sure that the tile is both a ground tile and is tilled if
@@ -297,6 +296,7 @@ public class World {
                 if (this.playerArea instanceof FarmArea) {
                   currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
                   ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                  this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
                 }
               }
             }

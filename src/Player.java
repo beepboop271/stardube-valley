@@ -102,6 +102,27 @@ public class Player extends Moveable {
     return false;
   }
 
+  public void consume() {
+    if (this.inventory[this.selectedItemIdx] == null) {
+      return;
+    }
+    if (!(this.inventory[this.selectedItemIdx].getContainedHoldable() instanceof Consumable)) {
+      return;
+    }
+    Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
+    this.useAtIndex(this.selectedItemIdx);
+    this.increaseEnergy(thingConsumed.getEnergyGain());
+    this.increaseHealth(thingConsumed.getHealthGain());
+  }
+
+  public void useAtIndex(int index) {
+    if (this.inventory[index].getQuantity() == 1) {
+      this.inventory[index] = null;
+    } else {
+      this.inventory[index].setQuantity(this.inventory[this.selectedItemIdx].getQuantity()-1);
+    }
+  }
+
   public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
   }
@@ -198,8 +219,12 @@ public class Player extends Moveable {
     return this.health;
   }
 
-  public void setHealth(int health) {
-    this.health = health;
+  public void increaseHealth(int increment) {
+    this.health = Math.min(this.health+increment, this.maxHealth);
+  }
+
+  public void decreaseHealth(int decrement) {
+    this.health = Math.max(this.health-decrement, 0);
   }
 
   public int getMaxHealth() {
@@ -214,8 +239,12 @@ public class Player extends Moveable {
     return this.energy;
   }
 
-  public void setEnergy(int energy) {
-    this.energy = energy;
+  public void increaseEnergy(int increment) {
+    this.energy = Math.min(this.energy+increment, this.maxEnergy);
+  }
+
+  public void decreaseEnergy(int decrement) {
+    this.energy = Math.max(this.energy-decrement, 0);
   }
 
   public int getMaxEnergy() {

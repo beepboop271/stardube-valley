@@ -27,6 +27,10 @@ public class HoldableStack {
     return this.quantity;
   }
 
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
+
   public void addHoldables(int quantity) {
     this.quantity += quantity;
   }
