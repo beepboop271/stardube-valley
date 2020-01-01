@@ -2,10 +2,10 @@ import java.awt.image.BufferedImage;
 
 import java.io.IOException;
 /**
- * [CollectableComponent] 
- * 2019-12-20
+ * [CollectableComponent] 2019-12-20
+ * 
  * @version 0.1
- * @author Kevin Qiao, Joseph Wang
+ * @author Kevin Qiao
  */
 public class CollectableComponent extends IntrinsicTileComponent 
                                   implements Collectable, Drawable {
@@ -17,6 +17,6 @@ public class CollectableComponent extends IntrinsicTileComponent
 
   @Override
   public BufferedImage getImage() {
-    return this.getImages()[0];
+    return this.getImages().get(0);
   }
 }

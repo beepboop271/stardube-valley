@@ -6,8 +6,8 @@ import java.util.LinkedList;
 /**
  * [Area]
  * 2019-12-19
- * @version 0.2
- * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
+ * @version 0.1
+ * @author Kevin Qiao, Paula Yuan
  */
 public abstract class Area {
   private String name;
@@ -16,7 +16,6 @@ public abstract class Area {
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
-  private long currentDay;
   
   public Area(String name,
               int width, int height) {
@@ -26,7 +25,6 @@ public abstract class Area {
     this.map = new Tile[this.height][this.width];
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
-    this.currentDay = 0;
   }
 
   public static Area constructArea(String category,
@@ -142,22 +140,6 @@ public abstract class Area {
     this.map[t.getY()][t.getX()] = t;
   }
 
-  public void setCurrentDay(long day) {
-    this.currentDay = day;
-  }
-
-  public long getCurrentDay() {
-    return this.currentDay;
-  }
-
-  public boolean hasValidXYAt(int x, int y) {
-    return (((y >= 0) && (y < this.height) && (x >= 0) && (x < this.width)));
-  }
-  
-  public boolean hasValidPointAt(Point pos) {
-    return ((((int)pos.y >= 0) && ((int)pos.y < this.height) && ((int)pos.x >= 0) && ((int)pos.x < this.width)));
-  }
-  
   public void doDayEndActions() {
   }
 }

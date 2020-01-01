@@ -1,36 +1,40 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 /**
- * [IntrinsicTileComponent]
+ * [SharedTileComponent]
  * 2019-12-17
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan, Joseph Wang
+ * @author Kevin Qiao, Paula Yuan
  */
 
 public abstract class IntrinsicTileComponent extends TileComponent 
                                              implements Collectable {
   private final String name;
   private final HoldableDrop[] products;
-  private final BufferedImage[] images;
+  private final ArrayList<BufferedImage> images;
 
   public IntrinsicTileComponent(String name,
                                 String imagesPath,
                                 int numProducts) throws IOException {
     this.name = name;
     this.products = new HoldableDrop[numProducts];
-    
-    File fileSystem = new File(imagesPath);
-    String[] allFiles = fileSystem.list();
-    this.images = new BufferedImage[allFiles.length];
+    this.images = new ArrayList<BufferedImage>();
+
     try {
-      for (int i = 0, j = 0; i < allFiles.length; i++) {
-        this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
-        j++;
+      File fileSystem = new File(imagesPath);
+      String[] allFiles = fileSystem.list;
+
+      for (String imagePath : allFiles) {
+        if (Pattern.matches(this.name + "(?!Item|Seeds|.Small).*\\.png", imagePath)) {
+          images.add(ImageIO.read(new File(imagesPath + imagePath)));
+        }
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -41,7 +45,7 @@ public abstract class IntrinsicTileComponent extends TileComponent
     return this.name;
   }
 
-  public BufferedImage[] getImages() {
+  public ArrayList<BufferedImage> getImages() {
     return this.images;
   }
 

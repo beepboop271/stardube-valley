@@ -1,12 +1,5 @@
 import java.awt.image.BufferedImage;
 
-/**
- * [ExtrinsicTileComponent]
- * 2019-12-26
- * @version 0.1
- * @author Kevin Qiao, Joseph Wang
- */
-
 public abstract class ExtrinsicTileComponent extends TileComponent 
                                             implements Collectable, Drawable {
   private final IntrinsicTileComponent intrinsicSelf;
@@ -27,7 +20,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
 
   @Override
   public BufferedImage getImage() {
-    return this.intrinsicSelf.getImages()[0];
+    return this.intrinsicSelf.getImages().get(0);
   }
 
   @Override

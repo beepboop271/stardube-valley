@@ -1,4 +1,4 @@
-Fishing-Rod    /holdables/Fishing-Rod   bestTool:)
+FishingRod   /holdables/TestImg   bestTool:)
 
-name           img                      description
-               /assets/images/+
+name         img                  description
+             /assets/images/+

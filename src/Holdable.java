@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
  * [Holdable]
  * 2019-12-20
  * @version 0.1
- * @author Kevin Qiao, Joseph Wang
+ * @author Kevin Qiao
  */
 public abstract class Holdable {
   private final String name;

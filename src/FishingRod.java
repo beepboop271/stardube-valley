@@ -7,20 +7,14 @@ import java.io.IOException;
  * @author Candice Zhang
  */
 public class FishingRod extends Tool {
-  public static final int MAX_PROGRESS_NANOTIME = 1_500_000_000;
-  public static final int MAX_CASTING_DISTANCE = 3;
+  public final static int MAX_PROGRESS_NANOSEC = 2_000_000_000;;
 
-  public static final int IDLING_STATUS = 0;
-  public static final int CASTING_STATUS = 1;
-  public static final int WAITING_STATUS = 2;
-
-  private int currentStatus;
+  private boolean isCasting;
   private long castingBeginNanoTime;
-  private WaterTile tileToFish;
 
   public FishingRod(String name, String description, String imagePath) throws IOException {
     super(name, description, imagePath);
-    this.currentStatus = FishingRod.IDLING_STATUS;
+    this.isCasting = false;
   }
 
   @Override
@@ -29,34 +23,29 @@ public class FishingRod extends Tool {
   }
 
   public void startCasting() {
-    if(this.currentStatus == FishingRod.CASTING_STATUS){
+    if(this.isCasting == true){
       return;
     }
-    this.currentStatus = FishingRod.CASTING_STATUS;
+    this.isCasting = true;
     this.castingBeginNanoTime = System.nanoTime();
   }
 
+  public void endCasting() {
+    System.out.println(this.getCastingProgressPercentage());
+    this.isCasting = false;
+    // TODO: determine tile to cast, if is water place a fishing game event (should this be done by the tool itself?)
+  }
+
   public int getCastingProgressPercentage() {
-    if(this.currentStatus != FishingRod.CASTING_STATUS){
+    if(this.isCasting == false){
       return 0;
     }
-    return 100-(int)((Math.abs(((System.nanoTime()-this.castingBeginNanoTime) % (FishingRod.MAX_PROGRESS_NANOTIME*2.0))
-                               - FishingRod.MAX_PROGRESS_NANOTIME) / FishingRod.MAX_PROGRESS_NANOTIME)*100);
+    return 100-(int)((Math.abs(((System.nanoTime()-this.castingBeginNanoTime) % (FishingRod.MAX_PROGRESS_NANOSEC*2.0))
+                               - FishingRod.MAX_PROGRESS_NANOSEC) / FishingRod.MAX_PROGRESS_NANOSEC)*100);
   }
 
-  public int getCurrentStatus() {
-    return this.currentStatus;
+  public boolean isCasting() {
+    return this.isCasting;
   }
 
-  public void setCurrentStatus(int status) {
-    this.currentStatus = status;
-  }
-
-  public WaterTile getTileToFish() {
-    return this.tileToFish;
-  }
-  
-  public void setTileToFish(WaterTile tileToFish) {
-    this.tileToFish = tileToFish;
-  }
 }

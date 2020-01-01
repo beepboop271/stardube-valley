@@ -6,8 +6,8 @@ import java.util.HashMap;
 /**
  * [HoldableFactory]
  * 2019-12-20
- * @version 0.3
- * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
+ * @version 0.1
+ * @author Kevin Qiao, Paula Yuan
  */
 public class HoldableFactory {
   private static boolean isInitialized = false;
@@ -25,76 +25,59 @@ public class HoldableFactory {
 
     HoldableFactory.holdablePool = new HashMap<String, Holdable>();
     BufferedReader input;
-    String lineToRead;
-    String[] nextLineData;
-
+    String[] nextLine;
+    UtilityTool tool;
+    HoldableConsumable drop;
     try {
-      // initialize utility tools
       input = new BufferedReader(new FileReader("assets/gamedata/UtilityTools"));
-      lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
-        UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+      int n = Integer.parseInt(input.readLine());
+      for (int i = 0; i < n; ++i) {
+        nextLine = input.readLine().split("\\s+");
+        tool = new UtilityTool(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
         HoldableFactory.holdablePool.put(tool.getName(), tool);
-        lineToRead = input.readLine();
       }
+      
       input.close();
-      // initialize other tools
-      // - fishing rod
-      input = new BufferedReader(new FileReader("assets/gamedata/FishingRod"));
-      nextLineData = input.readLine().split("\\s+");
-      FishingRod rod = new FishingRod(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
-      HoldableFactory.holdablePool.put(rod.getName(), rod);
-      input.close();
-      // initialize seeds
-      input = new BufferedReader(new FileReader("assets/gamedata/Seeds"));
-      lineToRead = input.readLine();
-      while (lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
-        Seeds seed = new Seeds(nextLineData[0], nextLineData[2], 
-                        "assets/images/" + nextLineData[1] + ".png", nextLineData[3]);
 
-        HoldableFactory.holdablePool.put(seed.getName(), seed);   
-        lineToRead = input.readLine();
-      }
-      input.close();
-      // initialize consumables
-      // - forageable drops
       input = new BufferedReader(new FileReader("assets/gamedata/ForageableDrops"));
-      lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
+      n = Integer.parseInt(input.readLine());
+      for (int i = 0; i < n; ++i) {
+        nextLine = input.readLine().split("\\s+");
         // TODO: fix description
-        Consumable drop = new Consumable(nextLineData[0], "eh?", 
-                                      "assets/images"+nextLineData[1]+".png"); 
-        HoldableFactory.holdablePool.put(drop.getName(), drop);
-        lineToRead = input.readLine();
+        drop = new HoldableConsumable(nextLine[0]+"Item", "eh?", 
+                                      "assets/images/"+nextLine[1]+".png"); 
       }
-      input.close();
-      // - fishable consumables
-      input = new BufferedReader(new FileReader("assets/gamedata/Consumables"));
-      lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
-        Consumable consumable = new Consumable(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
-        HoldableFactory.holdablePool.put(consumable.getName(), consumable);
-        lineToRead = input.readLine();
-      }
-      input.close();
-      // initialize items
-      input = new BufferedReader(new FileReader("assets/gamedata/Items"));
-      lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
-        Item item = new Item(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
-        HoldableFactory.holdablePool.put(item.getName(), item);
-        lineToRead = input.readLine();
-      }
-      input.close();
 
+      input.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    // load other tool(s)
+    // fishing rod
+    try {
+      input = new BufferedReader(new FileReader("assets/gamedata/FishingRod"));
+      nextLine = input.readLine().split("\\s+");
+        FishingRod rod = new FishingRod(nextLine[0], nextLine[2], "assets/images/"+nextLine[1]+".png");
+        HoldableFactory.holdablePool.put(rod.getName(), rod);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // load consumables
+    //try {
+    //  input = new BufferedReader(new FileReader("assets/gamedata/Consumables"));
+    //  while((lineToRead = input.readLine()) != null){
+    //    if (lineToRead.length()==0){
+    //      break;
+    //    }
+    //    nextLineData = lineToRead.split("\\s+");
+    //    Consumable consumable = new Consumable(stuff);
+    //    HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+    //  }
+    //} catch (IOException e) {
+    //  e.printStackTrace();
+    //}
   }
 
   public static Holdable getHoldable(String holdable) {
