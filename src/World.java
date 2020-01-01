@@ -119,28 +119,25 @@ public class World {
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
-      if (event instanceof ToolUsedEvent) {
+      if (event instanceof UtilityToolUsedEvent) {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
-        ToolUsedEvent toolEvent = (ToolUsedEvent)event;
-        Point[] locationUsed = toolEvent.getLocationUsed();
-        if (locationUsed.length == 1) {
-          TileComponent componentToHarvest = this.playerArea.getMapAt(locationUsed[0]).getContent();
-          if (componentToHarvest instanceof Harvestable
-                && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                    || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
-            // TODO: play breaking animation?
-            this.playerArea.removeComponentAt(locationUsed[0]);
+        UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
+        TileComponent componentToHarvest = this.playerArea.getMapAt(toolEvent.getLocationUsed()).getContent();
+        if (componentToHarvest instanceof Harvestable
+              && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
+                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
+          // TODO: play breaking animation?
+          this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
-            HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
-            for (int i = 0; i < drops.length; ++i) {
-              this.playerArea.addItemOnGround(
-                  new HoldableStackEntity(
-                      drops[i].resolveDrop(this.luckOfTheDay),
-                      locationUsed[0].translateNew(Math.random()*2-1, Math.random()*2-1)
-                  )
-              );
-            }
+          HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
+          for (int i = 0; i < drops.length; ++i) {
+            this.playerArea.addItemOnGround(
+                new HoldableStackEntity(
+                    drops[i].resolveDrop(this.luckOfTheDay),
+                    toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
+                )
+            );
           }
         }
       } else if (event instanceof UtilityUsedEvent) {

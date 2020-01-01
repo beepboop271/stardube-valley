@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 
 public abstract class IntrinsicTileComponent extends TileComponent 
-                                             implements Collectable {
+                                            implements Collectable {
   private final String name;
   private final HoldableDrop[] products;
   private final ArrayList<BufferedImage> images;
@@ -29,7 +29,7 @@ public abstract class IntrinsicTileComponent extends TileComponent
 
     try {
       File fileSystem = new File(imagesPath);
-      String[] allFiles = fileSystem.list;
+      String[] allFiles = fileSystem.list();
 
       for (String imagePath : allFiles) {
         if (Pattern.matches(this.name + "(?!Item|Seeds|.Small).*\\.png", imagePath)) {
