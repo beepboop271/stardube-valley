@@ -1,16 +1,24 @@
-Purple-Algae      /holdables/Purple-Algae      nice-fish       1          10 15                       5 5
-Popcorn-Fish      /holdables/Popcorn-Fish      nice-fish       3          10 15                       5 5
-Burger-Fish       /holdables/Burger-Fish       nice-fish       3          10 15                       5 5
-Boba-Fish         /holdables/Boba-Fish         nice-fish       3          10 15                       5 5
-Carp              /holdables/Carp              nice-fish       3          10 15                       5 5
-Smallmouth-Bass   /holdables/Smallmouth-Bass   nice-fish       3          10 15                       5 5
-Largemouth-Bass   /holdables/Largemouth-Bass   nice-fish       3          10 15                       5 5
-Tuna              /holdables/Tuna              nice-fish       3          10 15                       5 5
-Anchovy           /holdables/Anchovy           nice-fish       3          10 15                       5 5
-Sardine           /holdables/Sardine           nice-fish       3          10 15                       5 5
-ParsnipItem       /crops/ParsnipItem           gamer-crop      3          15 30                       10 20
-WatermelonItem    /crops/WatermelonItem        lamer-crop      3          40 60                       10 20
-CornItem          /crops/CornItem              tamer-crop      3          30 40                       10 20
+Purple-Algae      /holdables/Purple-Algae      nice-fish       10 15
+Popcorn-Fish      /holdables/Popcorn-Fish      nice-fish       10 15
+Burger-Fish       /holdables/Burger-Fish       nice-fish       10 15
+Boba-Fish         /holdables/Boba-Fish         nice-fish       10 15
+Carp              /holdables/Carp              nice-fish       10 15
+Smallmouth-Bass   /holdables/Smallmouth-Bass   nice-fish       10 15
+Largemouth-Bass   /holdables/Largemouth-Bass   nice-fish       10 15
+Tuna              /holdables/Tuna              nice-fish       10 15
+Anchovy           /holdables/Anchovy           nice-fish       10 15
+Sardine           /holdables/Sardine           nice-fish       10 15
+ParsnipItem       /crops/ParsnipItem           gamer-crop      15 30
+WatermelonItem    /crops/WatermelonItem        lamer-crop      40 60
+CornItem          /crops/CornItem              tamer-crop      30 40
+TurnipItem        /forageables/TurnipItem      a-forageable    10 15
+LeekItem          /forageables/LeekItem        a-forageable    10 15
+BluebellItem      /forageables/BluebellItem    a-forageable    10 15
+IceCreamItem      /forageables/IceCreamItem    a-forageable    10 15
+MushroomItem      /forageables/MushroomItem    a-forageable    10 15
+WinterRootItem    /forageables/WinterRootItem  a-forageable    10 15
+JavacakeItem      /forageables/JavacakeItem    a-forageable    10 15
+QuartzItem        /ores/QuartzItem             a-forageable    10 15
 
-name              imagePath                    description     maxRank    health gain for rank1      health increment per rank
-                                                                          energy gain for rank1      energy increment per rank
+name              imagePath                    description     health gain
+                                                               energy gain
