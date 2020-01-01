@@ -2,23 +2,29 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
+
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.HashMap;
+import java.util.Timer;
 
 /**
  * [World]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Paula Yuan
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
+
 public class World {
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
   public static final int WEST = 3;
 
+  private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
   private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
@@ -28,7 +34,11 @@ public class World {
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay = 0;
+  private int inGameSeason;
   private double luckOfTheDay;
+  private HashMap<Player, Timer> fishingTimers;
+
+  private Random random = new Random();
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -42,6 +52,8 @@ public class World {
     this.player = new Player(new Point(13, 13));
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    this.inGameSeason = 0;
 
     // spawn first day items
     this.doDayEndActions();
@@ -59,16 +71,27 @@ public class World {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
 
-    this.player.updateCurrentFishingGame();
-
-
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
       return;
     }
-
-    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    
+    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;
     this.inGameNanoTime %= (long)24*60*1_000_000_000;
+
+    // check for end of day
+    if (this.inGameNanoTime >= 2*60*1_000_000_000l && this.inGameNanoTime <= 6*60*1_000_000_000l) {
+      this.doDayEndActions();
+    }
+
+    if (this.player.isInFishingGame()) {
+      this.player.getCurrentFishingGame().update();
+      this.player.setImmutable(true);
+      if(this.player.getCurrentFishingGame().getCurrentStatus() != FishingGame.INGAME_STATUS) {
+        this.emplaceFutureEvent((long)(0.5*1_000_000_000), new FishingGameEndedEvent(this.player.getCurrentFishingGame()));
+        this.player.endCurrentFishingGame();
+      }
+    }
 
     Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
     HoldableStackEntity nextItemEntity;
@@ -123,10 +146,13 @@ public class World {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
-        TileComponent componentToHarvest = this.playerArea.getMapAt(toolEvent.getLocationUsed()).getContent();
+        Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        TileComponent componentToHarvest = selectedTile.getContent();
+
         if (componentToHarvest instanceof Harvestable
               && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(toolEvent.getHoldableUsed().getName()))) {
+                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(
+                        toolEvent.getHoldableUsed().getName()))) {
           // TODO: play breaking animation?
           this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
@@ -138,24 +164,144 @@ public class World {
                     toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
                 )
             );
-          }
+          } //TODO: make these tools not dependant on world
+        } else if (selectedTile instanceof GroundTile) {
+          if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
+              (((GroundTile)selectedTile).getTilledStatus() == true)) {
+                ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+
+          } else if (selectedTile.getContent() == null) {
+            if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+              ((GroundTile)selectedTile).setTilledStatus(true);
+              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+
+            } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+              ((GroundTile)selectedTile).setTilledStatus(false); 
+
+              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              }
+            }
+          } else {
+            if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+              if (selectedTile.getContent() instanceof ExtrinsicCrop) {
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              }
+              selectedTile.setContent(null);
+            }
+          } //- Ground tile changes image based on what happened
+          ((GroundTile)selectedTile).determineImage(this.inGameDay);
         }
       } else if (event instanceof UtilityUsedEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
         Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
         if (this.playerArea instanceof WorldArea) {
-          ((WorldArea)this.playerArea).forageables.remove(currentTile);
+          ((WorldArea)this.playerArea).forageableTiles.remove(currentTile);
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
-        if (currentContent instanceof Collectable) {
+        if (currentContent instanceof ExtrinsicCrop) {
+          if (((ExtrinsicCrop)currentContent).canHarvest()) {
+            System.out.println(((ExtrinsicCrop)currentContent).getProduct());
+            HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
+            HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+            if (this.player.canPickUp(product.getContainedHoldable())) {
+              this.player.pickUp(product);
+              if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
+                ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
+              } else {
+                currentTile.setContent(null);
+              }
+            }
+          }
+        } else if (currentContent instanceof Collectable) {
         //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           new HoldableStackEntity(drop, null); // TODO: change the pos
-          this.player.pickUp(drop); // does this not work or something? bc it doesn't draw hmmm
-          currentTile.setContent(null);
+          if (this.player.canPickUp(drop.getContainedHoldable())) {
+            this.player.pickUp(drop);
+            currentTile.setContent(null);
+          }
+        }
+      } else if (event instanceof CastingEndedEvent) {
+        FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
+        int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
+        int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
+        Point roundedPlayerPos = player.getPos().round();
+        int destX = (int)roundedPlayerPos.x;
+        int destY = (int)roundedPlayerPos.y;
+        if (this.player.getOrientation() == World.NORTH) {
+          destY -= castDistance;
+        } else if (this.player.getOrientation() == World.SOUTH) {
+          destY += castDistance;
+        } else if (this.player.getOrientation() == World.WEST) {
+          destX -= castDistance;
+        } else {
+          destX += castDistance;
+        }
+        if (playerArea.hasValidXYAt(destX, destY)) {
+          if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
+            rodUsed.setTileToFish((WaterTile)(playerArea.getMapAt(destX, destY)));
+            rodUsed.setCurrentStatus(FishingRod.WAITING_STATUS);
+          } else {
+            // TODO: play animation
+            this.player.setImmutable(false);
+          }
+        } else {
+          // TODO: play animation
+          this.player.setImmutable(false);
+        }
+        
+      } else if (event instanceof CatchFishEvent) {
+        FishingRod rodUsed = ((CatchFishEvent)event).getRodUsed();
+        long catchNanoTime = ((CatchFishEvent)event).getCatchNanoTime();
+        if (true) {
+          int fishableChoice = random.nextInt(100); 
+          if ((rodUsed.getTileToFish().getFishableFish().length==0)
+              || (fishableChoice <= 30)) { // TODO: make this associated with luck
+            Holdable trashEarned = HoldableFactory.getHoldable(
+                                   WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
+            if (this.player.canPickUp(trashEarned)) {
+              this.player.pickUp(new HoldableStack(trashEarned, 1));
+            }
+          } else {
+            this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
+          }
+        }
+        this.player.setImmutable(false);
+        rodUsed.setCurrentStatus(FishingRod.IDLING_STATUS);
+      } else if (event instanceof FishingGameEndedEvent) {
+        FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();
+        if (gameEnded.getCurrentStatus() == FishingGame.WIN_STATUS) {
+          Holdable fishEarned = ((FishingGameEndedEvent)event).getFishReturned();
+          if (this.player.canPickUp(fishEarned)) {
+            this.player.pickUp(new HoldableStack(fishEarned, 1));
+          }
+        }
+        this.player.setImmutable(false);
+
+      } else if (event instanceof ComponentPlacedEvent) {
+        Tile currentTile = this.playerArea.getMapAt(
+                                        ((ComponentPlacedEvent)event).getLocationUsed());
+        TileComponent currentContent = currentTile.getContent();
+        if (currentContent == null) { //- Anything that you can place must not be placed over something
+          //- We need to make sure that the tile is both a ground tile and is tilled if
+          //- we're trying to plant a crop in that tile
+          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+            if (currentTile instanceof GroundTile) {
+              if (((GroundTile)currentTile).getTilledStatus()) {
+                if (this.playerArea instanceof FarmArea) {
+                  currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                  ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                }
+              }
+            }
+          } else { //- If it's not a crop, you can place it anywhere
+            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+          }
         }
       }
     }
@@ -167,8 +313,11 @@ public class World {
     ++this.inGameDay;
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
+    Area nextArea;
     while (areas.hasNext()) {
-      areas.next().doDayEndActions();
+      nextArea = areas.next();
+      nextArea.doDayEndActions();
+      nextArea.setCurrentDay(this.inGameDay);
     }
   }
 
@@ -236,6 +385,18 @@ public class World {
           case 'x':
             a.setMapAt(new GrassTile(x, y));
             break;
+          case 'p':
+            a.setMapAt(new PondTile(x, y));
+            break;
+          case 'r':
+            a.setMapAt(new RiverTile(x, y));
+            break;
+          case 'l':
+            a.setMapAt(new LakeTile(x, y));
+            break;
+          case 'o':
+            a.setMapAt(new OceanTile(x, y));
+            break;
         }
       }
     }
@@ -287,5 +448,13 @@ public class World {
 
   public long getInGameDay() {
     return this.inGameDay;
+  }
+
+  public int getInGameSeason() {
+    return this.inGameSeason;
+  }
+
+  public String[] getSeasons() {
+    return seasons;
   }
 }

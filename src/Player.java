@@ -16,17 +16,22 @@ public class Player extends Moveable {
   private int selectedItemIdx;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
+  private int orientation;
 
   public Player(Point position) {
     super(position, Player.SIZE);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
+    this.orientation = World.SOUTH;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Hoe", 1);
     this.inventory[2] = new HoldableStack("WateringCan", 1);
-    this.inventory[3] = new HoldableStack("FishingRod", 1);
+    this.inventory[3] = new HoldableStack("Fishing-Rod", 1);
+    this.inventory[4] = new HoldableStack("ParsnipSeeds", 15);
+    this.inventory[5] = new HoldableStack("WatermelonSeeds", 10);
+    this.inventory[6] = new HoldableStack("CornSeeds", 10);
   }
   
   @Override
@@ -47,7 +52,11 @@ public class Player extends Moveable {
   public void pickUp(HoldableStack items) {
     // could replace with set, just need to test out
     // hashing holdablestacks later
-    for (int i = 0; i < inventory.length; ++i) {
+    if (!this.canPickUp(items.getContainedHoldable())) {
+      return;
+    }
+    // if the items of the same type exists, add on to the quantity of the type
+    for (int i = 0; i < this.inventorySize; ++i) {
       // can use primitive equals because all holdables are shared
       if ((this.inventory[i] != null)
             && (this.inventory[i].getContainedHoldable() == items.getContainedHoldable())) {
@@ -55,38 +64,41 @@ public class Player extends Moveable {
         return;
       }
     }
-    for (int i = 0; i < inventory.length; ++i) {
-      if (this.inventory != null) {
+    // otherwise, store it in a new slot if there is space
+    
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] == null) {
         this.inventory[i] = items;
         return;
       }
     }
   }
-  public void updateCurrentFishingGame() {
-    if(this.currentFishingGame == null){
-      return;
-    }
 
-    this.currentFishingGame.update();
-    //System.out.println("game updated by player");
-    int fishingGameStatus = this.currentFishingGame.getCurrentStatus();
-    if(fishingGameStatus == FishingGame.WIN_STATUS) {
-      currentFishingGame.returnFishingProduct();
-      System.out.println("the player gets a prouduct");
-      this.currentFishingGame = null;
-      this.isImmutable = false;
-    } else if (fishingGameStatus == FishingGame.LOSE_STATUS) {
-      System.out.println("game lost, nothing is gained"); 
-      this.currentFishingGame = null;
-      this.isImmutable = false;
-    } else {
-      this.isImmutable = true;
-      //System.out.println("in game...");
+  public boolean canPickUp(Holdable item) {
+    if (item == null) {
+      return false;
     }
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          return true;
+        }
+      }
+    }
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] == null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
+  }
+
+  public void endCurrentFishingGame() {
+    this.currentFishingGame = null;
   }
 
   public FishingGame getCurrentFishingGame(){
@@ -160,4 +172,17 @@ public class Player extends Moveable {
   public static double getItemAttractionDistance() {
     return Player.ITEM_ATTRACTION_DISTANCE;
   }
+
+  public int getOrientation() {
+    return this.orientation;
+  }
+
+  public void setOrientation(int orientation) {
+    this.orientation = orientation;
+  }
+
+  public boolean isInFishingGame() {
+    return (this.currentFishingGame != null);
+  }
+
 }

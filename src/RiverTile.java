@@ -1,27 +1,22 @@
-import java.util.ArrayList;
-
 /**
  * [RiverTile]
  * 2019-12-27
- * @version 0.1
+ * @version 0.2
  * @author Candice Zhang
  */
 
 public class RiverTile extends WaterTile {
-  private static ArrayList<String> fishableFish;
+  private static String[] fishableFish;
 
   public RiverTile(int x, int y) {
     super(x, y);
   }
 
   public static void setFishableFish() {
-    RiverTile.fishableFish = new ArrayList<String>();
-    RiverTile.fishableFish.add("PopcornFish");
-    RiverTile.fishableFish.add("BurgerFish");
-    RiverTile.fishableFish.add("BobaFish");
+    RiverTile.fishableFish = new String[] {"Popcorn-Fish", "Burger-Fish", "Boba-Fish"};
   }
   
-  public ArrayList<String> getFishableFish() {
+  public String[] getFishableFish() {
     return RiverTile.fishableFish;
   }
 }
