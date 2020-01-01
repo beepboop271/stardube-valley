@@ -39,11 +39,13 @@ public class IntrinsicTileComponentFactory {
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
+        int[] offsets = {Integer.parseInt(nextLineData[2]), Integer.parseInt(nextLineData[3])};
         componentToAdd = new IntrinsicHarvestableComponent(nextLineData[0],
                                                            "assets/images"+nextLineData[1],
-                                                           nextLineData[2],
-                                                           Integer.parseInt(nextLineData[3]),
-                                                           Integer.parseInt(nextLineData[4]));
+                                                           nextLineData[4],
+                                                           Integer.parseInt(nextLineData[5]),
+                                                           Integer.parseInt(nextLineData[6]),
+                                                           offsets);
 
         componentPool.put(componentToAdd.getName(), componentToAdd);
         // TODO: uncomment after holdables added (this may not be relevant anymore)
@@ -60,9 +62,10 @@ public class IntrinsicTileComponentFactory {
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
+        int[] offsets = {Integer.parseInt(nextLineData[4]), Integer.parseInt(nextLineData[5])};
         componentToAdd = new CollectableComponent(nextLineData[0],
                                                   "assets/images"+nextLineData[1],
-                                                  1);
+                                                  1, offsets);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLineData[2]));
         componentPool.put(componentToAdd.getName(), componentToAdd);
@@ -75,10 +78,12 @@ public class IntrinsicTileComponentFactory {
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
+        int[] offsets = {Integer.parseInt(nextLineData[5]), Integer.parseInt(nextLineData[6])};
         componentToAdd = new IntrinsicCrop(nextLineData[0], 
                                           "assets/images" + nextLineData[1], 
                                           nextLineData[3], 
-                                          Arrays.copyOfRange(nextLineData, 5, nextLineData.length));
+                                          Arrays.copyOfRange(nextLineData, 7, nextLineData.length),
+                                          offsets);
         componentToAdd.setProduct(0, 
                                   new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
         

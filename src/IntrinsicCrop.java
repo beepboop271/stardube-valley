@@ -14,8 +14,8 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
   private int maxGrowthStage, regrowTime;
   
   public IntrinsicCrop(String name, String imagesPath, String requiredTool,
-                       String[] growthData) throws IOException {
-    super(name, imagesPath, 1); // All crops only drop 1 product, the item.
+                       String[] growthData, int[] offsets) throws IOException {
+    super(name, imagesPath, 1, offsets); // All crops only drop 1 product, the item.
     
     int totalStages = Integer.parseInt(growthData[0]);
     this.maxGrowthStage = Integer.parseInt(growthData[1]);

@@ -17,12 +17,15 @@ public abstract class IntrinsicTileComponent extends TileComponent
   private final String name;
   private final HoldableDrop[] products;
   private final BufferedImage[] images;
+  private final int[] offsets;
 
   public IntrinsicTileComponent(String name,
                                 String imagesPath,
-                                int numProducts) throws IOException {
+                                int numProducts,
+                                int[] offsets) throws IOException {
     this.name = name;
     this.products = new HoldableDrop[numProducts];
+    this.offsets = offsets;
     
     File fileSystem = new File(imagesPath);
     String[] allFiles = fileSystem.list();
@@ -39,6 +42,14 @@ public abstract class IntrinsicTileComponent extends TileComponent
 
   public String getName() {
     return this.name;
+  }
+
+  public int getXOffset() {
+    return this.offsets[0];
+  }
+
+  public int getYOffset() {
+    return this.offsets[1];
   }
 
   public BufferedImage[] getImages() {

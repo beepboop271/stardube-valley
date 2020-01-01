@@ -8,8 +8,9 @@ public class IntrinsicHarvestableComponent extends IntrinsicTileComponent implem
                                        String imagePath,
                                        String requiredTool,
                                        int hardness,
-                                       int numProducts) throws IOException {
-    super(name, imagePath, numProducts);
+                                       int numProducts,
+                                       int[] offsets) throws IOException {
+    super(name, imagePath, numProducts, offsets);
     this.requiredTool = requiredTool;
     this.hardness = hardness;
   }

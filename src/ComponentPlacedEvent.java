@@ -11,11 +11,13 @@ import java.util.EventObject;
 public class ComponentPlacedEvent extends EventObject {
   private Point locationUsed;
   private int componentIndex;
+  private TileComponent componentToPlace;
 
   public ComponentPlacedEvent(TileComponent component, int componentIndex, Point locationUsed) {
     super(component);
     this.componentIndex = componentIndex;
     this.locationUsed = locationUsed;
+    this.componentToPlace = component;
   }
 
   public Point getLocationUsed() {
@@ -23,7 +25,7 @@ public class ComponentPlacedEvent extends EventObject {
   }
 
   public TileComponent getComponentToPlace() {
-    return (TileComponent)(super.getSource());
+    return this.componentToPlace;
   }
 
   public int getComponentIndex() {

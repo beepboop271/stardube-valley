@@ -11,8 +11,9 @@ public class CollectableComponent extends IntrinsicTileComponent
                                   implements Collectable, Drawable {
   public CollectableComponent(String name,
                               String imagePath,
-                              int numProducts) throws IOException {
-    super(name, imagePath, numProducts);
+                              int numProducts,
+                              int[] offsets) throws IOException {
+    super(name, imagePath, numProducts, offsets);
   }
 
   @Override

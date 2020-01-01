@@ -116,7 +116,12 @@ public class WorldPanel extends JPanel {
             TileComponent tileContent = currentTile.getContent();
             
             if (tileContent != null) {
-              g.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null); 
+              g.drawImage(((Drawable)tileContent).getImage(), //- consider offsets when you draw the image
+                      drawX + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
+                        .getXOffset() * Tile.getSize(),
+                      drawY + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
+                        .getYOffset() * Tile.getSize(), 
+                      null); 
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
