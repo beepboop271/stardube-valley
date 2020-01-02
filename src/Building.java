@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
  * @version 0.1
  * @author Joseph Wang
  */
-
+//- WIP
  public abstract class Building {
   private BufferedImage image;
 

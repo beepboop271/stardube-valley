@@ -9,14 +9,19 @@ public class Player extends Moveable {
   private static final double SIZE = 0.35;
   private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 3;
-  private boolean inMenu = false;
+
   private int inventorySize = 12;
   private HoldableStack[] inventory;
-  private Point selectedTile;
   private int selectedItemIdx;
+  private Point selectedTile;
+  private boolean inMenu = false;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
   private int orientation;
+  private int health;
+  private int maxHealth;
+  private int energy;
+  private int maxEnergy;
 
   public Player(Point position) {
     super(position, Player.SIZE);
@@ -24,6 +29,10 @@ public class Player extends Moveable {
     this.selectedItemIdx = 0;
     this.isImmutable = false;
     this.orientation = World.SOUTH;
+    this.health = 100;
+    this.maxHealth = 100;
+    this.energy = 270;
+    this.maxEnergy = 270;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Hoe", 1);
@@ -91,6 +100,27 @@ public class Player extends Moveable {
       }
     }
     return false;
+  }
+
+  public void consume() {
+    if (this.inventory[this.selectedItemIdx] == null) {
+      return;
+    }
+    if (!(this.inventory[this.selectedItemIdx].getContainedHoldable() instanceof Consumable)) {
+      return;
+    }
+    Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
+    this.useAtIndex(this.selectedItemIdx);
+    this.increaseEnergy(thingConsumed.getEnergyGain());
+    this.increaseHealth(thingConsumed.getHealthGain());
+  }
+
+  public void useAtIndex(int index) {
+    if (this.inventory[index].getQuantity() == 1) {
+      this.inventory[index] = null;
+    } else {
+      this.inventory[index].setQuantity(this.inventory[this.selectedItemIdx].getQuantity()-1);
+    }
   }
 
   public void setCurrentFishingGame(FishingGame fishingGame){
@@ -183,6 +213,46 @@ public class Player extends Moveable {
 
   public boolean isInFishingGame() {
     return (this.currentFishingGame != null);
+  }
+
+  public int getHealth() {
+    return this.health;
+  }
+
+  public void increaseHealth(int increment) {
+    this.health = Math.min(this.health+increment, this.maxHealth);
+  }
+
+  public void decreaseHealth(int decrement) {
+    this.health = Math.max(this.health-decrement, 0);
+  }
+
+  public int getMaxHealth() {
+    return this.maxHealth;
+  }
+
+  public void increaseMaxHealth(int increment) {
+    this.maxHealth += increment;
+  }
+
+  public int getEnergy() {
+    return this.energy;
+  }
+
+  public void increaseEnergy(int increment) {
+    this.energy = Math.min(this.energy+increment, this.maxEnergy);
+  }
+
+  public void decreaseEnergy(int decrement) {
+    this.energy = Math.max(this.energy-decrement, 0);
+  }
+
+  public int getMaxEnergy() {
+    return this.maxEnergy;
+  }
+
+  public void increaseMaxEnergy(int increment) {
+    this.maxEnergy += increment;
   }
 
 }

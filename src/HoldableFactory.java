@@ -60,23 +60,12 @@ public class HoldableFactory {
       input.close();
       // initialize consumables
       // - forageable drops
-      input = new BufferedReader(new FileReader("assets/gamedata/ForageableDrops"));
-      lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
-        nextLineData = lineToRead.split("\\s+");
-        // TODO: fix description
-        Consumable drop = new Consumable(nextLineData[0], "eh?", 
-                                      "assets/images"+nextLineData[1]+".png"); 
-        HoldableFactory.holdablePool.put(drop.getName(), drop);
-        lineToRead = input.readLine();
-      }
-      input.close();
-      // - fishable consumables
       input = new BufferedReader(new FileReader("assets/gamedata/Consumables"));
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        Consumable consumable = new Consumable(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+        Consumable consumable = new Consumable(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png",
+                                               Integer.parseInt(nextLineData[3]), Integer.parseInt(nextLineData[4]));
         HoldableFactory.holdablePool.put(consumable.getName(), consumable);
         lineToRead = input.readLine();
       }

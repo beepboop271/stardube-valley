@@ -40,24 +40,30 @@ public class FarmArea extends Area {
 
     while (allEditedTiles.hasNext()) {
       GroundTile currentTile = allEditedTiles.next();
-      currentTile.determineImage(this.getCurrentDay() + 1);
+      currentTile.determineImage(this.getCurrentDay());
 
       if (currentTile.getContent() != null) {
-        if (currentTile.getLastWatered() == this.getCurrentDay()) {
-          ((ExtrinsicCrop)currentTile.getContent()).grow();
+        TileComponent content = currentTile.getContent();
+        if (content instanceof ExtrinsicCrop) {
+          if (this.getSeason() != ((IntrinsicCrop)((ExtrinsicCrop)content).getIntrinsicSelf())
+            .getPlantingSeason()) { //for now the crop just disappears
+            currentTile.setContent(null); //TODO: make a dead plant appear here lol
+          } else {
+            if (currentTile.getLastWatered() == this.getCurrentDay() - 1) {
+              ((ExtrinsicCrop)currentTile.getContent()).grow();
+            }
+          }
         }
       } else {
         //- If the tile is tilled but there's nothing on it, untill it
         if (currentTile.getTilledStatus() == true) { 
           currentTile.setTilledStatus(false);
-          currentTile.determineImage(this.getCurrentDay() + 1);
+          currentTile.determineImage(this.getCurrentDay());
           //- Remove the tile from the iterator to prevent ConcurrentModificationException
           allEditedTiles.remove();
           this.editedTiles.remove(currentTile);
         }
       }
     }
-
-
   }
 }

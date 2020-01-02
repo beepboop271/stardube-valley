@@ -24,6 +24,7 @@ public class WorldPanel extends JPanel {
   
   private final Font timeFont;
   private final Font quantityFont;
+  private final Font letterFont;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
@@ -53,7 +54,8 @@ public class WorldPanel extends JPanel {
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
 
     this.timeFont = new Font("Comic Sans MS", Font.BOLD, 40);
-    this.quantityFont = new Font("Comic Sans MS", Font.BOLD, 18);
+    this.quantityFont = new Font("Comic Sans MS", Font.BOLD, 15);
+    this.letterFont = new Font("Comic Sans MS", Font.BOLD, 25);
 
     this.setOpaque(true);
   }
@@ -114,7 +116,12 @@ public class WorldPanel extends JPanel {
             TileComponent tileContent = currentTile.getContent();
             
             if (tileContent != null) {
-              g.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null); 
+              g.drawImage(((Drawable)tileContent).getImage(), //- consider offsets when you draw the image
+                      drawX + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
+                        .getXOffset() * Tile.getSize(),
+                      drawY + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
+                        .getYOffset() * Tile.getSize(), 
+                      null); 
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
@@ -171,7 +178,7 @@ public class WorldPanel extends JPanel {
           hotbarQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
           hotbarQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i].getQuantity()),
-                        hotbarX+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/5,
+                        hotbarX+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
                         hotbarY+WorldPanel.HOTBAR_CELLSIZE);
         }
       }
@@ -195,8 +202,12 @@ public class WorldPanel extends JPanel {
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
     g2.drawString(this.worldToDisplay.getSeasons()[this.worldToDisplay.getInGameSeason()],
                   this.getWidth()-500, 45); 
-    g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay()%28), 
-                  this.getWidth()-300, 45);
+    if (this.worldToDisplay.getInGameDay() % 28 == 0) {
+      g2.drawString("28", this.getWidth()-300, 45);
+    } else {
+      g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay()%28), 
+                    this.getWidth()-300, 45);
+    }
                   
     // inventory menu stuff
     if (worldPlayer.isInMenu()) {
@@ -229,7 +240,7 @@ public class WorldPanel extends JPanel {
                   invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                                       RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                   invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
-                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/5,
+                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
                                 this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
                 }
               }
@@ -263,15 +274,49 @@ public class WorldPanel extends JPanel {
           g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
           g.setColor(Color.GREEN);
           g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
-        } else if (playerCurrentRod.getCurrentStatus() == FishingRod.WAITING_STATUS) {
+        } else if (playerCurrentRod.getCurrentStatus() == FishingRod.WAITING_STATUS) { 
           g.setColor(Color.WHITE);
-          g.drawLine((int)Math.round(playerScreenPos.x), (int)Math.round(playerScreenPos.y+Player.getSize()*Tile.getSize()/10),
+          int lineX, lineY;
+          if (worldPlayer.getOrientation() == World.NORTH) {
+            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize());
+            lineY = (int)Math.round(playerScreenPos.y);
+          } else if (worldPlayer.getOrientation() == World.SOUTH) {
+            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize());
+            lineY = (int)Math.round(playerScreenPos.y+Player.getSize()*Tile.getSize()*2);
+          } else if (worldPlayer.getOrientation() == World.WEST) {
+            lineX = (int)Math.round(playerScreenPos.x);
+            lineY = (int)Math.round(playerScreenPos.y);
+          } else { // EAST
+            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize()*2);
+            lineY = (int)Math.round(playerScreenPos.y);
+          }
+          
+          g.drawLine(lineX, lineY,
                      Tile.getSize()*(playerCurrentRod.getTileToFish().getX()-tileStartX)+originX+Tile.getSize()/2,
                      Tile.getSize()*(playerCurrentRod.getTileToFish().getY()-tileStartY)+originY+Tile.getSize()/2);
         }
       }
     }
 
+    // display health and energy
+    // TODO: different colors for different ranges of health/energy;
+    // also letter color is a hmm idk how to make it stand out with both black and white backgrounds
+    // ok i can think of ways that im too lazy to implement so whatever
+    g.setColor(Color.YELLOW);
+    g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    Graphics2D letterGraphics = (Graphics2D)g;
+    letterGraphics.setColor(Color.WHITE);
+    letterGraphics.setFont(this.letterFont);
+    letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    letterGraphics.drawString("E", this.getWidth()-60, this.getHeight()-20);
+    if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
+      g.setColor(Color.RED);
+      g.fillRect(this.getWidth()-140, this.getHeight()-250, 45, (int)(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
+      letterGraphics.setColor(Color.WHITE);
+      letterGraphics.setFont(this.letterFont);
+      letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      letterGraphics.drawString("H", this.getWidth()-125, this.getHeight()-20);
+    }
     // if player is in fishing game, draw mini game stuff
     // TODO: make the display postion beside the player
     if (worldPlayer.isInFishingGame()) {

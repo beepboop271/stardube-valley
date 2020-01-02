@@ -1,6 +1,6 @@
 public class Main {
   public static void main(String[] args) {
-    // sketchy
+    // sketchyy
     GroundTile.setGroundTileImage();
     GrassTile.setGrassTileImage();
     WaterTile.setWaterTileImage();

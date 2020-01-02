@@ -33,7 +33,7 @@ public class World {
   private Player player;
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
-  private long inGameDay = 0;
+  private long inGameDay;
   private int inGameSeason;
   private double luckOfTheDay;
   private HashMap<Player, Timer> fishingTimers;
@@ -53,6 +53,7 @@ public class World {
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
+    this.inGameDay = 0;
     this.inGameSeason = 0;
 
     // spawn first day items
@@ -284,8 +285,7 @@ public class World {
         this.player.setImmutable(false);
 
       } else if (event instanceof ComponentPlacedEvent) {
-        Tile currentTile = this.playerArea.getMapAt(
-                                        ((ComponentPlacedEvent)event).getLocationUsed());
+        Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
         TileComponent currentContent = currentTile.getContent();
         if (currentContent == null) { //- Anything that you can place must not be placed over something
           //- We need to make sure that the tile is both a ground tile and is tilled if
@@ -296,6 +296,7 @@ public class World {
                 if (this.playerArea instanceof FarmArea) {
                   currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
                   ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                  this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
                 }
               }
             }
@@ -311,13 +312,17 @@ public class World {
     // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
+    if ((this.inGameDay % 28 == 1) && (this.inGameDay > 1)) {
+      this.inGameSeason = (this.inGameSeason + 1) % 3;
+    }
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;
     while (areas.hasNext()) {
       nextArea = areas.next();
+      nextArea.updateDay(); //- someone can improve this i guess
+      nextArea.updateSeason();
       nextArea.doDayEndActions();
-      nextArea.setCurrentDay(this.inGameDay);
     }
   }
 

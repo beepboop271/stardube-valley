@@ -59,8 +59,12 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_ESCAPE:
         this.stardubePlayer.setInMenu(false);
         break;
+      // temp stuff below this comment
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
+        break;
+      case KeyEvent.VK_C:
+        this.stardubePlayer.consume();
         break;
     }
   }
@@ -192,7 +196,7 @@ public class StardubeEventListener implements KeyListener,
             this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*1_000_000_000),
               new ComponentPlacedEvent(
-                ((Seeds)selectedItem).createCrop(),
+                ((Seeds)selectedItem).createCrop(), this.stardubePlayer.getSelectedItemIdx(),
                 this.stardubePlayer.getSelectedTile()
               )
             );
