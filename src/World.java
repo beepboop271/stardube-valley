@@ -312,6 +312,9 @@ public class World {
     // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
+    if ((this.inGameDay % 28 == 1) && (this.inGameDay > 1)) {
+      this.inGameSeason = (this.inGameSeason + 1) % 3;
+    }
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;

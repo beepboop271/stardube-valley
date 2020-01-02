@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -153,8 +152,8 @@ public abstract class Area {
   }
 
   public void updateSeason() {
-    if (currentDay % 28 == 0) {
-      this.currentSeason = (this.currentSeason + 1) % 4;
+    if ((this.currentDay % 28 == 1) && (this.currentDay != 1)) {
+      this.currentSeason = (this.currentSeason + 1) % 3;
     }
   }
 
