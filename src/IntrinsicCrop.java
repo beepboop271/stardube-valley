@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * [ExtrinsicCrop]
@@ -12,11 +11,14 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
   private String requiredTool;
   private int[] stageToDisplay;
   private int maxGrowthStage, regrowTime;
+  private int plantingSeason;
   
   public IntrinsicCrop(String name, String imagesPath, String requiredTool,
-                       String[] growthData, int[] offsets) throws IOException {
+                       String[] growthData, int[] offsets, 
+                       int plantingSeason) throws IOException {
     super(name, imagesPath, 1, offsets); // All crops only drop 1 product, the item.
     
+    this.plantingSeason = plantingSeason;
     int totalStages = Integer.parseInt(growthData[0]);
     this.maxGrowthStage = Integer.parseInt(growthData[1]);
 
@@ -54,6 +56,10 @@ public class IntrinsicCrop extends IntrinsicTileComponent implements Harvestable
    */
   public int getRegrowTime() {
     return this.regrowTime;
+  }
+
+  public int getPlantingSeason() {
+    return this.plantingSeason;
   }
 
   @Override

@@ -317,8 +317,9 @@ public class World {
     Area nextArea;
     while (areas.hasNext()) {
       nextArea = areas.next();
+      nextArea.updateDay(); //- someone can improve this i guess
+      nextArea.updateSeason();
       nextArea.doDayEndActions();
-      nextArea.setCurrentDay(this.inGameDay);
     }
   }
 

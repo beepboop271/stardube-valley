@@ -82,8 +82,8 @@ public class IntrinsicTileComponentFactory {
         componentToAdd = new IntrinsicCrop(nextLineData[0], 
                                           "assets/images" + nextLineData[1], 
                                           nextLineData[3], 
-                                          Arrays.copyOfRange(nextLineData, 7, nextLineData.length),
-                                          offsets);
+                                          Arrays.copyOfRange(nextLineData, 8, nextLineData.length),
+                                          offsets, Integer.parseInt(nextLineData[7]));
         componentToAdd.setProduct(0, 
                                   new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
         

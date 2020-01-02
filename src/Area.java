@@ -17,6 +17,7 @@ public abstract class Area {
   private final int width, height;
   private GatewayZone[] neighbourZone = new GatewayZone[4];
   private long currentDay;
+  private int currentSeason;
   
   public Area(String name,
               int width, int height) {
@@ -27,6 +28,7 @@ public abstract class Area {
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
     this.currentDay = 0;
+    this.currentSeason = 0;
   }
 
   public static Area constructArea(String category,
@@ -142,12 +144,22 @@ public abstract class Area {
     this.map[t.getY()][t.getX()] = t;
   }
 
-  public void setCurrentDay(long day) {
-    this.currentDay = day;
+  public void updateDay() {
+    this.currentDay += 1;
   }
 
   public long getCurrentDay() {
     return this.currentDay;
+  }
+
+  public void updateSeason() {
+    if (currentDay % 28 == 0) {
+      this.currentSeason = (this.currentSeason + 1) % 4;
+    }
+  }
+
+  public int getSeason() {
+    return this.currentSeason;
   }
 
   public boolean hasValidXYAt(int x, int y) {
