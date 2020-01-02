@@ -312,7 +312,7 @@ public class World {
     // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
-    if ((this.inGameDay % 28 == 1) && (this.inGameDay > 1)) {
+    if ((this.inGameDay % DAYS_PER_SEASON == 1) && (this.inGameDay > 1)) {
       this.inGameSeason = (this.inGameSeason + 1) % 3;
     }
     this.luckOfTheDay = Math.random();
@@ -459,7 +459,11 @@ public class World {
     return this.inGameSeason;
   }
 
-  public String[] getSeasons() {
+  public static String[] getSeasons() {
     return seasons;
+  }
+
+  public static int getDaysPerSeason() {
+    return DAYS_PER_SEASON;
   }
 }

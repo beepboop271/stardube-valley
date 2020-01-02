@@ -152,7 +152,7 @@ public abstract class Area {
   }
 
   public void updateSeason() {
-    if ((this.currentDay % 28 == 1) && (this.currentDay != 1)) {
+    if ((this.currentDay % World.getDaysPerSeason() == 1) && (this.currentDay != 1)) {
       this.currentSeason = (this.currentSeason + 1) % 3;
     }
   }
