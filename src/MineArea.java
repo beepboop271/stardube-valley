@@ -10,6 +10,8 @@ public class MineArea extends Area {
 
   @Override
   public void doDayEndActions() {
-    this.levels = new MineLevel[MineArea.NUM_LEVELS];
+    for (int i = 0; i < MineArea.NUM_LEVELS; ++i) {
+      this.levels[i] = null;
+    }
   }
 }
