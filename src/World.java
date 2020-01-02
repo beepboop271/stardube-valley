@@ -23,8 +23,22 @@ public class World {
   public static final int EAST = 1;
   public static final int SOUTH = 2;
   public static final int WEST = 3;
+  public static final int getOppositeDirection(int direction) {
+    // can be moved wherever idc just needed to quickly write
+    if (direction == World.NORTH) {
+      return World.SOUTH;
+    } else if (direction == World.EAST) {
+      return World.WEST;
+    } else if (direction == World.SOUTH) {
+      return World.NORTH;
+    } else if (direction == World.WEST) {
+      return World.EAST;
+    } else {
+      throw new IllegalArgumentException("not a valid direction");
+    }
+  }
 
-  private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
+  private static final String[] SEASONS = {"Spring", "Summer", "Fall", "Winter"};
   private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
@@ -460,7 +474,7 @@ public class World {
   }
 
   public static String[] getSeasons() {
-    return seasons;
+    return World.SEASONS;
   }
 
   public static int getDaysPerSeason() {

@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Random;
 
 public class MineLevel extends Area {
   private static MineLevelComponent[] levelComponents;
@@ -21,26 +20,36 @@ public class MineLevel extends Area {
   }
 
   public void buildLevel(int size) {
-    Random rand = new Random();
     Rectangle[] componentRects = new Rectangle[size];
     MineLevelComponent[] components = new MineLevelComponent[4];
-    // MineLevelComponent nextComponent = 
     components[0] = 
-        MineLevel.levelComponents[rand.nextInt(MineLevel.numLevelComponents)];
-    
-    // LinkedList<Point> possiblePaths = new LinkedList<Point>(nextComponent.getPaths());
-    int[] directions = components[0].getNumPathsByDirection();
+        MineLevel.levelComponents[(int)(Math.random()*MineLevel.numLevelComponents)];
+    componentRects[0] = new Rectangle(0, 0, components[0].getWidth(), components[0].getHeight());    
 
-    componentRects[0] = new Rectangle(0, 0, components[0].getWidth(), components[0].getHeight());
+    int[] directions = components[0].getNumPathsByDirection();
     int numComponents = 1;
 
     int nextDirection;
     for (int attempt = 0; attempt < size-1; ++attempt) {
-      for (int i = 0; i < numComponents; ++i) {
-        nextDirection = components[i].getRandomCommonPath(rand, directions);
-        if (nextDirection > -1 && Math.random() < 0.5) {
-          components[numComponents] = MineLevel.levelComponents[i];
+      for (int existingIdx = 0; existingIdx < numComponents; ++existingIdx) {
+        for (int allIdx = 0; allIdx < MineLevel.numLevelComponents; ++allIdx) {
+          nextDirection = components[existingIdx].getRandomCommonPath(MineLevel.levelComponents[allIdx].getPossiblePaths());
+          if (nextDirection > -1 && Math.random() < 1.0/numComponents) {
+            components[numComponents] = MineLevel.levelComponents[allIdx];
+            Point anchorToPrevious = components[existingIdx].getRandomPathInDirection(nextDirection);
+            Point anchorToNext = components[numComponents].getRandomPathInDirection(World.getOppositeDirection(nextDirection));
+
+            componentRects[numComponents] = new Rectangle(
+                (int)(anchorToPrevious.x+componentRects[existingIdx].x-anchorToNext.x),
+                (int)(anchorToPrevious.y+componentRects[existingIdx].y-anchorToNext.y),
+                components[numComponents].getWidth(),
+                components[numComponents].getHeight()
+            );
+
+          }
         }
+
+
       }
     }
   }
