@@ -48,12 +48,11 @@ public class IntrinsicTileComponentFactory {
                                                            offsets);
 
         componentPool.put(componentToAdd.getName(), componentToAdd);
-        // TODO: uncomment after holdables added (this may not be relevant anymore)
-          // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
-          //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
-          //                                                 Integer.parseInt(nextLine[6+(j*3)]),
-          //                                                 Integer.parseInt(nextLine[7+(j*3)])));
-          // }  
+        for (int j = 0; j < Integer.parseInt(nextLineData[4]); ++j) {
+          componentToAdd.setProduct(j, new HoldableDrop(Integer.parseInt(nextLineData[6+(j*3)]),
+                                                          Integer.parseInt(nextLineData[7+(j*3)]), 
+                                                          nextLineData[5+(j*3)]));
+        }  
         lineToRead = input.readLine();  
       }
       input.close();

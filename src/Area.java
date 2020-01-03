@@ -131,6 +131,10 @@ public abstract class Area {
     return this.height;
   }
 
+  public Tile[][] getMap() {
+    return this.map;
+  }
+  
   public Tile getMapAt(int x, int y) {
     return this.map[y][x];
   }

@@ -77,7 +77,7 @@ public class World {
       return;
     }
     
-    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;
+    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime);
     this.inGameNanoTime %= (long)24*60*1_000_000_000;
 
     // check for end of day
