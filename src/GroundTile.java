@@ -49,6 +49,9 @@ public class GroundTile extends Tile {
   }
 
   public void determineImage(long currentDay) {
+    if (this.imageToDisplay == GroundTile.mineGroundImage) {
+      return;
+    }
     if (this.isTilled) {
       if (this.lastWatered == currentDay) {
         this.imageToDisplay = GroundTile.wateredTileImage;

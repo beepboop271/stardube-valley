@@ -102,6 +102,10 @@ public abstract class Area {
     this.getMapAt(pos).setContent(null);
   }
 
+  public LinkedList<HoldableStackEntity> getItemsOnGroundList() {
+    return this.itemsOnGround;
+  }
+
   public Iterator<HoldableStackEntity> getItemsOnGround() {
     return this.itemsOnGround.iterator();
   }

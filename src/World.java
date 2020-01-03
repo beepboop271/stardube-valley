@@ -108,19 +108,22 @@ public class World {
       }
     }
 
-    Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
-    HoldableStackEntity nextItemEntity;
-    double itemDistance;
-    while (itemsNearPlayer.hasNext()) {
-      nextItemEntity = itemsNearPlayer.next();
-      itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
-      if (itemDistance < Player.getSize()) {
-        this.player.pickUp(nextItemEntity.getStack());
-      } else if (itemDistance < Player.getItemAttractionDistance()) {
-        nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
-                                   this.player.getPos().y-nextItemEntity.getPos().y, 
-                                   (double)Player.getItemAttractionDistance()/itemDistance);
-        nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+    synchronized (this.playerArea.getItemsOnGroundList()) {
+      Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
+      HoldableStackEntity nextItemEntity;
+      double itemDistance;
+      while (itemsNearPlayer.hasNext()) {
+        nextItemEntity = itemsNearPlayer.next();
+        itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
+        if (itemDistance < Player.getSize()) {
+          this.player.pickUp(nextItemEntity.getStack());
+          itemsNearPlayer.remove();
+        } else if (itemDistance < Player.getItemAttractionDistance()) {
+          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
+                                    this.player.getPos().y-nextItemEntity.getPos().y, 
+                                    (double)Player.getItemAttractionDistance()/itemDistance);
+          nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+        }
       }
     }
 
@@ -179,25 +182,25 @@ public class World {
         TileComponent componentToHarvest = selectedTile.getContent();
 
         if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
-          String requiredTool = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf())).getRequiredTool();
+          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
+          String requiredTool = ic.getRequiredTool();
                   
           if (requiredTool.equals("Any")
                 || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
-          // TODO: play breaking animation?
-          System.out.println("wack1");
-          this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+            // TODO: play breaking animation?
+            this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
-          HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
-          for (int i = 0; i < drops.length; ++i) {
-            this.playerArea.addItemOnGround(
-                new HoldableStackEntity(
-                    drops[i].resolveDrop(this.luckOfTheDay),
-                    toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
-                )
-            );
-          } //TODO: make these tools not dependant on world
+            HoldableDrop[] drops = ic.getProducts();
+            for (int i = 0; i < drops.length; ++i) {
+              this.playerArea.addItemOnGround(
+                  new HoldableStackEntity(
+                      drops[i].resolveDrop(this.luckOfTheDay),
+                      toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
+                  )
+              );
+            } //TODO: make these tools not dependant on world
+          }
         } else if (selectedTile instanceof GroundTile) {
-          System.out.println("wack2");
           if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
               (((GroundTile)selectedTile).getTilledStatus() == true)) {
                 ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
@@ -210,8 +213,8 @@ public class World {
 
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               ((GroundTile)selectedTile).setTilledStatus(false); 
-
-              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
+              if ((this.playerArea instanceof FarmArea)
+                    && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
             }

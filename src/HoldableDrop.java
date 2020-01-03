@@ -10,7 +10,7 @@ public class HoldableDrop {
   private int maxDropQuantity;
 
   public HoldableDrop(int minDropQuantity, int maxDropQuantity,
-                    String holdableToDrop) {
+                      String holdableToDrop) {
     this.holdableToDrop = HoldableFactory.getHoldable(holdableToDrop);
     this.minDropQuantity = minDropQuantity;
     this.maxDropQuantity = maxDropQuantity;
