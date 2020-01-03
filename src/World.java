@@ -178,11 +178,13 @@ public class World {
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (componentToHarvest instanceof Harvestable
-              && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(
-                        toolEvent.getHoldableUsed().getName()))) {
+        if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+          String requiredTool = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf())).getRequiredTool();
+                  
+          if (requiredTool.equals("Any")
+                || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
           // TODO: play breaking animation?
+          System.out.println("wack1");
           this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
           HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
@@ -195,6 +197,7 @@ public class World {
             );
           } //TODO: make these tools not dependant on world
         } else if (selectedTile instanceof GroundTile) {
+          System.out.println("wack2");
           if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
               (((GroundTile)selectedTile).getTilledStatus() == true)) {
                 ((GroundTile)selectedTile).setLastWatered(this.inGameDay);

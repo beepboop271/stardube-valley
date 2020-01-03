@@ -14,11 +14,13 @@ public abstract class Holdable {
   private final String name;
   private final String description;
   private final BufferedImage image;
+  private final BufferedImage smallImage;
 
   public Holdable(String name, String description, String imagePath) throws IOException {
     this.name = name;
     this.description = description;
     this.image = ImageIO.read(new File(imagePath));
+    this.smallImage = ImageIO.read(new File(imagePath.substring(0, imagePath.length()-3)+"Small.png"));
   }
 
   public String getName() {
@@ -31,5 +33,9 @@ public abstract class Holdable {
 
   public BufferedImage getImage() {
     return this.image;
+  }
+
+  public BufferedImage getSmallImage() {
+    return this.smallImage;
   }
 }

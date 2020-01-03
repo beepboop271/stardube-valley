@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -31,7 +30,6 @@ public class IntrinsicTileComponentFactory {
     String lineToRead;
     String[] nextLineData;
 
-    int numComponents;
     IntrinsicTileComponent componentToAdd;
     
     try {
@@ -41,7 +39,7 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         int[] offsets = {Integer.parseInt(nextLineData[2]), Integer.parseInt(nextLineData[3])};
         componentToAdd = new IntrinsicHarvestableComponent(nextLineData[0],
-                                                           "assets/images"+nextLineData[1],
+                                                           "assets/images"+nextLineData[1]+nextLineData[0]+".png",
                                                            nextLineData[4],
                                                            Integer.parseInt(nextLineData[5]),
                                                            Integer.parseInt(nextLineData[6]),
@@ -49,7 +47,7 @@ public class IntrinsicTileComponentFactory {
 
         componentPool.put(componentToAdd.getName(), componentToAdd);
         // TODO: uncomment after holdables added (this may not be relevant anymore)
-          // for (int j = 0; j < Integer.parseInt(nextLine[4]); ++j) {
+          // for (int j = 0; j < Integer.parseInt(nextLine[6]); ++j) {
           //   componentToAdd.setProduct(j, new HoldableDrop(nextLine[5+(j*3)],
           //                                                 Integer.parseInt(nextLine[6+(j*3)]),
           //                                                 Integer.parseInt(nextLine[7+(j*3)])));
@@ -64,7 +62,7 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         int[] offsets = {Integer.parseInt(nextLineData[4]), Integer.parseInt(nextLineData[5])};
         componentToAdd = new CollectableComponent(nextLineData[0],
-                                                  "assets/images"+nextLineData[1],
+                                                  "assets/images"+nextLineData[1]+nextLineData[0]+".png",
                                                   1, offsets);
         // TODO: uncomment when drops added
         componentToAdd.setProduct(0, new HoldableDrop(1, 1, nextLineData[2]));

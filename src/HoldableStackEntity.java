@@ -1,4 +1,6 @@
-public class HoldableStackEntity extends Moveable {
+import java.awt.image.BufferedImage;
+
+public class HoldableStackEntity extends Moveable implements Drawable {
   private HoldableStack stackObject;
 
   public HoldableStackEntity(HoldableStack stackObject, Point position) {
@@ -16,5 +18,20 @@ public class HoldableStackEntity extends Moveable {
 
   public HoldableStack getStack() {
     return this.stackObject;
+  }
+
+  @Override
+  public BufferedImage getImage() {
+    return this.stackObject.getContainedHoldable().getSmallImage();
+  }
+
+  @Override
+  public int getXOffset() {
+    return 0;
+  }
+
+  @Override
+  public int getYOffset() {
+    return 0;
   }
 }

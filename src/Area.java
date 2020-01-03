@@ -94,6 +94,10 @@ public abstract class Area {
     this.moveables.remove(m);
   }
 
+  public void addHarvestableAt(int x, int y, String harvestable) {
+    this.getMapAt(x, y).setContent(new ExtrinsicHarvestableComponent(harvestable));
+  }
+
   public void removeComponentAt(Point pos) {
     this.getMapAt(pos).setContent(null);
   }

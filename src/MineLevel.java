@@ -1,4 +1,3 @@
-import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,6 +6,17 @@ public class MineLevel extends Area {
   private static MineLevelComponent[] levelComponents;
   private static int numLevelComponents;
   private static boolean componentsInitialized = false;
+
+  private static final String[] METAL_ORES = {
+      "CopperOre", "IronOre", "GoldOre"
+  };
+  private static final String[][] SPECIAL_ORES = {
+      {},
+      {"AmethystOre", "EmeraldOre"},
+      {"RubyOre", "DiamondOre"}
+  };
+  private static final int LEVELS_PER_TIER = 40;
+
   private final int level;
 
   public static class Builder {
@@ -51,14 +61,35 @@ public class MineLevel extends Area {
       MineLevel level = new MineLevel(this);
       
       Point offset;
+      int realX, realY;
       i = -1;
       while (++i < this.components.length && this.components[i] != null) {
         offset = this.componentPoints[i];
         for (int y = 0; y < this.components[i].getHeight(); ++y) {
           for (int x = 0; x < this.components[i].getWidth(); ++x) {
             if (this.components[i].isWalkableAt(x, y)) {
-              level.setMapAt(new GroundTile((int)offset.x+x+1, (int)offset.y+y+1).setMineImage());
+              realX = (int)offset.x+x+1;
+              realY = (int)offset.y+y+1;
+              level.setMapAt(new GroundTile(realX, realY).setMineImage());
               // ores here
+              if (Math.random() < 0.4) {      // 40% to be occupied
+                if (Math.random() < 0.3) {    //   30% to be special
+                  if (Math.random() < 0.1) {  //     10% to be very special
+                    String[] choices = MineLevel.SPECIAL_ORES[this.level/MineLevel.LEVELS_PER_TIER];
+                    if (choices.length > 0) {
+                      level.addHarvestableAt(realX, realY, choices[(int)(Math.random()*choices.length)]);
+                    }
+                  } else {                    //     90% to be an ore
+                    level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[this.level/MineLevel.LEVELS_PER_TIER]);
+                  }
+                } else {                      //   70% to be rock
+                  if (Math.random() < 0.1) {  //     10% to be hard rock
+                    level.addHarvestableAt(realX, realY, "HardRock");
+                  } else {                    //     90% to be normal rock
+                    level.addHarvestableAt(realX, realY, "Rock");
+                  }
+                }
+              }
             }
           }
         }

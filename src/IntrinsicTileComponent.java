@@ -1,7 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -13,7 +12,7 @@ import javax.imageio.ImageIO;
  */
 
 public abstract class IntrinsicTileComponent extends TileComponent 
-                                            implements Collectable {
+                                             implements Collectable {
   private final String name;
   private final HoldableDrop[] products;
   private final BufferedImage[] images;
@@ -28,15 +27,20 @@ public abstract class IntrinsicTileComponent extends TileComponent
     this.offsets = offsets;
     
     File fileSystem = new File(imagesPath);
-    String[] allFiles = fileSystem.list();
-    this.images = new BufferedImage[allFiles.length];
-    try {
-      for (int i = 0, j = 0; i < allFiles.length; i++) {
-        this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
-        j++;
+    if (fileSystem.isFile()) {
+      this.images = new BufferedImage[1];
+      this.images[0] = ImageIO.read(fileSystem);
+    } else {
+      String[] allFiles = fileSystem.list();
+      this.images = new BufferedImage[allFiles.length];
+      try {
+        for (int i = 0, j = 0; i < allFiles.length; i++) {
+          this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
+          j++;
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 
