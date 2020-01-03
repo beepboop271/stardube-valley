@@ -10,8 +10,6 @@ import java.awt.image.BufferedImage;
 public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
   private int stage, regrowCooldown;
 
-  //TODO: make the world harvesting work (look at methods, myself!)
-
   public ExtrinsicCrop(IntrinsicCrop crop) {
     super(crop);
     this.stage = 0;

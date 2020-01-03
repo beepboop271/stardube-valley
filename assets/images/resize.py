@@ -10,7 +10,7 @@ image_folder = os.getcwd()+"\\"
 # print glob.glob(image_folder+"ores\\*.png")
 # print glob.glob(image_folder+"ores\\*Item.png")
 
-image_paths_to_resize = glob.glob(image_folder+"crops\\*Item.png")
+image_paths_to_resize = glob.glob(image_folder+"holdables\\*.png")
 for path in image_paths_to_resize:
     img = Image.open(path)
     print path

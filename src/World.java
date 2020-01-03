@@ -23,8 +23,22 @@ public class World {
   public static final int EAST = 1;
   public static final int SOUTH = 2;
   public static final int WEST = 3;
+  public static final int getOppositeDirection(int direction) {
+    // can be moved wherever idc just needed to quickly write
+    if (direction == World.NORTH) {
+      return World.SOUTH;
+    } else if (direction == World.EAST) {
+      return World.WEST;
+    } else if (direction == World.SOUTH) {
+      return World.NORTH;
+    } else if (direction == World.WEST) {
+      return World.EAST;
+    } else {
+      throw new IllegalArgumentException("not a valid direction");
+    }
+  }
 
-  private static final String[] seasons = {"Spring", "Summer", "Fall", "Winter"};
+  private static final String[] SEASONS = {"Spring", "Summer", "Fall", "Winter"};
   private static final int DAYS_PER_SEASON = 28;
 
   private LinkedHashMap<String, Area> locations;
@@ -134,6 +148,20 @@ public class World {
         }
       }
     }
+    //// testing TODO: remove
+    nextArea = this.playerArea;
+    moveables = nextArea.getMoveables();
+    while (moveables.hasNext()) {
+      nextMoveable = moveables.next();
+      lastPos = nextMoveable.getPos();
+      nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
+      intersectingTiles = nextMoveable.getIntersectingTiles();
+      if (nextArea.collides(intersectingTiles.iterator())) {
+        nextMoveable.setPos(lastPos);
+      }
+    }
+    ////
+
     this.lastUpdateTime = currentUpdateTime;
   }
 
@@ -150,11 +178,13 @@ public class World {
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (componentToHarvest instanceof Harvestable
-              && (((Harvestable)componentToHarvest).getRequiredTool().equals("Any")
-                  || ((Harvestable)componentToHarvest).getRequiredTool().equals(
-                        toolEvent.getHoldableUsed().getName()))) {
+        if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+          String requiredTool = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf())).getRequiredTool();
+                  
+          if (requiredTool.equals("Any")
+                || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
           // TODO: play breaking animation?
+          System.out.println("wack1");
           this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
           HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
@@ -167,6 +197,7 @@ public class World {
             );
           } //TODO: make these tools not dependant on world
         } else if (selectedTile instanceof GroundTile) {
+          System.out.println("wack2");
           if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
               (((GroundTile)selectedTile).getTilledStatus() == true)) {
                 ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
@@ -312,7 +343,7 @@ public class World {
     // day starts at 6 am
     this.inGameNanoTime = (long)6*60*1_000_000_000;
     ++this.inGameDay;
-    if ((this.inGameDay % 28 == 1) && (this.inGameDay > 1)) {
+    if ((this.inGameDay % DAYS_PER_SEASON == 1) && (this.inGameDay > 1)) {
       this.inGameSeason = (this.inGameSeason + 1) % 3;
     }
     this.luckOfTheDay = Math.random();
@@ -447,6 +478,12 @@ public class World {
     return this.playerArea;
   }
 
+  public void setPlayerArea(Area a) {
+    // testing only
+    this.playerArea = a;
+    // TODO: die
+  }
+
   public long getInGameNanoTime() {
     return this.inGameNanoTime;
   }
@@ -459,7 +496,11 @@ public class World {
     return this.inGameSeason;
   }
 
-  public String[] getSeasons() {
-    return seasons;
+  public static String[] getSeasons() {
+    return World.SEASONS;
+  }
+
+  public static int getDaysPerSeason() {
+    return DAYS_PER_SEASON;
   }
 }

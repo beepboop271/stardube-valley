@@ -89,6 +89,15 @@ public abstract class Area {
     this.moveables.add(m);
   }
 
+  public void removeMoveable(Moveable m) {
+    //testing only TODO: remove
+    this.moveables.remove(m);
+  }
+
+  public void addHarvestableAt(int x, int y, String harvestable) {
+    this.getMapAt(x, y).setContent(new ExtrinsicHarvestableComponent(harvestable));
+  }
+
   public void removeComponentAt(Point pos) {
     this.getMapAt(pos).setContent(null);
   }
@@ -156,7 +165,7 @@ public abstract class Area {
   }
 
   public void updateSeason() {
-    if ((this.currentDay % 28 == 1) && (this.currentDay != 1)) {
+    if ((this.currentDay % World.getDaysPerSeason() == 1) && (this.currentDay != 1)) {
       this.currentSeason = (this.currentSeason + 1) % 3;
     }
   }

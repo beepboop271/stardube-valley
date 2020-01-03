@@ -29,6 +29,16 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   public BufferedImage getImage() {
     return this.intrinsicSelf.getImages()[0];
   }
+  
+  @Override
+  public int getXOffset() {
+    return this.intrinsicSelf.getXOffset();
+  }
+
+  @Override
+  public int getYOffset() {
+    return this.intrinsicSelf.getYOffset();
+  }
 
   @Override
   public HoldableDrop[] getProducts() {

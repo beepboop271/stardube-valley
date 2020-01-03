@@ -1,4 +1,3 @@
-import java.io.IOException;
 
 /**
  * HarvestableComponent 2019-12-21
@@ -9,7 +8,7 @@ import java.io.IOException;
 public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent {
   private int hardnessLeft;
 
-  public ExtrinsicHarvestableComponent(String name) throws IOException {
+  public ExtrinsicHarvestableComponent(String name) {
     super(name);
     this.hardnessLeft = ((IntrinsicHarvestableComponent)this.getIntrinsicSelf()).getHardness();
   }

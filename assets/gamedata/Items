@@ -1,8 +1,16 @@
-Joseph's-Compsci-Mark   /holdables/Joseph's-Compsci-Mark  oof
-Ethics-Assignment       /holdables/Ethics-Assignment      rip
-MakBooc                 /holdables/MakBooc                uhh
-Chair-NULL              /holdables/Chair-NULL             hmm
-WoodItem                /forageables/WoodItem             stick!   
-SapItem                 /forageables/SapItem              sticky!
+Joseph's-Compsci-Mark   /holdables/                       oof
+Ethics-Assignment       /holdables/                       rip
+MakBooc                 /holdables/                       uhh
+Chair-NULL              /holdables/                       hmm
+StoneItem               /ores/                            kms
+CoalItem                /ores/                            kms
+CopperItem              /ores/                            kms
+IronItem                /ores/                            kms
+GoldItem                /ores/                            kms
+EmeraldItem             /ores/                            kms
+RubyItem                /ores/                            kms
+DiamondItem             /ores/                            kms
+AmethystItem            /ores/                            kms
+QuartzItem              /ores/                            kms
 
 name                    imagePath                         description

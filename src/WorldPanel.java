@@ -117,10 +117,8 @@ public class WorldPanel extends JPanel {
             
             if (tileContent != null) {
               g.drawImage(((Drawable)tileContent).getImage(), //- consider offsets when you draw the image
-                      drawX + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
-                        .getXOffset() * Tile.getSize(),
-                      drawY + ((ExtrinsicTileComponent)tileContent).getIntrinsicSelf()
-                        .getYOffset() * Tile.getSize(), 
+                      drawX + ((Drawable)tileContent).getXOffset() * Tile.getSize(),
+                      drawY + ((Drawable)tileContent).getYOffset() * Tile.getSize(), 
                       null); 
             }
 
@@ -200,12 +198,12 @@ public class WorldPanel extends JPanel {
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
-    g2.drawString(this.worldToDisplay.getSeasons()[this.worldToDisplay.getInGameSeason()],
+    g2.drawString(World.getSeasons()[this.worldToDisplay.getInGameSeason()],
                   this.getWidth()-500, 45); 
-    if (this.worldToDisplay.getInGameDay() % 28 == 0) {
+    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
       g2.drawString("28", this.getWidth()-300, 45);
     } else {
-      g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay()%28), 
+      g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason()), 
                     this.getWidth()-300, 45);
     }
                   

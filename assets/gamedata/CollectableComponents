@@ -1,12 +1,12 @@
-Turnip     /forageables/Turnip/          TurnipItem     y           0 0
-Daffodil   /forageables/Daffodil/        DaffodilItem   y           0 0
-Leek       /forageables/Leek/            LeekItem       y           0 0
-Bluebell   /forageables/Bluebell/        BluebellItem   y           0 0
-IceCream   /forageables/IceCream/        IceCreamItem   y           0 0
-Mushroom   /forageables/Mushroom/        MushroomItem   y           0 0
-WinterRoot /forageables/WinterRoot/      WinterRootItem y           0 0
-Javacake   /forageables/Javacake/        JavacakeItem   y           0 0
-Quartz     /ores/Quartz/                 QuartzItem     n           0 0
+Turnip     /forageables/                 TurnipItem     y           0 0
+Daffodil   /forageables/                 DaffodilItem   y           0 0
+Leek       /forageables/                 LeekItem       y           0 0
+Bluebell   /forageables/                 BluebellItem   y           0 0
+IceCream   /forageables/                 IceCreamItem   y           0 0
+Mushroom   /forageables/                 MushroomItem   y           0 0
+WinterRoot /forageables/                 WinterRootItem y           0 0
+Javacake   /forageables/                 JavacakeItem   y           0 0
+Quartz     /ores/                        QuartzItem     n           0 0
 
 name      img                           item       whether or not    offsets
           /assets/images/+                        it's forageable
