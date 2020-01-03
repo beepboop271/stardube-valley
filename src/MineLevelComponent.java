@@ -13,6 +13,9 @@ public class MineLevelComponent {
     this.possiblePaths = 0;
     this.map = new boolean[this.HEIGHT][this.WIDTH];
     this.paths = new ArrayList<ArrayList<Point>>(4);
+    for (int i = 0; i < 4; ++i) {
+      this.paths.add(new ArrayList<Point>(4));
+    }
   }
 
   public void addPath(int direction, Point pos) {
@@ -21,12 +24,12 @@ public class MineLevelComponent {
     ++this.numPathsByDirection[direction];
   }
 
-  public boolean hasPath(int direction) {
-    return (this.possiblePaths & (1<<direction)) == 1;
-  }
-
   public int getPossiblePaths() {
     return this.possiblePaths;
+  }
+
+  public boolean isWalkableAt(int x, int y) {
+    return this.map[y][x];
   }
 
   public void setWalkableAt(int x, int y) {
@@ -46,35 +49,19 @@ public class MineLevelComponent {
     return paths.get((int)(Math.random()*paths.size()));
   }
 
-  public int[] getNumPathsByDirection() {
-    return this.numPathsByDirection;
-  }
-
-  public int getRandomContainedPath() {
-    if (this.possiblePaths == 0) {
-      throw new RuntimeException("no paths");
-    } else {
-      int path;
-      do {
-        path = (int)(Math.random()*4);
-      } while (!this.hasPath(path));
-      return path;
-    }
-  }
-
   public int getRandomCommonPath(int otherPossiblePaths) {
     int commonPaths = 0;
-    if (((this.possiblePaths & (1<<World.NORTH)) == 1)
-          && ((otherPossiblePaths & (1<<World.SOUTH)) == 1)) {
+    if (((this.possiblePaths & (1<<World.NORTH)) > 0)
+          && ((otherPossiblePaths & (1<<World.SOUTH)) > 0)) {
       commonPaths |= (1<<World.NORTH);
-    } else if (((this.possiblePaths & (1<<World.EAST)) == 1)
-          && ((otherPossiblePaths & (1<<World.WEST)) == 1)) {
+    } else if (((this.possiblePaths & (1<<World.EAST)) > 0)
+          && ((otherPossiblePaths & (1<<World.WEST)) > 0)) {
       commonPaths |= (1<<World.EAST);
-    } else if (((this.possiblePaths & (1<<World.SOUTH)) == 1)
-          && ((otherPossiblePaths & (1<<World.NORTH)) == 1)) {
+    } else if (((this.possiblePaths & (1<<World.SOUTH)) > 0)
+          && ((otherPossiblePaths & (1<<World.NORTH)) > 0)) {
       commonPaths |= (1<<World.SOUTH);
-    } else if (((this.possiblePaths & (1<<World.WEST)) == 1)
-          && ((otherPossiblePaths & (1<<World.EAST)) == 1)) {
+    } else if (((this.possiblePaths & (1<<World.WEST)) > 0)
+          && ((otherPossiblePaths & (1<<World.EAST)) > 0)) {
       commonPaths |= (1<<World.WEST);
     }
 
@@ -88,23 +75,4 @@ public class MineLevelComponent {
       return path;
     }
   }
-
-  // public int getRandomCommonPath(int[] otherPossiblePaths) {
-  //   int commonPaths = 0;
-  //   for (int i = 0; i < 4; ++i) {
-  //     if (otherPossiblePaths[i] > 0 && this.hasPath(i)) {
-  //       commonPaths |= (1<<i);
-  //     }
-  //   }
-  
-  //   if (commonPaths == 0) {
-  //     return -1;
-  //   } else {
-  //     int path;
-  //     do {
-  //       path = (int)(Math.random()*4);
-  //     } while ((commonPaths & (1<<path)) == 1);
-  //     return path;
-  //   }
-  // }
 }

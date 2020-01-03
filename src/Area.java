@@ -89,6 +89,11 @@ public abstract class Area {
     this.moveables.add(m);
   }
 
+  public void removeMoveable(Moveable m) {
+    //testing only TODO: remove
+    this.moveables.remove(m);
+  }
+
   public void removeComponentAt(Point pos) {
     this.getMapAt(pos).setContent(null);
   }

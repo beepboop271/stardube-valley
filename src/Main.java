@@ -1,7 +1,7 @@
 public class Main {
   public static void main(String[] args) {
     // sketchyy
-    GroundTile.setGroundTileImage();
+    GroundTile.setGroundTileImages();
     GrassTile.setGrassTileImage();
     WaterTile.setWaterTileImage();
     WaterTile.setFishableTrash();
@@ -11,6 +11,7 @@ public class Main {
     OceanTile.setFishableFish();
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();
+    MineLevel.loadComponents();
 
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);

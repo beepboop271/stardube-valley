@@ -148,6 +148,20 @@ public class World {
         }
       }
     }
+    //// testing TODO: remove
+    nextArea = this.playerArea;
+    moveables = nextArea.getMoveables();
+    while (moveables.hasNext()) {
+      nextMoveable = moveables.next();
+      lastPos = nextMoveable.getPos();
+      nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
+      intersectingTiles = nextMoveable.getIntersectingTiles();
+      if (nextArea.collides(intersectingTiles.iterator())) {
+        nextMoveable.setPos(lastPos);
+      }
+    }
+    ////
+
     this.lastUpdateTime = currentUpdateTime;
   }
 
@@ -459,6 +473,12 @@ public class World {
 
   public Area getPlayerArea() {
     return this.playerArea;
+  }
+
+  public void setPlayerArea(Area a) {
+    // testing only
+    this.playerArea = a;
+    // TODO: die
   }
 
   public long getInGameNanoTime() {

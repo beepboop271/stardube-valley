@@ -19,6 +19,8 @@ public class GroundTile extends Tile {
   private static BufferedImage tilledTileImage;
   private static BufferedImage wateredTileImage;
 
+  private static BufferedImage mineGroundImage;
+
   public GroundTile(int x, int y) {
     super(x, y);
 
@@ -41,6 +43,11 @@ public class GroundTile extends Tile {
     this.lastWatered = day;
   }
 
+  public GroundTile setMineImage() {
+    this.imageToDisplay = GroundTile.mineGroundImage;
+    return this;
+  }
+
   public void determineImage(long currentDay) {
     if (this.isTilled) {
       if (this.lastWatered == currentDay) {
@@ -58,11 +65,12 @@ public class GroundTile extends Tile {
     return this.imageToDisplay;
   }
 
-  public static void setGroundTileImage() {
+  public static void setGroundTileImages() {
     try {
       GroundTile.groundTileImage = ImageIO.read(new File("assets/images/tiles/ground1.png"));
       GroundTile.tilledTileImage = ImageIO.read(new File("assets/images/tiles/tilled1.png"));
       GroundTile.wateredTileImage = ImageIO.read(new File("assets/images/tiles/watered1.png"));
+      GroundTile.mineGroundImage = ImageIO.read(new File("assets/images/tiles/MineGround1.png"));
     } catch (IOException e) {
       e.printStackTrace();
     }
