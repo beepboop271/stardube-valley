@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
-
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -216,9 +216,10 @@ public class World {
 
           } else if (selectedTile.getContent() == null) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
-              ((GroundTile)selectedTile).setTilledStatus(true);
-              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
-
+              if (this.playerArea instanceof FarmArea) {
+                ((GroundTile)selectedTile).setTilledStatus(true);
+                ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+              }
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               ((GroundTile)selectedTile).setTilledStatus(false); 
               if ((this.playerArea instanceof FarmArea)
