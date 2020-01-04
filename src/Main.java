@@ -15,7 +15,9 @@ public class Main {
 
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);
+    StardubeEventListener listener = ((WorldPanel)display.getContentPane()).getListener();
     while (true) {
+      listener.update();
       stardube.update();
       display.refresh();
       try {

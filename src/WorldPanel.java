@@ -26,6 +26,7 @@ public class WorldPanel extends JPanel {
   private final Font timeFont;
   private final Font quantityFont;
   private final Font letterFont;
+  private StardubeEventListener listener;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
@@ -41,11 +42,11 @@ public class WorldPanel extends JPanel {
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
 
-    StardubeEventListener listener = new StardubeEventListener(worldToDisplay, this);
-    this.addKeyListener(listener);
-    this.addMouseListener(listener);
-    this.addMouseMotionListener(listener);
-    this.addMouseWheelListener(listener);
+    this.listener = new StardubeEventListener(worldToDisplay, this);
+    this.addKeyListener(this.listener);
+    this.addMouseListener(this.listener);
+    this.addMouseMotionListener(this.listener);
+    this.addMouseWheelListener(this.listener);
 
     this.setFocusable(true);
     this.grabFocus();
@@ -385,5 +386,8 @@ public class WorldPanel extends JPanel {
   public Point getPlayerScreenPos() {
     return ((Point)this.playerScreenPos.clone());
   }
-  
+
+  public StardubeEventListener getListener() {
+    return this.listener;
+  }  
 }

@@ -119,7 +119,7 @@ public class Player extends Moveable {
     if (this.inventory[index].getQuantity() == 1) {
       this.inventory[index] = null;
     } else {
-      this.inventory[index].setQuantity(this.inventory[this.selectedItemIdx].getQuantity()-1);
+      this.inventory[index].subtractHoldables(1);
     }
   }
 

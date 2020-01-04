@@ -34,4 +34,8 @@ public class HoldableStack {
   public void addHoldables(int quantity) {
     this.quantity += quantity;
   }
+
+  public void subtractHoldables(int quantity) {
+    this.quantity -= quantity;
+  }
 }

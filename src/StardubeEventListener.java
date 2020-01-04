@@ -13,46 +13,62 @@ public class StardubeEventListener implements KeyListener,
   private World stardubeWorld;
   private WorldPanel worldPanel;
   private Player stardubePlayer;
+
+  private boolean[] keyStates;
+  private boolean[] mouseStates;
   private Point mousePos;
 
   public StardubeEventListener(World stardubeWorld, WorldPanel worldPanel) {
     this.stardubeWorld = stardubeWorld;
     this.stardubePlayer = stardubeWorld.getPlayer();
     this.worldPanel = worldPanel;
+
+    this.keyStates = new boolean[0x7B+1];  // decent amount of keys
+    this.mouseStates = new boolean[3+1];
     this.mousePos = new Point(0, 0);
+  }
+
+  public void update() {
+    this.updateSelectedTile();
+    
+    this.stardubePlayer.setVelocity(0, 0, 0);
+    if (this.keyStates[KeyEvent.VK_W]) {
+      if (this.stardubePlayer.getVerticalSpeed() != -1) {
+        this.stardubePlayer.setVerticalSpeed(-1);
+        this.stardubePlayer.setOrientation(World.NORTH);
+      }
+    }
+    if (this.keyStates[KeyEvent.VK_A]) {
+      if (this.stardubePlayer.getHorizontalSpeed() != -1) {
+        this.stardubePlayer.setHorizontalSpeed(-1);
+        this.stardubePlayer.setOrientation(World.WEST);
+      }
+    }
+    if (this.keyStates[KeyEvent.VK_S]) {
+      if (this.stardubePlayer.getVerticalSpeed() != 1) {
+        this.stardubePlayer.setVerticalSpeed(1);
+        this.stardubePlayer.setOrientation(World.SOUTH);
+      }
+    }
+    if (this.keyStates[KeyEvent.VK_D]) {
+      if (this.stardubePlayer.getHorizontalSpeed() != 1) {
+        this.stardubePlayer.setHorizontalSpeed(1);
+        this.stardubePlayer.setOrientation(World.EAST);
+      }
+    }
   }
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if (e.getKeyCode() < this.keyStates.length) {
+      this.keyStates[e.getKeyCode()] = true;
+    }
+
     if (this.stardubePlayer.isImmutable()) {
       return;
     }
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
-      case KeyEvent.VK_W:
-        if (this.stardubePlayer.getVerticalSpeed() != -1) {
-          this.stardubePlayer.setVerticalSpeed(-1);
-        }
-        this.stardubePlayer.setOrientation(World.NORTH);
-        break;
-      case KeyEvent.VK_A:
-        if (this.stardubePlayer.getHorizontalSpeed() != -1) {
-          this.stardubePlayer.setHorizontalSpeed(-1);
-        }
-        this.stardubePlayer.setOrientation(World.WEST);
-        break;
-      case KeyEvent.VK_S:
-        if (this.stardubePlayer.getVerticalSpeed() != 1) {
-          this.stardubePlayer.setVerticalSpeed(1);
-        }
-        this.stardubePlayer.setOrientation(World.SOUTH);
-        break;
-      case KeyEvent.VK_D:
-        if (this.stardubePlayer.getHorizontalSpeed() != 1) {
-          this.stardubePlayer.setHorizontalSpeed(1);
-        }
-        this.stardubePlayer.setOrientation(World.EAST);
-        break;
       case KeyEvent.VK_E:
         this.stardubePlayer.toggleInMenu();
         break;
@@ -89,66 +105,25 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void keyTyped(KeyEvent e) {
-    this.updateSelectedTile();
-    switch (e.getKeyCode()) {
-      case KeyEvent.VK_W:
-        if (this.stardubePlayer.getVerticalSpeed() != -1) {
-          this.stardubePlayer.setVerticalSpeed(-1);
-        }
-        break;
-      case KeyEvent.VK_A:
-        if (this.stardubePlayer.getHorizontalSpeed() != -1) {
-          this.stardubePlayer.setHorizontalSpeed(-1);
-        }
-        break;
-      case KeyEvent.VK_S:
-        if (this.stardubePlayer.getVerticalSpeed() != 1) {
-          this.stardubePlayer.setVerticalSpeed(1);
-        }
-        break;
-      case KeyEvent.VK_D:
-        if (this.stardubePlayer.getHorizontalSpeed() != 1) {
-          this.stardubePlayer.setHorizontalSpeed(1);
-        }
-        break;
-    }
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-    switch (e.getKeyCode()) {
-      case KeyEvent.VK_W:
-        if (this.stardubePlayer.getVerticalSpeed() == -1) {
-          this.stardubePlayer.setVerticalSpeed(0);
-        }
-        break;
-      case KeyEvent.VK_A:
-        if (this.stardubePlayer.getHorizontalSpeed() == -1) {
-          this.stardubePlayer.setHorizontalSpeed(0);
-        }
-        break;
-      case KeyEvent.VK_S:
-        if (this.stardubePlayer.getVerticalSpeed() == 1) {
-          this.stardubePlayer.setVerticalSpeed(0);
-        }
-        break;
-      case KeyEvent.VK_D:
-        if (this.stardubePlayer.getHorizontalSpeed() == 1) {
-          this.stardubePlayer.setHorizontalSpeed(0);
-        }
-        break;
+    if (e.getKeyCode() < this.keyStates.length) {
+      this.keyStates[e.getKeyCode()] = false;
     }
   }
 
   @Override
   public void mouseClicked(MouseEvent e) {
-
   }
 
   @Override
   public void mousePressed(MouseEvent e) {
+    this.mouseStates[e.getButton()] = true;
     this.mousePos.x = e.getX();
-    this.mousePos.y = e.getY();    
+    this.mousePos.y = e.getY();
+
     if (e.getButton() == MouseEvent.BUTTON1) {
       if (this.stardubePlayer.isInFishingGame()) {
         FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
@@ -171,6 +146,7 @@ public class StardubeEventListener implements KeyListener,
 
   @Override
   public void mouseReleased(MouseEvent e) {
+    this.mouseStates[e.getButton()] = false;
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
 
@@ -314,5 +290,4 @@ public class StardubeEventListener implements KeyListener,
             (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
             (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)));
   }
-
 }

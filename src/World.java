@@ -92,10 +92,10 @@ public class World {
     }
     
     this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime);
-    this.inGameNanoTime %= (long)24*60*1_000_000_000;
+    this.inGameNanoTime %= 24*60*1_000_000_000L;
 
     // check for end of day
-    if (this.inGameNanoTime >= 2*60*1_000_000_000l && this.inGameNanoTime <= 6*60*1_000_000_000l) {
+    if (this.inGameNanoTime >= 2*60*1_000_000_000L && this.inGameNanoTime <= 6*60*1_000_000_000L) {
       this.doDayEndActions();
     }
 
@@ -352,11 +352,10 @@ public class World {
       }
     }
   }
-}
 
   public void doDayEndActions() {
     // day starts at 6 am
-    this.inGameNanoTime = (long)6*60*1_000_000_000;
+    this.inGameNanoTime = 6*60*1_000_000_000L;
     ++this.inGameDay;
     if ((this.inGameDay % DAYS_PER_SEASON == 1) && (this.inGameDay > 1)) {
       this.inGameSeason = (this.inGameSeason + 1) % 3;
