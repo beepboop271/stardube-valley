@@ -10,16 +10,19 @@ public class HoldableDrop {
   private int maxDropQuantity;
 
   public HoldableDrop(int minDropQuantity, int maxDropQuantity,
-                    String holdableToDrop) {
+                      String holdableToDrop) {
     this.holdableToDrop = HoldableFactory.getHoldable(holdableToDrop);
     this.minDropQuantity = minDropQuantity;
     this.maxDropQuantity = maxDropQuantity;
   }
 
   public HoldableStack resolveDrop(double luck) {
-    return new HoldableStack(this.holdableToDrop, 
-                             (int)((Math.random()  // TODO: luck
-                                    * (this.maxDropQuantity-this.minDropQuantity+1))
-                                   + this.minDropQuantity));
+    int quantity = (int)((Math.random()*(this.maxDropQuantity-this.minDropQuantity+1))
+                         + this.minDropQuantity);
+    if (quantity <= 0) {
+      return null;
+    } else {
+      return new HoldableStack(this.holdableToDrop, quantity);
+    }
   }
 }

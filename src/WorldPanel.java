@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -134,6 +135,19 @@ public class WorldPanel extends JPanel {
       }
       screenTileX = 0;
       ++screenTileY;
+    }
+    
+    // draw items
+    synchronized (playerArea.getItemsOnGroundList()) {
+      Iterator<HoldableStackEntity> items = playerArea.getItemsOnGround();
+      HoldableStackEntity nextItem;
+      while (items.hasNext()) {
+        nextItem = items.next();
+        g.drawImage(nextItem.getImage(),
+                    (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
+                    (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
+                    null);
+      }
     }
     
     g.setColor(Color.RED);

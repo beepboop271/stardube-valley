@@ -8,7 +8,7 @@
 public class Player extends Moveable {
   private static final double SIZE = 0.35;
   private static final double MAX_SPEED = 6;
-  private static final double ITEM_ATTRACTION_DISTANCE = 3;
+  private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   private int inventorySize = 12;
   private HoldableStack[] inventory;

@@ -46,11 +46,11 @@ public class IntrinsicTileComponentFactory {
                                                            offsets);
 
         componentPool.put(componentToAdd.getName(), componentToAdd);
-        for (int j = 0; j < Integer.parseInt(nextLineData[4]); ++j) {
-          componentToAdd.setProduct(j, new HoldableDrop(Integer.parseInt(nextLineData[6+(j*3)]),
-                                                          Integer.parseInt(nextLineData[7+(j*3)]), 
-                                                          nextLineData[5+(j*3)]));
-        }  
+        for (int j = 0; j < Integer.parseInt(nextLineData[6]); ++j) {
+          componentToAdd.setProduct(j, new HoldableDrop(Integer.parseInt(nextLineData[8+(j*3)]),
+                                                        Integer.parseInt(nextLineData[9+(j*3)]),
+                                                        nextLineData[7+(j*3)]));
+        }
         lineToRead = input.readLine();  
       }
       input.close();

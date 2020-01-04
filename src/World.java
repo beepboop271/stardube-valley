@@ -108,19 +108,22 @@ public class World {
       }
     }
 
-    Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
-    HoldableStackEntity nextItemEntity;
-    double itemDistance;
-    while (itemsNearPlayer.hasNext()) {
-      nextItemEntity = itemsNearPlayer.next();
-      itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
-      if (itemDistance < Player.getSize()) {
-        this.player.pickUp(nextItemEntity.getStack());
-      } else if (itemDistance < Player.getItemAttractionDistance()) {
-        nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
-                                   this.player.getPos().y-nextItemEntity.getPos().y, 
-                                   (double)Player.getItemAttractionDistance()/itemDistance);
-        nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+    synchronized (this.playerArea.getItemsOnGroundList()) {
+      Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
+      HoldableStackEntity nextItemEntity;
+      double itemDistance;
+      while (itemsNearPlayer.hasNext()) {
+        nextItemEntity = itemsNearPlayer.next();
+        itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
+        if (itemDistance < Player.getSize()) {
+          this.player.pickUp(nextItemEntity.getStack());
+          itemsNearPlayer.remove();
+        } else if (itemDistance < Player.getItemAttractionDistance()) {
+          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
+                                    this.player.getPos().y-nextItemEntity.getPos().y, 
+                                    (double)Player.getItemAttractionDistance()/itemDistance);
+          nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+        }
       }
     }
 
@@ -179,25 +182,33 @@ public class World {
         TileComponent componentToHarvest = selectedTile.getContent();
 
         if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
-          String requiredTool = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf())).getRequiredTool();
+          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
+          String requiredTool = ic.getRequiredTool();
                   
           if (requiredTool.equals("Any")
                 || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
-          // TODO: play breaking animation?
-          System.out.println("wack1");
-          this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+            // TODO: play breaking animation?
+            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
+            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
+              this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
-          HoldableDrop[] drops = ((Harvestable)componentToHarvest).getProducts();
-          for (int i = 0; i < drops.length; ++i) {
-            this.playerArea.addItemOnGround(
-                new HoldableStackEntity(
-                    drops[i].resolveDrop(this.luckOfTheDay),
-                    toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
-                )
-            );
-          } //TODO: make these tools not dependant on world
+              HoldableDrop[] drops = ic.getProducts();
+              HoldableStack product;
+              for (int i = 0; i < drops.length; ++i) {
+                product = drops[i].resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  this.playerArea.addItemOnGround(
+                    new HoldableStackEntity(
+                        product,
+                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
+                    )
+                  );
+                }
+              }
+            }
+             //TODO: make these tools not dependant on world
+          }
         } else if (selectedTile instanceof GroundTile) {
-          System.out.println("wack2");
           if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
               (((GroundTile)selectedTile).getTilledStatus() == true)) {
                 ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
@@ -210,8 +221,8 @@ public class World {
 
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               ((GroundTile)selectedTile).setTilledStatus(false); 
-
-              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
+              if ((this.playerArea instanceof FarmArea)
+                    && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
             }
@@ -238,7 +249,8 @@ public class World {
             System.out.println(((ExtrinsicCrop)currentContent).getProduct());
             HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-            if (this.player.canPickUp(product.getContainedHoldable())) {
+            if ((product != null)
+                  && this.player.canPickUp(product.getContainedHoldable())) {
               this.player.pickUp(product);
               if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
                 ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
@@ -252,10 +264,12 @@ public class World {
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
-          new HoldableStackEntity(drop, null); // TODO: change the pos
-          if (this.player.canPickUp(drop.getContainedHoldable())) {
-            this.player.pickUp(drop);
-            currentTile.setContent(null);
+          if (drop != null) {
+            new HoldableStackEntity(drop, null); // TODO: change the pos
+            if (this.player.canPickUp(drop.getContainedHoldable())) {
+              this.player.pickUp(drop);
+              currentTile.setContent(null);
+            }
           }
         }
       } else if (event instanceof CastingEndedEvent) {
