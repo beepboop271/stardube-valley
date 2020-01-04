@@ -352,7 +352,7 @@ public class World {
       }
     }
   }
-}
+
 
   public void doDayEndActions() {
     // day starts at 6 am
