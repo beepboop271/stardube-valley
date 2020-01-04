@@ -4,7 +4,7 @@ public class HoldableStackEntity extends Moveable implements Drawable {
   private HoldableStack stackObject;
 
   public HoldableStackEntity(HoldableStack stackObject, Point position) {
-    super(position, 0.1);
+    super(position, 0.125);
     this.stackObject = stackObject;
   }
 

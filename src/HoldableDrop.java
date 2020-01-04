@@ -17,9 +17,12 @@ public class HoldableDrop {
   }
 
   public HoldableStack resolveDrop(double luck) {
-    return new HoldableStack(this.holdableToDrop, 
-                             (int)((Math.random()  // TODO: luck
-                                    * (this.maxDropQuantity-this.minDropQuantity+1))
-                                   + this.minDropQuantity));
+    int quantity = (int)((Math.random()*(this.maxDropQuantity-this.minDropQuantity+1))
+                         + this.minDropQuantity);
+    if (quantity <= 0) {
+      return null;
+    } else {
+      return new HoldableStack(this.holdableToDrop, quantity);
+    }
   }
 }

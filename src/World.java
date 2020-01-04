@@ -188,17 +188,25 @@ public class World {
           if (requiredTool.equals("Any")
                 || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
             // TODO: play breaking animation?
-            this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
+            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
+              this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
 
-            HoldableDrop[] drops = ic.getProducts();
-            for (int i = 0; i < drops.length; ++i) {
-              this.playerArea.addItemOnGround(
-                  new HoldableStackEntity(
-                      drops[i].resolveDrop(this.luckOfTheDay),
-                      toolEvent.getLocationUsed().translateNew(Math.random()*2-1, Math.random()*2-1)
-                  )
-              );
-            } //TODO: make these tools not dependant on world
+              HoldableDrop[] drops = ic.getProducts();
+              HoldableStack product;
+              for (int i = 0; i < drops.length; ++i) {
+                product = drops[i].resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  this.playerArea.addItemOnGround(
+                    new HoldableStackEntity(
+                        product,
+                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
+                    )
+                  );
+                }
+              }
+            }
+             //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
           if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
@@ -241,7 +249,8 @@ public class World {
             System.out.println(((ExtrinsicCrop)currentContent).getProduct());
             HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-            if (this.player.canPickUp(product.getContainedHoldable())) {
+            if ((product != null)
+                  && this.player.canPickUp(product.getContainedHoldable())) {
               this.player.pickUp(product);
               if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
                 ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
@@ -255,10 +264,12 @@ public class World {
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
-          new HoldableStackEntity(drop, null); // TODO: change the pos
-          if (this.player.canPickUp(drop.getContainedHoldable())) {
-            this.player.pickUp(drop);
-            currentTile.setContent(null);
+          if (drop != null) {
+            new HoldableStackEntity(drop, null); // TODO: change the pos
+            if (this.player.canPickUp(drop.getContainedHoldable())) {
+              this.player.pickUp(drop);
+              currentTile.setContent(null);
+            }
           }
         }
       } else if (event instanceof CastingEndedEvent) {

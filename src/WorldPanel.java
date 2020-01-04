@@ -136,7 +136,7 @@ public class WorldPanel extends JPanel {
       screenTileX = 0;
       ++screenTileY;
     }
-
+    
     // draw items
     synchronized (playerArea.getItemsOnGroundList()) {
       Iterator<HoldableStackEntity> items = playerArea.getItemsOnGround();
@@ -144,8 +144,8 @@ public class WorldPanel extends JPanel {
       while (items.hasNext()) {
         nextItem = items.next();
         g.drawImage(nextItem.getImage(),
-                    (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX)+8+originX),
-                    (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY)+8+originY),
+                    (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
+                    (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
                     null);
       }
     }
