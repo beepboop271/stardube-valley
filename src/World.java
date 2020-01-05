@@ -115,7 +115,7 @@ public class World {
       while (itemsNearPlayer.hasNext()) {
         nextItemEntity = itemsNearPlayer.next();
         itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
-        if (itemDistance < Player.getSize()) {
+        if (itemDistance < Player.SIZE) {
           this.player.pickUp(nextItemEntity.getStack());
           itemsNearPlayer.remove();
         } else if (itemDistance < Player.getItemAttractionDistance()) {
@@ -137,6 +137,7 @@ public class World {
         nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
 
         intersectingTiles = nextMoveable.getIntersectingTiles();
+        // System.out.println(intersectingTiles);
         if (nextArea.collides(intersectingTiles.iterator())) {
           nextMoveable.setPos(lastPos);
         } else {
@@ -388,7 +389,7 @@ public class World {
     String[] areaInfo;
     String nextLine;
 
-    BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Areas"));
+    BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/map/Areas"));
     nextLine = input.readLine();
     while (nextLine != null) {
       areaInfo = nextLine.split(" ");
@@ -405,7 +406,7 @@ public class World {
       World.loadAreaMap(locationAreas.next());
     }
 
-    input = new BufferedReader(new FileReader("assets/gamedata/Connections"));
+    input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
     while (nextLine != null) {
       areaInfo = input.readLine().split(" ");

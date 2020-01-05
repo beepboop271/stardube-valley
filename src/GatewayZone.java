@@ -22,12 +22,12 @@ public class GatewayZone {
     this.destinationZone = destinationZone;
   }
 
-  public Point toDestinationPoint(Point p) {
+  public Point toDestinationPoint(Point p, double size) {
     p.translate(-this.origin.x, -this.origin.y);
     if (this.isHorizontal) {
-      p.y *= -1;
+      p.y = Math.copySign(0.5-size, -p.y);
     } else {
-      p.x *= -1;
+      p.x = Math.copySign(0.5-size, -p.x);
     }
     p.translate(this.destinationZone.origin.x, this.destinationZone.origin.y);
     return p;

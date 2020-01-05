@@ -46,8 +46,9 @@ public abstract class Area {
     Point nextPoint;
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
-      if (this.inMap((int)nextPoint.x, (int)nextPoint.y)
-            && this.getMapAt((int)nextPoint.x, (int)nextPoint.y) == null) {
+      if (this.inMap(nextPoint)
+            && ((this.getMapAt(nextPoint) == null)
+                || (this.getMapAt(nextPoint) instanceof WaterTile))) {
         return true;
       }
     }
@@ -67,7 +68,7 @@ public abstract class Area {
 
   public Area moveAreas(Moveable m, int direction) {
     GatewayZone gateway = this.getNeighbourZone(direction);
-    m.setPos(gateway.toDestinationPoint(m.getPos()));
+    m.setPos(gateway.toDestinationPoint(m.getPos(), m.getSize()));
     this.moveables.remove(m);
     gateway.getDestinationArea().moveables.add(m);
     return gateway.getDestinationArea();
@@ -120,6 +121,10 @@ public abstract class Area {
 
   public boolean inMap(int x, int y) {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  public boolean inMap(Point pos) {
+    return this.inMap((int)pos.x, (int)pos.y);
   }
 
   public int getExitDirection(int x, int y) {

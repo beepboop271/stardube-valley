@@ -83,19 +83,17 @@ public class WorldPanel extends JPanel {
 
     int originX;
     int originY;
-
-    if (playerPos.x < this.tileWidth/2-0.5) {
-      originX = 0;
-    } else if (playerPos.x > playerArea.getWidth()-this.tileWidth/2-0.5) {
+    
+    if ((playerPos.x < this.tileWidth/2) || (playerPos.x > playerArea.getWidth()-this.tileWidth/2)) {
       originX = 0;
     } else {
-      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX)))-(Tile.getSize()/2);
+      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX)));
     }
 
-    if (playerPos.y < this.tileHeight/2-0.5 || playerPos.y > playerArea.getHeight()-this.tileHeight/2-0.5) {
+    if ((playerPos.y < this.tileHeight/2) || (playerPos.y > playerArea.getHeight()-this.tileHeight/2)) {
       originY = 0;
     } else {
-      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY)))-(Tile.getSize()/2);
+      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY)));
     }
 
     // System.out.printf("%d %d, %d %d, %d %d, %.2f %.2f\n",
@@ -152,11 +150,11 @@ public class WorldPanel extends JPanel {
     }
     
     g.setColor(Color.RED);
-    this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+(Player.getSize()/2.0))+originX);
-    this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+(Player.getSize()/2.0))+originY);
+    this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
+    this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
     g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
-               (int)(2*Tile.getSize()*Player.getSize()),
-               (int)(2*Tile.getSize()*Player.getSize()));
+               (int)(Tile.getSize()*2*Player.SIZE),
+               (int)(Tile.getSize()*2*Player.SIZE));
     g.setColor(Color.BLACK);
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
 
@@ -291,16 +289,16 @@ public class WorldPanel extends JPanel {
           g.setColor(Color.WHITE);
           int lineX, lineY;
           if (worldPlayer.getOrientation() == World.NORTH) {
-            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize());
+            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
             lineY = (int)Math.round(playerScreenPos.y);
           } else if (worldPlayer.getOrientation() == World.SOUTH) {
-            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize());
-            lineY = (int)Math.round(playerScreenPos.y+Player.getSize()*Tile.getSize()*2);
+            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
+            lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2);
           } else if (worldPlayer.getOrientation() == World.WEST) {
             lineX = (int)Math.round(playerScreenPos.x);
             lineY = (int)Math.round(playerScreenPos.y);
           } else { // EAST
-            lineX = (int)Math.round(playerScreenPos.x+Player.getSize()*Tile.getSize()*2);
+            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize()*2);
             lineY = (int)Math.round(playerScreenPos.y);
           }
           

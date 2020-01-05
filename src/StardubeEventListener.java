@@ -274,8 +274,8 @@ public class StardubeEventListener implements KeyListener,
   private void updateSelectedTile() {
     Vector2D mouseOffset = new Vector2D(this.mousePos.x-this.worldPanel.getPlayerScreenPos().x,
                                         this.mousePos.y-this.worldPanel.getPlayerScreenPos().y)
-                                       .add(new Vector2D(-Tile.getSize()*Player.getSize(),
-                                                         -Tile.getSize()*Player.getSize()))
+                                       .add(new Vector2D(-Tile.getSize()*Player.SIZE,
+                                                         -Tile.getSize()*Player.SIZE))
                                        .setLength(1);
     this.stardubePlayer
         .setSelectedTile(new Point(mouseOffset.getX(), mouseOffset.getY())

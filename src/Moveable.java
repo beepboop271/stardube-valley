@@ -25,6 +25,7 @@ public abstract class Moveable {
   public LinkedHashSet<Point> getIntersectingTiles() {
     LinkedHashSet<Point> intersections = new LinkedHashSet<Point>();
     // size will always be < 2 so this is enough
+    // System.out.println(this.position);
     intersections.add(this.position.translateNew(this.size, -this.size).round());
     intersections.add(this.position.translateNew(this.size, this.size).round());
     intersections.add(this.position.translateNew(-this.size, this.size).round());
@@ -71,6 +72,10 @@ public abstract class Moveable {
 
   public void setVerticalSpeed(double dy) {
     this.velocity.setPos(this.velocity.getX(), dy);
+  }
+  
+  public double getSize() {
+    return this.size;
   }
 
   abstract void makeMove(long elapsedNanoTime);

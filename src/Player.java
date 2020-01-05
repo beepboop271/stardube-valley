@@ -6,7 +6,7 @@
  * @author Kevin Qiao, Candice Zhang, Joseph Wang
  */
 public class Player extends Moveable {
-  private static final double SIZE = 0.35;
+  public static final double SIZE = 0.35;
   private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
@@ -194,10 +194,6 @@ public class Player extends Moveable {
   
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
-  }
-
-  public static double getSize() {
-    return Player.SIZE;
   }
 
   public static double getItemAttractionDistance() {

@@ -1,8 +1,0 @@
-Farm
-Forest TestArea1 TestArea2 null
-Forest
-null null Farm null
-TestArea1
-null null null Farm
-TestArea2
-Farm null null null
