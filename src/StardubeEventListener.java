@@ -98,7 +98,7 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.consume();
         break;
       case KeyEvent.VK_M:
-        Area dumb = new MineLevel.Builder(1, 10).buildLevel();
+        Area dumb = new MineLevel.Builder(1, 5).buildLevel();
         dumb.addMoveable(stardubePlayer);
         stardubeWorld.getPlayerArea().removeMoveable(stardubePlayer);
         stardubeWorld.setPlayerArea(dumb);
