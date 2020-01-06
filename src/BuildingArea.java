@@ -4,6 +4,6 @@ public class BuildingArea extends Area {
     super(name, width, height);
   }
 
-
+  
   
 }

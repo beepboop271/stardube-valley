@@ -9,7 +9,8 @@ Tuna              /holdables/     nice-fish       10 15
 Anchovy           /holdables/     nice-fish       10 15
 Sardine           /holdables/     nice-fish       10 15
 ParsnipItem       /crops/         gamer-crop      15 30
-StrawberryItem    /crops/         yaymer-crop     15 25                                
+StrawberryItem    /crops/         yaymer-crop     15 25   
+GarlicItem        /crops/         glamer-crop      8 20                             
 WatermelonItem    /crops/         lamer-crop      40 60
 CornItem          /crops/         tamer-crop      30 40
 TurnipItem        /forageables/   a-forageable    10 15
