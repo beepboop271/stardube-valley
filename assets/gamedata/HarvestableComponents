@@ -12,9 +12,6 @@ RockDebris  /ores/ 0 0 Pickaxe 1 2 StoneItem    1 2 CoalItem  -7 1
 WoodDebris  //WoodDebris      Axe     1 1 WoodItem     1 2
 Weed        //Weed            Any     1 1 FibreItem    1 3
 
-OakTree     /forageables/OakTree/       Axe 10 2 WoodItem  5 10  SapItem 0 5
-SpruceTree  /forageables/SpruceTree/    Axe 10 2 WoodItem  5 10  SapItem 0 5
-
 name       img                  tool hardness numdrops [item quantity       ]
            /assets/images/+                            [item minquantity max] repeat numdrops times
                                                        negative minquantity = high chance of producing 0

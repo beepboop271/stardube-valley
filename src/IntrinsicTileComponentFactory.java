@@ -87,6 +87,27 @@ public class IntrinsicTileComponentFactory {
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();
       }
+      input.close();
+
+      input = new BufferedReader(new FileReader("assets/gamedata/Trees"));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        int[] offsets = {Integer.parseInt(nextLineData[11]), Integer.parseInt(nextLineData[12])};
+        componentToAdd = new IntrinsicTree(nextLineData[0], 
+                                          "assets/images"+nextLineData[1],
+                                          nextLineData[2], Integer.parseInt(nextLineData[3]),
+                                          Integer.parseInt(nextLineData[4]),
+                                          Arrays.copyOfRange(nextLineData, 13, nextLineData.length),
+                                          offsets);
+        for (int j = 0; j < Integer.parseInt(nextLineData[4]); ++j) {
+          componentToAdd.setProduct(j, new HoldableDrop(Integer.parseInt(nextLineData[6+(j*3)]),
+                                    Integer.parseInt(nextLineData[7+(j*3)]),
+                                    nextLineData[5+(j*3)]));
+        }
+        lineToRead = input.readLine();  
+      }
+      input.close();
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -58,7 +58,16 @@ public class FarmArea extends Area {
       this.spawnTrees();
     }
     Iterator<GroundTile> allEditedTiles = this.editedTiles.iterator();
+    Iterator<Tile> allTreeTiles = this.treeTiles.iterator();
 
+    while (allTreeTiles.hasNext()) {
+      Tile currentTile = allTreeTiles.next();
+      TileComponent currentContent = currentTile.getContent();
+      if (currentContent != null && currentContent instanceof ExtrinsicTree) {
+        ((ExtrinsicTree)currentTile.getContent()).grow();
+      }
+    }
+    
     while (allEditedTiles.hasNext()) {
       GroundTile currentTile = allEditedTiles.next();
       currentTile.determineImage(this.getCurrentDay());

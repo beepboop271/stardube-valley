@@ -1,4 +1,4 @@
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class WorldArea extends Area {
   // private TownBuilding[] houses;
 
-  HashSet<Tile> forageableTiles = new HashSet<>(); // TODO: replace with int
+  int numForageableTiles = 0;
   ArrayList<Tile> treeTiles = new ArrayList<>();
   Random random = new Random();
   ArrayList<Tile> grassTiles = new ArrayList<>();
@@ -25,7 +25,7 @@ public class WorldArea extends Area {
   }
 
   private void spawnForageables() {
-    int maxToSpawn = 6 - forageableTiles.size();
+    int maxToSpawn = 6 - numForageableTiles;
     int spawnNum = Math.min(random.nextInt(3) + 2, maxToSpawn);
     for (int i = 0; i < spawnNum; i++) {
       TileComponent forageable;
@@ -46,7 +46,7 @@ public class WorldArea extends Area {
       Tile spawnTile = grassTiles.get(random.nextInt(grassTiles.size()));
       if (spawnTile.getContent() == null) {
         spawnTile.setContent(forageable);
-        forageableTiles.add(spawnTile);
+        numForageableTiles++;
       }
     }
   }
@@ -66,10 +66,21 @@ public class WorldArea extends Area {
 
   @Override
   public void doDayEndActions() {
+    
     if (this.getCurrentDay()%10 == 0) {
       spawnTrees();
     }
     spawnForageables();
+
+    Iterator<Tile> allTreeTiles = this.treeTiles.iterator();
+
+    while (allTreeTiles.hasNext()) {
+      Tile currentTile = allTreeTiles.next();
+      TileComponent currentContent = currentTile.getContent();
+      if (currentContent != null && currentContent instanceof ExtrinsicTree) {
+        ((ExtrinsicTree)currentTile.getContent()).grow();
+      }
+    }
   }
 
   @Override

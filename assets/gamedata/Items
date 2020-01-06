@@ -12,5 +12,7 @@ RubyItem                /ores/                            kms
 DiamondItem             /ores/                            kms
 AmethystItem            /ores/                            kms
 QuartzItem              /ores/                            kms
+WoodItem                /forageables/                     stick                
+SapItem                 /forageables/                     sticky
 
 name                    imagePath                         description
