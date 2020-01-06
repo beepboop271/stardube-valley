@@ -16,6 +16,7 @@ public class StardubeEventListener implements KeyListener,
 
   private boolean[] keyStates;
   private boolean[] mouseStates;
+  private Stopwatch[] mouseStopwatches;
   private Point mousePos;
 
   public StardubeEventListener(World stardubeWorld, WorldPanel worldPanel) {
@@ -25,11 +26,25 @@ public class StardubeEventListener implements KeyListener,
 
     this.keyStates = new boolean[0x7B+1];  // decent amount of keys
     this.mouseStates = new boolean[3+1];
+    this.mouseStopwatches = new Stopwatch[3+1];
+    for (int i = 1; i <= 3; ++i) {
+      this.mouseStopwatches[i] = new Stopwatch();
+    }
     this.mousePos = new Point(0, 0);
   }
 
   public void update() {
     this.updateSelectedTile();
+
+    if (this.stardubePlayer.isInFishingGame()) {
+      this.stardubePlayer.getCurrentFishingGame().update(this.mouseStates[1], this.mouseStopwatches[1]);
+      this.stardubePlayer.setImmutable(true);
+      if(this.stardubePlayer.getCurrentFishingGame().getCurrentStatus() != FishingGame.INGAME_STATUS) {
+        this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
+                                              new FishingGameEndedEvent(this.stardubePlayer.getCurrentFishingGame()));
+        this.stardubePlayer.endCurrentFishingGame();
+      }
+    }
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
@@ -121,14 +136,15 @@ public class StardubeEventListener implements KeyListener,
   @Override
   public void mousePressed(MouseEvent e) {
     this.mouseStates[e.getButton()] = true;
+    this.mouseStopwatches[e.getButton()] = new Stopwatch();
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
 
     if (e.getButton() == MouseEvent.BUTTON1) {
       if (this.stardubePlayer.isInFishingGame()) {
-        FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-        fishingGame.setMouseDown(true);
-        fishingGame.updateLastPressNanoTime();
+        // FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+        // fishingGame.setMouseDown(true);
+        // fishingGame.updateLastPressNanoTime();
       } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
         if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
           HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
@@ -147,12 +163,13 @@ public class StardubeEventListener implements KeyListener,
   @Override
   public void mouseReleased(MouseEvent e) {
     this.mouseStates[e.getButton()] = false;
+    this.mouseStopwatches[e.getButton()] = new Stopwatch();
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
 
     if (this.stardubePlayer.isInFishingGame()) {
-      FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-      fishingGame.setMouseDown(false);
+      // FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
+      // fishingGame.setMouseDown(false);
 
     } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
       // general player interactions (AKA doors and foraging)
