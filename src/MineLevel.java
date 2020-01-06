@@ -102,14 +102,18 @@ public class MineLevel extends Area {
       int numComponents = 1;
       int nextDirection;
       Point anchorToPrevious, anchorToNext;
+      MineLevelComponent existingComponent, newComponent;
+
       for (int attempt = 0; attempt < this.components.length-1; ++attempt) {
         int existingIdx = (int)(Math.random()*numComponents);
-        int allIdx = (int)(Math.random()*MineLevel.numLevelComponents);
-        nextDirection = this.components[existingIdx].getRandomCommonPath(MineLevel.levelComponents[allIdx].getPossiblePaths());
+        existingComponent = this.components[existingIdx];
+        newComponent = MineLevel.levelComponents[(int)(Math.random()*MineLevel.numLevelComponents)];
+        nextDirection = existingComponent.getRandomCommonPath(newComponent.getPossiblePaths());
+
         if (nextDirection > -1) {
-          this.components[numComponents] = MineLevel.levelComponents[allIdx];
-          anchorToPrevious = this.components[existingIdx].getRandomPathInDirection(nextDirection);
-          anchorToNext = this.components[numComponents].getRandomPathInDirection(World.getOppositeDirection(nextDirection));
+          this.components[numComponents] = newComponent;
+          anchorToPrevious = existingComponent.getRandomPathInDirection(nextDirection);
+          anchorToNext = newComponent.getRandomPathInDirection(World.getOppositeDirection(nextDirection));
           this.componentPoints[numComponents] = new Point(
               (int)(anchorToPrevious.x+this.componentPoints[existingIdx].x-anchorToNext.x),
               (int)(anchorToPrevious.y+this.componentPoints[existingIdx].y-anchorToNext.y)

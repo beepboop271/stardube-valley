@@ -54,13 +54,16 @@ public class MineLevelComponent {
     if (((this.possiblePaths & (1<<World.NORTH)) > 0)
           && ((otherPossiblePaths & (1<<World.SOUTH)) > 0)) {
       commonPaths |= (1<<World.NORTH);
-    } else if (((this.possiblePaths & (1<<World.EAST)) > 0)
+    }
+    if (((this.possiblePaths & (1<<World.EAST)) > 0)
           && ((otherPossiblePaths & (1<<World.WEST)) > 0)) {
       commonPaths |= (1<<World.EAST);
-    } else if (((this.possiblePaths & (1<<World.SOUTH)) > 0)
+    }
+    if (((this.possiblePaths & (1<<World.SOUTH)) > 0)
           && ((otherPossiblePaths & (1<<World.NORTH)) > 0)) {
       commonPaths |= (1<<World.SOUTH);
-    } else if (((this.possiblePaths & (1<<World.WEST)) > 0)
+    }
+    if (((this.possiblePaths & (1<<World.WEST)) > 0)
           && ((otherPossiblePaths & (1<<World.EAST)) > 0)) {
       commonPaths |= (1<<World.WEST);
     }
@@ -71,7 +74,7 @@ public class MineLevelComponent {
       int path;
       do {
         path = (int)(Math.random()*4);
-      } while ((commonPaths & (1<<path)) == 1);
+      } while ((commonPaths & (1<<path)) == 0);
       return path;
     }
   }

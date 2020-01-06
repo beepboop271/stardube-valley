@@ -5,24 +5,19 @@
  * @author Candice Zhang
  */
 
-import java.util.Random;
-
- // idk this might be a really sketchy approach but ahhHHHhh idkidk
 class FishingGame {
   public static final int INGAME_STATUS = 0;
   public static final int WIN_STATUS = 1;
   public static final int LOSE_STATUS = 2;
   public static final int MAX_HEIGHT = 200;
+  public static final int MAX_PROGRESS = 500;
+  public static final int INIT_PROGRESS = 50;
+  public static final int PLAYER_MAX_SPEED = 4;
+  public static final double PLAYER_ACCELERATION = 4;
 
-  private int initialProgress;
-  private int maxProgress;
   private int currentProgress;
-  private boolean mouseDown;
-  private long lastPressNanoTime;
-  private long mouseHoldNanoTime;
   private int currentStatus;
   private WaterTile tileToFish;
-  private Random random;
 
   private FishingGameBar playerBar;
   private FishingGameBar targetBar;
@@ -36,61 +31,53 @@ class FishingGame {
     //this.fishingRod = (FishingRod)(player.getInventory()[player.getSelectedItemIdx()].getContainedHoldable());
     //this.tileToFish = tileToFish;
     
-    this.initialProgress = 30;
-    this.maxProgress = 100;
-    this.currentProgress = this.initialProgress;
-    this.mouseDown = false;
-    this.mouseHoldNanoTime = 0;
-    this.lastPressNanoTime = System.nanoTime();
+    this.currentProgress = FishingGame.INIT_PROGRESS;
     this.tileToFish = tileToFish;
 
-    this.random = new Random();
-
-    this.playerBar = new FishingGameBar(FishingGame.MAX_HEIGHT-FishingGame.MAX_HEIGHT/3, FishingGame.MAX_HEIGHT/3);
+    this.playerBar = new FishingGameBar(FishingGame.MAX_HEIGHT-FishingGame.MAX_HEIGHT/3, FishingGame.MAX_HEIGHT/3, 0.75);
     this.targetBar = new FishingGameBar(FishingGame.MAX_HEIGHT-FishingGame.MAX_HEIGHT/7, FishingGame.MAX_HEIGHT/7);
   }
 
 
-  public void update() {
-    // TODO: acceleration and freefall, smoother movement (physics stuff)
+  public void update(boolean mouseDown, Stopwatch mouseTimer) {
+    // hold: go up
+    this.playerBar.setVelocity(
+        Math.max(0.5, Math.min(FishingGame.PLAYER_MAX_SPEED,
+                                FishingGame.PLAYER_ACCELERATION*mouseTimer.getNanoTimeElapsed()/1_000_000_000.0))
+    );
+
+    if (!mouseDown) {
+      this.playerBar.negateVelocity();
+    }
+
+    this.playerBar.setY(Math.max(0,
+      Math.min(this.playerBar.getY()-this.playerBar.getVelocity(), MAX_HEIGHT-this.playerBar.getHeight())));
     
-    // move the player bar according to mouse input
-    if (this.mouseDown == false) {
-      // release: go down
-      this.playerBar.setY(Math.min(this.playerBar.getY()+1, FishingGame.MAX_HEIGHT-this.playerBar.getHeight()));
-      this.mouseHoldNanoTime = 0;
-    } else {
-      // hold: go up
-      this.playerBar.setY(Math.max(this.playerBar.getY()-1, 0));
-      this.mouseHoldNanoTime = System.nanoTime()-this.lastPressNanoTime;
-    }
-
     // move the target bar randomly
-    int moveChoice = random.nextInt(2); // 0: up; 1: down
-    if (moveChoice == 1) {
-      this.targetBar.setY(Math.min(this.targetBar.getY()+1, FishingGame.MAX_HEIGHT-this.targetBar.getHeight()));
+    if (Math.random() < 0.5) {
+      this.targetBar.setVelocity(-1.5);
     } else {
-      this.targetBar.setY(Math.max(this.targetBar.getY()-1, 0));
+      this.targetBar.setVelocity(1.5);
     }
 
-    //System.out.println("mouse hold time:" + mouseHoldNanoTime);
+    this.targetBar.setY(Math.max(0,
+      Math.min(this.targetBar.getY()-this.targetBar.getVelocity(), MAX_HEIGHT-this.targetBar.getHeight())));
 
     // compare collision and update progress progress accordingly
     if (targetBar.isInside(playerBar)) {
-      this.currentProgress+=1;
+      this.currentProgress += 1;
     } else {
-      this.currentProgress-=1;
+      this.currentProgress -= 1;
     }
 
     // update status according to the progress
-    if (this.currentProgress >= this.maxProgress){
+    if (this.currentProgress >= FishingGame.MAX_PROGRESS){
       this.currentStatus = FishingGame.WIN_STATUS;
     } else if (this.currentProgress <= 0) {
       this.currentStatus = FishingGame.LOSE_STATUS;
     } else {
       this.currentStatus = FishingGame.INGAME_STATUS;
     }
-    //System.out.println("Game updated. FishingGame progress: "+this.currentProgress+", status: "+this.currentStatus);
   }
 
   public Holdable getFishReturned() {
@@ -98,7 +85,7 @@ class FishingGame {
     if(fishableFish.length == 0) {
       return null;
     }
-    return HoldableFactory.getHoldable(fishableFish[this.random.nextInt(fishableFish.length)]);
+    return HoldableFactory.getHoldable(fishableFish[(int)(Math.random()*fishableFish.length)]);
   }
 
   public Holdable getTrashReturned() {
@@ -106,16 +93,16 @@ class FishingGame {
     if(fishableTrash.length == 0) {
       return null;
     }
-    return HoldableFactory.getHoldable(fishableTrash[this.random.nextInt(fishableTrash.length)]);
+    return HoldableFactory.getHoldable(fishableTrash[(int)(Math.random()*fishableTrash.length)]);
   }
 
-  public void setMouseDown(boolean mouseDown) {
-    this.mouseDown = mouseDown;
-  }
+  // public void setMouseDown(boolean mouseDown) {
+  //   this.mouseDown = mouseDown;
+  // }
 
-  public void updateLastPressNanoTime() {
-    this.lastPressNanoTime = System.nanoTime();
-  }
+  // public void updateLastPressNanoTime() {
+  //   this.lastPressNanoTime = System.nanoTime();
+  // }
 
   public int getCurrentStatus() {
     return this.currentStatus;
@@ -126,7 +113,7 @@ class FishingGame {
   }
 
   public int getProgressPercentage() {
-    return this.currentProgress*100/this.maxProgress; 
+    return this.currentProgress*100/FishingGame.MAX_PROGRESS;
   }
 
   public FishingGameBar getPlayerBar() {

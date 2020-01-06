@@ -99,15 +99,6 @@ public class World {
       this.doDayEndActions();
     }
 
-    if (this.player.isInFishingGame()) {
-      this.player.getCurrentFishingGame().update();
-      this.player.setImmutable(true);
-      if(this.player.getCurrentFishingGame().getCurrentStatus() != FishingGame.INGAME_STATUS) {
-        this.emplaceFutureEvent((long)(0.5*1_000_000_000), new FishingGameEndedEvent(this.player.getCurrentFishingGame()));
-        this.player.endCurrentFishingGame();
-      }
-    }
-
     synchronized (this.playerArea.getItemsOnGroundList()) {
       Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
       HoldableStackEntity nextItemEntity;
