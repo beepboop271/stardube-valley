@@ -19,7 +19,6 @@ public class WorldGate extends GatewayZone {
     this.isHorizontal = isHorizontal;
   }
 
-  @Override
   public Point toDestinationPoint(Point p, double size) {
     p.translate(-this.getOrigin().x, -this.getOrigin().y);
     if (this.isHorizontal) {

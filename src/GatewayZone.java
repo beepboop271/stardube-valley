@@ -6,7 +6,7 @@
  */
 public abstract class GatewayZone {
   private Area destinationArea;
-  private GatewayZone destinationZone;
+  private GatewayZone destinationZone; //- Used to know what point to put you in the new area
   private Point origin;
 
   public GatewayZone(int originX, int originY) {
@@ -39,7 +39,6 @@ public abstract class GatewayZone {
   public void setDestinationZone(GatewayZone destinationZone) {
     this.destinationZone = destinationZone;
   }
-
-  public abstract Point toDestinationPoint(Point p, double size);
+  
   public abstract void initializeDestination(Area destinationArea, int direction);
 }
