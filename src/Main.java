@@ -1,8 +1,9 @@
 public class Main {
   public static void main(String[] args) {
-    // sketchyy
+    // TODO: make this less sketchy
     GroundTile.setGroundTileImages();
     GrassTile.setGrassTileImage();
+    PathTile.setPathTileImage();
     WaterTile.setWaterTileImage();
     WaterTile.setFishableTrash();
     PondTile.setFishableFish();

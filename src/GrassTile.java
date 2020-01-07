@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
  * @author Paula Yuan
  */
 public class GrassTile extends Tile {
-
   private static BufferedImage grassTileImage;
 
   public GrassTile(int x, int y) {

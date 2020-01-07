@@ -2,7 +2,7 @@
  * [GatewayZone]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao
+ * @author Kevin Qiao, Joseph Wang
  */
 public abstract class GatewayZone {
   private Area destinationArea;
@@ -19,8 +19,6 @@ public abstract class GatewayZone {
     this.destinationArea = destinationArea;
     this.destinationZone = destinationZone;
   }
-
-  public abstract Point toDestinationPoint(Point p, double size);
 
   public Point getOrigin() {
     return this.origin;
@@ -42,5 +40,6 @@ public abstract class GatewayZone {
     this.destinationZone = destinationZone;
   }
 
+  public abstract Point toDestinationPoint(Point p, double size);
   public abstract void initializeDestination(Area destinationArea, int direction);
 }

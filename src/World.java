@@ -440,6 +440,9 @@ public class World {
           case 'o':
             a.setMapAt(new OceanTile(x, y));
             break;
+          case 'b':
+            a.setMapAt(new PathTile(x, y));
+            break;
         }
       }
     }

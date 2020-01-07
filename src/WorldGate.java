@@ -1,3 +1,10 @@
+/**
+ * [WorldGate]
+ * 2020-1-6
+ * @version 0.1
+ * @author Joseph Wang, Kevin Qiao
+ */
+
 public class WorldGate extends GatewayZone {
   boolean isHorizontal;
 
