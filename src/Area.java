@@ -14,7 +14,7 @@ public abstract class Area {
   private LinkedHashSet<Moveable> moveables;
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
-  private GatewayZone[] neighbourZone = new GatewayZone[4];
+  private WorldGate[] neighbourZone = new WorldGate[4];
   private long currentDay;
   private int currentSeason;
   
@@ -67,18 +67,18 @@ public abstract class Area {
   }
 
   public Area moveAreas(Moveable m, int direction) {
-    GatewayZone gateway = this.getNeighbourZone(direction);
+    WorldGate gateway = this.getNeighbourZone(direction);
     m.setPos(gateway.toDestinationPoint(m.getPos(), m.getSize()));
     this.moveables.remove(m);
     gateway.getDestinationArea().moveables.add(m);
     return gateway.getDestinationArea();
   }
 
-  public GatewayZone getNeighbourZone(int i) {
-    return this.neighbourZone[i];
+  public WorldGate getNeighbourZone(int i) {
+    return (WorldGate)this.neighbourZone[i];
   }
 
-  public void setNeighbourZone(int i, GatewayZone g) {
+  public void setNeighbourZone(int i, WorldGate g) {
     this.neighbourZone[i] = g;
   }
 

@@ -405,7 +405,7 @@ public class World {
         if (!areaInfo[i].equals("null")) {
           this.locations.get(nextLine)
               .getNeighbourZone(i)
-              .setDestinationArea(this.locations.get(areaInfo[i]), i);
+              .initializeDestination(this.locations.get(areaInfo[i]), i);
         }
       }
       nextLine = input.readLine();
@@ -455,8 +455,8 @@ public class World {
 
     input.close();
   }
-
-  public static GatewayZone findNeighbourZone(Area a,
+  //shoot me
+  public static WorldGate findNeighbourZone(Area a,
                                               int x, int y,
                                               boolean isHorizontal) {
     if (isHorizontal) {
@@ -464,14 +464,14 @@ public class World {
         ++x;
       }
       if (a.getMapAt(x, y) != null) {
-        return new GatewayZone(x, y, isHorizontal);
+        return new WorldGate(x, y, isHorizontal);
       }
     } else {
       while (y < a.getHeight()-1 && a.getMapAt(x, y) == null) {
         ++y;
       }
       if (a.getMapAt(x, y) != null) {
-        return new GatewayZone(x, y, isHorizontal);
+        return new WorldGate(x, y, isHorizontal);
       }
     }
     return null;
