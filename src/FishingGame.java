@@ -5,7 +5,7 @@
  * @author Candice Zhang
  */
 
-class FishingGame {
+public class FishingGame {
   public static final int INGAME_STATUS = 0;
   public static final int WIN_STATUS = 1;
   public static final int LOSE_STATUS = 2;
@@ -14,10 +14,13 @@ class FishingGame {
   public static final int INIT_PROGRESS = 50;
   public static final int PLAYER_MAX_SPEED = 4;
   public static final double PLAYER_ACCELERATION = 4;
+  public static final long BITE_ELAPSE_NANOTIME = (long)Math.round(0.75*1_000_000_000);
 
   private int currentProgress;
   private int currentStatus;
   private WaterTile tileToFish;
+  private long biteNanoTime;
+  private boolean hasStarted;
 
   private FishingGameBar playerBar;
   private FishingGameBar targetBar;
@@ -33,14 +36,20 @@ class FishingGame {
     
     this.currentProgress = FishingGame.INIT_PROGRESS;
     this.tileToFish = tileToFish;
+    this.hasStarted = false;
 
     this.playerBar = new FishingGameBar(FishingGame.MAX_HEIGHT-FishingGame.MAX_HEIGHT/3, FishingGame.MAX_HEIGHT/3, 0.75);
     this.targetBar = new FishingGameBar(FishingGame.MAX_HEIGHT-FishingGame.MAX_HEIGHT/7, FishingGame.MAX_HEIGHT/7);
+    this.generateBiteNanoTime();
   }
 
 
   public void update(boolean mouseDown, Stopwatch mouseTimer) {
     // hold: go up
+    if(!this.hasStarted) {
+      return;
+    }
+    
     this.playerBar.setVelocity(
         Math.max(0.5, Math.min(FishingGame.PLAYER_MAX_SPEED,
                                 FishingGame.PLAYER_ACCELERATION*mouseTimer.getNanoTimeElapsed()/1_000_000_000.0))
@@ -96,14 +105,6 @@ class FishingGame {
     return HoldableFactory.getHoldable(fishableTrash[(int)(Math.random()*fishableTrash.length)]);
   }
 
-  // public void setMouseDown(boolean mouseDown) {
-  //   this.mouseDown = mouseDown;
-  // }
-
-  // public void updateLastPressNanoTime() {
-  //   this.lastPressNanoTime = System.nanoTime();
-  // }
-
   public int getCurrentStatus() {
     return this.currentStatus;
   }
@@ -122,6 +123,26 @@ class FishingGame {
 
   public FishingGameBar getTargetBar() {
     return this.targetBar;
+  }
+
+  public void setHasStarted(boolean hasStarted) {
+    this.hasStarted = hasStarted;
+  }
+
+  public boolean hasStarted() {
+    return this.hasStarted;
+  }
+
+  public long getBiteNanoTime() {
+    return this.biteNanoTime;
+  }
+
+  public void generateBiteNanoTime() {
+    this.biteNanoTime = (long)Math.round(System.nanoTime()+(3+Math.random()*5)*1_000_000_000);
+  }
+
+  public boolean isBiting() {
+    return ((System.nanoTime()>=this.biteNanoTime) && (System.nanoTime()<=this.biteNanoTime+FishingGame.BITE_ELAPSE_NANOTIME));
   }
 
 }

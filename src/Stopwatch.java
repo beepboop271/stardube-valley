@@ -1,11 +1,11 @@
 public class Stopwatch {
-  private long startTime;
+  private long startNanoTime;
 
   public Stopwatch() {
-    this.startTime = System.nanoTime();
+    this.startNanoTime = System.nanoTime();
   }
 
   public long getNanoTimeElapsed() {
-    return System.nanoTime()-this.startTime;
+    return System.nanoTime()-this.startNanoTime;
   }
 }

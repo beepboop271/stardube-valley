@@ -7,7 +7,6 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Random;
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -51,8 +50,6 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
   private HashMap<Player, Timer> fishingTimers;
-
-  private Random random = new Random();
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -285,6 +282,7 @@ public class World {
           if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
             rodUsed.setTileToFish((WaterTile)(playerArea.getMapAt(destX, destY)));
             rodUsed.setCurrentStatus(FishingRod.WAITING_STATUS);
+            this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
           } else {
             // TODO: play animation
             this.player.setImmutable(false);
@@ -297,20 +295,24 @@ public class World {
       } else if (event instanceof CatchFishEvent) {
         FishingRod rodUsed = ((CatchFishEvent)event).getRodUsed();
         long catchNanoTime = ((CatchFishEvent)event).getCatchNanoTime();
-        if (true) {
-          int fishableChoice = random.nextInt(100); 
+        if ((catchNanoTime >= this.player.getCurrentFishingGame().getBiteNanoTime()) &&
+            (catchNanoTime <= this.player.getCurrentFishingGame().getBiteNanoTime()+FishingGame.BITE_ELAPSE_NANOTIME)) {
           if ((rodUsed.getTileToFish().getFishableFish().length==0)
-              || (fishableChoice <= 30)) { // TODO: make this associated with luck
+              || ((Math.random()*100) <= 30)) { // TODO: make this associated with luck
             Holdable trashEarned = HoldableFactory.getHoldable(
-                                   WaterTile.getFishableTrash()[random.nextInt(WaterTile.getFishableTrash().length)]);
+                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*WaterTile.getFishableTrash().length))]);
             if (this.player.canPickUp(trashEarned)) {
               this.player.pickUp(new HoldableStack(trashEarned, 1));
             }
+            this.player.endCurrentFishingGame();
+            this.player.setImmutable(false);
           } else {
-            this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
+            this.player.getCurrentFishingGame().setHasStarted(true);
           }
+        } else {
+          this.player.endCurrentFishingGame();
+          this.player.setImmutable(false);
         }
-        this.player.setImmutable(false);
         rodUsed.setCurrentStatus(FishingRod.IDLING_STATUS);
       } else if (event instanceof FishingGameEndedEvent) {
         FishingGame gameEnded = ((FishingGameEndedEvent)event).getGameEnded();

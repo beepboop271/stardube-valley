@@ -37,6 +37,10 @@ public class StardubeEventListener implements KeyListener,
     this.updateSelectedTile();
 
     if (this.stardubePlayer.isInFishingGame()) {
+      long biteNanoTime = this.stardubePlayer.getCurrentFishingGame().getBiteNanoTime();
+      if ((biteNanoTime+FishingGame.BITE_ELAPSE_NANOTIME)<System.nanoTime()) {
+        this.stardubePlayer.getCurrentFishingGame().generateBiteNanoTime();
+      }
       this.stardubePlayer.getCurrentFishingGame().update(this.mouseStates[1], this.mouseStopwatches[1]);
       this.stardubePlayer.setImmutable(true);
       if(this.stardubePlayer.getCurrentFishingGame().getCurrentStatus() != FishingGame.INGAME_STATUS) {
@@ -168,9 +172,9 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.y = e.getY();
 
     if (this.stardubePlayer.isInFishingGame()) {
-      // FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-      // fishingGame.setMouseDown(false);
-
+      if (!this.stardubePlayer.getCurrentFishingGame().hasStarted()) {
+        this.stardubeWorld.emplaceFutureEvent(0, new CatchFishEvent((FishingRod)(this.stardubePlayer.getSelectedItem().getContainedHoldable())));
+      }
     } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
@@ -225,8 +229,6 @@ public class StardubeEventListener implements KeyListener,
               this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
                                 new CastingEndedEvent((FishingRod)selectedItem));
               ((FishingRod)selectedItem).setCurrentStatus(FishingRod.IDLING_STATUS);
-            } else if (((FishingRod)selectedItem).getCurrentStatus() == FishingRod.WAITING_STATUS) {
-              this.stardubeWorld.emplaceFutureEvent(0, new CatchFishEvent((FishingRod)selectedItem));
             }
           }
         }

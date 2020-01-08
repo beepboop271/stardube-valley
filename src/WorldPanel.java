@@ -103,7 +103,6 @@ public class WorldPanel extends JPanel {
     int screenTileY = 0;
 
     Point selectedTile = worldPlayer.getSelectedTile();
-    // System.out.println(selectedTile);
 
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
@@ -305,6 +304,15 @@ public class WorldPanel extends JPanel {
           g.drawLine(lineX, lineY,
                      Tile.getSize()*(playerCurrentRod.getTileToFish().getX()-tileStartX)+originX+Tile.getSize()/2,
                      Tile.getSize()*(playerCurrentRod.getTileToFish().getY()-tileStartY)+originY+Tile.getSize()/2);
+
+          // display exclamation mark if the fishable is biting
+          if (worldPlayer.getCurrentFishingGame().isBiting()) {
+            Graphics2D letterGraphics = (Graphics2D)g;
+            letterGraphics.setColor(Color.RED);
+            letterGraphics.setFont(this.letterFont);
+            letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x), (int)Math.round(playerScreenPos.y));
+          }
         }
       }
     }
@@ -330,7 +338,7 @@ public class WorldPanel extends JPanel {
     }
     // if player is in fishing game, draw mini game stuff
     // TODO: make the display postion beside the player
-    if (worldPlayer.isInFishingGame()) {
+    if (worldPlayer.isInFishingGame() && worldPlayer.getCurrentFishingGame().hasStarted()) {
       // draw background
       g.setColor(new Color(255, 255, 255, 100));
       g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
