@@ -35,8 +35,11 @@ public abstract class IntrinsicTileComponent extends TileComponent
       this.images = new BufferedImage[allFiles.length];
       try {
         for (int i = 0, j = 0; i < allFiles.length; i++) {
-          this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
-          j++;
+          String extension = allFiles[i].substring(allFiles[i].lastIndexOf("."));
+          if (extension.equals(".png")) {
+            this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
+            j++;
+          }
         }
       } catch (IOException e) {
         e.printStackTrace();
