@@ -1,8 +1,8 @@
 import java.io.IOException;
 
 /**
- * [IntrinsicTree] 2020-01-06
- * 
+ * [IntrinsicTree] 
+ * 2020-01-06
  * @version 0.1
  * @author Paula Yuan
  */

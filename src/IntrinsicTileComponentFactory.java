@@ -105,6 +105,7 @@ public class IntrinsicTileComponentFactory {
                                     Integer.parseInt(nextLineData[7+(j*3)]),
                                     nextLineData[5+(j*3)]));
         }
+        componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
       }
       input.close();
