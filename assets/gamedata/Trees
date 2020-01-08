@@ -1,7 +1,7 @@
 OakTree     /forageables/OakTree/       Axe 10 2 WoodItem  5 10  SapItem 0 5    -3 -3   5       18  3 3 5 7
 SpruceTree  /forageables/SpruceTree/    Axe 10 2 WoodItem  5 10  SapItem 0 5    -3 -3   5       18  3 3 5 7
 
-name        path                tool hardness numdrops [item quantity       ]   offset  stages  daystogrow
+name        path                       tool hardness numdrops [item quantity]   offset  stages  daystogrow
                                                        [item minquantity max] 
                                                        repeat numdrops times
                                                        

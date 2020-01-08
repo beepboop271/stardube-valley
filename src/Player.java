@@ -35,12 +35,13 @@ public class Player extends Moveable {
     this.maxEnergy = 270;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
-    this.inventory[1] = new HoldableStack("Hoe", 1);
-    this.inventory[2] = new HoldableStack("WateringCan", 1);
-    this.inventory[3] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[4] = new HoldableStack("ParsnipSeeds", 15);
-    this.inventory[5] = new HoldableStack("StrawberrySeeds", 10);
-    this.inventory[6] = new HoldableStack("PotatoSeeds", 5);
+    this.inventory[1] = new HoldableStack("Axe", 1);
+    this.inventory[2] = new HoldableStack("Hoe", 1);
+    this.inventory[3] = new HoldableStack("WateringCan", 1);
+    this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
+    this.inventory[5] = new HoldableStack("ParsnipSeeds", 15);
+    this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
+    this.inventory[7] = new HoldableStack("PotatoSeeds", 5);
   }
   
   @Override
