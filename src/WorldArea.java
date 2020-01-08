@@ -52,13 +52,14 @@ public class WorldArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = random.nextInt(10) + 1;
+    int spawnNum = random.nextInt(10) + 10;
     for (int i = 0; i < spawnNum; i++) {
-      TileComponent tree = IntrinsicTileComponentFactory.getComponent(trees[random.nextInt(trees.length)]);
+      String tree = trees[random.nextInt(trees.length)];
       int y = random.nextInt(this.getMap().length);
       Tile spawnTile = this.getMapAt(random.nextInt(this.getMap()[y].length), y);
-      if (spawnTile != null && spawnTile.getContent() == null) {
-        spawnTile.setContent(tree);
+      if (spawnTile != null && (spawnTile instanceof GroundTile || spawnTile instanceof GrassTile) 
+          && spawnTile.getContent() == null) {
+        spawnTile.setContent(new ExtrinsicTree(tree));
         treeTiles.add(spawnTile);
       }
     }
@@ -67,7 +68,7 @@ public class WorldArea extends Area {
   @Override
   public void doDayEndActions() {
     
-    if (this.getCurrentDay()%10 == 0) {
+    if (this.getCurrentDay()%10 == 0 || this.getCurrentDay() == 1) {
       spawnTrees();
     }
     spawnForageables();

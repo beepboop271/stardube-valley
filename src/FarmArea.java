@@ -13,7 +13,7 @@ import java.util.Random;
 public class FarmArea extends Area {
   //private FarmBuilding[] buildings;
   private HashSet<GroundTile> editedTiles;
-  String[] trees = {"OakTree, SpruceTree"};
+  String[] trees = {"OakTree", "SpruceTree"};
   ArrayList<Tile> treeTiles= new ArrayList<>();
   Random random = new Random();
 
@@ -40,13 +40,14 @@ public class FarmArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = random.nextInt(10) + 1;
+    int spawnNum = random.nextInt(10) + 10;
     for (int i = 0; i < spawnNum; i++) {
-      TileComponent tree = IntrinsicTileComponentFactory.getComponent(trees[random.nextInt(trees.length)]);
+      String tree = trees[random.nextInt(trees.length)];
       int y = random.nextInt(this.getMap().length);
       Tile spawnTile = this.getMapAt(random.nextInt(this.getMap()[y].length), y);
-      if (spawnTile != null && spawnTile.getContent() == null) {
-        spawnTile.setContent(tree);
+      if (spawnTile != null && (spawnTile instanceof GroundTile || spawnTile instanceof GrassTile)
+          && spawnTile.getContent() == null) {
+        spawnTile.setContent(new ExtrinsicTree(tree));
         treeTiles.add(spawnTile);
       }
     }
@@ -54,7 +55,7 @@ public class FarmArea extends Area {
 
   @Override
   public void doDayEndActions() {
-    if (this.getCurrentDay()%10 == 0) {
+    if (this.getCurrentDay() == 1) {
       this.spawnTrees();
     }
     Iterator<GroundTile> allEditedTiles = this.editedTiles.iterator();
@@ -67,7 +68,7 @@ public class FarmArea extends Area {
         ((ExtrinsicTree)currentTile.getContent()).grow();
       }
     }
-    
+
     while (allEditedTiles.hasNext()) {
       GroundTile currentTile = allEditedTiles.next();
       currentTile.determineImage(this.getCurrentDay());
