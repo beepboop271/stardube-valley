@@ -50,10 +50,12 @@ public abstract class Area {
       int treeY = (int)nextPoint.y+1;
       if (this.inMap(nextPoint)
             && ((this.getMapAt(nextPoint) == null)
-                || (this.getMapAt(nextPoint) instanceof WaterTile))
+                || (this.getMapAt(nextPoint) instanceof WaterTile)
+                || (this.getMapAt(nextPoint).getContent() != null
+                    && this.getMapAt(nextPoint).getContent() instanceof CollectableComponent))
                 || (this.inMap(treeX, treeY) && this.getMapAt(treeX, treeY) != null
                     && this.getMapAt(treeX, treeY).getContent() != null
-                    && this.getMapAt(treeX, treeY).getContent() instanceof ExtrinsicTree)) {
+                    && (this.getMapAt(treeX, treeY).getContent() instanceof ExtrinsicTree))) {
         return true;
       }
     } 
