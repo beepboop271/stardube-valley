@@ -52,24 +52,28 @@ public class StardubeEventListener implements KeyListener,
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
+      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != -1) {
         this.stardubePlayer.setVerticalSpeed(-1);
         this.stardubePlayer.setOrientation(World.NORTH);
       }
     }
     if (this.keyStates[KeyEvent.VK_A]) {
+      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getHorizontalSpeed() != -1) {
         this.stardubePlayer.setHorizontalSpeed(-1);
         this.stardubePlayer.setOrientation(World.WEST);
       }
     }
     if (this.keyStates[KeyEvent.VK_S]) {
+      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != 1) {
         this.stardubePlayer.setVerticalSpeed(1);
         this.stardubePlayer.setOrientation(World.SOUTH);
       }
     }
     if (this.keyStates[KeyEvent.VK_D]) {
+      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getHorizontalSpeed() != 1) {
         this.stardubePlayer.setHorizontalSpeed(1);
         this.stardubePlayer.setOrientation(World.EAST);

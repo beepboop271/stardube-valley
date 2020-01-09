@@ -1,0 +1,6 @@
+player/north
+player/east
+player/south
+player/west
+
+imgs path (N,E,S,W) /assets/images/+

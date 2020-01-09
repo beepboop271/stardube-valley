@@ -148,14 +148,16 @@ public class WorldPanel extends JPanel {
       }
     }
     
-    g.setColor(Color.RED);
+    //g.setColor(Color.RED);
     this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
     this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
-    g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
-               (int)(Tile.getSize()*2*Player.SIZE),
-               (int)(Tile.getSize()*2*Player.SIZE));
+    //g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
+    //           (int)(Tile.getSize()*2*Player.SIZE),
+    //           (int)(Tile.getSize()*2*Player.SIZE));
     g.setColor(Color.BLACK);
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
+    g.drawImage(worldPlayer.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*Player.SIZE)), null);
+
 
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP);
@@ -280,11 +282,15 @@ public class WorldPanel extends JPanel {
         if (playerCurrentRod.getCurrentStatus() == FishingRod.CASTING_STATUS) {
           // if player is casting, draw casting meter
           // TODO: make the display postion beside the player
-          g.setColor(Color.BLACK);
-          g.drawRect(0, 0, this.getWidth()/10, this.getHeight()/25);
+          int meterW = this.getWidth()/10;
+          int meterH = this.getHeight()/25;
+          int meterX = (int)Math.round(playerScreenPos.x-meterW/2+Player.SIZE*Tile.getSize());
+          int meterY = (int)Math.round(playerScreenPos.y)-meterH-15;
+          g.setColor(new Color(0,0,0,175));
+          g.fillRect(meterX, meterY, meterW, meterH);
           g.setColor(Color.GREEN);
-          g.drawRect(0, 0, (int)((this.getWidth()/10)*playerCurrentRod.getCastingProgressPercentage()/100.0), this.getHeight()/25);
-        } else if (playerCurrentRod.getCurrentStatus() == FishingRod.WAITING_STATUS) { 
+          g.fillRect(meterX, meterY, (int)Math.round(meterW*playerCurrentRod.getCastingProgressPercentage()/100.0), meterH);
+        } else if (playerCurrentRod.getCurrentStatus() == FishingRod.WAITING_STATUS) {
           g.setColor(Color.WHITE);
           int lineX, lineY;
           if (worldPlayer.getOrientation() == World.NORTH) {

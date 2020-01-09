@@ -17,18 +17,16 @@ public class Player extends Moveable {
   private boolean inMenu = false;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
-  private int orientation;
   private int health;
   private int maxHealth;
   private int energy;
   private int maxEnergy;
 
-  public Player(Point position) {
-    super(position, Player.SIZE);
+  public Player(Point position, String filePath) {
+    super(position, Player.SIZE, filePath);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
-    this.orientation = World.SOUTH;
     this.health = 100;
     this.maxHealth = 100;
     this.energy = 270;
@@ -198,14 +196,6 @@ public class Player extends Moveable {
 
   public static double getItemAttractionDistance() {
     return Player.ITEM_ATTRACTION_DISTANCE;
-  }
-
-  public int getOrientation() {
-    return this.orientation;
-  }
-
-  public void setOrientation(int orientation) {
-    this.orientation = orientation;
   }
 
   public boolean isInFishingGame() {
