@@ -52,12 +52,20 @@ public class WorldArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = random.nextInt(10) + 10;
+    int spawnNum = random.nextInt(10) + 30;
     for (int i = 0; i < spawnNum; i++) {
       String tree = trees[random.nextInt(trees.length)];
       int y = random.nextInt(this.getMap().length);
       Tile spawnTile = this.getMapAt(random.nextInt(this.getMap()[y].length), y);
+      Tile centerTile;
+      if (spawnTile != null && this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
+        centerTile = this.getMapAt(spawnTile.getX()-2, spawnTile.getY()-1);
+      } else {
+        centerTile = null;
+      }
       if (spawnTile != null && (spawnTile instanceof GroundTile || spawnTile instanceof GrassTile) 
+          && centerTile != null
+          && (centerTile instanceof GroundTile || centerTile instanceof GrassTile)  
           && spawnTile.getContent() == null) {
         spawnTile.setContent(new ExtrinsicTree(tree));
         treeTiles.add(spawnTile);
