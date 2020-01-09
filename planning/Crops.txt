@@ -5,7 +5,7 @@ Spring:
 - garlic (d5) - Grows in 4 days
 - lettuce (n6) - Grows in 6 days
 - potato (d6) - Grows in 6 days 
-- cauliflower (n6) - Grows in 12 days
+- cauliflower (d5) - Grows in 12 days
 Summer:
 - watermelon (d7) - Grows in 10 days
 - mango BUSH (n5) - Grows in 7 days
