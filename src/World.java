@@ -325,23 +325,29 @@ public class World {
         this.player.setImmutable(false);
 
       } else if (event instanceof ComponentPlacedEvent) {
-        Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
-        TileComponent currentContent = currentTile.getContent();
-        if (currentContent == null) { //- Anything that you can place must not be placed over something
-          //- We need to make sure that the tile is both a ground tile and is tilled if
-          //- we're trying to plant a crop in that tile
-          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
-            if (currentTile instanceof GroundTile) {
-              if (((GroundTile)currentTile).getTilledStatus()) {
-                if (this.playerArea instanceof FarmArea) {
-                  currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
-                  ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
-                  this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+        //- Make sure the player literally has the object
+        if (this.player.hasAtIndex(((ComponentPlacedEvent)event).getComponentIndex())) {
+          Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event)
+                                                      .getLocationUsed());
+          TileComponent currentContent = currentTile.getContent();
+          //- Anything that you can place must not be placed over something and not over water
+          if ((currentContent == null) && (!(currentTile instanceof WaterTile))) { 
+            //- We need to make sure that the tile is both a ground tile and is tilled if
+            //- we're trying to plant a crop in that tile
+            if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+              if (currentTile instanceof GroundTile) {
+                if (((GroundTile)currentTile).getTilledStatus()) {
+                  if (this.playerArea instanceof FarmArea) {
+                    currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                    ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                    this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+                  }
                 }
               }
+            } else { //- If it's not a crop, you can place it anywhere
+              currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+              this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
             }
-          } else { //- If it's not a crop, you can place it anywhere
-            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
           }
         }
       }

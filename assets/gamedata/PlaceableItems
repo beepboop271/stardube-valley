@@ -1,0 +1,5 @@
+ChestItem         /furniture/         hold-ur-stuff       Chest      
+
+FurnaceItem       /furniture/         cook-ur-stuff       Furnace
+
+name              image path          description        what is placed when used
