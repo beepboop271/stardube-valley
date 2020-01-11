@@ -81,6 +81,18 @@ public class HoldableFactory {
       }
       input.close();
 
+      input = new BufferedReader(new FileReader("assets/gamedata/PlaceableItems"));
+      lineToRead = input.readLine();
+      while(lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        PlaceableItem item = new PlaceableItem(nextLineData[0], nextLineData[2],
+                                               "assets/images"+nextLineData[1]+nextLineData[0]+".png",
+                                               nextLineData[3]);
+        HoldableFactory.holdablePool.put(item.getName(), item);
+        lineToRead = input.readLine();
+      }
+      input.close();
+
     } catch (IOException e) {
       e.printStackTrace();
     }

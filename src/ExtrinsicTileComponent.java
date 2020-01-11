@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
  */
 
 public abstract class ExtrinsicTileComponent extends TileComponent 
-                                            implements Collectable, Drawable {
+                                            implements Drawable {
   private final IntrinsicTileComponent intrinsicSelf;
 
   public ExtrinsicTileComponent(IntrinsicTileComponent intrinsicSelf) {
@@ -38,10 +38,5 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   @Override
   public int getYOffset() {
     return this.intrinsicSelf.getYOffset();
-  }
-
-  @Override
-  public HoldableDrop[] getProducts() {
-    return this.intrinsicSelf.getProducts();
   }
 }

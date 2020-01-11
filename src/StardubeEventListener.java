@@ -211,11 +211,12 @@ public class StardubeEventListener implements KeyListener,
                     ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
                 )
             );
-          } else if (selectedItem instanceof Seeds) {
+          } else if (selectedItem instanceof Placeable) {
+            System.out.println("Trying to place!");
             this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*1_000_000_000),
               new ComponentPlacedEvent(
-                ((Seeds)selectedItem).createCrop(), this.stardubePlayer.getSelectedItemIdx(),
+                ((Placeable)selectedItem).placeItem(), this.stardubePlayer.getSelectedItemIdx(),
                 this.stardubePlayer.getSelectedTile()
               )
             );

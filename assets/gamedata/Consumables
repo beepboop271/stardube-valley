@@ -12,6 +12,7 @@ ParsnipItem       /crops/         gamer-crop      15 30
 GarlicItem        /crops/         glamer-crop      8 20
 PotatoItem        /crops/         starchy-crop    11 25  
 CauliflowerItem   /crops/         yarchy-crop     50 25
+TulipItem         /crops/         flower-crop     30 15
 StrawberryItem    /crops/         yaymer-crop     15 25                            
 WatermelonItem    /crops/         lamer-crop      40 60
 CornItem          /crops/         tamer-crop      30 40
