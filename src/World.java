@@ -297,7 +297,6 @@ public class World {
         } else if (currentContent instanceof Collectable) {
         //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-          // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           if (drop != null) {
             new HoldableStackEntity(drop, null); // TODO: change the pos

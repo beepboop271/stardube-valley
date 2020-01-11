@@ -47,7 +47,7 @@ public abstract class Area {
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
       int treeX = (int)nextPoint.x+2;     // TODO: make this less... sketchy, I guess
-      int treeY = (int)nextPoint.y+1;
+      int treeY = (int)nextPoint.y+1;     // TODO: fix getting caught in things just as the program realizes
       if (this.inMap(nextPoint)
             && ((this.getMapAt(nextPoint) == null)
                 || (this.getMapAt(nextPoint) instanceof WaterTile)
@@ -55,7 +55,8 @@ public abstract class Area {
                     && this.getMapAt(nextPoint).getContent() instanceof CollectableComponent))
                 || (this.inMap(treeX, treeY) && this.getMapAt(treeX, treeY) != null
                     && this.getMapAt(treeX, treeY).getContent() != null
-                    && (this.getMapAt(treeX, treeY).getContent() instanceof ExtrinsicTree))) {
+                    && this.getMapAt(treeX, treeY).getContent() instanceof ExtrinsicTree
+                    && ((ExtrinsicTree)this.getMapAt(treeX, treeY).getContent()).getStage() > 2)) {
         return true;
       }
     } 

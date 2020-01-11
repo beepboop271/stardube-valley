@@ -24,6 +24,7 @@ MushroomItem      /forageables/   a-forageable    10 15
 WinterRootItem    /forageables/   a-forageable    10 15
 JavacakeItem      /forageables/   a-forageable    10 15
 QuartzItem        /ores/          a-forageable    10 15
+DaffodilItem      /forageables/   a-forageable    10 15
 
 name              imagePath                    description     health gain
                                                                energy gain

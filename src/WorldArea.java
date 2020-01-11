@@ -67,7 +67,11 @@ public class WorldArea extends Area {
           && centerTile != null
           && (centerTile instanceof GroundTile || centerTile instanceof GrassTile)  
           && spawnTile.getContent() == null) {
-        spawnTile.setContent(new ExtrinsicTree(tree));
+        ExtrinsicTree newTree = new ExtrinsicTree(tree);
+        if (((int)this.getCurrentDay()) == 1) {
+          newTree.setStage(17);
+        }
+        spawnTile.setContent(newTree);
         treeTiles.add(spawnTile);
       }
     }
