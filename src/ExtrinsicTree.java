@@ -15,13 +15,6 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
     this.stage = 0;
   }
 
-  public boolean canHarvest() {
-    if (this.stage == ((IntrinsicTree)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
-      return true;
-    }
-    return false;
-  }
-
   public HoldableDrop getProduct() {
     return this.getIntrinsicSelf().getProducts()[0];
   }
@@ -37,5 +30,14 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
     if (this.stage < ((IntrinsicTree)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) { 
       this.stage++;
     }
+    // TODO: change products based on stage?
+  }
+  
+  public int getStage() {
+    return this.stage;
+  }
+
+  public void setStage(int stage) {
+    this.stage = stage;
   }
 }

@@ -168,9 +168,54 @@ public class World {
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
+        int treeY = selectedTile.getY() + 1;
+        Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
+        TileComponent treeComponent = treeTile.getContent();
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+        if (treeComponent instanceof ExtrinsicHarvestableComponent) {
+          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
+          String requiredTool = ic.getRequiredTool();
+                  
+          if (requiredTool.equals("Axe")) {
+            // TODO: play breaking animation?
+            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)treeComponent);
+            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
+              Point point = new Point(toolEvent.getLocationUsed().x+2, toolEvent.getLocationUsed().y+1);
+              if (this.playerArea instanceof WorldArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((WorldArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              } else if (this.playerArea instanceof FarmArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((FarmArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              }
+              
+
+              HoldableDrop[] drops = ic.getProducts();
+              HoldableStack product;
+              for (int i = 0; i < drops.length; ++i) {
+                product = drops[i].resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  this.playerArea.addItemOnGround(
+                    new HoldableStackEntity(
+                        product,
+                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
+                    )
+                  );
+                }
+              }
+            }
+          }
+        } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
