@@ -22,16 +22,20 @@ public class WorldPanel extends JPanel {
   public static final Color INVENTORY_BKGD_COLOR = new Color(155, 60, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
   public static final Color INVENTORY_QUANTITY_COLOR = new Color(60, 20, 0);
+  public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
+  public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
   
   private final Font timeFont;
   private final Font quantityFont;
   private final Font letterFont;
+  private final Font stringFont;
   private StardubeEventListener listener;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
   private int menuX, menuY, menuW, menuH;
+  private int hoveredItemIdx;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
@@ -58,6 +62,8 @@ public class WorldPanel extends JPanel {
     this.timeFont = new Font("Comic Sans MS", Font.BOLD, 40);
     this.quantityFont = new Font("Comic Sans MS", Font.BOLD, 15);
     this.letterFont = new Font("Comic Sans MS", Font.BOLD, 25);
+    this.stringFont = new Font("Comic Sans MS", Font.PLAIN, 20);
+    this.hoveredItemIdx = -1;
 
     this.setOpaque(true);
   }
@@ -74,7 +80,6 @@ public class WorldPanel extends JPanel {
     Player worldPlayer = this.worldToDisplay.getPlayer();
     Point playerPos = worldPlayer.getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
-
     int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2);
     int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2);
 
@@ -162,9 +167,9 @@ public class WorldPanel extends JPanel {
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP);
     if (this.playerScreenPos.y > this.getHeight()/2){
-      hotbarY = WorldPanel.HOTBAR_CELLGAP*2;
+      this.hotbarY = WorldPanel.HOTBAR_CELLGAP*2;
     } else {
-      hotbarY = this.getHeight()-WorldPanel.HOTBAR_CELLSIZE-WorldPanel.HOTBAR_CELLGAP*4;
+      this.hotbarY = this.getHeight()-WorldPanel.HOTBAR_CELLSIZE-WorldPanel.HOTBAR_CELLGAP*4;
     }
     g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
     g.fillRect(hotbarX, hotbarY,
@@ -194,7 +199,7 @@ public class WorldPanel extends JPanel {
                         hotbarY+WorldPanel.HOTBAR_CELLSIZE);
         }
       }
-      
+
       // outlines selected item
       if (i == worldPlayer.getSelectedItemIdx()){
         g.setColor(Color.RED);
@@ -369,8 +374,52 @@ public class WorldPanel extends JPanel {
                  this.getWidth()/40, this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100);
     }
 
+    // display description of hovered item
+    if ((hoveredItemIdx != -1) && (worldPlayer.getInventory()[hoveredItemIdx]!=null)) {
+      String name = worldPlayer.getInventory()[hoveredItemIdx].getContainedHoldable().getName();
+      String description = worldPlayer.getInventory()[hoveredItemIdx].getContainedHoldable().getDescription();
+      Graphics2D descriptionGraphics = (Graphics2D)g;
+      descriptionGraphics.setColor(Color.BLACK);
+      descriptionGraphics.setFont(this.stringFont);
+      descriptionGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      int stringX = this.hotbarX + this.hoveredItemIdx*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP);
+      int stringW = Math.max(descriptionGraphics.getFontMetrics().stringWidth(name),
+                              descriptionGraphics.getFontMetrics().stringWidth(description));
+      int stringH = descriptionGraphics.getFontMetrics().getHeight();
+      int stringY;
+      if ((!worldPlayer.isInMenu()) && this.hotbarY < this.getHeight()/2) {
+        stringY = this.hotbarY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP*2 + stringH + 10);
+      } else if ((!worldPlayer.isInMenu()) && this.hotbarY >= this.getHeight()/2) {
+        stringY = this.hotbarY - (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP*2);
+      } else {
+        stringY = this.menuX - hoveredItemIdx/12*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP*2);
+      }
+
+      g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
+      g.fillRect(stringX-15, stringY-stringH-5, stringW+30, stringH*3+10);
+      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      g.fillRect(stringX-10, stringY-stringH, stringW+20, stringH*3);
+      g.setColor(Color.BLACK);
+      descriptionGraphics.drawString(name, stringX, stringY);
+      descriptionGraphics.drawString(description, stringX, stringY+stringH+5);
+    }
+
   }
 
+  public void updateHoveredItemIdx(int x, int y) {
+    Player worldPlayer = this.worldToDisplay.getPlayer();
+    if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(x, y)) {
+      this.hoveredItemIdx = this.hotbarItemIdxAt(x);
+    } else if (worldPlayer.isInMenu() && this.isPosInMenuInventory(x, y)) {
+      if ((this.inventoryMenuItemIdxAt(x, y) < worldPlayer.getInventorySize()) && (this.inventoryMenuItemIdxAt(x, y) >= 0)) {
+        this.hoveredItemIdx = this.inventoryMenuItemIdxAt(x, y);
+      }
+    } else {
+      this.hoveredItemIdx = -1;
+    }
+  }
+  
   public int getHotbarX() {
     return this.hotbarX;
   }
@@ -401,5 +450,38 @@ public class WorldPanel extends JPanel {
 
   public StardubeEventListener getListener() {
     return this.listener;
-  }  
+  } 
+
+  public int hotbarItemIdxAt(int x) {
+    return Math.min((int)(Math.floor((x-this.getHotbarX())/
+           (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
+  }
+
+  public int inventoryMenuItemIdxAt(int x, int y) {
+    return Math.min((int)(Math.floor(x-this.menuX)/ (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
+           + 12*Math.min((int)(Math.floor((y-(this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
+           (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
+  }
+
+  public boolean isPosInHotbar(int x, int y) {
+    return ((x >= this.hotbarX) &&
+            (x <= this.hotbarX+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
+            (y >= this.hotbarY) &&
+            (y <= this.hotbarY + WorldPanel.HOTBAR_CELLSIZE));
+  }
+
+  public boolean isPosInMenuTab(int x, int y) {
+    return ((x >= this.menuX) &&
+            (x <= this.menuX + this.menuW) &&
+            (y >= this.menuY) &&
+            (y <= this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
+  }
+
+  public boolean isPosInMenuInventory(int x, int y) {
+    return ((x >= this.menuX) &&
+            (x <= this.menuX + this.menuW) &&
+            (y > this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
+            (y <= this.menuY + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
+  }
+
 }

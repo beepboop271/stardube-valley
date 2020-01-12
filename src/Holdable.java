@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
  * [Holdable]
  * 2019-12-20
  * @version 0.1
- * @author Kevin Qiao, Joseph Wang
+ * @author Kevin Qiao, Joseph Wang, Candice Zhang
  */
 public abstract class Holdable {
   private final String name;
@@ -18,7 +18,7 @@ public abstract class Holdable {
 
   public Holdable(String name, String description, String imagePath) throws IOException {
     this.name = name;
-    this.description = description;
+    this.description = description.replace("-", " ");
     this.image = ImageIO.read(new File(imagePath));
     this.smallImage = ImageIO.read(new File(imagePath.substring(0, imagePath.length()-3)+"Small.png"));
   }

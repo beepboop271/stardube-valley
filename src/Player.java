@@ -242,4 +242,11 @@ public class Player extends Moveable {
     this.maxEnergy += increment;
   }
 
+  public int getInventorySize() {
+    return this.inventorySize;
+  }
+
+  public void setInventorySize(int size) {
+    this.inventorySize = size;
+  }
 }

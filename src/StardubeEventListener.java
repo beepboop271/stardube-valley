@@ -157,7 +157,7 @@ public class StardubeEventListener implements KeyListener,
         if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
           HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
           if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod) {
-            if (!this.isMousePosInHotbar()) {
+            if (!this.worldPanel.isPosInHotbar((int)this.mousePos.x, (int)this.mousePos.y)) {
             ((FishingRod)selectedHoldableStack.getContainedHoldable()).startCasting();
             this.stardubePlayer.setImmutable(true);
             }
@@ -192,9 +192,8 @@ public class StardubeEventListener implements KeyListener,
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection
-        if (this.isMousePosInHotbar()) {
-          int selectedItemIdx = Math.min((int)(Math.floor((this.mousePos.x-this.worldPanel.getHotbarX())/
-                                (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
+        if (this.worldPanel.isPosInHotbar((int)mousePos.x, (int)mousePos.y)) {
+          int selectedItemIdx = this.worldPanel.hotbarItemIdxAt((int)Math.round(this.mousePos.x));
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
           return;
         }
@@ -238,21 +237,10 @@ public class StardubeEventListener implements KeyListener,
         }
       }
     } else if (this.stardubePlayer.isInMenu()) {
-      // if the mousepress is within the menu tab buttons, change the inventory menu display mode
-      if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
-          (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-          (this.mousePos.y >= this.worldPanel.getMenuY()) &&
-          (this.mousePos.y <= this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
+      if (worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y)) {
         // TODO: process the button (update selected button id or sth);
-      // if the mousepress is within the full inventory area, change the selected item index according to the mouse position
-      } else if ((this.mousePos.x >= this.worldPanel.getMenuX()) &&
-                  (this.mousePos.x <= this.worldPanel.getMenuX() + this.worldPanel.getMenuW()) &&
-                  (this.mousePos.y > this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
-                  (this.mousePos.y <= this.worldPanel.getMenuY() + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP))) {
-        int selectedItemIdx = Math.min((int)(Math.floor(this.mousePos.x-this.worldPanel.getMenuX())/
-                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
-                                + 12*Math.min((int)(Math.floor((this.mousePos.y-(this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
-                                       (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
+      } else if (worldPanel.isPosInMenuInventory((int)this.mousePos.x, (int)this.mousePos.y)) {
+        int selectedItemIdx = this.worldPanel.inventoryMenuItemIdxAt((int)this.mousePos.x, (int)this.mousePos.y);
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         }
@@ -282,6 +270,7 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
     this.updateSelectedTile();
+    this.worldPanel.updateHoveredItemIdx((int)this.mousePos.x, (int)this.mousePos.y);
   }
 
   @Override
@@ -305,12 +294,5 @@ public class StardubeEventListener implements KeyListener,
                                   .translate(this.stardubePlayer.getPos())
                                   .round());
 
-  }
-
-  private boolean isMousePosInHotbar() {
-    return (((this.mousePos.x >= this.worldPanel.getHotbarX()) &&
-            (this.mousePos.x <= this.worldPanel.getHotbarX()+12*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)) &&
-            (this.mousePos.y >= this.worldPanel.getHotbarY()) &&
-            (this.mousePos.y <= this.worldPanel.getHotbarY() + WorldPanel.HOTBAR_CELLSIZE)));
   }
 }
