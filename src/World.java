@@ -168,9 +168,54 @@ public class World {
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
+        int treeY = selectedTile.getY() + 1;
+        Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
+        TileComponent treeComponent = treeTile.getContent();
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+        if (treeComponent instanceof ExtrinsicHarvestableComponent) {
+          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
+          String requiredTool = ic.getRequiredTool();
+                  
+          if (requiredTool.equals("Axe")) {
+            // TODO: play breaking animation?
+            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)treeComponent);
+            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
+              Point point = new Point(toolEvent.getLocationUsed().x+2, toolEvent.getLocationUsed().y+1);
+              if (this.playerArea instanceof WorldArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((WorldArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              } else if (this.playerArea instanceof FarmArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((FarmArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              }
+              
+
+              HoldableDrop[] drops = ic.getProducts();
+              HoldableStack product;
+              for (int i = 0; i < drops.length; ++i) {
+                product = drops[i].resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  this.playerArea.addItemOnGround(
+                    new HoldableStackEntity(
+                        product,
+                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
+                    )
+                  );
+                }
+              }
+            }
+          }
+        } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
@@ -252,7 +297,6 @@ public class World {
         } else if (currentContent instanceof Collectable) {
         //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-          // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           if (drop != null) {
             new HoldableStackEntity(drop, null); // TODO: change the pos
@@ -325,23 +369,29 @@ public class World {
         this.player.setImmutable(false);
 
       } else if (event instanceof ComponentPlacedEvent) {
-        Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
-        TileComponent currentContent = currentTile.getContent();
-        if (currentContent == null) { //- Anything that you can place must not be placed over something
-          //- We need to make sure that the tile is both a ground tile and is tilled if
-          //- we're trying to plant a crop in that tile
-          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
-            if (currentTile instanceof GroundTile) {
-              if (((GroundTile)currentTile).getTilledStatus()) {
-                if (this.playerArea instanceof FarmArea) {
-                  currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
-                  ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
-                  this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+        //- Make sure the player literally has the object
+        if (this.player.hasAtIndex(((ComponentPlacedEvent)event).getComponentIndex())) {
+          Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event)
+                                                      .getLocationUsed());
+          TileComponent currentContent = currentTile.getContent();
+          //- Anything that you can place must not be placed over something and not over water
+          if ((currentContent == null) && (!(currentTile instanceof WaterTile))) { 
+            //- We need to make sure that the tile is both a ground tile and is tilled if
+            //- we're trying to plant a crop in that tile
+            if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+              if (currentTile instanceof GroundTile) {
+                if (((GroundTile)currentTile).getTilledStatus()) {
+                  if (this.playerArea instanceof FarmArea) {
+                    currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                    ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                    this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+                  }
                 }
               }
+            } else { //- If it's not a crop, you can place it anywhere
+              currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+              this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
             }
-          } else { //- If it's not a crop, you can place it anywhere
-            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
           }
         }
       }

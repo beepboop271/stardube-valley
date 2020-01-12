@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
  * @author Joseph Wang
  */
 
-public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
+public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable, Collectable {
   private int stage, regrowCooldown;
 
   public ExtrinsicCrop(IntrinsicCrop crop) {
@@ -65,5 +65,10 @@ public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable {
     if (this.regrowCooldown > 0) {
       this.regrowCooldown--;
     }
+  }
+
+  @Override
+  public HoldableDrop[] getProducts() {
+    return this.getIntrinsicSelf().getProducts();
   }
 }

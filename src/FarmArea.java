@@ -55,7 +55,9 @@ public class FarmArea extends Area {
           && centerTile != null 
           && (centerTile instanceof GroundTile || centerTile instanceof GrassTile)  
           && spawnTile.getContent() == null) {
-        spawnTile.setContent(new ExtrinsicTree(tree));
+        ExtrinsicTree newTree = new ExtrinsicTree(tree);
+        newTree.setStage(17);
+        spawnTile.setContent(newTree);
         treeTiles.add(spawnTile);
       }
     }
