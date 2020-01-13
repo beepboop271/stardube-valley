@@ -177,6 +177,7 @@ public class WorldPanel extends JPanel {
                 imgGraphics.setComposite(composite);
               }
               imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+              imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1));
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
