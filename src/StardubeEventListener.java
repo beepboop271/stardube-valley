@@ -79,10 +79,6 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.setOrientation(World.EAST);
       }
     }
-    // press b to buy cuz S_hop/P_urchase are taken lol
-    if (this.keyStates[KeyEvent.VK_B]) {
-      this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
-    }
   }
 
   @Override
@@ -110,8 +106,8 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
         break;
-      case KeyEvent.VK_C:
-        this.stardubePlayer.consume();
+      case KeyEvent.VK_B: // press b to buy cuz S_hop/P_urchase are taken lol
+        this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         break;
       case KeyEvent.VK_M:
         Area dumb = new MineLevel.Builder(1, 5).buildLevel();
