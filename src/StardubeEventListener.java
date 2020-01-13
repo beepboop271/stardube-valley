@@ -190,6 +190,9 @@ public class StardubeEventListener implements KeyListener,
     } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
+        if (this.stardubePlayer.getSelectedItem().getContainedHoldable() instanceof Consumable) {
+          this.stardubePlayer.consume();
+        }
         if (this.stardubePlayer.getSelectedTile() != null) {
           this.stardubeWorld.emplaceFutureEvent(
                 (long)(0.5*1_000_000_000),
