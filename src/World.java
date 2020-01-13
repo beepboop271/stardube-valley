@@ -49,7 +49,6 @@ public class World {
   private long inGameDay;
   private int inGameSeason;
   private double luckOfTheDay;
-  private HashMap<Player, Timer> fishingTimers;
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();

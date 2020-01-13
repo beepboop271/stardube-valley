@@ -79,6 +79,10 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.setOrientation(World.EAST);
       }
     }
+    // press b to buy cuz S_hop/P_urchase are taken lol
+    if (this.keyStates[KeyEvent.VK_B]) {
+      
+    }
   }
 
   @Override

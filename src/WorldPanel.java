@@ -6,8 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Iterator;
-
 import javax.swing.JPanel;
+import java.awt.AlphaComposite;
 
 /**
  * [WorldPanel]
@@ -109,6 +109,7 @@ public class WorldPanel extends JPanel {
 
     Point selectedTile = worldPlayer.getSelectedTile();
 
+    // draw tiles
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
         if (playerArea.inMap(x, y)) {
@@ -117,21 +118,6 @@ public class WorldPanel extends JPanel {
             int drawX = originX+(screenTileX*Tile.getSize());
             int drawY = originY+(screenTileY*Tile.getSize());
             g.drawImage(currentTile.getImage(), drawX, drawY, null);
-            TileComponent tileContent = currentTile.getContent();
-            
-            if (tileContent != null) {
-              g.drawImage(((Drawable)tileContent).getImage(), //- consider offsets when you draw the image
-                      drawX + ((Drawable)tileContent).getXOffset() * Tile.getSize(),
-                      drawY + ((Drawable)tileContent).getYOffset() * Tile.getSize(), 
-                      null); 
-            }
-
-            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
-              Graphics2D g2 = (Graphics2D)g;
-              g2.setStroke(new BasicStroke(4));
-              g2.setColor(Color.RED);
-              g2.drawRect(drawX+2, drawY+2, Tile.getSize()-4, Tile.getSize()-6);
-            }
           }
         }
         ++screenTileX;
@@ -153,6 +139,7 @@ public class WorldPanel extends JPanel {
       }
     }
     
+    // draw player
     //g.setColor(Color.RED);
     this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
     this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
@@ -162,7 +149,49 @@ public class WorldPanel extends JPanel {
     g.setColor(Color.BLACK);
     g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
     g.drawImage(worldPlayer.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*Player.SIZE)), null);
+    
+    // draw tile components
+    screenTileX = 0;
+    screenTileY = 0;
+    for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
+      for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
+        if (playerArea.inMap(x, y)) {
+          Tile currentTile = playerArea.getMapAt(x, y);
+          if (currentTile != null) {
+            int drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
+            int drawY = originY+(screenTileY*Tile.getSize());
+            TileComponent tileContent = currentTile.getContent();
+            if (tileContent != null) {
+              drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
+              drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
+              Graphics2D imgGraphics = (Graphics2D)g;
+              int playerW = worldPlayer.getImage().getWidth();
+              int playerH = worldPlayer.getImage().getHeight();
+              int componentW = ((Drawable)tileContent).getImage().getWidth();
+              int componentH = ((Drawable)tileContent).getImage().getHeight();
+              if ((playerScreenPos.x < drawX + componentW) &&
+                  (playerScreenPos.x + playerW > drawX) &&
+                  (playerScreenPos.y < drawY + componentH) &&
+                  (playerScreenPos.y + playerH > drawY)) { // if the component img overlaps with the player img, set a transparency
+                AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5);
+                imgGraphics.setComposite(composite);
+              }
+              imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+            }
 
+            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
+              Graphics2D g2 = (Graphics2D)g;
+              g2.setStroke(new BasicStroke(4));
+              g2.setColor(Color.RED);
+              g2.drawRect(drawX+2, drawY+2, Tile.getSize()-4, Tile.getSize()-6);
+            }
+          }
+        }
+        ++screenTileX;
+      }
+      screenTileX = 0;
+      ++screenTileY;
+    }
 
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP);
@@ -483,5 +512,4 @@ public class WorldPanel extends JPanel {
             (y > this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
             (y <= this.menuY + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
   }
-
 }
