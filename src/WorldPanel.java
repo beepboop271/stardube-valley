@@ -24,11 +24,13 @@ public class WorldPanel extends JPanel {
   public static final Color INVENTORY_QUANTITY_COLOR = new Color(60, 20, 0);
   public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
+
+  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
+  private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 40);;
+  private final Font LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 25);
+  private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
+  private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 45);
   
-  private final Font timeFont;
-  private final Font quantityFont;
-  private final Font letterFont;
-  private final Font stringFont;
   private StardubeEventListener listener;
   private World worldToDisplay;
   private int tileWidth, tileHeight;
@@ -59,10 +61,6 @@ public class WorldPanel extends JPanel {
     this.tileWidth = (int)Math.ceil(((double)width)/Tile.getSize());
     this.tileHeight = (int)Math.ceil(((double)height)/Tile.getSize());
 
-    this.timeFont = new Font("Comic Sans MS", Font.BOLD, 40);
-    this.quantityFont = new Font("Comic Sans MS", Font.BOLD, 15);
-    this.letterFont = new Font("Comic Sans MS", Font.BOLD, 25);
-    this.stringFont = new Font("Comic Sans MS", Font.PLAIN, 20);
     this.hoveredItemIdx = -1;
 
     this.setOpaque(true);
@@ -169,15 +167,19 @@ public class WorldPanel extends JPanel {
               int playerH = worldPlayer.getImage().getHeight();
               int componentW = ((Drawable)tileContent).getImage().getWidth();
               int componentH = ((Drawable)tileContent).getImage().getHeight();
-              if ((playerScreenPos.x < drawX + componentW) &&
+              // if the player is overlapping with the tree, set a transparency for the tree
+              if ((tileContent instanceof ExtrinsicTree) &&
+                  (playerScreenPos.x < drawX + componentW) &&
                   (playerScreenPos.x + playerW > drawX) &&
-                  (playerScreenPos.y < drawY + componentH) &&
-                  (playerScreenPos.y + playerH > drawY)) { // if the component img overlaps with the player img, set a transparency
-                AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5);
-                imgGraphics.setComposite(composite);
-              }
-              imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
-              imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1));
+                  (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
+                  (playerScreenPos.y + playerH > drawY)) {
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+              } else {
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+              }     
+              
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
@@ -221,7 +223,7 @@ public class WorldPanel extends JPanel {
         if (worldPlayer.getInventory()[i].getQuantity() > 1) {
           Graphics2D hotbarQuantityGraphics = (Graphics2D)g;
           hotbarQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
-          hotbarQuantityGraphics.setFont(this.quantityFont);
+          hotbarQuantityGraphics.setFont(this.QUANTITY_FONT);
           hotbarQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
           hotbarQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i].getQuantity()),
@@ -243,7 +245,7 @@ public class WorldPanel extends JPanel {
     long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
     Graphics2D g2 = (Graphics2D)g;
     g2.setColor(Color.BLACK);
-    g2.setFont(this.timeFont);
+    g2.setFont(this.TIME_FONT);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
@@ -283,7 +285,7 @@ public class WorldPanel extends JPanel {
                 if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
                   Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
                   invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
-                  invMenuQuantityGraphics.setFont(this.quantityFont);
+                  invMenuQuantityGraphics.setFont(this.QUANTITY_FONT);
                   invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                                       RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                   invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
@@ -320,7 +322,7 @@ public class WorldPanel extends JPanel {
           int meterW = this.getWidth()/10;
           int meterH = this.getHeight()/25;
           int meterX = (int)Math.round(playerScreenPos.x-meterW/2+Player.SIZE*Tile.getSize());
-          int meterY = (int)Math.round(playerScreenPos.y)-meterH-15;
+          int meterY = (int)Math.round(playerScreenPos.y)-meterH-25;
           g.setColor(new Color(0,0,0,175));
           g.fillRect(meterX, meterY, meterW, meterH);
           g.setColor(Color.GREEN);
@@ -350,9 +352,9 @@ public class WorldPanel extends JPanel {
           if (worldPlayer.getCurrentFishingGame().isBiting()) {
             Graphics2D letterGraphics = (Graphics2D)g;
             letterGraphics.setColor(Color.RED);
-            letterGraphics.setFont(this.letterFont);
+            letterGraphics.setFont(this.BIG_LETTER_FONT);
             letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x), (int)Math.round(playerScreenPos.y));
+            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x)+Tile.getSize()/4, (int)Math.round(playerScreenPos.y)-25);
           }
         }
       }
@@ -366,14 +368,14 @@ public class WorldPanel extends JPanel {
     g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
     Graphics2D letterGraphics = (Graphics2D)g;
     letterGraphics.setColor(Color.WHITE);
-    letterGraphics.setFont(this.letterFont);
+    letterGraphics.setFont(this.LETTER_FONT);
     letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     letterGraphics.drawString("E", this.getWidth()-60, this.getHeight()-20);
     if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
       g.setColor(Color.RED);
       g.fillRect(this.getWidth()-140, this.getHeight()-250, 45, (int)(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
       letterGraphics.setColor(Color.WHITE);
-      letterGraphics.setFont(this.letterFont);
+      letterGraphics.setFont(this.LETTER_FONT);
       letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       letterGraphics.drawString("H", this.getWidth()-125, this.getHeight()-20);
     }
@@ -410,7 +412,7 @@ public class WorldPanel extends JPanel {
       String description = worldPlayer.getInventory()[hoveredItemIdx].getContainedHoldable().getDescription();
       Graphics2D descriptionGraphics = (Graphics2D)g;
       descriptionGraphics.setColor(Color.BLACK);
-      descriptionGraphics.setFont(this.stringFont);
+      descriptionGraphics.setFont(this.STRING_FONT);
       descriptionGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       int stringX = this.hotbarX + this.hoveredItemIdx*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP);
