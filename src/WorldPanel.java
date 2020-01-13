@@ -262,13 +262,14 @@ public class WorldPanel extends JPanel {
                   
     // inventory menu stuff
     if (worldPlayer.isInMenu()) {
+      g.setColor(new Color(0, 0, 0, 100));
+      g.fillRect(0, 0, this.getWidth(), this.getHeight());
+      
       if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
-        g.setColor(new Color(0, 0, 0, 100));
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g.setColor(new Color(150, 75, 0));
-        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // TODO: inv tab buttons (y: this.menuY)
         // inventory display (y:this.menuY+1~3(cellgap+cellsize))
+        g.setColor(new Color(150, 75, 0));
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         g.setColor(INVENTORY_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, 3*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
         for (int i = 0; i < 3; i++) {

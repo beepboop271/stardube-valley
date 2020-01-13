@@ -402,7 +402,7 @@ public class World {
     this.inGameNanoTime = 6*60*1_000_000_000L;
     ++this.inGameDay;
     if ((this.inGameDay % DAYS_PER_SEASON == 1) && (this.inGameDay > 1)) {
-      this.inGameSeason = (this.inGameSeason + 1) % 3;
+      this.inGameSeason = (this.inGameSeason + 1) % 4;
     }
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();
