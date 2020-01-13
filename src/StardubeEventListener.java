@@ -81,7 +81,7 @@ public class StardubeEventListener implements KeyListener,
     }
     // press b to buy cuz S_hop/P_urchase are taken lol
     if (this.keyStates[KeyEvent.VK_B]) {
-      
+      this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
     }
   }
 
@@ -97,10 +97,14 @@ public class StardubeEventListener implements KeyListener,
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
       case KeyEvent.VK_E:
-        this.stardubePlayer.toggleInMenu();
+        if (this.stardubePlayer.isInMenu()) {
+          this.stardubePlayer.exitMenu();
+        } else {
+          this.stardubePlayer.enterMenu(Player.INVENTORY_PAGE);
+        }
         break;
       case KeyEvent.VK_ESCAPE:
-        this.stardubePlayer.setInMenu(false);
+        this.stardubePlayer.exitMenu();
         break;
       // temp stuff below this comment
       case KeyEvent.VK_P:
@@ -244,7 +248,8 @@ public class StardubeEventListener implements KeyListener,
     } else if (this.stardubePlayer.isInMenu()) {
       if (worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y)) {
         // TODO: process the button (update selected button id or sth);
-      } else if (worldPanel.isPosInMenuInventory((int)this.mousePos.x, (int)this.mousePos.y)) {
+      } else if ((this.stardubePlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE)&&
+                 (worldPanel.isPosInMenuInventory((int)this.mousePos.x, (int)this.mousePos.y))) {
         int selectedItemIdx = this.worldPanel.inventoryMenuItemIdxAt((int)this.mousePos.x, (int)this.mousePos.y);
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);

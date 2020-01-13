@@ -12,13 +12,14 @@ import java.awt.AlphaComposite;
 /**
  * [WorldPanel]
  * 2019-12-19
- * @version 0.3
+ * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Paula Yuan
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
   public static final int HOTBAR_CELLSIZE = 64;
   public static final int HOTBAR_CELLGAP = 4;
+
   public static final Color INVENTORY_BKGD_COLOR = new Color(155, 60, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
   public static final Color INVENTORY_QUANTITY_COLOR = new Color(60, 20, 0);
@@ -26,10 +27,10 @@ public class WorldPanel extends JPanel {
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
 
   private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
-  private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 40);;
+  private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
   private final Font LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 25);
-  private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 45);
+  private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
   
   private StardubeEventListener listener;
   private World worldToDisplay;
@@ -244,72 +245,87 @@ public class WorldPanel extends JPanel {
     // one real world second is one in game minute
     long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
     Graphics2D g2 = (Graphics2D)g;
+    String currentSeason = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
+    String currentDay;
+    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
+      currentDay = "Day 28";
+    } else {
+      currentDay = "Day " + String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason());
+    }
     g2.setColor(Color.BLACK);
     g2.setFont(this.TIME_FONT);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
-    g2.drawString(World.getSeasons()[this.worldToDisplay.getInGameSeason()],
-                  this.getWidth()-500, 45); 
-    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
-      g2.drawString("28", this.getWidth()-300, 45);
-    } else {
-      g2.drawString(String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason()), 
-                    this.getWidth()-300, 45);
-    }
+    g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
+    g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
                   
     // inventory menu stuff
     if (worldPlayer.isInMenu()) {
-      g.setColor(new Color(0, 0, 0, 100));
-      g.fillRect(0, 0, this.getWidth(), this.getHeight());
-      g.setColor(new Color(150, 75, 0));
-      g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-      // TODO: inv tab buttons (y: this.menuY)
-      // inventory display (y:this.menuY+1~3(cellgap+cellsize))
-      g.setColor(INVENTORY_BKGD_COLOR);
-      g.fillRect(this.menuX, this.menuY, this.menuW, 3*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
-      for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 12; j++) {
-          // draw inventory item correspondingly
-          if ((i*12+j)<worldPlayer.getInventory().length){
-            g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
-            g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                      this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
-                      WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-            if (worldPlayer.getInventory()[i*12+j] != null) {
-              if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
-                g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
-                            this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                            this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
-                // displays the quantity of the holdable (if > 1)
-                if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
-                  Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
-                  invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
-                  invMenuQuantityGraphics.setFont(this.QUANTITY_FONT);
-                  invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                  invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
-                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
-                                this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
+      if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
+        g.setColor(new Color(0, 0, 0, 100));
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.setColor(new Color(150, 75, 0));
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+        // TODO: inv tab buttons (y: this.menuY)
+        // inventory display (y:this.menuY+1~3(cellgap+cellsize))
+        g.setColor(INVENTORY_BKGD_COLOR);
+        g.fillRect(this.menuX, this.menuY, this.menuW, 3*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 12; j++) {
+            // draw inventory item correspondingly
+            if ((i*12+j)<worldPlayer.getInventory().length){
+              g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+              g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+              if (worldPlayer.getInventory()[i*12+j] != null) {
+                if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
+                  g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
+                              this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                              this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
+                  // displays the quantity of the holdable (if > 1)
+                  if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
+                    Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
+                    invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+                    invMenuQuantityGraphics.setFont(this.QUANTITY_FONT);
+                    invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                    invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                                  this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
+                                  this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
+                  }
                 }
               }
+            } else { // display locked slots in a different color
+              g.setColor(new Color(230, 165, 100));
+              g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
             }
-          } else { // display locked slots in a different color
-            g.setColor(new Color(230, 165, 100));
-            g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                      this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
-                      WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
-          }
-          // outline selected item
-          if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
-            g.setColor(Color.RED);
-            g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                       this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
-                       WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+            // outline selected item
+            if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+              g.setColor(Color.RED);
+              g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+            }
           }
         }
+        // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+      } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
+        // TODO: insert gui code
+      } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
+        // TODO: insert gui code
+      } else if (worldPlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
+        // TODO: insert gui code
+      } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
+        // TODO: insert gui code
+      } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
+        // TODO: insert gui code
+      } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
+        // TODO: insert gui code
       }
-      // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
     }
     
     if (worldPlayer.getSelectedItem() != null) {

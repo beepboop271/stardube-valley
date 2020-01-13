@@ -10,17 +10,26 @@ public class Player extends Moveable {
   private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
+  public static final int NO_MENU = -1;
+  public static final int INVENTORY_PAGE = 0;
+  public static final int CRAFTING_PAGE = 1;
+  public static final int MAP_PAGE = 2;
+  public static final int SKILLS_PAGE = 3;
+  public static final int SOCIAL_PAGE = 4;
+  public static final int SHOP_PAGE = 5;
+  public static final int CHEST_PAGE = 6;
+
   private int inventorySize = 12;
   private HoldableStack[] inventory;
   private int selectedItemIdx;
   private Point selectedTile;
-  private boolean inMenu = false;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
   private int health;
   private int maxHealth;
   private int energy;
   private int maxEnergy;
+  private int currentMenuPage;
 
   public Player(Point position, String filePath) {
     super(position, Player.SIZE, filePath);
@@ -31,6 +40,7 @@ public class Player extends Moveable {
     this.maxHealth = 100;
     this.energy = 270;
     this.maxEnergy = 270;
+    this.currentMenuPage = Player.NO_MENU;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
@@ -155,17 +165,21 @@ public class Player extends Moveable {
   }
 
   public boolean isInMenu() {
-    return this.inMenu;
+    return !(this.currentMenuPage == Player.NO_MENU);
   }
 
-  public void toggleInMenu() {
-    this.inMenu = !this.inMenu;
+  public void enterMenu(int menuPage) {
+    this.currentMenuPage = menuPage;
   }
 
-  public void setInMenu(boolean inMenu) {
-    this.inMenu = inMenu;
+  public void exitMenu() {
+    this.currentMenuPage = Player.NO_MENU;
   }
 
+  public int getCurrentMenuPage() {
+    return this.currentMenuPage;
+  }
+  
   public int getSelectedItemIdx() {
     return this.selectedItemIdx;
   }
