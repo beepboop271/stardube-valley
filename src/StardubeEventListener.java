@@ -143,7 +143,7 @@ public class StardubeEventListener implements KeyListener,
   public void mouseClicked(MouseEvent e) {
     int mouseX = e.getX(), mouseY = e.getY();
     int clickCount = e.getClickCount();
-    
+
     // Chest interation:
     // double click to move the item into the other inventory (1 instance at a time); triple click to move the maximum quantity
     if (this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
@@ -154,10 +154,10 @@ public class StardubeEventListener implements KeyListener,
         int itemIdx = worldPanel.inventoryItemIdxAt(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(), mouseX, mouseY);
         if ((player.getInventory()[itemIdx] != null) &&
             (chest.canAdd(player.getInventory()[itemIdx].getContainedHoldable()))) {
-          if (clickCount == 2) { 
+          if (e.getButton() == MouseEvent.BUTTON3) { 
             chest.add(new HoldableStack(player.getInventory()[itemIdx].getContainedHoldable(), 1));
             player.useAtIndex(itemIdx);
-          } else if (clickCount >= 3) {
+          } else if ((e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
             chest.add(player.getInventory()[itemIdx]);
             player.removeAtIndex(itemIdx);
           }
@@ -167,10 +167,10 @@ public class StardubeEventListener implements KeyListener,
         int itemIdx = worldPanel.inventoryItemIdxAt(worldPanel.getMenuX(), worldPanel.getChestMenuChestY(), mouseX, mouseY);
         if ((chest.getInventory()[itemIdx] != null) &&
             (player.canPickUp(chest.getInventory()[itemIdx].getContainedHoldable()))) {
-          if (clickCount == 2) { 
+          if (e.getButton() == MouseEvent.BUTTON3) { 
             player.pickUp(new HoldableStack(chest.getInventory()[itemIdx].getContainedHoldable(), 1));
             chest.useAtIndex(itemIdx);
-          } else if (clickCount >= 3) {
+          } else if ((e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
             player.pickUp(chest.getInventory()[itemIdx]);
             chest.removeAtIndex(itemIdx);
           }
@@ -282,7 +282,8 @@ public class StardubeEventListener implements KeyListener,
       if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
           (worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
         // TODO: process the button (update selected button id or sth);
-      } else if ((menuPage == Player.INVENTORY_PAGE) &&
+
+      } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getInventoryMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
@@ -291,17 +292,23 @@ public class StardubeEventListener implements KeyListener,
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         }
+
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         // TODO: insert code
+
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert code
+
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
         // TODO: insert code
+
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         // TODO: insert code
+
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
         // TODO: insert code
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE &&
+
+      } else if ((this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
         // TODO: complete code
