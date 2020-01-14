@@ -279,6 +279,7 @@ public class World {
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
+
         if (currentContent instanceof ExtrinsicCrop) {
           if (((ExtrinsicCrop)currentContent).canHarvest()) {
             System.out.println(((ExtrinsicCrop)currentContent).getProduct());
@@ -308,7 +309,25 @@ public class World {
         } else if (currentContent instanceof ExtrinsicChest) {
           this.player.setCurrentInteractingComponent((ExtrinsicChest)currentContent);
           this.player.enterMenu(Player.CHEST_PAGE);
+        } else if (currentContent instanceof ExtrinsicMachine) {
+          if (((ExtrinsicMachine)currentContent).getProduct() != null) {
+            if (this.player.canPickUp(((ExtrinsicMachine)currentContent)
+                                        .getProduct().getContainedHoldable())) {
+              this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
+              ((ExtrinsicMachine)currentContent).resetProduct();
+            }
+          } else {
+            HoldableStack item = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+            if (((ExtrinsicMachine)currentContent).canProcess(item.getContainedHoldable().getName()) &&
+                      item.getQuantity() > ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+              ((ExtrinsicMachine)currentContent).setItemToProcess(
+                                                          item.getContainedHoldable().getName());
+              player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+            } 
+          }
         }
+      } else if (event instanceof MachineProductionFinishedEvent) {
+        ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter

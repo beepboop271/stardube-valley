@@ -224,7 +224,7 @@ public class StardubeEventListener implements KeyListener,
           this.stardubePlayer.consume();
         } else if (this.stardubePlayer.getSelectedTile() != null) {
           this.stardubeWorld.emplaceFutureEvent(
-                (long)(0.5*1_000_000_000),
+                (long)(0.5*5_000_000),
                 // idk what to name this lol
                 new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
           return;

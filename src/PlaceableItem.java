@@ -19,11 +19,16 @@ public class PlaceableItem extends Item implements Placeable {
 
   @Override
   public TileComponent placeItem() {
-    if (itemToPlace.equals("Chest")) {
-      return new ExtrinsicChest();
-    }
-
-    return IntrinsicTileComponentFactory.getComponent(this.itemToPlace);
     //TODO: this is scuffed
+    if (this.itemToPlace.equals("Chest")) {
+      return new ExtrinsicChest();
+    } else {
+      TileComponent item =  IntrinsicTileComponentFactory.getComponent(this.itemToPlace);
+
+      if (item instanceof IntrinsicMachine) {
+        return new ExtrinsicMachine(this.itemToPlace);
+      }
+      return item;
+    }
   }
 }

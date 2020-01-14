@@ -22,6 +22,10 @@ public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable, C
     this.regrowCooldown = 0;
   }
 
+  /**
+   * canHarvest()
+   * @return a boolean o
+   */
   public boolean canHarvest() {
     if (this.stage == ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
       return true;

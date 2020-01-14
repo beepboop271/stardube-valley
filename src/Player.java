@@ -189,6 +189,10 @@ public class Player extends Moveable {
     return this.inventory[this.selectedItemIdx];
   }
 
+  public void decrementSelectedItem(int amount) {
+    this.inventory[this.selectedItemIdx].subtractHoldables(amount);
+  }
+
   public void incrementSelectedItemIdx() {
     if (this.isImmutable()) {
       return;
