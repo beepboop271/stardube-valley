@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public class WorldArea extends Area {
   // private TownBuilding[] houses;
 
-  int numForageableTiles = 0;
-  ArrayList<Tile> treeTiles = new ArrayList<>();
-  Random random = new Random();
-  ArrayList<Tile> grassTiles = new ArrayList<>();
-  String[] forageables = {"Turnip", "Daffodil", "Leek", "Bluebell", "IceCream", "Javacake", "Mushroom",
-                          "Winterroot"};
-  String[] trees = {"OakTree", "SpruceTree"};
+  private Random random = new Random();
+  private int numForageableTiles = 0;
+  private ArrayList<Tile> treeTiles = new ArrayList<>();
+  private ArrayList<Tile> grassTiles = new ArrayList<>();
+  private String[] forageables = {"Turnip", "Daffodil", "Leek", "Bluebell", "IceCream", 
+                                  "Javacake", "Mushroom", "Winterroot"};
+  private String[] trees = {"OakTree", "SpruceTree"};
 
   public WorldArea(String name,
                    int width, int height) {
@@ -26,24 +26,25 @@ public class WorldArea extends Area {
 
   private void spawnForageables() {
     int maxToSpawn = 6 - numForageableTiles;
-    int spawnNum = Math.min(random.nextInt(3) + 2, maxToSpawn);
+    int spawnNum = Math.min(this.random.nextInt(3) + 2, maxToSpawn);
+    System.out.println("day: " + (double)this.getCurrentDay() + " spawnNum: " + spawnNum);
+    System.out.println(numForageableTiles);
     for (int i = 0; i < spawnNum; i++) {
       TileComponent forageable;
-      // just realized that the below doesn't work if we're over a year :D
-      if ((double)this.getCurrentDay()/28.0 < 1) {
+      if (((double)this.getCurrentDay()%112)/28.0 < 1) {
         forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[random.nextInt(3)]);
-      } else if ((double)this.getCurrentDay()/28.0 < 2) {
+                                forageables[this.random.nextInt(3)]);
+      } else if (((double)this.getCurrentDay()%112)/28.0 < 2.0) {
         forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[random.nextInt(2)]+3);
-      } else if ((double)this.getCurrentDay()/28.0 < 3) {
+                                forageables[this.random.nextInt(2)+3]);
+      } else if (((double)this.getCurrentDay()%112)/28.0 < 3) {
         forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[random.nextInt(2)]+5);
+                                forageables[this.random.nextInt(2)+5]);
       } else {
         forageable = IntrinsicTileComponentFactory.getComponent(forageables[7]);
       }
       
-      Tile spawnTile = grassTiles.get(random.nextInt(grassTiles.size()));
+      Tile spawnTile = this.grassTiles.get(this.random.nextInt(grassTiles.size()));
       if (spawnTile.getContent() == null) {
         spawnTile.setContent(forageable);
         numForageableTiles++;
@@ -52,11 +53,14 @@ public class WorldArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = random.nextInt(10) + 30;
+    int spawnNum = this.random.nextInt(10) + 10;
+    if (this.treeTiles.size() >= 20) { // max 20 trees
+      spawnNum = 0;
+    }
     for (int i = 0; i < spawnNum; i++) {
-      String tree = trees[random.nextInt(trees.length)];
-      int y = random.nextInt(this.getMap().length);
-      Tile spawnTile = this.getMapAt(random.nextInt(this.getMap()[y].length), y);
+      String tree = trees[this.random.nextInt(trees.length)];
+      int y = this.random.nextInt(this.getMap().length);
+      Tile spawnTile = this.getMapAt(this.random.nextInt(this.getMap()[y].length), y);
       Tile centerTile;
       if (spawnTile != null && this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
         centerTile = this.getMapAt(spawnTile.getX()-2, spawnTile.getY()-1);
@@ -72,18 +76,31 @@ public class WorldArea extends Area {
           newTree.setStage(17);
         }
         spawnTile.setContent(newTree);
-        treeTiles.add(spawnTile);
+        this.treeTiles.add(spawnTile);
       }
     }
+  }
+
+  public int getNumForageableTiles() {
+    return this.numForageableTiles;
   }
 
   @Override
   public void doDayEndActions() {
     
-    if (this.getCurrentDay()%10 == 0 || this.getCurrentDay() == 1) {
+    if (this.getCurrentDay()%10 == 0) {
       spawnTrees();
     }
     spawnForageables();
+
+    if (this.getCurrentDay()%28 == 0) {
+      for (int i = 0; i < grassTiles.size(); i++) {
+        if (this.grassTiles.get(i).getContent() instanceof CollectableComponent) {
+          this.grassTiles.get(i).setContent(null);
+          this.numForageableTiles--;
+        }
+      }
+    }
 
     Iterator<Tile> allTreeTiles = this.treeTiles.iterator();
 
