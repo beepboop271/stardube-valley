@@ -274,7 +274,8 @@ public class World {
         //TODO: make this not just for forageables but also doors and stuff i guess
         Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
         if (this.playerArea instanceof WorldArea) {
-          ((WorldArea)this.playerArea).numForageableTiles--;
+          int numForageableTiles = ((WorldArea)this.playerArea).getNumForageableTiles();
+          numForageableTiles--;
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
