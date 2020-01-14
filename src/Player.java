@@ -30,6 +30,7 @@ public class Player extends Moveable {
   private int energy;
   private int maxEnergy;
   private int currentMenuPage;
+  private TileComponent currentInteractingComponent; // TOOD: rename, if possible :))
 
   public Player(Point position, String filePath) {
     super(position, Player.SIZE, filePath);
@@ -41,6 +42,7 @@ public class Player extends Moveable {
     this.energy = 270;
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
+    this.currentInteractingComponent = null;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
@@ -84,7 +86,6 @@ public class Player extends Moveable {
       }
     }
     // otherwise, store it in a new slot if there is space
-    
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] == null) {
         this.inventory[i] = items;
@@ -133,12 +134,12 @@ public class Player extends Moveable {
     }
   }
 
-  public boolean hasAtIndex(int index) {
-    if (this.inventory[index] == null) {
-      return false;
-    }
+  public void removeAtIndex(int index) {
+    this.inventory[index] = null;
+  }
 
-    return true;
+  public boolean hasAtIndex(int index) {
+    return !(this.inventory[index] == null);
   }
 
   public void setCurrentFishingGame(FishingGame fishingGame){
@@ -186,6 +187,10 @@ public class Player extends Moveable {
 
   public HoldableStack getSelectedItem() {
     return this.inventory[this.selectedItemIdx];
+  }
+
+  public void decrementSelectedItem(int amount) {
+    this.inventory[this.selectedItemIdx].subtractHoldables(amount);
   }
 
   public void incrementSelectedItemIdx() {
@@ -271,5 +276,17 @@ public class Player extends Moveable {
 
   public void setInventorySize(int size) {
     this.inventorySize = size;
+  }
+
+  public TileComponent getCurrentInteractingComponent() {
+    return this.currentInteractingComponent;
+  }
+
+  public void setCurrentInteractingComponent(TileComponent component) {
+    this.currentInteractingComponent = component;
+  }
+
+  public boolean hasInteractingComponent() {
+    return !(this.currentInteractingComponent == null);
   }
 }
