@@ -40,8 +40,8 @@ public class FarmArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = this.random.nextInt(10) + 10;
-    if (this.treeTiles.size() >= 20) { // max 20 trees
+    int spawnNum = this.random.nextInt(10) + 20;
+    if (this.treeTiles.size() >= 30) { // max 30 trees
       spawnNum = 0;
     }
     for (int i = 0; i < spawnNum; i++) {
@@ -54,10 +54,8 @@ public class FarmArea extends Area {
       } else {
         centerTile = null;
       }
-      if (spawnTile != null && (spawnTile instanceof GroundTile || spawnTile instanceof GrassTile) 
-          && centerTile != null 
-          && (centerTile instanceof GroundTile || centerTile instanceof GrassTile)  
-          && spawnTile.getContent() == null) {
+      if (spawnTile != null && spawnTile instanceof GroundTile && centerTile != null 
+          && centerTile instanceof GroundTile && spawnTile.getContent() == null) {
         ExtrinsicTree newTree = new ExtrinsicTree(tree);
         newTree.setStage(17);
         spawnTile.setContent(newTree);

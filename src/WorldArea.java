@@ -27,10 +27,9 @@ public class WorldArea extends Area {
   private void spawnForageables() {
     int maxToSpawn = 6 - numForageableTiles;
     int spawnNum = Math.min(this.random.nextInt(3) + 2, maxToSpawn);
-    System.out.println("day: " + (double)this.getCurrentDay() + " spawnNum: " + spawnNum);
-    System.out.println(numForageableTiles);
     for (int i = 0; i < spawnNum; i++) {
       TileComponent forageable;
+      // decides what forageables to spawn based on the season
       if (((double)this.getCurrentDay()%112)/28.0 < 1) {
         forageable = IntrinsicTileComponentFactory.getComponent(
                                 forageables[this.random.nextInt(3)]);
@@ -53,24 +52,21 @@ public class WorldArea extends Area {
   }
 
   private void spawnTrees() {
-    int spawnNum = this.random.nextInt(10) + 10;
-    if (this.treeTiles.size() >= 20) { // max 20 trees
+    int spawnNum = this.random.nextInt(10) + 20;
+    if (this.treeTiles.size() >= 30) { // max 20 trees
       spawnNum = 0;
     }
     for (int i = 0; i < spawnNum; i++) {
       String tree = trees[this.random.nextInt(trees.length)];
-      int y = this.random.nextInt(this.getMap().length);
-      Tile spawnTile = this.getMapAt(this.random.nextInt(this.getMap()[y].length), y);
+      Tile spawnTile = this.grassTiles.get(this.random.nextInt(grassTiles.size()));
       Tile centerTile;
-      if (spawnTile != null && this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
+      if (this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
         centerTile = this.getMapAt(spawnTile.getX()-2, spawnTile.getY()-1);
       } else {
         centerTile = null;
       }
-      if (spawnTile != null && (spawnTile instanceof GroundTile || spawnTile instanceof GrassTile) 
-          && centerTile != null
-          && (centerTile instanceof GroundTile || centerTile instanceof GrassTile)  
-          && spawnTile.getContent() == null) {
+      if (spawnTile != null && centerTile != null && spawnTile instanceof GrassTile 
+          && centerTile instanceof GrassTile && spawnTile.getContent() == null) {
         ExtrinsicTree newTree = new ExtrinsicTree(tree);
         if (((int)this.getCurrentDay()) == 1) {
           newTree.setStage(17);
@@ -87,8 +83,7 @@ public class WorldArea extends Area {
 
   @Override
   public void doDayEndActions() {
-    
-    if (this.getCurrentDay()%10 == 0) {
+    if (this.getCurrentDay()%10 == 1) {
       spawnTrees();
     }
     spawnForageables();
