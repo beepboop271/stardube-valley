@@ -93,9 +93,7 @@ public class StardubeEventListener implements KeyListener,
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
       case KeyEvent.VK_E:
-        if (this.stardubePlayer.isInMenu()) {
-          this.stardubePlayer.exitMenu();
-        } else {
+        if (!(this.stardubePlayer.isInMenu())) {
           this.stardubePlayer.enterMenu(Player.INVENTORY_PAGE);
         }
         break;
