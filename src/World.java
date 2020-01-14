@@ -214,6 +214,7 @@ public class World {
               }
             }
           }
+
         } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
@@ -304,7 +305,11 @@ public class World {
               currentTile.setContent(null);
             }
           }
+        } else if (currentContent instanceof ExtrinsicChest) {
+          this.player.setCurrentInteractingComponent((ExtrinsicChest)currentContent);
+          this.player.enterMenu(Player.CHEST_PAGE);
         }
+
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();

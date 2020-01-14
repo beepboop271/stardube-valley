@@ -20,7 +20,7 @@ public class WorldPanel extends JPanel {
   public static final int HOTBAR_CELLSIZE = 64;
   public static final int HOTBAR_CELLGAP = 4;
 
-  public static final Color INVENTORY_BKGD_COLOR = new Color(155, 60, 0);
+  public static final Color INVENTORY_BKGD_COLOR = new Color(140, 50, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
   public static final Color INVENTORY_QUANTITY_COLOR = new Color(60, 20, 0);
   public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
@@ -38,6 +38,10 @@ public class WorldPanel extends JPanel {
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
   private int menuX, menuY, menuW, menuH;
+  private int inventoryMenuInventoryY;
+  private int chestMenuInventoryY;
+  private int chestMenuChestY;
+
   private int hoveredItemIdx;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
@@ -48,6 +52,9 @@ public class WorldPanel extends JPanel {
     this.menuH = 8*(WorldPanel.HOTBAR_CELLGAP+WorldPanel.HOTBAR_CELLSIZE);
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
+    this.inventoryMenuInventoryY = this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP);
+    this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP));
+    this.chestMenuChestY = (int)Math.round(this.menuY + 4.5*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP));
 
     this.listener = new StardubeEventListener(worldToDisplay, this);
     this.addKeyListener(this.listener);
@@ -222,12 +229,12 @@ public class WorldPanel extends JPanel {
         }
         // displays the quantity of the holdable (if > 1)
         if (worldPlayer.getInventory()[i].getQuantity() > 1) {
-          Graphics2D hotbarQuantityGraphics = (Graphics2D)g;
-          hotbarQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
-          hotbarQuantityGraphics.setFont(this.QUANTITY_FONT);
-          hotbarQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+          Graphics2D quantityGraphics = (Graphics2D)g;
+          quantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+          quantityGraphics.setFont(this.QUANTITY_FONT);
+          quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-          hotbarQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i].getQuantity()),
+          quantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i].getQuantity()),
                         hotbarX+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
                         hotbarY+WorldPanel.HOTBAR_CELLSIZE);
         }
@@ -260,18 +267,18 @@ public class WorldPanel extends JPanel {
     g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
     g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
                   
-    // inventory menu stuff
+    
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       
       if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
+        // inventory menu stuff
         // TODO: inv tab buttons (y: this.menuY)
+
         // inventory display (y:this.menuY+1~3(cellgap+cellsize))
-        g.setColor(new Color(150, 75, 0));
-        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         g.setColor(INVENTORY_BKGD_COLOR);
-        g.fillRect(this.menuX, this.menuY, this.menuW, 3*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP));
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         for (int i = 0; i < 3; i++) {
           for (int j = 0; j < 12; j++) {
             // draw inventory item correspondingly
@@ -281,21 +288,19 @@ public class WorldPanel extends JPanel {
                         this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP),
                         WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
               if (worldPlayer.getInventory()[i*12+j] != null) {
-                if (worldPlayer.getInventory()[i*12+j].getContainedHoldable() != null) {
-                  g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
-                              this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
-                              this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
-                  // displays the quantity of the holdable (if > 1)
-                  if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
-                    Graphics2D invMenuQuantityGraphics = (Graphics2D)g;
-                    invMenuQuantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
-                    invMenuQuantityGraphics.setFont(this.QUANTITY_FONT);
-                    invMenuQuantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                    invMenuQuantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
-                                  this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
-                                  this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
-                  }
+                g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
+                            this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                            this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP), null);
+                // displays the quantity of the holdable (if > 1)
+                if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
+                  Graphics2D quantityGraphics = (Graphics2D)g;
+                  quantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+                  quantityGraphics.setFont(this.QUANTITY_FONT);
+                  quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  quantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
+                                this.menuY+(i+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)+WorldPanel.HOTBAR_CELLSIZE);
                 }
               }
             } else { // display locked slots in a different color
@@ -314,18 +319,95 @@ public class WorldPanel extends JPanel {
           }
         }
         // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+        
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         // TODO: insert gui code
+
       } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert gui code
+
       } else if (worldPlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
         // TODO: insert gui code
+
       } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         // TODO: insert gui code
+
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
         // TODO: insert gui code
+        
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
-        // TODO: insert gui code
+        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingComponent());
+        g.setColor(INVENTORY_BKGD_COLOR);
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+        // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 12; j++) {
+            // draw inventory item correspondingly
+            if ((i*12+j)<worldPlayer.getInventory().length){
+              g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+              g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+              if (worldPlayer.getInventory()[i*12+j] != null) {
+                g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
+                            this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                            this.menuY+(int)Math.round((i+0.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), null);
+                // displays the quantity of the holdable (if > 1)
+                if (worldPlayer.getInventory()[i*12+j].getQuantity() > 1) {
+                  Graphics2D quantityGraphics = (Graphics2D)g;
+                  quantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+                  quantityGraphics.setFont(this.QUANTITY_FONT);
+                  quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  quantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
+                                this.menuY+(int)Math.round((i+0.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))+WorldPanel.HOTBAR_CELLSIZE);
+                }
+              }
+            } else { // display locked slots in a different color
+              g.setColor(new Color(230, 165, 100));
+              g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+            }
+            // outline selected item
+            if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+              g.setColor(Color.RED);
+              g.drawRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+            }
+          }
+        }
+
+        // chest inventory display (y:this.menuY+7/2~11/2(cellgap+cellsize))
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 12; j++) {
+            // draw inventory item correspondingly
+            if ((i*12+j) < ExtrinsicChest.CHEST_SIZE){ // the other case wont happen, just to make sure it does not go out of bound
+              g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+              g.fillRect(this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                        this.menuY+(int)Math.round((i+4.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)),
+                        WorldPanel.HOTBAR_CELLSIZE, WorldPanel.HOTBAR_CELLSIZE);
+              if (chest.getInventory()[i*12+j] != null) {
+                g.drawImage(chest.getInventory()[i*12+j].getContainedHoldable().getImage(),
+                            this.menuX+j*WorldPanel.HOTBAR_CELLSIZE+(j+1)*WorldPanel.HOTBAR_CELLGAP,
+                            this.menuY+(int)Math.round((i+4.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), null);
+                // displays the quantity of the holdable (if > 1)
+                if (chest.getInventory()[i*12+j].getQuantity() > 1) {
+                  Graphics2D quantityGraphics = (Graphics2D)g;
+                  quantityGraphics.setColor(WorldPanel.INVENTORY_QUANTITY_COLOR);
+                  quantityGraphics.setFont(this.QUANTITY_FONT);
+                  quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                      quantityGraphics.drawString(Integer.toString(chest.getInventory()[i*12+j].getQuantity()),
+                                this.menuX+(j+1)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)-WorldPanel.HOTBAR_CELLSIZE/4,
+                                this.menuY+(int)Math.round((i+4.5)*(WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))+WorldPanel.HOTBAR_CELLSIZE);
+                }
+              }
+            }
+          }
+        }
       }
     }
     
@@ -453,16 +535,16 @@ public class WorldPanel extends JPanel {
       descriptionGraphics.drawString(name, stringX, stringY);
       descriptionGraphics.drawString(description, stringX, stringY+stringH+5);
     }
-
   }
 
   public void updateHoveredItemIdx(int x, int y) {
     Player worldPlayer = this.worldToDisplay.getPlayer();
     if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(x, y)) {
       this.hoveredItemIdx = this.hotbarItemIdxAt(x);
-    } else if (worldPlayer.isInMenu() && this.isPosInMenuInventory(x, y)) {
-      if ((this.inventoryMenuItemIdxAt(x, y) < worldPlayer.getInventorySize()) && (this.inventoryMenuItemIdxAt(x, y) >= 0)) {
-        this.hoveredItemIdx = this.inventoryMenuItemIdxAt(x, y);
+    } else if (worldPlayer.isInMenu() && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, x, y)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) >= 0)) {
+        this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y);
       }
     } else {
       this.hoveredItemIdx = -1;
@@ -506,10 +588,10 @@ public class WorldPanel extends JPanel {
            (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 11);
   }
 
-  public int inventoryMenuItemIdxAt(int x, int y) {
-    return Math.min((int)(Math.floor(x-this.menuX)/ (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
-           + 12*Math.min((int)(Math.floor((y-(this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)))/
-           (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
+  public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
+    return Math.min((int)(Math.floor(targetX-inventoryX)/ (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)), 11)
+           + 12*Math.min((int)(Math.floor((targetY-inventoryY)/
+                                          (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP))), 2);
   }
 
   public boolean isPosInHotbar(int x, int y) {
@@ -523,13 +605,25 @@ public class WorldPanel extends JPanel {
     return ((x >= this.menuX) &&
             (x <= this.menuX + this.menuW) &&
             (y >= this.menuY) &&
-            (y <= this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
+            (y <= this.inventoryMenuInventoryY));
   }
 
-  public boolean isPosInMenuInventory(int x, int y) {
-    return ((x >= this.menuX) &&
-            (x <= this.menuX + this.menuW) &&
-            (y > this.menuY + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)) &&
-            (y <= this.menuY + 4*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
+  public boolean isPosInInventory(int inventoryX, int inventoryY, int targetX, int targetY) {
+    return ((targetX >= inventoryX) &&
+            (targetX <= inventoryX + (WorldPanel.HOTBAR_CELLSIZE+WorldPanel.HOTBAR_CELLGAP)*12) &&
+            (targetY > inventoryY) &&
+            (targetY <= inventoryY + 3*(WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP)));
+  }
+
+  public int getInventoryMenuInventoryY() {
+    return this.inventoryMenuInventoryY;
+  }
+
+  public int getChestMenuInventoryY() {
+    return this.chestMenuInventoryY;
+  }
+
+  public int getChestMenuChestY() {
+    return this.chestMenuChestY;
   }
 }
