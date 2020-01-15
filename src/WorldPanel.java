@@ -547,13 +547,15 @@ public class WorldPanel extends JPanel {
       int stringW = Math.max(descriptionGraphics.getFontMetrics().stringWidth(name),
                               descriptionGraphics.getFontMetrics().stringWidth(description));
       int stringH = descriptionGraphics.getFontMetrics().getHeight();
-      int stringY;
+      int stringY = 0;
       if ((!worldPlayer.isInMenu()) && this.hotbarY < this.getHeight()/2) {
         stringY = this.hotbarY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2 + stringH + 10);
       } else if ((!worldPlayer.isInMenu()) && this.hotbarY >= this.getHeight()/2) {
         stringY = this.hotbarY - (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2);
-      } else {
-        stringY = this.menuX - hoveredItemIdx/12*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2);
+      } else if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
+        stringY = this.inventoryMenuInventoryY + (int)Math.round((hoveredItemIdx/12+1.5)*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2));
+      } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
+        stringY = this.chestMenuInventoryY + (int)Math.round((hoveredItemIdx/12+1.5)*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2));
       }
 
       g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
@@ -570,12 +572,18 @@ public class WorldPanel extends JPanel {
     Player worldPlayer = this.worldToDisplay.getPlayer();
     if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(x, y)) {
       this.hoveredItemIdx = this.hotbarItemIdxAt(x);
-    } else if (worldPlayer.isInMenu() && (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE)
+    } else if ((worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE)
                && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, x, y)) {
       if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) < worldPlayer.getInventorySize())
           && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) >= 0)) {
         this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y);
       }
+    } else if ((worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE)
+               && this.isPosInInventory(this.menuX, this.chestMenuInventoryY, x, y)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) >= 0)) {
+      this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y);
+      }  
     } else {
       this.hoveredItemIdx = -1;
     }
