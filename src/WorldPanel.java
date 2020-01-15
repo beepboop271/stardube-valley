@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JPanel;
 import java.awt.AlphaComposite;
@@ -566,7 +567,13 @@ public class WorldPanel extends JPanel {
       descriptionGraphics.drawString(name, stringX, stringY);
       descriptionGraphics.drawString(description, stringX, stringY+stringH+5);
     }
-  }
+
+    // display timed graphics
+    ArrayList<TimedGraphic> timedGraphics = this.worldToDisplay.getTimedGraphics();
+    for (TimedGraphic timedGraphic: timedGraphics) {
+      timedGraphic.draw(g, 0, 0);
+    }
+  } // paint component ends phew
 
   public void updateHoveredItemIdx(int x, int y) {
     Player worldPlayer = this.worldToDisplay.getPlayer();
