@@ -38,11 +38,12 @@ public class WorldPanel extends JPanel {
   private int tileWidth, tileHeight;
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
+  private int shopX, shopY, shopW, shopItemH;
   private int menuX, menuY, menuW, menuH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
   private int chestMenuChestY;
-
+  private int shopItemsPerPage;
   private int hoveredItemIdx;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
@@ -56,6 +57,11 @@ public class WorldPanel extends JPanel {
     this.inventoryMenuInventoryY = this.menuY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
     this.chestMenuChestY = (int)Math.round(this.menuY + 4.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
+    this.shopX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
+    this.shopY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
+    this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
+    this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
+    this.shopItemsPerPage = 5;
 
     this.listener = new StardubeEventListener(worldToDisplay, this);
     this.addKeyListener(this.listener);
@@ -339,33 +345,29 @@ public class WorldPanel extends JPanel {
         String[] shopItems = shop.getItems();
         g.setColor(INVENTORY_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-        int startX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
-        int startY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
-        int drawW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
-        int drawH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
-        int itemsPerPage = 5;
-        for (int i = 0; i < itemsPerPage; i++) {
-          int curDrawY = startY + i*(drawH+WorldPanel.INVENTORY_CELLGAP);
+        
+        for (int i = 0; i < this.shopItemsPerPage; i++) {
+          int curDrawY = this.shopY + i*(this.shopItemH+WorldPanel.INVENTORY_CELLGAP);
           g.setColor(INVENTORY_SLOT_COLOR);
-          g.fillRect(startX, curDrawY, drawW, drawH);
+          g.fillRect(this.shopX, curDrawY, this.shopW, this.shopItemH);
           if (shopItems.length > i) {
             Holdable itemToDraw = HoldableFactory.getHoldable(shopItems[i]);
-            g.drawImage(itemToDraw.getImage(), startX, curDrawY, null);
+            g.drawImage(itemToDraw.getImage(), this.shopX, curDrawY, null);
             Graphics2D textGraphics = (Graphics2D)g;
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
             textGraphics.setFont(this.STRING_FONT);
             textGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            textGraphics.drawString(itemToDraw.getName(), startX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+            textGraphics.drawString(itemToDraw.getName(), this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
             textGraphics.drawString(" - " + itemToDraw.getDescription(),
-                        startX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE);
+                        this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE);
             textGraphics.setFont(this.BIG_LETTER_FONT);
             textGraphics.drawString("$ " + Double.toString(shop.getPriceOf(itemToDraw.getName())),
-                        startX + drawW - g.getFontMetrics().stringWidth("$ " + Double.toString(shop.getPriceOf(itemToDraw.getName()))) - 30,
+                        this.shopX + this.shopW - g.getFontMetrics().stringWidth("$ " + Double.toString(shop.getPriceOf(itemToDraw.getName()))) - 30,
                         curDrawY + WorldPanel.INVENTORY_CELLSIZE*4/3  - g.getFontMetrics().getHeight()/2);
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
-        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingComponent());
+        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingMenuObj());
         g.setColor(INVENTORY_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
@@ -622,8 +624,12 @@ public class WorldPanel extends JPanel {
   } 
 
   public int hotbarItemIdxAt(int x) {
-    return Math.min((int)(Math.floor((x-this.getHotbarX())/
+    return Math.min((int)(Math.floor((x-this.hotbarX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 11);
+  }
+
+  public int shopItemIdxAt(int y) {
+    return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), this.shopItemsPerPage-1);
   }
 
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
@@ -631,7 +637,7 @@ public class WorldPanel extends JPanel {
            + 12*Math.min((int)(Math.floor((targetY-inventoryY)/
                                           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
   }
-
+  
   public boolean isPosInHotbar(int x, int y) {
     return ((x >= this.hotbarX) &&
             (x <= this.hotbarX+12*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)) &&
@@ -651,6 +657,13 @@ public class WorldPanel extends JPanel {
             (targetX <= inventoryX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*12) &&
             (targetY > inventoryY) &&
             (targetY <= inventoryY + 3*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)));
+  }
+
+  public boolean isPosInShopItemList(int x, int y) {
+    return ((x >= this.shopX) &&
+            (x <= this.shopX + this.shopW) &&
+            (y >= this.shopY) &&
+            (y <= this.shopY + this.shopItemH* this.shopItemsPerPage));
   }
 
   public int getInventoryMenuInventoryY() {

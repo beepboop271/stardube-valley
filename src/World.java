@@ -337,7 +337,7 @@ public class World {
             }
           }
         } else if (currentContent instanceof ExtrinsicChest) {
-          this.player.setCurrentInteractingComponent((ExtrinsicChest)currentContent);
+          this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
           this.player.enterMenu(Player.CHEST_PAGE);
         } else if (currentContent instanceof ExtrinsicMachine) {
           if (((ExtrinsicMachine)currentContent).getProduct() != null) {

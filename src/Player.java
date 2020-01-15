@@ -25,12 +25,14 @@ public class Player extends Moveable {
   private Point selectedTile;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
+  private int currentFunds;
+  private int totalEarning;
   private int health;
   private int maxHealth;
   private int energy;
   private int maxEnergy;
   private int currentMenuPage;
-  private TileComponent currentInteractingComponent; // TOOD: rename, if possible :))
+  private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
 
   public Player(Point position, String filePath) {
     super(position, Player.SIZE, filePath);
@@ -42,7 +44,9 @@ public class Player extends Moveable {
     this.energy = 270;
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
-    this.currentInteractingComponent = null;
+    this.currentInteractingMenuObj = null;
+    this.currentFunds = 1_000_000_000;
+    this.totalEarning = this.currentFunds;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
@@ -54,8 +58,8 @@ public class Player extends Moveable {
     this.inventory[7] = new HoldableStack("CauliflowerSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[10] = new HoldableStack("IronItem", 10);
-    this.inventory[11] = new HoldableStack("CoalItem", 2);
+    //this.inventory[10] = new HoldableStack("IronItem", 10);
+    //this.inventory[11] = new HoldableStack("CoalItem", 2);
   }
   
   @Override
@@ -130,6 +134,14 @@ public class Player extends Moveable {
     this.increaseHealth(thingConsumed.getHealthGain());
   }
 
+  public void purchase(Shop shop, String itemName) {
+    if ((this.currentFunds < shop.getPriceOf(itemName)) || !(this.canPickUp(HoldableFactory.getHoldable(itemName)))) {
+      return;
+    }
+    this.currentFunds -= shop.getPriceOf(itemName);
+    this.pickUp(new HoldableStack(HoldableFactory.getHoldable(itemName), 1));
+  }
+
   public void useAtIndex(int index) {
     if (this.inventory[index].getQuantity() == 1) {
       this.inventory[index] = null;
@@ -190,6 +202,7 @@ public class Player extends Moveable {
 
   public void exitMenu() {
     this.currentMenuPage = Player.NO_MENU;
+    this.currentInteractingMenuObj = null;
   }
 
   public int getCurrentMenuPage() {
@@ -311,15 +324,32 @@ public class Player extends Moveable {
     this.inventorySize = size;
   }
 
-  public TileComponent getCurrentInteractingComponent() {
-    return this.currentInteractingComponent;
+  public Object getCurrentInteractingMenuObj() {
+    return this.currentInteractingMenuObj;
   }
 
-  public void setCurrentInteractingComponent(TileComponent component) {
-    this.currentInteractingComponent = component;
+  public void setCurrentInteractingMenuObj(Object component) {
+    this.currentInteractingMenuObj = component;
   }
 
-  public boolean hasInteractingComponent() {
-    return !(this.currentInteractingComponent == null);
+  public boolean hasInteractingMenuObj() {
+    return !(this.currentInteractingMenuObj == null);
+  }
+
+  public int getCurrentFund() {
+    return this.currentFunds;
+  }
+
+  public void increaseCurrentFund(int value) {
+    this.currentFunds += value;
+    this.totalEarning += value;
+  }
+
+  public void decreaseCurrentFund(int value) {
+    this.currentFunds -= value;
+  }
+
+  public int getTotalEarning() {
+    return this.totalEarning;
   }
 }
