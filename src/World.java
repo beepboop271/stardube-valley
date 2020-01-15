@@ -50,6 +50,8 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
+  public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
+
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
     try {
@@ -65,6 +67,8 @@ public class World {
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
+
+    this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
     this.doDayEndActions();
