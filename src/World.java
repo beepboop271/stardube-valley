@@ -219,8 +219,6 @@ public class World {
                   this.playerArea.removeComponentAt(point);
                 }
               }
-              
-
               HoldableDrop[] drops = ic.getProducts();
               HoldableStack product;
               for (int i = 0; i < drops.length; ++i) {
@@ -236,7 +234,6 @@ public class World {
               }
             }
           }
-
         } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
@@ -300,12 +297,15 @@ public class World {
         if (interactedGateway != null) {
           this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
         }
-
         Tile currentTile = this.playerArea.getMapAt(useLocation);
-        if (this.playerArea instanceof WorldArea) {
-          int numForageableTiles = ((WorldArea)this.playerArea).getNumForageableTiles();
-          numForageableTiles--;
+
+        if (currentTile.getContent() == null) {
+          if ((this.player.getSelectedItem() != null) &&
+              (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
+            this.player.consume();
+          } 
         }
+
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
 
@@ -325,7 +325,8 @@ public class World {
             }
           }
         } else if (currentContent instanceof Collectable) {
-        //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+          ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
+          //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           if (drop != null) {
@@ -367,7 +368,7 @@ public class World {
                 }                                   
               }
             } 
-          }
+          } 
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
         System.out.println("Done smelting");
