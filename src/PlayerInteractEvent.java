@@ -1,5 +1,6 @@
 import java.util.EventObject;
 
+@SuppressWarnings("serial")
 public class PlayerInteractEvent extends EventObject {
   private Point locationUsed;
 
