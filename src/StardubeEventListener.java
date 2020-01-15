@@ -52,7 +52,6 @@ public class StardubeEventListener implements KeyListener,
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
-      this.stardubeWorld.emplaceTimedGraphic(new TimedStaticImage(0.5, "assets/images/forageables/Daffodil.png"));
       this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != -1) {
         this.stardubePlayer.setVerticalSpeed(-1);

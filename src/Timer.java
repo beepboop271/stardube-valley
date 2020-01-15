@@ -1,8 +1,8 @@
 public class Timer {
   private long startTime;
-  private double duration;
+  private long duration;
 
-  public Timer(double duration) {
+  public Timer(long duration) {
     // duration in seconds
     this.duration = duration*(1_000_000_000);
     this.startTime = System.nanoTime();
