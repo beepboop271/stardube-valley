@@ -9,11 +9,12 @@ public class HoldableStackEntity extends Moveable implements Drawable {
   }
 
   @Override
-  public void makeMove(long elapsedNanoTime) {
+  public Vector2D getMove(long elapsedNanoTime) {
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = this.getVelocity();
     positionChange.scale(elapsedSeconds);
-    this.translatePos(positionChange);
+    // this.translatePos(positionChange);
+    return positionChange;
   }
 
   public HoldableStack getStack() {

@@ -59,14 +59,15 @@ public class Player extends Moveable {
   }
   
   @Override
-  public void makeMove(long elapsedNanoTime) {
+  public Vector2D getMove(long elapsedNanoTime) {
     if (this.isImmutable()) {
-      return;
+      return null;
     }
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = this.getVelocity();
     positionChange.setLength(Player.MAX_SPEED*elapsedSeconds);
-    this.translatePos(positionChange);
+    // this.translatePos(positionChange);
+    return positionChange;
   }
   
   public HoldableStack[] getInventory() {

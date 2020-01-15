@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -48,6 +49,8 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
+  private ArrayList<TimedGraphic> timedGraphics;
+
   public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
 
   public World() {
@@ -66,6 +69,7 @@ public class World {
     this.inGameDay = 0;
     this.inGameSeason = 0;
 
+    this.timedGraphics = new ArrayList<TimedGraphic>();
     this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
@@ -73,15 +77,8 @@ public class World {
   }
 
   public void update() {
-    Iterator<Area> areas = this.locations.values().iterator();
-    Area nextArea;
-    Iterator<Moveable> moveables;
-    Moveable nextMoveable;
-    LinkedHashSet<Point> intersectingTiles;
-    Point lastPos;
-    int exitDirection;
-
     long currentUpdateTime = System.nanoTime();
+    this.updateTimedGraphics();
     this.processEvents();
 
     if (this.player.isInMenu()) {
@@ -111,27 +108,68 @@ public class World {
           nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
                                     this.player.getPos().y-nextItemEntity.getPos().y, 
                                     (double)Player.getItemAttractionDistance()/itemDistance);
-          nextItemEntity.makeMove(currentUpdateTime-this.lastUpdateTime);
+          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime));
         }
       }
     }
-
+    
+    Iterator<Area> areas = this.locations.values().iterator();
+    Area nextArea;
+    Iterator<Moveable> moveables;
+    Moveable nextMoveable;
+    LinkedHashSet<Point> intersectingTiles;
+    int exitDirection;
+    Vector2D move;
+    int collideDirection;
     while (areas.hasNext()) {
       nextArea = areas.next();
       moveables = nextArea.getMoveables();
 
       while (moveables.hasNext()) {
         nextMoveable = moveables.next();
-        lastPos = nextMoveable.getPos();
-        nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
+        move = nextMoveable.getMove(currentUpdateTime-this.lastUpdateTime);
+        if (move != null) {
+          intersectingTiles = nextMoveable.getIntersectingTiles(move.getXVector());
+          collideDirection = nextArea.collides(intersectingTiles,
+                                                   this.player.getPos().translateNew(move.getX(), 0),
+                                                   true);
+          if (collideDirection == World.EAST) {
+            // subtract 0.0001 to prevent rounding from counting it as still colliding
+            nextMoveable.translatePos(
+                nextMoveable.getPos().round().x + 0.5-Player.SIZE - nextMoveable.getPos().x - 0.0001,
+                0
+            );
+          } else if (collideDirection == World.WEST) {
+            nextMoveable.translatePos(
+                nextMoveable.getPos().round().x - 0.5+Player.SIZE - nextMoveable.getPos().x,
+                0
+            );
+          } else if (collideDirection == -1) {
+            nextMoveable.translatePos(move.getXVector());
+          }
 
-        intersectingTiles = nextMoveable.getIntersectingTiles();
-        // System.out.println(intersectingTiles);
-        if (nextArea.collides(intersectingTiles.iterator())) {
-          nextMoveable.setPos(lastPos);
-        } else {
+          intersectingTiles = nextMoveable.getIntersectingTiles(move.getYVector());
+          collideDirection = nextArea.collides(intersectingTiles,
+                                               this.player.getPos().translateNew(0, move.getY()),
+                                               false);
+          if (collideDirection == World.NORTH) {
+            nextMoveable.translatePos(
+                0,
+                nextMoveable.getPos().round().y - 0.5+Player.SIZE - nextMoveable.getPos().y
+            );
+          } else if (collideDirection == World.SOUTH) {
+            // subtract 0.0001 to prevent rounding from counting it as still colliding
+            nextMoveable.translatePos(
+                0,
+                nextMoveable.getPos().round().y + 0.5-Player.SIZE - nextMoveable.getPos().y - 0.0001
+            );
+          } else if (collideDirection == -1) {
+            nextMoveable.translatePos(move.getYVector());
+          }
+          
           exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
           if (exitDirection > -1) {
+            System.out.println("oof");
             if (nextMoveable instanceof Player) {
               this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
             } else {
@@ -141,19 +179,6 @@ public class World {
         }
       }
     }
-    //// testing TODO: remove
-    nextArea = this.playerArea;
-    moveables = nextArea.getMoveables();
-    while (moveables.hasNext()) {
-      nextMoveable = moveables.next();
-      lastPos = nextMoveable.getPos();
-      nextMoveable.makeMove(currentUpdateTime-this.lastUpdateTime);
-      intersectingTiles = nextMoveable.getIntersectingTiles();
-      if (nextArea.collides(intersectingTiles.iterator())) {
-        nextMoveable.setPos(lastPos);
-      }
-    }
-    ////
 
     this.lastUpdateTime = currentUpdateTime;
   }
@@ -199,8 +224,6 @@ public class World {
                   this.playerArea.removeComponentAt(point);
                 }
               }
-              
-
               HoldableDrop[] drops = ic.getProducts();
               HoldableStack product;
               for (int i = 0; i < drops.length; ++i) {
@@ -216,7 +239,6 @@ public class World {
               }
             }
           }
-
         } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
@@ -273,9 +295,22 @@ public class World {
           } //- Ground tile changes image based on what happened
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
         }
-      } else if (event instanceof UtilityUsedEvent) {
+      } else if (event instanceof PlayerInteractEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
-        Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
+        Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
+        Gateway interactedGateway = this.playerArea.getGateway(useLocation);
+        if (interactedGateway != null) {
+          this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
+        }
+        Tile currentTile = this.playerArea.getMapAt(useLocation);
+
+        if (currentTile.getContent() == null) {
+          if ((this.player.getSelectedItem() != null) &&
+              (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
+            this.player.consume();
+          } 
+        }
+
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
 
@@ -338,7 +373,7 @@ public class World {
                 }                                   
               }
             } 
-          }
+          } 
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
         System.out.println("Done smelting");
@@ -495,7 +530,7 @@ public class World {
         if (!areaInfo[i].equals("null")) {
           this.locations.get(nextLine)
               .getNeighbourZone(i)
-              .initializeDestination(this.locations.get(areaInfo[i]), i);
+              .setDestinationArea(this.locations.get(areaInfo[i]));
         }
       }
       nextLine = input.readLine();
@@ -538,33 +573,33 @@ public class World {
     }
 
     a.setNeighbourZone(World.WEST,
-                       World.findNeighbourZone(a, 0, 1, false));
+                       World.findNeighbourZone(a, 0, 1, World.WEST));
     a.setNeighbourZone(World.EAST,
-                       World.findNeighbourZone(a, a.getWidth()-1, 1, false));
+                       World.findNeighbourZone(a, a.getWidth()-1, 1, World.EAST));
     a.setNeighbourZone(World.NORTH,
-                       World.findNeighbourZone(a, 1, 0, true));
+                       World.findNeighbourZone(a, 1, 0, World.NORTH));
     a.setNeighbourZone(World.SOUTH,
-                       World.findNeighbourZone(a, 1, a.getHeight()-1, true));
+                       World.findNeighbourZone(a, 1, a.getHeight()-1, World.SOUTH));
 
     input.close();
   }
   //shoot me
-  public static WorldGate findNeighbourZone(Area a,
+  public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,
-                                              boolean isHorizontal) {
-    if (isHorizontal) {
+                                              int orientation) {
+    if (orientation == World.NORTH || orientation == World.SOUTH) {
       while (x < a.getWidth()-1 && a.getMapAt(x, y) == null) {
         ++x;
       }
       if (a.getMapAt(x, y) != null) {
-        return new WorldGate(x, y, isHorizontal);
+        return new GatewayZone(x, y, orientation);
       }
     } else {
       while (y < a.getHeight()-1 && a.getMapAt(x, y) == null) {
         ++y;
       }
       if (a.getMapAt(x, y) != null) {
-        return new WorldGate(x, y, isHorizontal);
+        return new GatewayZone(x, y, orientation);
       }
     }
     return null;
@@ -594,6 +629,24 @@ public class World {
 
   public int getInGameSeason() {
     return this.inGameSeason;
+  }
+
+  public ArrayList<TimedGraphic> getTimedGraphics() {
+    return this.timedGraphics;
+  }
+
+  public void updateTimedGraphics() {
+    ArrayList<TimedGraphic> newArrayList = new ArrayList<TimedGraphic>();
+    for (TimedGraphic graphic: this.timedGraphics) {
+      if (!(graphic.isDone())) {
+        newArrayList.add(graphic);
+      }
+    }
+    this.timedGraphics = newArrayList;
+  }
+
+  public void emplaceTimedGraphic(TimedGraphic graphic) {
+    this.timedGraphics.add(graphic);
   }
 
   public static String[] getSeasons() {

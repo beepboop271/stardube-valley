@@ -52,6 +52,7 @@ public class StardubeEventListener implements KeyListener,
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
+      this.stardubeWorld.emplaceTimedGraphic(new TimedStaticImage(0.5, "assets/images/forageables/Daffodil.png"));
       this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != -1) {
         this.stardubePlayer.setVerticalSpeed(-1);
@@ -220,14 +221,9 @@ public class StardubeEventListener implements KeyListener,
     } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
-        if (this.stardubePlayer.getSelectedTile() != null) {
-          this.stardubeWorld.emplaceFutureEvent(
-            (long)(0.5*5_000_000),
-            // idk what to name this lol
-            new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
-          return;
-        } else if (this.stardubePlayer.getSelectedItem().getContainedHoldable() instanceof Consumable) {
-          this.stardubePlayer.consume();
+        this.stardubeWorld.emplaceFutureEvent(
+              (long)(0.5*1_000_000_000),
+              new PlayerInteractEvent(this.stardubePlayer.getSelectedTile()));
         } 
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
@@ -263,7 +259,7 @@ public class StardubeEventListener implements KeyListener,
          }
         }
 
-    } else if ((!this.stardubePlayer.isInMenu()) && this.stardubePlayer.isImmutable()) {
+    else if ((!this.stardubePlayer.isInMenu()) && this.stardubePlayer.isImmutable()) {
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
@@ -318,11 +314,8 @@ public class StardubeEventListener implements KeyListener,
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         }
-
       }
-
     }
-    
   }
 
   @Override
