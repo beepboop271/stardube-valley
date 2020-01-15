@@ -223,9 +223,8 @@ public class StardubeEventListener implements KeyListener,
       if (e.getButton() == MouseEvent.BUTTON3) {
         if (this.stardubePlayer.getSelectedTile() != null) {
           this.stardubeWorld.emplaceFutureEvent(
-            (long)(0.5*5_000_000),
-            // idk what to name this lol
-            new UtilityUsedEvent(this.stardubePlayer.getSelectedTile()));
+                (long)(0.5*1_000_000_000),
+                new PlayerInteractEvent(this.stardubePlayer.getSelectedTile()));
           return;
         } else if (this.stardubePlayer.getSelectedItem().getContainedHoldable() instanceof Consumable) {
           this.stardubePlayer.consume();

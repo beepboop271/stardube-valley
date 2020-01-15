@@ -1,9 +1,9 @@
 import java.util.EventObject;
 
-public class UtilityUsedEvent extends EventObject {
+public class PlayerInteractEvent extends EventObject {
   private Point locationUsed;
 
-  public UtilityUsedEvent(Point locationUsed) {
+  public PlayerInteractEvent(Point locationUsed) {
     super(locationUsed);
     this.locationUsed = locationUsed;
   }
