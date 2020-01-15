@@ -330,7 +330,7 @@ public class World {
                   ((ExtrinsicMachine)currentContent).increasePhase();   
                   player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
                   player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
-                  this.emplaceEvent(
+                  this.emplaceFutureEvent(
                     ((ExtrinsicMachine)currentContent).getProcessingTime(
                                         selectedItem.getContainedHoldable().getName()), 
                     new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
