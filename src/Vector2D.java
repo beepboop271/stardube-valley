@@ -116,6 +116,9 @@ public class Vector2D implements Cloneable {
     return this.x;
   }
 
+  public Vector2D getXVector() {
+    return new Vector2D(this.x, 0);
+  }
   
   /** 
    * [getY]
@@ -124,6 +127,10 @@ public class Vector2D implements Cloneable {
    */
   public double getY() {
     return this.y;
+  }
+
+  public Vector2D getYVector() {
+    return new Vector2D(0, this.y);
   }
 
   

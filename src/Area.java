@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -14,7 +16,8 @@ public abstract class Area {
   private LinkedHashSet<Moveable> moveables;
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
-  private WorldGate[] neighbourZone = new WorldGate[4];
+  private GatewayZone[] neighbourZones;
+  private HashMap<Point, Gateway> gateways;
   private long currentDay;
   private int currentSeason;
   
@@ -26,6 +29,8 @@ public abstract class Area {
     this.map = new Tile[this.height][this.width];
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
+    this.neighbourZones = new GatewayZone[4];
+    this.gateways = new HashMap<Point, Gateway>();
     this.currentDay = 0;
     this.currentSeason = 0;
   }
@@ -42,24 +47,123 @@ public abstract class Area {
     }
   }
 
-  public boolean collides(Iterator<Point> intersectingPoints) {
+  public static int getDirection(Point p1, Point p2) {
+    // direction from p1 to p2
+    if (p2.x-p1.x > 0) {
+      return World.EAST;
+    } else if (p2.x-p1.x < 0) {
+      return World.WEST;
+    } else if (p2.y-p1.y > 0) {
+      return World.SOUTH;
+    } else if (p2.y-p1.y < 0) {
+      return World.NORTH;
+    } else {
+      return -1;
+    }
+  }
+
+  public int collides(LinkedHashSet<Point> intersectingPoints, Point pos,
+                      boolean horizontalOnly) {
     Point nextPoint;
-    while (intersectingPoints.hasNext()) {
-      nextPoint = intersectingPoints.next();
-      int treeX = (int)nextPoint.x+2;     // TODO: make this less... sketchy, I guess
-      int treeY = (int)nextPoint.y+1;
-      if (this.inMap(nextPoint)
-            && ((this.getMapAt(nextPoint) == null)
-                || (this.getMapAt(nextPoint) instanceof WaterTile)
-                || (this.getMapAt(nextPoint).getContent() != null
-                    && this.getMapAt(nextPoint).getContent() instanceof CollectableComponent))
-                || (this.inMap(treeX, treeY) && this.getMapAt(treeX, treeY) != null
-                    && this.getMapAt(treeX, treeY).getContent() != null
-                    && (this.getMapAt(treeX, treeY).getContent() instanceof ExtrinsicTree))) {
-        return true;
+    pos = pos.round();
+    if (intersectingPoints.size() == 1) {
+      return -1;
+    } else if (intersectingPoints.size() == 2) {
+      if (!intersectingPoints.remove(pos)) {
+        throw new RuntimeException();
       }
-    } 
-    return false;
+      nextPoint = intersectingPoints.iterator().next();
+      if (!this.walkableAt(nextPoint)) {
+        return Area.getDirection(pos, nextPoint);
+      } else {
+        return -1;
+      }
+    } else if (intersectingPoints.size() == 4) {
+      Point[] intersections = new Point[4];
+      intersectingPoints.toArray(intersections);
+      int collisions = 0;
+      for (int i = 0; i < 4; ++i) {
+        if (!this.walkableAt(intersections[i])) {
+          collisions |= (1<<i);
+        }
+      }
+      if (collisions == 0) {
+        return -1;
+      }
+      if (horizontalOnly) {
+        if (((collisions & (1<<1)) > 0)
+              || ((collisions & (1<<2)) > 0)) {
+          return World.EAST;
+        } else {
+          return World.WEST;
+        }
+      } else {
+        if (((collisions & (1<<0)) > 0)
+              || ((collisions & (1<<1)) > 0)) {
+          return World.NORTH;
+        } else {
+          return World.SOUTH;
+        }
+
+      }
+    }
+    return -1;
+  }
+
+  public boolean walkableAt(Point pos) {
+    if (this.inMap(pos)) {
+      int treeX = (int)pos.x+2;     // TODO: make this less... sketchy, I guess
+      int treeY = (int)pos.y+1;
+
+      Tile t = this.getMapAt(pos);
+      if (t == null) {
+        return false;
+      }
+
+      if (t.getContent() != null) {
+        if (t.getContent() instanceof CollectableComponent) {// ExtrinsicHarvestableComponent) {
+          return false;
+        }
+      }
+
+      if (t instanceof WaterTile) {
+        return false;
+      }
+
+      if (this.inMap(treeX, treeY) && this.getMapAt(treeX, treeY) != null) {
+        t = this.getMapAt(treeX, treeY);
+        if (t.getContent() != null && t.getContent() instanceof ExtrinsicTree) {
+          return false;
+        }
+      }
+
+    }
+    return true;
+  }
+
+  public boolean hasLineOfSight(Enemy e, Player p) {
+    Point p1 = e.getPos();
+    Point p2 = p.getPos();
+    Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.5);
+    double dist = p1.distanceTo(p2);
+    for (int i = 0; i < dist/0.5; ++i) {
+      p1.translate(step.getX(), step.getY());
+      switch (e.getHeight()) {
+        case 1:
+          if (!this.walkableAt(p1.round())) {
+            return false;
+          }
+          break;
+        case 2:
+          if (!this.inMap(p1.round()) || (this.getMapAt(p1.round()) == null)) {
+            return false;
+          }
+          break;
+        case 3:
+          return true;
+      }
+    }
+    return true;
   }
 
   public int canMoveAreas(Iterator<Point> intersectingPoints) {
@@ -74,19 +178,31 @@ public abstract class Area {
   }
 
   public Area moveAreas(Moveable m, int direction) {
-    WorldGate gateway = this.getNeighbourZone(direction);
-    m.setPos(gateway.toDestinationPoint(m.getPos(), m.getSize()));
+    GatewayZone gateway = this.getNeighbourZone(direction);
+    return this.moveAreas(m, gateway);
+  }
+
+  public Area moveAreas(Moveable m, Gateway g) {
+    m.setPos(g.toDestinationPoint(m.getPos(), m.getSize()));
     this.moveables.remove(m);
-    gateway.getDestinationArea().moveables.add(m);
-    return gateway.getDestinationArea();
+    g.getDestinationArea().moveables.add(m);
+    return g.getDestinationArea();
   }
 
-  public WorldGate getNeighbourZone(int i) {
-    return (WorldGate)this.neighbourZone[i];
+  public GatewayZone getNeighbourZone(int i) {
+    return this.neighbourZones[i];
   }
 
-  public void setNeighbourZone(int i, WorldGate g) {
-    this.neighbourZone[i] = g;
+  public void setNeighbourZone(int i, GatewayZone g) {
+    this.neighbourZones[i] = g;
+  }
+
+  public void addGateway(Gateway g) {
+    this.gateways.put(g.getOrigin(), g);
+  }
+
+  public Gateway getGateway(Point p) {
+    return this.gateways.get(p);
   }
 
   public Iterator<Moveable> getMoveables() {

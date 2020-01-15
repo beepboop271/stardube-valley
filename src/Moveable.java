@@ -64,14 +64,15 @@ public abstract class Moveable {
     }
   }
 
-  public LinkedHashSet<Point> getIntersectingTiles() {
+  public LinkedHashSet<Point> getIntersectingTiles(Vector2D offset) {
     LinkedHashSet<Point> intersections = new LinkedHashSet<Point>();
     // size will always be < 2 so this is enough
     // System.out.println(this.position);
-    intersections.add(this.position.translateNew(this.size, -this.size).round());
-    intersections.add(this.position.translateNew(this.size, this.size).round());
-    intersections.add(this.position.translateNew(-this.size, this.size).round());
-    intersections.add(this.position.translateNew(-this.size, -this.size).round());
+    Point movedPosition = this.position.translateNew(offset.getX(), offset.getY());
+    intersections.add(movedPosition.translateNew(-this.size, -this.size).round());
+    intersections.add(movedPosition.translateNew(this.size, -this.size).round());
+    intersections.add(movedPosition.translateNew(this.size, this.size).round());
+    intersections.add(movedPosition.translateNew(-this.size, this.size).round());
     return intersections;
   }
 
@@ -153,5 +154,5 @@ public abstract class Moveable {
     this.framesPerSecond = fps;
   }
 
-  abstract void makeMove(long elapsedNanoTime);
+  abstract Vector2D getMove(long elapsedNanoTime);
 }
