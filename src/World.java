@@ -276,10 +276,6 @@ public class World {
       } else if (event instanceof UtilityUsedEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
         Tile currentTile = this.playerArea.getMapAt(((UtilityUsedEvent) event).getLocationUsed());
-        if (this.playerArea instanceof WorldArea) {
-          int numForageableTiles = ((WorldArea)this.playerArea).getNumForageableTiles();
-          numForageableTiles--;
-        }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
 
@@ -299,7 +295,8 @@ public class World {
             }
           }
         } else if (currentContent instanceof Collectable) {
-        //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+          ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
+          //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           if (drop != null) {

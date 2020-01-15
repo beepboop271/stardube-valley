@@ -81,6 +81,10 @@ public class WorldArea extends Area {
     return this.numForageableTiles;
   }
 
+  public void setNumForageableTiles(int num) {
+    this.numForageableTiles = num;
+  }
+
   @Override
   public void doDayEndActions() {
     if (this.getCurrentDay()%10 == 1) {
