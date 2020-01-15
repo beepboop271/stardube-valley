@@ -12,6 +12,9 @@ RubyItem                /ores/                            cool-gem
 DiamondItem             /ores/                            bedrock-breaker
 AmethystItem            /ores/                            emily-please
 QuartzItem              /ores/                            yum
+CopperBarItem           /ores/                            a-brown-bar-thing
+IronBarItem             /ores/                            a-white-rectangle-thing
+GoldBarItem             /ores/                            a-gold-thingy
 WoodItem                /forageables/                     stick                
 SapItem                 /forageables/                     sticky
 

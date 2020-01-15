@@ -1,4 +1,4 @@
-Furnace            /machines/Furnace/  0 0        5       3          CopperItem 10 CopperBarItem     IronItem 10 IronBarItem    GoldItem 10 GoldBarItem  
+Furnace     /machines/Furnace/  0 0        5       3          CopperItem 5 CopperBarItem     IronItem 10 IronBarItem    GoldItem 10 GoldBarItem       CoalItem                 
 
-name               image path           offsets required num of items    name  time to process(s)  result
+name        image path           offsets required num of items    name  time to process(ms)  result                                                   catalyst-item                                 
                                                  amount  it can process        [repeating]

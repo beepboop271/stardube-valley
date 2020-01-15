@@ -53,6 +53,9 @@ public class Player extends Moveable {
     this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
     this.inventory[7] = new HoldableStack("CauliflowerSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
+    this.inventory[9] = new HoldableStack("FurnaceItem", 1);
+    this.inventory[10] = new HoldableStack("IronItem", 10);
+    this.inventory[11] = new HoldableStack("CoalItem", 2);
   }
   
   @Override
@@ -142,6 +145,17 @@ public class Player extends Moveable {
     return !(this.inventory[index] == null);
   }
 
+  public boolean hasHoldable(Holdable item) {
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
   }
@@ -191,6 +205,24 @@ public class Player extends Moveable {
 
   public void decrementSelectedItem(int amount) {
     this.inventory[this.selectedItemIdx].subtractHoldables(amount);
+
+    if (this.inventory[this.selectedItemIdx].getQuantity() <= 0) {
+      this.inventory[this.selectedItemIdx] = null;
+    }
+  }
+
+  public void decrementHoldable(int amount, Holdable item) {
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          if (this.inventory[i].getQuantity() <= 1) {
+            this.inventory[i] = null;
+          } else {
+            this.inventory[i].subtractHoldables(amount);
+          }
+        }
+      }
+    }
   }
 
   public void incrementSelectedItemIdx() {

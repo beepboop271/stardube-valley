@@ -24,12 +24,20 @@ public class ExtrinsicMachine extends ExtrinsicHarvestableComponent {
     return ((IntrinsicMachine)this.getIntrinsicSelf()).getRequiredQuantity();
   }
 
+  public Holdable getCatalyst() {
+    return ((IntrinsicMachine)this.getIntrinsicSelf()).getCatalyst();
+  }
+
   public HoldableStack getProduct() {
     return this.product;
   }
 
   public void resetProduct() {
     this.product = null;
+  }
+
+  public String getItemToProcess() {
+    return this.itemToProcess;
   }
 
   /**
