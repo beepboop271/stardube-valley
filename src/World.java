@@ -7,8 +7,6 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.HashMap;
-import java.util.Timer;
 
 /**
  * [World]
@@ -49,7 +47,8 @@ public class World {
   private long inGameDay;
   private int inGameSeason;
   private double luckOfTheDay;
-  private HashMap<Player, Timer> fishingTimers;
+
+  public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
 
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
@@ -66,6 +65,8 @@ public class World {
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
+
+    this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
     this.doDayEndActions();
@@ -188,9 +189,55 @@ public class World {
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+        int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
+        int treeY = selectedTile.getY() + 1;
+        Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
+        TileComponent treeComponent = treeTile.getContent();
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+        if (treeComponent instanceof ExtrinsicHarvestableComponent) {
+          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
+          String requiredTool = ic.getRequiredTool();
+                  
+          if (requiredTool.equals("Axe")) {
+            // TODO: play breaking animation?
+            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)treeComponent);
+            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
+              Point point = new Point(toolEvent.getLocationUsed().x+2, toolEvent.getLocationUsed().y+1);
+              if (this.playerArea instanceof WorldArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((WorldArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              } else if (this.playerArea instanceof FarmArea) {
+                ExtrinsicTree tree = ((ExtrinsicTree)((FarmArea)this.playerArea).getMapAt(point).getContent());
+                if (tree.getStage() == 17) {
+                  tree.setStage(18);
+                } else {
+                  this.playerArea.removeComponentAt(point);
+                }
+              }
+              
+
+              HoldableDrop[] drops = ic.getProducts();
+              HoldableStack product;
+              for (int i = 0; i < drops.length; ++i) {
+                product = drops[i].resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  this.playerArea.addItemOnGround(
+                    new HoldableStackEntity(
+                        product,
+                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
+                    )
+                  );
+                }
+              }
+            }
+          }
+
+        } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
@@ -256,10 +303,12 @@ public class World {
 
         Tile currentTile = this.playerArea.getMapAt(useLocation);
         if (this.playerArea instanceof WorldArea) {
-          ((WorldArea)this.playerArea).numForageableTiles--;
+          int numForageableTiles = ((WorldArea)this.playerArea).getNumForageableTiles();
+          numForageableTiles--;
         }
         //TODO: play foraging animation?
         TileComponent currentContent = currentTile.getContent();
+
         if (currentContent instanceof ExtrinsicCrop) {
           if (((ExtrinsicCrop)currentContent).canHarvest()) {
             System.out.println(((ExtrinsicCrop)currentContent).getProduct());
@@ -278,7 +327,6 @@ public class World {
         } else if (currentContent instanceof Collectable) {
         //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
           HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-          // also for some reason the above is sometimes null and i don't know why :D
           HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
           if (drop != null) {
             new HoldableStackEntity(drop, null); // TODO: change the pos
@@ -287,7 +335,44 @@ public class World {
               currentTile.setContent(null);
             }
           }
+        } else if (currentContent instanceof ExtrinsicChest) {
+          this.player.setCurrentInteractingComponent((ExtrinsicChest)currentContent);
+          this.player.enterMenu(Player.CHEST_PAGE);
+        } else if (currentContent instanceof ExtrinsicMachine) {
+          if (((ExtrinsicMachine)currentContent).getProduct() != null) {
+            if (this.player.canPickUp(((ExtrinsicMachine)currentContent)
+                                        .getProduct().getContainedHoldable())) {
+              this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
+              ((ExtrinsicMachine)currentContent).resetProduct();
+            }
+          } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
+                      (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
+            if (this.player.getSelectedItem() != null) {
+              HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+              if (((ExtrinsicMachine)currentContent).canProcess(
+                          selectedItem.getContainedHoldable().getName()) &&
+                              selectedItem.getQuantity() >= 
+                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+                if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
+                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
+                  ((ExtrinsicMachine)currentContent).setItemToProcess(
+                                                      selectedItem.getContainedHoldable().getName());
+                  ((ExtrinsicMachine)currentContent).increasePhase();   
+                  player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+                  player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
+                  this.emplaceFutureEvent(
+                    ((ExtrinsicMachine)currentContent).getProcessingTime(
+                                        selectedItem.getContainedHoldable().getName()), 
+                    new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                }                                   
+              }
+            } 
+          }
         }
+      } else if (event instanceof MachineProductionFinishedEvent) {
+        System.out.println("Done smelting");
+        ((ExtrinsicMachine)event.getSource()).processItem();
+
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
@@ -351,23 +436,29 @@ public class World {
         this.player.setImmutable(false);
 
       } else if (event instanceof ComponentPlacedEvent) {
-        Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
-        TileComponent currentContent = currentTile.getContent();
-        if (currentContent == null) { //- Anything that you can place must not be placed over something
-          //- We need to make sure that the tile is both a ground tile and is tilled if
-          //- we're trying to plant a crop in that tile
-          if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
-            if (currentTile instanceof GroundTile) {
-              if (((GroundTile)currentTile).getTilledStatus()) {
-                if (this.playerArea instanceof FarmArea) {
-                  currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
-                  ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
-                  this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+        //- Make sure the player literally has the object
+        if (this.player.hasAtIndex(((ComponentPlacedEvent)event).getComponentIndex())) {
+          Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event)
+                                                      .getLocationUsed());
+          TileComponent currentContent = currentTile.getContent();
+          //- Anything that you can place must not be placed over something and not over water
+          if ((currentContent == null) && (!(currentTile instanceof WaterTile))) { 
+            //- We need to make sure that the tile is both a ground tile and is tilled if
+            //- we're trying to plant a crop in that tile
+            if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
+              if (currentTile instanceof GroundTile) {
+                if (((GroundTile)currentTile).getTilledStatus()) {
+                  if (this.playerArea instanceof FarmArea) {
+                    currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+                    ((FarmArea)this.playerArea).addEditedTile((GroundTile)currentTile);
+                    this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
+                  }
                 }
               }
+            } else { //- If it's not a crop, you can place it anywhere
+              currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
+              this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
             }
-          } else { //- If it's not a crop, you can place it anywhere
-            currentTile.setContent(((ComponentPlacedEvent)event).getComponentToPlace());
           }
         }
       }
@@ -379,7 +470,7 @@ public class World {
     this.inGameNanoTime = 6*60*1_000_000_000L;
     ++this.inGameDay;
     if ((this.inGameDay % DAYS_PER_SEASON == 1) && (this.inGameDay > 1)) {
-      this.inGameSeason = (this.inGameSeason + 1) % 3;
+      this.inGameSeason = (this.inGameSeason + 1) % 4;
     }
     this.luckOfTheDay = Math.random();
     Iterator<Area> areas = this.locations.values().iterator();

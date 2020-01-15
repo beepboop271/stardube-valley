@@ -133,7 +133,9 @@ public abstract class Area {
       if (this.inMap(treeX, treeY) && this.getMapAt(treeX, treeY) != null) {
         t = this.getMapAt(treeX, treeY);
         if (t.getContent() != null && t.getContent() instanceof ExtrinsicTree) {
-          return false;
+          if (((ExtrinsicTree)t.getContent()).getStage() > 2) {
+            return false;
+          }
         }
       }
 
@@ -298,7 +300,7 @@ public abstract class Area {
 
   public void updateSeason() {
     if ((this.currentDay % World.getDaysPerSeason() == 1) && (this.currentDay != 1)) {
-      this.currentSeason = (this.currentSeason + 1) % 3;
+      this.currentSeason = (this.currentSeason + 1) % 4;
     }
   }
 

@@ -10,17 +10,27 @@ public class Player extends Moveable {
   private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
+  public static final int NO_MENU = -1;
+  public static final int INVENTORY_PAGE = 0;
+  public static final int CRAFTING_PAGE = 1;
+  public static final int MAP_PAGE = 2;
+  public static final int SKILLS_PAGE = 3;
+  public static final int SOCIAL_PAGE = 4;
+  public static final int SHOP_PAGE = 5;
+  public static final int CHEST_PAGE = 6;
+
   private int inventorySize = 12;
   private HoldableStack[] inventory;
   private int selectedItemIdx;
   private Point selectedTile;
-  private boolean inMenu = false;
   private boolean isImmutable;
   private FishingGame currentFishingGame;
   private int health;
   private int maxHealth;
   private int energy;
   private int maxEnergy;
+  private int currentMenuPage;
+  private TileComponent currentInteractingComponent; // TOOD: rename, if possible :))
 
   public Player(Point position, String filePath) {
     super(position, Player.SIZE, filePath);
@@ -31,15 +41,21 @@ public class Player extends Moveable {
     this.maxHealth = 100;
     this.energy = 270;
     this.maxEnergy = 270;
+    this.currentMenuPage = Player.NO_MENU;
+    this.currentInteractingComponent = null;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("ParsnipSeeds", 15);
+    this.inventory[5] = new HoldableStack("TulipSeeds", 15);
     this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
     this.inventory[7] = new HoldableStack("CauliflowerSeeds", 5);
+    this.inventory[8] = new HoldableStack("ChestItem", 5);
+    this.inventory[9] = new HoldableStack("FurnaceItem", 1);
+    this.inventory[10] = new HoldableStack("IronItem", 10);
+    this.inventory[11] = new HoldableStack("CoalItem", 2);
   }
   
   @Override
@@ -74,7 +90,6 @@ public class Player extends Moveable {
       }
     }
     // otherwise, store it in a new slot if there is space
-    
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] == null) {
         this.inventory[i] = items;
@@ -123,6 +138,25 @@ public class Player extends Moveable {
     }
   }
 
+  public void removeAtIndex(int index) {
+    this.inventory[index] = null;
+  }
+
+  public boolean hasAtIndex(int index) {
+    return !(this.inventory[index] == null);
+  }
+
+  public boolean hasHoldable(Holdable item) {
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
   }
@@ -147,23 +181,49 @@ public class Player extends Moveable {
   }
 
   public boolean isInMenu() {
-    return this.inMenu;
+    return !(this.currentMenuPage == Player.NO_MENU);
   }
 
-  public void toggleInMenu() {
-    this.inMenu = !this.inMenu;
+  public void enterMenu(int menuPage) {
+    this.currentMenuPage = menuPage;
   }
 
-  public void setInMenu(boolean inMenu) {
-    this.inMenu = inMenu;
+  public void exitMenu() {
+    this.currentMenuPage = Player.NO_MENU;
   }
 
+  public int getCurrentMenuPage() {
+    return this.currentMenuPage;
+  }
+  
   public int getSelectedItemIdx() {
     return this.selectedItemIdx;
   }
 
   public HoldableStack getSelectedItem() {
     return this.inventory[this.selectedItemIdx];
+  }
+
+  public void decrementSelectedItem(int amount) {
+    this.inventory[this.selectedItemIdx].subtractHoldables(amount);
+
+    if (this.inventory[this.selectedItemIdx].getQuantity() <= 0) {
+      this.inventory[this.selectedItemIdx] = null;
+    }
+  }
+
+  public void decrementHoldable(int amount, Holdable item) {
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          if (this.inventory[i].getQuantity() <= 1) {
+            this.inventory[i] = null;
+          } else {
+            this.inventory[i].subtractHoldables(amount);
+          }
+        }
+      }
+    }
   }
 
   public void incrementSelectedItemIdx() {
@@ -243,4 +303,23 @@ public class Player extends Moveable {
     this.maxEnergy += increment;
   }
 
+  public int getInventorySize() {
+    return this.inventorySize;
+  }
+
+  public void setInventorySize(int size) {
+    this.inventorySize = size;
+  }
+
+  public TileComponent getCurrentInteractingComponent() {
+    return this.currentInteractingComponent;
+  }
+
+  public void setCurrentInteractingComponent(TileComponent component) {
+    this.currentInteractingComponent = component;
+  }
+
+  public boolean hasInteractingComponent() {
+    return !(this.currentInteractingComponent == null);
+  }
 }

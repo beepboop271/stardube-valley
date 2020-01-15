@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * [Seeds]
  * 2019-12-24
@@ -5,9 +7,7 @@
  * @author Joseph Wang
  */
 
-import java.io.IOException;
-
-public class Seeds extends Useable {
+public class Seeds extends Useable implements Placeable {
   private String cropToMake;
   
   public Seeds(String name, String description, String imagePath, String crop) throws IOException{
@@ -16,7 +16,8 @@ public class Seeds extends Useable {
     this.cropToMake = crop;
   }
 
-  public TileComponent createCrop() {
+  @Override
+  public TileComponent placeItem() {
     return new ExtrinsicCrop(cropToMake);
   }
   

@@ -1,0 +1,10 @@
+ParsnipSeeds        10.00
+GarlicSeeds         10.00
+PotatoSeeds         10.00
+CauliflowerSeeds    10.00
+TulipSeeds          10.00
+StrawberrySeeds     10.00   
+WatermelonSeeds     10.00
+CornSeeds           10.00
+
+price list format: String itemName, double price
