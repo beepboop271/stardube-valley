@@ -7,8 +7,6 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.HashMap;
-import java.util.Timer;
 
 /**
  * [World]
@@ -50,6 +48,8 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
+  public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
+
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
     try {
@@ -65,6 +65,8 @@ public class World {
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
+
+    this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
     this.doDayEndActions();
@@ -317,17 +319,32 @@ public class World {
               this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
               ((ExtrinsicMachine)currentContent).resetProduct();
             }
-          } else {
-            HoldableStack item = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
-            if (((ExtrinsicMachine)currentContent).canProcess(item.getContainedHoldable().getName()) &&
-                      item.getQuantity() > ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
-              ((ExtrinsicMachine)currentContent).setItemToProcess(
-                                                          item.getContainedHoldable().getName());
-              player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+          } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
+                      (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
+            if (this.player.getSelectedItem() != null) {
+              HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+              if (((ExtrinsicMachine)currentContent).canProcess(
+                          selectedItem.getContainedHoldable().getName()) &&
+                              selectedItem.getQuantity() >= 
+                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+                if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
+                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
+                  ((ExtrinsicMachine)currentContent).setItemToProcess(
+                                                      selectedItem.getContainedHoldable().getName());
+                  ((ExtrinsicMachine)currentContent).increasePhase();   
+                  player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+                  player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
+                  this.emplaceFutureEvent(
+                    ((ExtrinsicMachine)currentContent).getProcessingTime(
+                                        selectedItem.getContainedHoldable().getName()), 
+                    new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                }                                   
+              }
             } 
           }
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
+        System.out.println("Done smelting");
         ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {

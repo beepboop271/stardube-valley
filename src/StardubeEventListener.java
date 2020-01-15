@@ -152,7 +152,7 @@ public class StardubeEventListener implements KeyListener,
       if (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(), mouseX, mouseY)) {
         // if click is in player inventory, place item into chest
         int itemIdx = worldPanel.inventoryItemIdxAt(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(), mouseX, mouseY);
-        if ((player.getInventory()[itemIdx] != null) &&
+        if ((itemIdx < player.getInventorySize()) && (player.getInventory()[itemIdx] != null) &&
             (chest.canAdd(player.getInventory()[itemIdx].getContainedHoldable()))) {
           if (e.getButton() == MouseEvent.BUTTON3) { 
             chest.add(new HoldableStack(player.getInventory()[itemIdx].getContainedHoldable(), 1));
@@ -313,7 +313,7 @@ public class StardubeEventListener implements KeyListener,
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
         // TODO: complete code
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
-                this.worldPanel.getMenuX(), this.worldPanel.getMenuY() + (WorldPanel.HOTBAR_CELLSIZE + WorldPanel.HOTBAR_CELLGAP),
+                this.worldPanel.getMenuX(), this.worldPanel.getMenuY() + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP),
                 (int)this.mousePos.x, (int)this.mousePos.y);
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
