@@ -16,7 +16,7 @@ public class TimedEvent implements Comparable<TimedEvent> {
   }
 
   public int compareTo(TimedEvent other) {
-    return (int)(other.time-this.time);
+    return (int)(this.time-other.time);
   }
 
   public long getTime() {
