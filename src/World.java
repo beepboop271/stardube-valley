@@ -371,6 +371,7 @@ public class World {
           } 
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
+        System.out.println("Done smelting");
         ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {
