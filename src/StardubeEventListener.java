@@ -52,7 +52,6 @@ public class StardubeEventListener implements KeyListener,
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
-      this.stardubeWorld.emplaceTimedGraphic(new TimedStaticImage(0.5, "assets/images/forageables/Daffodil.png"));
       this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != -1) {
         this.stardubePlayer.setVerticalSpeed(-1);
@@ -107,6 +106,7 @@ public class StardubeEventListener implements KeyListener,
         break;
       case KeyEvent.VK_B: // press b to buy cuz S_hop/P_urchase are taken lol
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
+        this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubeWorld.generalStore);
         break;
       case KeyEvent.VK_M:
         Area dumb = new MineLevel.Builder(1, 5).buildLevel();
@@ -144,15 +144,15 @@ public class StardubeEventListener implements KeyListener,
   public void mouseClicked(MouseEvent e) {
     int mouseX = e.getX(), mouseY = e.getY();
     int clickCount = e.getClickCount();
+    Player player = this.stardubePlayer;
 
     // Chest interation:
     // double click to move the item into the other inventory (1 instance at a time); triple click to move the maximum quantity
-    if (this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
-      Player player = this.stardubePlayer;
-      ExtrinsicChest chest = (ExtrinsicChest)(this.stardubePlayer.getCurrentInteractingComponent());
-      if (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(), mouseX, mouseY)) {
+    if (player.getCurrentMenuPage() == Player.CHEST_PAGE) {
+      ExtrinsicChest chest = (ExtrinsicChest)(this.stardubePlayer.getCurrentInteractingMenuObj());
+      if (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(), mouseX, mouseY)) {
         // if click is in player inventory, place item into chest
-        int itemIdx = worldPanel.inventoryItemIdxAt(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(), mouseX, mouseY);
+        int itemIdx = this.worldPanel.inventoryItemIdxAt(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(), mouseX, mouseY);
         if ((itemIdx < player.getInventorySize()) && (player.getInventory()[itemIdx] != null) &&
             (chest.canAdd(player.getInventory()[itemIdx].getContainedHoldable()))) {
           if (e.getButton() == MouseEvent.BUTTON3) { 
@@ -163,9 +163,9 @@ public class StardubeEventListener implements KeyListener,
             player.removeAtIndex(itemIdx);
           }
         }
-      } else if (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getChestMenuChestY(), mouseX, mouseY)) {
+      } else if (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuChestY(), mouseX, mouseY)) {
         // if click is in player inventory, pickup item from chest
-        int itemIdx = worldPanel.inventoryItemIdxAt(worldPanel.getMenuX(), worldPanel.getChestMenuChestY(), mouseX, mouseY);
+        int itemIdx = this.worldPanel.inventoryItemIdxAt(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuChestY(), mouseX, mouseY);
         if ((chest.getInventory()[itemIdx] != null) &&
             (player.canPickUp(chest.getInventory()[itemIdx].getContainedHoldable()))) {
           if (e.getButton() == MouseEvent.BUTTON3) { 
@@ -177,7 +177,16 @@ public class StardubeEventListener implements KeyListener,
           }
         }
       }
-    }      
+
+    } else if (player.getCurrentMenuPage() == Player.SHOP_PAGE) {
+      if (worldPanel.isPosInShopItemList(mouseX, mouseY)) {
+        Shop shop = (Shop)(this.stardubePlayer.getCurrentInteractingMenuObj());
+        String itemName = shop.getItems()[worldPanel.shopItemIdxAt(mouseY)];
+        if ((e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
+          player.purchase(shop, itemName);
+        }
+      }
+    }
   }
 
   @Override
@@ -247,7 +256,7 @@ public class StardubeEventListener implements KeyListener,
                 )
             );
           } else if (selectedItem instanceof Placeable) {
-            System.out.println("Trying to place!");
+            //System.out.println("Trying to place!");
             this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*1_000_000_000),
               new ComponentPlacedEvent(
@@ -276,11 +285,11 @@ public class StardubeEventListener implements KeyListener,
     } else if (this.stardubePlayer.isInMenu()) {
       int menuPage = this.stardubePlayer.getCurrentMenuPage();
       if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
-          (worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
+          (this.worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
         // TODO: process the button (update selected button id or sth);
 
       } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
-                 (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getInventoryMenuInventoryY(),
+                 (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
                 this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
@@ -305,7 +314,7 @@ public class StardubeEventListener implements KeyListener,
         // TODO: insert code
 
       } else if ((this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
-                 (worldPanel.isPosInInventory(worldPanel.getMenuX(), worldPanel.getChestMenuInventoryY(),
+                 (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
         // TODO: complete code
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(

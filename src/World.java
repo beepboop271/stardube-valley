@@ -3,7 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -49,8 +48,6 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
-  private ArrayList<TimedGraphic> timedGraphics;
-
   public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
 
   public World() {
@@ -69,7 +66,6 @@ public class World {
     this.inGameDay = 0;
     this.inGameSeason = 0;
 
-    this.timedGraphics = new ArrayList<TimedGraphic>();
     this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
@@ -78,7 +74,6 @@ public class World {
 
   public void update() {
     long currentUpdateTime = System.nanoTime();
-    this.updateTimedGraphics();
     this.processEvents();
 
     if (this.player.isInMenu()) {
@@ -342,7 +337,7 @@ public class World {
             }
           }
         } else if (currentContent instanceof ExtrinsicChest) {
-          this.player.setCurrentInteractingComponent((ExtrinsicChest)currentContent);
+          this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
           this.player.enterMenu(Player.CHEST_PAGE);
         } else if (currentContent instanceof ExtrinsicMachine) {
           if (((ExtrinsicMachine)currentContent).getProduct() != null) {
@@ -629,24 +624,6 @@ public class World {
 
   public int getInGameSeason() {
     return this.inGameSeason;
-  }
-
-  public ArrayList<TimedGraphic> getTimedGraphics() {
-    return this.timedGraphics;
-  }
-
-  public void updateTimedGraphics() {
-    ArrayList<TimedGraphic> newArrayList = new ArrayList<TimedGraphic>();
-    for (TimedGraphic graphic: this.timedGraphics) {
-      if (!(graphic.isDone())) {
-        newArrayList.add(graphic);
-      }
-    }
-    this.timedGraphics = newArrayList;
-  }
-
-  public void emplaceTimedGraphic(TimedGraphic graphic) {
-    this.timedGraphics.add(graphic);
   }
 
   public static String[] getSeasons() {
