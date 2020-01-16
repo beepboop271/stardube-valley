@@ -21,7 +21,8 @@ public abstract class Area {
   private long currentDay;
   private int currentSeason;
   
-  public Area(String name, int width, int height) {
+  public Area(String name,
+              int width, int height) {
     this.name = name;
     this.width = width;
     this.height = height;
