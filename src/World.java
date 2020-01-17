@@ -569,12 +569,16 @@ public class World {
             a.setMapAt(new OceanTile(x, y));
             break;
           case 'b':
-            a.setMapAt(new PathTile(x, y));
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            break;
+          case 'f':
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
             break;
           case 's':
             Tile createdTile = new GroundTile(x, y);
             createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
             a.setMapAt(createdTile);
+            break;
         }
       }
     }

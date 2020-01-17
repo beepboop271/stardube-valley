@@ -6,8 +6,9 @@ import javax.imageio.ImageIO;
 
 /**
  * [GroundTile]
+ * A tile for specifically ground, which can be tillable and watered.
  * 2019-12-18
- * @version 0.1
+ * @version 0.2
  * @author Kevin Qiao, Joseph Wang
  */
 public class GroundTile extends Tile {
@@ -15,6 +16,7 @@ public class GroundTile extends Tile {
   private long lastWatered;
   private BufferedImage imageToDisplay;
 
+  //- Different states that the tile can exist in
   private static BufferedImage groundTileImage;
   private static BufferedImage tilledTileImage;
   private static BufferedImage wateredTileImage;
