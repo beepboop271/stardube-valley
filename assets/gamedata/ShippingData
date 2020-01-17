@@ -18,7 +18,7 @@ IronBarItem                 100
 GoldBarItem                 150
 WoodItem                    2   
 SapItem                     1
-Purple-Algae                15                               this is where consumables start
+Purple-Algae                15                               fish here
 Popcorn-Fish                60
 Burger-Fish                 80
 Boba-Fish                   55
@@ -28,15 +28,16 @@ Largemouth-Bass             95
 Tuna                        65
 Anchovy                     40
 Sardine                     55
-ParsnipItem                 35
-GarlicItem                  40
-PotatoItem                  55
-CauliflowerItem             95
-TulipItem                   65
-StrawberryItem              60              
-WatermelonItem              95
-CornItem                    55
-TurnipItem                  40
+ParsnipItem                 35                               crop produces here
+GarlicItem                  60
+PotatoItem                  80
+CauliflowerItem             175
+TulipItem                   40
+StrawberryItem              90              
+WatermelonItem              250
+HotPepperItem               40
+CornItem                    50
+TurnipItem                  40                               foragables here
 LeekItem                    40
 BluebellItem                30
 IceCreamItem                45

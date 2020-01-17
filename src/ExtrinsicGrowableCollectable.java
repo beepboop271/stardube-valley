@@ -16,6 +16,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    * [ExtrinsicGrowableCollectable]
    * Constructor for a new ExtrinsicGrowableCollectable that takes in a predetermined
    * IntrinsicGrowableCollectable and sets that as this object's IntrinsicGrowableCollectable.
+   * @author Joseph Wang
    * @param item The predetermined IntrinsicGrowableCollectable which this object will set as its own.
    */
   public ExtrinsicGrowableCollectable(IntrinsicGrowableCollectable item) {
@@ -28,6 +29,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    * [ExtrinsicGrowableCollectable]
    * Contructor for a new ExtrinsicGrowableCollectable that takes in a string and
    * finds the IntrinsicGrowableCollectable related to that string.
+   * @author Joseph Wang
    * @param item The string with the item's name.
    */
   public ExtrinsicGrowableCollectable(String item) {
@@ -39,6 +41,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   /**
    * [canHarvest]
    * Checks if this growable can be harvested.
+   * @author Joseph Wang
    * @return boolean, true if this growable is harvestable, false otherwise.
    */
   public boolean canHarvest() {
@@ -51,6 +54,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   /**
    * [shouldRegrow]
    * Checks to see if this growable can regrow.
+   * @author Joseph Wang
    * @return boolean, true if this growable is able to regrow, false otherwise.
    */
   public boolean shouldRegrow() {
@@ -63,6 +67,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   /**
    * [resetRegrowCooldown]
    * Turns this growable object's regrow cooldown to its max.
+   * @author Joseph Wang
    */
   public void resetRegrowCooldown() {
     regrowCooldown = ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getRegrowTime();
@@ -70,6 +75,8 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
 
   /**
    * [getProduct]
+   * Retrieves the associated product that this growable can produce.
+   * @author Joseph Wang
    * @return HoldableDrop, the product that this growable produces.
    */
   public HoldableDrop getProduct() {
@@ -80,6 +87,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    * [getImage]
    * Retrieves this growable object's image. Dependant on whether it is growing to its
    * max stage or regrowing produce (if applicable).
+   * @author Joseph Wang
    * @return BufferedImage, the current image that is associated to this growable's stage.
    */
   @Override

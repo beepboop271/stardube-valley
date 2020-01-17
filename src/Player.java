@@ -2,7 +2,7 @@
 /**
  * [Player]
  * 2019-12-19
- * @version 0.1
+ * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Joseph Wang
  */
 public class Player extends Moveable {
@@ -56,7 +56,7 @@ public class Player extends Moveable {
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
     this.inventory[5] = new HoldableStack("TulipSeeds", 15);
     this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
-    this.inventory[7] = new HoldableStack("CauliflowerSeeds", 5);
+    this.inventory[7] = new HoldableStack("HotPepperSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
     //this.inventory[10] = new HoldableStack("IronItem", 10);
@@ -339,31 +339,72 @@ public class Player extends Moveable {
     return !(this.currentInteractingMenuObj == null);
   }
 
+  /**
+   * [getCurrentFunds]
+   * Retrieves this player's current funds (ie. the amount of spendable money they have at this instance)
+   * @author Candice Zhang
+   * @return int, the total funds of this player.
+   */
   public int getCurrentFunds() {
     return this.currentFunds;
   }
 
+  /**
+   * [increaseCurrentFunds]
+   * Increases this player's current funds by a specified value.
+   * @author Candice Zhang
+   * @param value The amount to be increased by.
+   */
   public void increaseCurrentFunds(int value) {
     this.currentFunds += value;
     this.totalEarnings += value;
   }
 
+  /**
+   * [decreaseCurrentFunds]
+   * Decreases this player's current funds by a specified value.
+   * @author Candice Zhang
+   * @param value The amount to be removed.
+   */
   public void decreaseCurrentFunds(int value) {
     this.currentFunds -= value;
   }
 
+  /**
+   * [getFutureFunds]
+   * Retrives this player's future funds (ie. How much they should earn at the end of this day).
+   * @author Joseph Wang
+   * @return int, how much this player should earn.
+   */
   public int getFutureFunds() {
     return this.futureFunds;
   }
 
+  /**
+   * [increaseFutureFunds]
+   * Adds a specified value to this player's future funds.
+   * @author Joseph Wang
+   * @param value The amount to be added.
+   */
   public void increaseFutureFunds(int value) {
     this.futureFunds += value;
   }
 
+  /**
+   * [resetFutureFunds]
+   * Sets this player's future funds (funds to be added) to 0.
+   * @author Joseph Wang
+   */
   public void resetFutureFunds() {
     this.futureFunds = 0;
   }
 
+  /**
+   * [getTotalEarnings]
+   * Retrieves this player's total earnings.
+   * @author Candice Zhang
+   * @return int, how much this player has earned in total.
+   */
   public int getTotalEarnings() {
     return this.totalEarnings;
   }

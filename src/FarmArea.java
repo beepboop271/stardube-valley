@@ -93,6 +93,8 @@ public class FarmArea extends Area {
           } else {
             if (currentTile.getLastWatered() == this.getCurrentDay() - 1) {
               ((ExtrinsicCrop)currentTile.getContent()).grow();
+            } else if (currentTile.getLastWatered() == this.getCurrentDay() - 3) {
+              currentTile.setContent(null);
             }
           }
         }

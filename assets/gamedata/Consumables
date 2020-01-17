@@ -15,6 +15,7 @@ CauliflowerItem   /crops/         yarchy-crop                 50 25
 TulipItem         /crops/         flower-crop                 30 15
 StrawberryItem    /crops/         yaymer-crop                 15 25                            
 WatermelonItem    /crops/         lamer-crop                  40 60
+HotPepperItem     /crops/         as-spicy-as-kevin            5 15
 CornItem          /crops/         tamer-crop                  30 40
 TurnipItem        /forageables/   a-turnip                    10 15
 LeekItem          /forageables/   not-a-green-onion           10 15
