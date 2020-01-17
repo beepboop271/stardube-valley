@@ -129,6 +129,15 @@ public class IntrinsicTileComponentFactory {
         lineToRead = input.readLine();  
       }
       input.close();
+
+      input = new BufferedReader(new FileReader("assets/gamedata/ShippingData"));
+      nextLineData = input.readLine().split("\\s+");
+      int[] offsets = {Integer.parseInt(nextLineData[3]), Integer.parseInt(nextLineData[4])};
+      componentToAdd = new ShippingContainer("assets/images"+nextLineData[1],
+                                            nextLineData[2], offsets);
+      componentPool.put(componentToAdd.getName(), componentToAdd);                                      
+      input.close();
+
     } catch (IOException e) {
       e.printStackTrace();
     }

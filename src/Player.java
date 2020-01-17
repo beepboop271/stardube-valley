@@ -26,6 +26,7 @@ public class Player extends Moveable {
   private boolean isImmutable;
   private FishingGame currentFishingGame;
   private int currentFunds;
+  private int futureFunds;
   private int totalEarning;
   private int health;
   private int maxHealth;
@@ -347,6 +348,18 @@ public class Player extends Moveable {
 
   public void decreaseCurrentFund(int value) {
     this.currentFunds -= value;
+  }
+
+  public int getFutureFunds() {
+    return this.futureFunds;
+  }
+
+  public void increaseFutureFunds(int value) {
+    this.futureFunds += value;
+  }
+
+  public void resetFutureFunds() {
+    this.futureFunds = 0;
   }
 
   public int getTotalEarning() {

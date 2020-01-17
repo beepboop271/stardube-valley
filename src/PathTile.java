@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 
 /**
  * [PathTile]
+ * A path tile that is used for design only.
  * 2020-1-7
  * @version 0.1
  * @author Joseph Wang

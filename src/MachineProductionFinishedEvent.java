@@ -7,6 +7,7 @@ import java.util.EventObject;
  * @author Joseph Wang
  */
 
+@SuppressWarnings("serial")
 public class MachineProductionFinishedEvent extends EventObject {
   public MachineProductionFinishedEvent(ExtrinsicMachine machine) {
     super(machine);

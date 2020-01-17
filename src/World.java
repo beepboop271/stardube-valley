@@ -285,7 +285,7 @@ public class World {
               if (selectedTile.getContent() instanceof ExtrinsicCrop) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
-              selectedTile.setContent(null);
+              //selectedTile.setContent(null);  <- unsure why we need this
             }
           } //- Ground tile changes image based on what happened
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
@@ -368,9 +368,16 @@ public class World {
               }
             } 
           } 
+        } else if (currentContent instanceof ShippingContainer) {
+          if (this.player.getSelectedItem() != null) {
+            if (!(this.player.getSelectedItem().getContainedHoldable() instanceof Tool)) {
+              HoldableStack currentItem = this.player.getSelectedItem();
+              this.player.increaseFutureFunds(((ShippingContainer)currentContent).sellItem(currentItem));
+              this.player.removeAtIndex(this.player.getSelectedItemIdx());
+            }
+          }
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
-        System.out.println("Done smelting");
         ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {
@@ -481,6 +488,8 @@ public class World {
       nextArea.updateSeason();
       nextArea.doDayEndActions();
     }
+
+    this.player.increaseCurrentFund(this.player.getFutureFunds()); //TODO: make this a cool menu screen
   }
 
   public void queueEvent(TimedEvent te) {
@@ -562,6 +571,10 @@ public class World {
           case 'b':
             a.setMapAt(new PathTile(x, y));
             break;
+          case 's':
+            Tile createdTile = new GroundTile(x, y);
+            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
+            a.setMapAt(createdTile);
         }
       }
     }

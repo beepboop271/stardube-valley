@@ -273,7 +273,10 @@ public class WorldPanel extends JPanel {
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
     g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
     g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
-                  
+    g2.drawString(Integer.toString(worldPlayer.getCurrentFund())+" D$", 
+                  this.getWidth()-g2.getFontMetrics().stringWidth(
+                                        Integer.toString(worldPlayer.getCurrentFund()) + " D$")-20,
+                  215);
     
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
