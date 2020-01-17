@@ -277,11 +277,10 @@ public class StardubeEventListener implements KeyListener,
       }
     } else if (this.stardubePlayer.isInMenu()) {
       int menuPage = this.stardubePlayer.getCurrentMenuPage();
-      System.out.println(menuPage);
+      
       if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
           (this.worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
         this.stardubePlayer.enterMenu(this.worldPanel.menuTabButtonAt((int)this.mousePos.x));
-
       } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {

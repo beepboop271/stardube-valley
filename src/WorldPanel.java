@@ -8,6 +8,12 @@ import java.awt.RenderingHints;
 import java.util.Iterator;
 import javax.swing.JPanel;
 import java.awt.AlphaComposite;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 /**
  * [WorldPanel]
@@ -19,11 +25,11 @@ import java.awt.AlphaComposite;
 public class WorldPanel extends JPanel {
   public static final int INVENTORY_CELLSIZE = 64;
   public static final int INVENTORY_CELLGAP = 4;
-  public static final int[] MENU_BUTTONS = {Player.INVENTORY_PAGE, Player.CRAFTING_PAGE, Player.MAP_PAGE, Player.SKILLS_PAGE, Player.SOCIAL_PAGE};
 
-  public static final Color INVENTORY_BKGD_COLOR = new Color(140, 50, 0);
+  public static final Color MENU_BKGD_COLOR = new Color(140, 50, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
   public static final Color INVENTORY_TEXT_COLOR = new Color(60, 20, 0);
+  public static final Color PROFILE_COLOR = new Color(245, 180, 110);
   public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
 
@@ -46,6 +52,7 @@ public class WorldPanel extends JPanel {
   private int chestMenuChestY;
   private int shopItemsPerPage;
   private int hoveredItemIdx;
+  private BufferedImage[] MENU_BUTTON_IMAGES;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
@@ -63,6 +70,19 @@ public class WorldPanel extends JPanel {
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
     this.shopItemsPerPage = 5;
+    this.MENU_BUTTON_IMAGES = new BufferedImage[5];
+    try {
+      BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/MenuTabButtons"));
+      String imagePath;
+      for (int i = 0; i < this.MENU_BUTTON_IMAGES.length; i++) {
+        imagePath = input.readLine();
+        BufferedImage buttonImage = ImageIO.read(new File("assets/images/"+imagePath));
+        this.MENU_BUTTON_IMAGES[i] = buttonImage;
+      }
+      input.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     this.listener = new StardubeEventListener(worldToDisplay, this);
     this.addKeyListener(this.listener);
@@ -219,7 +239,7 @@ public class WorldPanel extends JPanel {
     } else {
       this.hotbarY = this.getHeight()-WorldPanel.INVENTORY_CELLSIZE-WorldPanel.INVENTORY_CELLGAP*4;
     }
-    g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
+    g.setColor(WorldPanel.MENU_BKGD_COLOR);
     g.fillRect(hotbarX, hotbarY,
                12*WorldPanel.INVENTORY_CELLSIZE + 13*WorldPanel.INVENTORY_CELLGAP,
                WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP);
@@ -274,22 +294,22 @@ public class WorldPanel extends JPanel {
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
     g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
     g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
-    g2.drawString(Integer.toString(worldPlayer.getCurrentFund())+" D$", 
+    g2.drawString(Integer.toString(worldPlayer.getCurrentFunds())+" D$", 
                   this.getWidth()-g2.getFontMetrics().stringWidth(
-                                        Integer.toString(worldPlayer.getCurrentFund()) + " D$")-20,
+                                        Integer.toString(worldPlayer.getCurrentFunds()) + " D$")-20,
                   215);
     
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
-      
-      if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
-        // inventory menu stuff
-        // TODO: inv tab buttons (y: this.menuY)
+      g.setColor(MENU_BKGD_COLOR);
+      g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
+      for (int i = 0; i < this.MENU_BUTTON_IMAGES.length; i++) {
+        g.drawImage(this.MENU_BUTTON_IMAGES[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+      }
 
+      if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
         // inventory display (y:this.menuY+1~3(cellgap+cellsize))
-        g.setColor(INVENTORY_BKGD_COLOR);
-        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         for (int i = 0; i < 3; i++) {
           for (int j = 0; j < 12; j++) {
             // draw inventory item correspondingly
@@ -321,7 +341,7 @@ public class WorldPanel extends JPanel {
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
             // outline selected item
-            if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+            if ((i*12+j) == worldPlayer.getSelectedItemIdx()){
               g.setColor(Color.RED);
               g.drawRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
@@ -329,7 +349,18 @@ public class WorldPanel extends JPanel {
             }
           }
         }
-        // TODO: character/earning/date display (y:this.menuY+4~7(cellgap+cellsize))
+        int profileX = (int)Math.round(this.menuX+0.5*WorldPanel.INVENTORY_CELLSIZE);
+        int profileY = (int)Math.round(this.menuY+4.5*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP));
+        int profileW = this.menuW-WorldPanel.INVENTORY_CELLSIZE;
+        int profileH = 4*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP);
+        g.setColor(WorldPanel.PROFILE_COLOR);
+        g.fillRect(profileX, profileY, profileW, profileH);
+        Graphics2D profileGraphics = (Graphics2D)g;
+        profileGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
+        profileGraphics.setFont(this.STRING_FONT);
+        profileGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        profileGraphics.drawString("Current Funds: " + worldPlayer.getCurrentFunds() + "g", 0, 0);
+        profileGraphics.drawString("Total Earnings: " + worldPlayer.getTotalEarnings() + "g", 0, 50);
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         // TODO: insert gui code
@@ -347,7 +378,7 @@ public class WorldPanel extends JPanel {
         // TODO: change hardcoded world.generalStore
         Shop shop = worldToDisplay.generalStore;
         String[] shopItems = shop.getItems();
-        g.setColor(INVENTORY_BKGD_COLOR);
+        g.setColor(MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         
         for (int i = 0; i < this.shopItemsPerPage; i++) {
@@ -372,7 +403,7 @@ public class WorldPanel extends JPanel {
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
         ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingMenuObj());
-        g.setColor(INVENTORY_BKGD_COLOR);
+        g.setColor(MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
         for (int i = 0; i < 3; i++) {
@@ -406,7 +437,7 @@ public class WorldPanel extends JPanel {
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
             // outline selected item
-            if ((i*12+j) == this.worldToDisplay.getPlayer().getSelectedItemIdx()){
+            if ((i*12+j) == worldPlayer.getSelectedItemIdx()){
               g.setColor(Color.RED);
               g.drawRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
@@ -564,7 +595,7 @@ public class WorldPanel extends JPanel {
         stringY = this.chestMenuInventoryY + (int)Math.round((hoveredItemIdx/12+1.5)*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2));
       }
 
-      g.setColor(WorldPanel.INVENTORY_BKGD_COLOR);
+      g.setColor(WorldPanel.MENU_BKGD_COLOR);
       g.fillRect(stringX-15, stringY-stringH-5, stringW+30, stringH*3+10);
       g.setColor(WorldPanel.PALE_YELLOW_COLOR);
       g.fillRect(stringX-10, stringY-stringH, stringW+20, stringH*3);
@@ -634,7 +665,7 @@ public class WorldPanel extends JPanel {
 
   public int menuTabButtonAt(int x) {
     return Math.min((int)(Math.floor((x-this.menuX)/
-           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.MENU_BUTTONS.length-1);
+           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.MENU_BUTTON_IMAGES.length-1);
   }
 
   public int shopItemIdxAt(int y) {

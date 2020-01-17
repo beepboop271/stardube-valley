@@ -27,7 +27,7 @@ public class Player extends Moveable {
   private FishingGame currentFishingGame;
   private int currentFunds;
   private int futureFunds;
-  private int totalEarning;
+  private int totalEarnings;
   private int health;
   private int maxHealth;
   private int energy;
@@ -47,7 +47,7 @@ public class Player extends Moveable {
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
     this.currentFunds = 5_000;
-    this.totalEarning = this.currentFunds;
+    this.totalEarnings = this.currentFunds;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
@@ -339,16 +339,16 @@ public class Player extends Moveable {
     return !(this.currentInteractingMenuObj == null);
   }
 
-  public int getCurrentFund() {
+  public int getCurrentFunds() {
     return this.currentFunds;
   }
 
-  public void increaseCurrentFund(int value) {
+  public void increaseCurrentFunds(int value) {
     this.currentFunds += value;
-    this.totalEarning += value;
+    this.totalEarnings += value;
   }
 
-  public void decreaseCurrentFund(int value) {
+  public void decreaseCurrentFunds(int value) {
     this.currentFunds -= value;
   }
 
@@ -364,7 +364,7 @@ public class Player extends Moveable {
     this.futureFunds = 0;
   }
 
-  public int getTotalEarning() {
-    return this.totalEarning;
+  public int getTotalEarnings() {
+    return this.totalEarnings;
   }
 }

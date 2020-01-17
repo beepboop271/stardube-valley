@@ -1,0 +1,12 @@
+menuTabButtons/inventoryButton.png
+menuTabButtons/craftingButton.png
+menuTabButtons/mapButton.png
+menuTabButtons/craftingButton.png
+menuTabButtons/craftingButton.png
+
+order:
+inventory
+crafting
+map
+skills
+social

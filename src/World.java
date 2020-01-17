@@ -501,7 +501,7 @@ public class World {
       nextArea.doDayEndActions();
     }
 
-    this.player.increaseCurrentFund(this.player.getFutureFunds()); //TODO: make this a cool menu screen
+    this.player.increaseCurrentFunds(this.player.getFutureFunds()); //TODO: make this a cool menu screen
   }
 
   public void queueEvent(TimedEvent te) {
