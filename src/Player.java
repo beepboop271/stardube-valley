@@ -197,10 +197,12 @@ public class Player extends Moveable {
   }
 
   public void enterMenu(int menuPage) {
+    this.isImmutable = true;
     this.currentMenuPage = menuPage;
   }
 
   public void exitMenu() {
+    this.isImmutable = false;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
   }
@@ -240,21 +242,21 @@ public class Player extends Moveable {
   }
 
   public void incrementSelectedItemIdx() {
-    if (this.isImmutable()) {
+    if (this.isImmutable() && !(this.isInMenu())) {
       return;
     }
     this.selectedItemIdx = (this.selectedItemIdx+1)%12;
   }
 
   public void decrementSelectedItemIdx() {
-    if (this.isImmutable()) {
+    if (this.isImmutable() && !(this.isInMenu())) {
       return;
     }
     this.selectedItemIdx = Math.floorMod(this.selectedItemIdx-1, 12);
   }
 
   public void setSelectedItemIdx(int selectedItemIdx) {
-    if (this.isImmutable()) {
+    if (this.isImmutable() && !(this.isInMenu())) {
       return;
     }
     this.selectedItemIdx = selectedItemIdx;

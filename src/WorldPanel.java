@@ -19,6 +19,7 @@ import java.awt.AlphaComposite;
 public class WorldPanel extends JPanel {
   public static final int INVENTORY_CELLSIZE = 64;
   public static final int INVENTORY_CELLGAP = 4;
+  public static final int[] MENU_BUTTONS = {Player.INVENTORY_PAGE, Player.CRAFTING_PAGE, Player.MAP_PAGE, Player.SKILLS_PAGE, Player.SOCIAL_PAGE};
 
   public static final Color INVENTORY_BKGD_COLOR = new Color(140, 50, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
@@ -626,6 +627,11 @@ public class WorldPanel extends JPanel {
   public int hotbarItemIdxAt(int x) {
     return Math.min((int)(Math.floor((x-this.hotbarX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 11);
+  }
+
+  public int menuTabButtonAt(int x) {
+    return Math.min((int)(Math.floor((x-this.menuX)/
+           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.MENU_BUTTONS.length-1);
   }
 
   public int shopItemIdxAt(int y) {

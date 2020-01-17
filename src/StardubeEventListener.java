@@ -86,10 +86,9 @@ public class StardubeEventListener implements KeyListener,
     if (e.getKeyCode() < this.keyStates.length) {
       this.keyStates[e.getKeyCode()] = true;
     }
-
-    if (this.stardubePlayer.isImmutable()) {
-      return;
-    }
+    //if (this.stardubePlayer.isImmutable()) {
+    //  return;
+    //}
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
       case KeyEvent.VK_E:
@@ -197,11 +196,7 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos.y = e.getY();
 
     if (e.getButton() == MouseEvent.BUTTON1) {
-      if (this.stardubePlayer.isInFishingGame()) {
-        // FishingGame fishingGame = this.stardubePlayer.getCurrentFishingGame();
-        // fishingGame.setMouseDown(true);
-        // fishingGame.updateLastPressNanoTime();
-      } else if ((!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
+      if (!(this.stardubePlayer.isInFishingGame()) && (!this.stardubePlayer.isInMenu()) && (!this.stardubePlayer.isImmutable())) {
         if (this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()] != null) {
           HoldableStack selectedHoldableStack = this.stardubePlayer.getInventory()[this.stardubePlayer.getSelectedItemIdx()];
           if (selectedHoldableStack.getContainedHoldable() instanceof FishingRod) {
@@ -213,7 +208,6 @@ public class StardubeEventListener implements KeyListener,
         }
       }
     }
-
   }
 
   @Override
@@ -222,7 +216,7 @@ public class StardubeEventListener implements KeyListener,
     this.mouseStopwatches[e.getButton()] = new Stopwatch();
     this.mousePos.x = e.getX();
     this.mousePos.y = e.getY();
-
+    
     if (this.stardubePlayer.isInFishingGame()) {
       if (!this.stardubePlayer.getCurrentFishingGame().hasStarted()) {
         this.stardubeWorld.emplaceFutureEvent(0, new CatchFishEvent((FishingRod)(this.stardubePlayer.getSelectedItem().getContainedHoldable())));
@@ -233,7 +227,6 @@ public class StardubeEventListener implements KeyListener,
         this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*1_000_000_000),
               new PlayerInteractEvent(this.stardubePlayer.getSelectedTile()));
-        } 
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection
@@ -268,7 +261,7 @@ public class StardubeEventListener implements KeyListener,
          }
         }
 
-    else if ((!this.stardubePlayer.isInMenu()) && this.stardubePlayer.isImmutable()) {
+    } else if ((!this.stardubePlayer.isInMenu()) && this.stardubePlayer.isImmutable()) {
       if (e.getButton() == MouseEvent.BUTTON1) {
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
@@ -284,20 +277,22 @@ public class StardubeEventListener implements KeyListener,
       }
     } else if (this.stardubePlayer.isInMenu()) {
       int menuPage = this.stardubePlayer.getCurrentMenuPage();
+      System.out.println(menuPage);
       if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
           (this.worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
-        // TODO: process the button (update selected button id or sth);
+        this.stardubePlayer.enterMenu(this.worldPanel.menuTabButtonAt((int)this.mousePos.x));
 
       } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
+        
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
                 this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
                 (int)this.mousePos.x, (int)this.mousePos.y);
-        if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
+        if (selectedItemIdx < this.stardubePlayer.getInventorySize()) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         }
-
+        
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         // TODO: insert code
 
