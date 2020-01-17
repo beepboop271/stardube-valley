@@ -18,4 +18,7 @@ public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent {
     return (this.hardnessLeft <= 0);
   }
 
+  public void setHardnessLeft(int hardnessLeft) {
+    this.hardnessLeft = hardnessLeft;
+  }
 }
