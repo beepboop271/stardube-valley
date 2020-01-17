@@ -1,0 +1,48 @@
+ShippingContainer   /furniture/ShippingContainer.png    ShippingData   0 0
+Joseph's-Compsci-Mark       1                                this is where items start
+Kevin's-Ethics-Assignment   1 
+MakBooc                     5
+Chair-NULL                  5
+StoneItem                   2                                     
+CoalItem                    15
+CopperItem                  15
+IronItem                    15
+GoldItem                    30
+EmeraldItem                 150
+RubyItem                    80
+DiamondItem                 750
+AmethystItem                100
+QuartzItem                  25
+CopperBarItem               50
+IronBarItem                 100
+GoldBarItem                 150
+WoodItem                    2   
+SapItem                     1
+Purple-Algae                15                               this is where consumables start
+Popcorn-Fish                60
+Burger-Fish                 80
+Boba-Fish                   55
+Carp                        40
+Smallmouth-Bass             45
+Largemouth-Bass             95
+Tuna                        65
+Anchovy                     40
+Sardine                     55
+ParsnipItem                 35
+GarlicItem                  40
+PotatoItem                  55
+CauliflowerItem             95
+TulipItem                   65
+StrawberryItem              60              
+WatermelonItem              95
+CornItem                    55
+TurnipItem                  40
+LeekItem                    40
+BluebellItem                30
+IceCreamItem                45
+MushroomItem                40
+WinterRootItem              30
+JavacakeItem                55           haha more like 3 BILLION
+DaffodilItem                40
+
+name                    sell price 

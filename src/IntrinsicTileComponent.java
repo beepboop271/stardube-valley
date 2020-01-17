@@ -11,19 +11,15 @@ import javax.imageio.ImageIO;
  * @author Kevin Qiao, Paula Yuan, Joseph Wang
  */
 
-public abstract class IntrinsicTileComponent extends TileComponent 
-                                             implements Collectable {
+public abstract class IntrinsicTileComponent extends TileComponent {
   private final String name;
-  private final HoldableDrop[] products;
   private final BufferedImage[] images;
   private final int[] offsets;
 
   public IntrinsicTileComponent(String name,
                                 String imagesPath,
-                                int numProducts,
                                 int[] offsets) throws IOException {
     this.name = name;
-    this.products = new HoldableDrop[numProducts];
     this.offsets = offsets;
     
     File fileSystem = new File(imagesPath);
@@ -61,14 +57,5 @@ public abstract class IntrinsicTileComponent extends TileComponent
 
   public BufferedImage[] getImages() {
     return this.images;
-  }
-
-  public void setProduct(int i, HoldableDrop product) {
-    this.products[i] = product;
-  }
-
-  @Override
-  public HoldableDrop[] getProducts() {
-    return this.products;
   }
 }

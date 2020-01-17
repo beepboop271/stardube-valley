@@ -22,7 +22,7 @@ public class TimedEvent implements Comparable<TimedEvent> {
   }
 
   public int compareTo(TimedEvent other) {
-    return (int)(this.time-other.time);
+    return (int)(other.time-this.time);
   }
 
   public long getTime() {

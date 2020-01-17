@@ -1,78 +1,31 @@
-import java.awt.image.BufferedImage;
-
 /**
  * [ExtrinsicCrop]
+ * A crop that is able to store information specific to the crop, but relies on
+ * IntrinsicCrop for shared data between all crops.
  * 2019-12-23
- * @version 0.1
- * @author Joseph Wang
+ * @version 0.3
+ * @author Joseph Wang, Paula Yuan
  */
 
-public class ExtrinsicCrop extends ExtrinsicTileComponent implements Growable, Collectable {
-  private int stage, regrowCooldown;
+public class ExtrinsicCrop extends ExtrinsicGrowableCollectable {
 
+  /**
+   * [ExtrinsicCrop]
+   * Constructor for an ExtrinsicCrop that takes in an IntrinsicCrop that it
+   * sets as the related IntrinsicCrop.
+   * @param crop An IntrinsicCrop which is the IntrinsicCrop of this crop.
+   */
   public ExtrinsicCrop(IntrinsicCrop crop) {
     super(crop);
-    this.stage = 0;
-    this.regrowCooldown = 0;
-  }
-
-  public ExtrinsicCrop(String crop) {
-    super(crop);
-    this.stage = 0;
-    this.regrowCooldown = 0;
   }
 
   /**
-   * canHarvest()
-   * @return a boolean o
+   * [ExtrinsicCrop]
+   * Constructor for an ExtrinsicCrop that takes in a string and finds the
+   * IntrinsicCrop related to that string.
+   * @param crop A string with the crop's name.
    */
-  public boolean canHarvest() {
-    if (this.stage == ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
-      return true;
-    }
-    return false;
-  }
-
-  public boolean shouldRegrow() {
-    if (((IntrinsicCrop)this.getIntrinsicSelf()).getRegrowTime() == 0) {
-      return false;
-    }
-    return true;
-  }
-
-  public void resetRegrowCooldown() {
-    regrowCooldown = ((IntrinsicCrop)this.getIntrinsicSelf()).getRegrowTime();
-  }
-
-  public HoldableDrop getProduct() {
-    return this.getIntrinsicSelf().getProducts()[0];
-  }
-
-  @Override
-  public BufferedImage getImage() {
-    if (regrowCooldown == 0) {
-      return this.getIntrinsicSelf().getImages()[
-              ((IntrinsicCrop)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
-    }
-
-    return this.getIntrinsicSelf().getImages()[
-              this.getIntrinsicSelf().getImages().length - 2]; 
-              //- .length - 1 gives the full harvested image. We want .length - 2
-  }
-
-  @Override
-  public void grow() {
-    if (this.stage < ((IntrinsicCrop)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) { 
-      this.stage++;
-    }
-
-    if (this.regrowCooldown > 0) {
-      this.regrowCooldown--;
-    }
-  }
-
-  @Override
-  public HoldableDrop[] getProducts() {
-    return this.getIntrinsicSelf().getProducts();
+  public ExtrinsicCrop(String crop) {
+    super(crop);
   }
 }

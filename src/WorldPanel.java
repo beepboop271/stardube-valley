@@ -122,7 +122,7 @@ public class WorldPanel extends JPanel {
 
     Point selectedTile = worldPlayer.getSelectedTile();
 
-    // draw tiles and tile components, except trees
+    // draw tiles
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
         if (playerArea.inMap(x, y)) {
@@ -131,13 +131,6 @@ public class WorldPanel extends JPanel {
             int drawX = originX+(screenTileX*Tile.getSize());
             int drawY = originY+(screenTileY*Tile.getSize());
             g.drawImage(currentTile.getImage(), drawX, drawY, null);
-            TileComponent tileContent = currentTile.getContent();
-            if ((tileContent != null) && !(tileContent instanceof ExtrinsicTree)) {
-              drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
-              drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
-              Graphics2D imgGraphics = (Graphics2D)g;
-              imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
-            }
           }
         }
         ++screenTileX;
@@ -190,18 +183,17 @@ public class WorldPanel extends JPanel {
               int componentW = ((Drawable)tileContent).getImage().getWidth();
               int componentH = ((Drawable)tileContent).getImage().getHeight();
               // if the player is overlapping with the tree, set a transparency for the tree
-              if (tileContent instanceof ExtrinsicTree) {
-                if ((playerScreenPos.x < drawX + componentW) &&
-                    (playerScreenPos.x + playerW > drawX) &&
-                    (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
-                    (playerScreenPos.y + playerH > drawY)) {
-                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
-                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-                } else {
-                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
-                }     
-              }
+              if ((tileContent instanceof ExtrinsicTree) &&
+                  (playerScreenPos.x < drawX + componentW) &&
+                  (playerScreenPos.x + playerW > drawX) &&
+                  (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
+                  (playerScreenPos.y + playerH > drawY)) {
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+              } else {
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+              }     
               
             }
 
@@ -281,7 +273,10 @@ public class WorldPanel extends JPanel {
     g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
     g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
     g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
-                  
+    g2.drawString(Integer.toString(worldPlayer.getCurrentFund())+" D$", 
+                  this.getWidth()-g2.getFontMetrics().stringWidth(
+                                        Integer.toString(worldPlayer.getCurrentFund()) + " D$")-20,
+                  215);
     
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));

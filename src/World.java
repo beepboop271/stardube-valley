@@ -294,7 +294,7 @@ public class World {
               if (selectedTile.getContent() instanceof ExtrinsicCrop) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
-              selectedTile.setContent(null);
+              //selectedTile.setContent(null);  <- unsure why we need this
             }
           } //- Ground tile changes image based on what happened
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
@@ -320,7 +320,6 @@ public class World {
 
         if (currentContent instanceof ExtrinsicCrop) {
           if (((ExtrinsicCrop)currentContent).canHarvest()) {
-            System.out.println(((ExtrinsicCrop)currentContent).getProduct());
             HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
             if ((product != null)
@@ -378,6 +377,14 @@ public class World {
               }
             } 
           } 
+        } else if (currentContent instanceof ShippingContainer) {
+          if (this.player.getSelectedItem() != null) {
+            if (!(this.player.getSelectedItem().getContainedHoldable() instanceof Tool)) {
+              HoldableStack currentItem = this.player.getSelectedItem();
+              this.player.increaseFutureFunds(((ShippingContainer)currentContent).sellItem(currentItem));
+              this.player.removeAtIndex(this.player.getSelectedItemIdx());
+            }
+          }
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
         ((ExtrinsicMachine)event.getSource()).processItem();
@@ -490,6 +497,8 @@ public class World {
       nextArea.updateSeason();
       nextArea.doDayEndActions();
     }
+
+    this.player.increaseCurrentFund(this.player.getFutureFunds()); //TODO: make this a cool menu screen
   }
 
   public void queueEvent(TimedEvent te) {
@@ -585,7 +594,15 @@ public class World {
             a.setMapAt(new OceanTile(x, y));
             break;
           case 'b':
-            a.setMapAt(new PathTile(x, y));
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            break;
+          case 'f':
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            break;
+          case 's':
+            Tile createdTile = new GroundTile(x, y);
+            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
+            a.setMapAt(createdTile);
             break;
         }
       }
