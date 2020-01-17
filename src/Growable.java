@@ -11,6 +11,7 @@ public interface Growable {
   /**
    * [grow]
    * Performs this growable's grow action, usually by increasing its stage.
+   * @author Joseph Wang
    */
   public void grow();
 }
