@@ -5,7 +5,7 @@
  * @author Joseph Wang, Paula Yuan
  */
 
-public class ExtrinsicCrop extends ExtrinsicGrowableCollectable{
+public class ExtrinsicCrop extends ExtrinsicGrowableCollectable {
 
   public ExtrinsicCrop(IntrinsicCrop crop) {
     super(crop);

@@ -45,7 +45,7 @@ public class Player extends Moveable {
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
-    this.currentFunds = 1_000_000_000;
+    this.currentFunds = 5_000;
     this.totalEarning = this.currentFunds;
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);

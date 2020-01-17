@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class IntrinsicHarvestableComponent extends IntrinsicTileComponent implements Harvestable {
+public class IntrinsicHarvestableComponent extends CollectableComponent implements Harvestable {
   private final String requiredTool;
   private final int hardness;
 

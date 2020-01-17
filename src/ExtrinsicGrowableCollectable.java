@@ -45,7 +45,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   }
 
   public HoldableDrop getProduct() {
-    return this.getIntrinsicSelf().getProducts()[0];
+    return this.getProducts()[0];
   }
 
   @Override
@@ -73,6 +73,6 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
 
   @Override
   public HoldableDrop[] getProducts() {
-    return this.getIntrinsicSelf().getProducts();
+    return ((CollectableComponent)this.getIntrinsicSelf()).getProducts();
   }
 }

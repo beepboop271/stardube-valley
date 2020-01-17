@@ -7,7 +7,7 @@ import java.io.IOException;
  * @author Paula Yuan, Joseph Wang
  */
 
-public class IntrinsicGrowableCollectable extends IntrinsicTileComponent implements Harvestable {
+public class IntrinsicGrowableCollectable extends CollectableComponent implements Harvestable {
   private String requiredTool;
   private int[] stageToDisplay;
   private int maxGrowthStage, regrowTime;

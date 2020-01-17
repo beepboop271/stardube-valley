@@ -311,7 +311,6 @@ public class World {
 
         if (currentContent instanceof ExtrinsicCrop) {
           if (((ExtrinsicCrop)currentContent).canHarvest()) {
-            System.out.println(((ExtrinsicCrop)currentContent).getProduct());
             HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
             if ((product != null)
