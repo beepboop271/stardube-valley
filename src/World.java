@@ -113,7 +113,6 @@ public class World {
     Iterator<Moveable> moveables;
     Moveable nextMoveable;
     LinkedHashSet<Point> intersectingTiles;
-    int exitDirection;
     Vector2D move;
     int collideDirection;
     while (areas.hasNext()) {
@@ -162,15 +161,21 @@ public class World {
             nextMoveable.translatePos(move.getYVector());
           }
           
-          exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
-          if (exitDirection > -1) {
-            System.out.println("oof");
-            if (nextMoveable instanceof Player) {
-              this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
-            } else {
-              nextArea.moveAreas(nextMoveable, exitDirection);
-            }
+          if (nextMoveable instanceof Player) {
+            this.playerArea = nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
+          } else {
+            nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
           }
+
+          // exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
+          // if (exitDirection > -1) {
+          //   System.out.println("oof");
+          //   if (nextMoveable instanceof Player) {
+          //     this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
+          //   } else {
+          //     nextArea.moveAreas(nextMoveable, exitDirection);
+          //   }
+          // }
         }
       }
     }
@@ -181,6 +186,10 @@ public class World {
   public void processEvents() {
     // pygame_irl
     EventObject event;
+    if (!this.eventQueue.isEmpty()) {
+      System.out.print(this.eventQueue.size()+" ");
+      System.out.println(this.eventQueue.peek());
+    }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
@@ -492,39 +501,54 @@ public class World {
   }
 
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
+    System.out.printf("enqueue t=%d\n", this.inGameNanoTime+nanoTimeIntoFuture);
+    long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
+    System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
   public void loadAreas() throws IOException {
-    String[] areaInfo;
+    String[] splitLine;
     String nextLine;
 
     BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/map/Areas"));
     nextLine = input.readLine();
     while (nextLine != null) {
-      areaInfo = nextLine.split(" ");
-      this.locations.put(areaInfo[1],
-                         Area.constructArea(areaInfo[0], areaInfo[1],
-                                            Integer.parseInt(areaInfo[2]),
-                                            Integer.parseInt(areaInfo[3])));
+      splitLine = nextLine.split(" ");
+      this.locations.put(splitLine[1],
+                         Area.constructArea(splitLine[0], splitLine[1],
+                                            Integer.parseInt(splitLine[2]),
+                                            Integer.parseInt(splitLine[3])));
       nextLine = input.readLine();
+    }
+    input.close();
+
+    input = new BufferedReader(new FileReader("assets/gamedata/map/Gateways"));
+    nextLine = input.readLine();
+    for (int i = 0; i < Integer.parseInt(nextLine); ++i) {
+      nextLine = input.readLine();
+      splitLine = input.readLine().split(" ");
+      Area nextArea = this.locations.get(nextLine);
+      for (int j = 0; j < splitLine.length; ++j) {
+        nextArea.addGateway()
+      }
     }
     input.close();
 
     Iterator<Area> locationAreas = this.locations.values().iterator();
     while (locationAreas.hasNext()) {
-      World.loadAreaMap(locationAreas.next());
+      this.loadAreaMap(locationAreas.next());
     }
 
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
     while (nextLine != null) {
-      areaInfo = input.readLine().split(" ");
+      splitLine = input.readLine().split(" ");
       for (int i = 0; i < 4; ++i) {
-        if (!areaInfo[i].equals("null")) {
+        if (!splitLine[i].equals("null")) {
           this.locations.get(nextLine)
               .getNeighbourZone(i)
-              .setDestinationArea(this.locations.get(areaInfo[i]));
+              .setDestinationArea(this.locations.get(splitLine[i]));
         }
       }
       nextLine = input.readLine();
@@ -532,10 +556,11 @@ public class World {
     input.close();
   }
 
-  public static void loadAreaMap(Area a) throws IOException {
+  public void loadAreaMap(Area a) throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
                                                              + a.getName()));
     String nextLine;
+
 
     for (int y = 0; y < a.getHeight(); ++y) {
       nextLine = input.readLine();

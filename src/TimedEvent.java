@@ -15,6 +15,12 @@ public class TimedEvent implements Comparable<TimedEvent> {
     this.event = event;
   }
 
+  @Override
+  public String toString() {
+    long time = this.time/1_000_000_000;
+    return "TE"+String.format("%02d:%02d", time/60, time%60);
+  }
+
   public int compareTo(TimedEvent other) {
     return (int)(this.time-other.time);
   }

@@ -5,7 +5,6 @@
  * @author Kevin Qiao, Joseph Wang
  */
 public class GatewayZone extends Gateway{
-  private Point origin;
   private int orientation;
 
   public GatewayZone(int originX, int originY, int orientation) {
@@ -18,7 +17,7 @@ public class GatewayZone extends Gateway{
     if ((this.orientation == World.NORTH) || (this.orientation == World.SOUTH)) {
       return super.toDestinationPoint(p, size);
     } else {
-      p.translate(-this.origin.x, -this.origin.y);
+      p.translate(-this.getOrigin().x, -this.getOrigin().y);
       p.x = Math.copySign(0.5-size, -p.x);
       p.translate(this.getDestinationGateway().getOrigin());
       return p;
