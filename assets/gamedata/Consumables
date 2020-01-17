@@ -23,7 +23,6 @@ IceCreamItem      /forageables/   for-winter                  10 15
 MushroomItem      /forageables/   one-up                      10 15
 WinterRootItem    /forageables/   taro-for-bubble-tea         10 15
 JavacakeItem      /forageables/   "lets-get-some-javacake"    10 15
-QuartzItem        /ores/          yum                         10 15
 DaffodilItem      /forageables/   doesn't-actually-exist      10 15
 
 name              imagePath                    description     health gain

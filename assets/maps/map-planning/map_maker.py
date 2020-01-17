@@ -8,7 +8,7 @@ COLOURS = {
     (0  , 255, 203): "o"
 }
 
-img = pygame.image.load("mineComponents.png")
+img = pygame.image.load("mineArea.png")
 
 with open("Ocean", "w") as f:
     for y in range(img.get_height()):

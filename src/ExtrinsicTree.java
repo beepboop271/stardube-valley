@@ -16,7 +16,7 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
   }
 
   public HoldableDrop getProduct() {
-    return this.getIntrinsicSelf().getProducts()[0];
+    return ((CollectableComponent)this.getIntrinsicSelf()).getProducts()[0];
   }
 
   @Override

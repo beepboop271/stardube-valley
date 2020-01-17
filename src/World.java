@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -113,7 +115,6 @@ public class World {
     Iterator<Moveable> moveables;
     Moveable nextMoveable;
     LinkedHashSet<Point> intersectingTiles;
-    int exitDirection;
     Vector2D move;
     int collideDirection;
     while (areas.hasNext()) {
@@ -162,15 +163,21 @@ public class World {
             nextMoveable.translatePos(move.getYVector());
           }
           
-          exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
-          if (exitDirection > -1) {
-            System.out.println("oof");
-            if (nextMoveable instanceof Player) {
-              this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
-            } else {
-              nextArea.moveAreas(nextMoveable, exitDirection);
-            }
+          if (nextMoveable instanceof Player) {
+            this.playerArea = nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
+          } else {
+            nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
           }
+
+          // exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
+          // if (exitDirection > -1) {
+          //   System.out.println("oof");
+          //   if (nextMoveable instanceof Player) {
+          //     this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
+          //   } else {
+          //     nextArea.moveAreas(nextMoveable, exitDirection);
+          //   }
+          // }
         }
       }
     }
@@ -181,6 +188,10 @@ public class World {
   public void processEvents() {
     // pygame_irl
     EventObject event;
+    if (!this.eventQueue.isEmpty()) {
+      System.out.print(this.eventQueue.size()+" ");
+      System.out.println(this.eventQueue.peek());
+    }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
@@ -285,7 +296,7 @@ public class World {
               if (selectedTile.getContent() instanceof ExtrinsicCrop) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
-              selectedTile.setContent(null);
+              //selectedTile.setContent(null);  <- unsure why we need this
             }
           } //- Ground tile changes image based on what happened
           ((GroundTile)selectedTile).determineImage(this.inGameDay);
@@ -294,84 +305,91 @@ public class World {
         //TODO: make this not just for forageables but also doors and stuff i guess
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
-        if (interactedGateway != null) {
-          this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
-        }
         Tile currentTile = this.playerArea.getMapAt(useLocation);
+        if (interactedGateway != null && interactedGateway.requiresInteractToMove()) {
+          this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
+        } else if (currentTile != null) {
 
-        if (currentTile.getContent() == null) {
-          if ((this.player.getSelectedItem() != null) &&
-              (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
-            this.player.consume();
-          } 
-        }
+          if (currentTile.getContent() == null) {
+            if ((this.player.getSelectedItem() != null) &&
+                (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
+              this.player.consume();
+            } 
+          }
 
-        //TODO: play foraging animation?
-        TileComponent currentContent = currentTile.getContent();
+          //TODO: play foraging animation?
+          TileComponent currentContent = currentTile.getContent();
 
-        if (currentContent instanceof ExtrinsicCrop) {
-          if (((ExtrinsicCrop)currentContent).canHarvest()) {
-            System.out.println(((ExtrinsicCrop)currentContent).getProduct());
-            HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
-            HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-            if ((product != null)
-                  && this.player.canPickUp(product.getContainedHoldable())) {
-              this.player.pickUp(product);
-              if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
-                ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
-              } else {
+          if (currentContent instanceof ExtrinsicCrop) {
+            if (((ExtrinsicCrop)currentContent).canHarvest()) {
+              HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
+              HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+              if ((product != null)
+                    && this.player.canPickUp(product.getContainedHoldable())) {
+                this.player.pickUp(product);
+                if (((ExtrinsicCrop)currentContent).shouldRegrow()) {
+                  ((ExtrinsicCrop)currentContent).resetRegrowCooldown();
+                } else {
+                  currentTile.setContent(null);
+                }
+              }
+            }
+          } else if (currentContent instanceof Collectable) {
+            ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
+            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+            HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
+            HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
+            if (drop != null) {
+              new HoldableStackEntity(drop, null); // TODO: change the pos
+              if (this.player.canPickUp(drop.getContainedHoldable())) {
+                this.player.pickUp(drop);
                 currentTile.setContent(null);
               }
             }
-          }
-        } else if (currentContent instanceof Collectable) {
-          ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
-          //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
-          HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-          HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
-          if (drop != null) {
-            new HoldableStackEntity(drop, null); // TODO: change the pos
-            if (this.player.canPickUp(drop.getContainedHoldable())) {
-              this.player.pickUp(drop);
-              currentTile.setContent(null);
-            }
-          }
-        } else if (currentContent instanceof ExtrinsicChest) {
-          this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
-          this.player.enterMenu(Player.CHEST_PAGE);
-        } else if (currentContent instanceof ExtrinsicMachine) {
-          if (((ExtrinsicMachine)currentContent).getProduct() != null) {
-            if (this.player.canPickUp(((ExtrinsicMachine)currentContent)
-                                        .getProduct().getContainedHoldable())) {
-              this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
-              ((ExtrinsicMachine)currentContent).resetProduct();
-            }
-          } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
-                      (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
-            if (this.player.getSelectedItem() != null) {
-              HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
-              if (((ExtrinsicMachine)currentContent).canProcess(
-                          selectedItem.getContainedHoldable().getName()) &&
-                              selectedItem.getQuantity() >= 
-                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
-                if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
-                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
-                  ((ExtrinsicMachine)currentContent).setItemToProcess(
-                                                      selectedItem.getContainedHoldable().getName());
-                  ((ExtrinsicMachine)currentContent).increasePhase();   
-                  player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
-                  player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
-                  this.emplaceFutureEvent(
-                    ((ExtrinsicMachine)currentContent).getProcessingTime(
-                                        selectedItem.getContainedHoldable().getName()), 
-                    new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
-                }                                   
+          } else if (currentContent instanceof ExtrinsicChest) {
+            this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
+            this.player.enterMenu(Player.CHEST_PAGE);
+          } else if (currentContent instanceof ExtrinsicMachine) {
+            if (((ExtrinsicMachine)currentContent).getProduct() != null) {
+              if (this.player.canPickUp(((ExtrinsicMachine)currentContent)
+                                          .getProduct().getContainedHoldable())) {
+                this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
+                ((ExtrinsicMachine)currentContent).resetProduct();
               }
+            } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
+                        (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
+              if (this.player.getSelectedItem() != null) {
+                HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+                if (((ExtrinsicMachine)currentContent).canProcess(
+                            selectedItem.getContainedHoldable().getName()) &&
+                                selectedItem.getQuantity() >= 
+                                    ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+                  if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
+                          this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
+                    ((ExtrinsicMachine)currentContent).setItemToProcess(
+                                                        selectedItem.getContainedHoldable().getName());
+                    ((ExtrinsicMachine)currentContent).increasePhase();   
+                    player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+                    player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
+                    this.emplaceFutureEvent(
+                      ((ExtrinsicMachine)currentContent).getProcessingTime(
+                                          selectedItem.getContainedHoldable().getName()), 
+                      new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                  }                                   
+                }
+              } 
             } 
-          } 
+          } else if (currentContent instanceof ShippingContainer) {
+            if (this.player.getSelectedItem() != null) {
+              if (!(this.player.getSelectedItem().getContainedHoldable() instanceof Tool)) {
+                HoldableStack currentItem = this.player.getSelectedItem();
+                this.player.increaseFutureFunds(((ShippingContainer)currentContent).sellItem(currentItem));
+                this.player.removeAtIndex(this.player.getSelectedItemIdx());
+              }
+            }
+          }
         }
       } else if (event instanceof MachineProductionFinishedEvent) {
-        System.out.println("Done smelting");
         ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {
@@ -482,6 +500,8 @@ public class World {
       nextArea.updateSeason();
       nextArea.doDayEndActions();
     }
+
+    this.player.increaseCurrentFund(this.player.getFutureFunds()); //TODO: make this a cool menu screen
   }
 
   public void queueEvent(TimedEvent te) {
@@ -493,39 +513,79 @@ public class World {
   }
 
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
+    System.out.printf("enqueue t=%d\n", this.inGameNanoTime+nanoTimeIntoFuture);
+    long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
+    System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
   public void loadAreas() throws IOException {
-    String[] areaInfo;
+    String[] splitLine;
     String nextLine;
 
+    // declare all areas first, then fill them in later
     BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/map/Areas"));
     nextLine = input.readLine();
     while (nextLine != null) {
-      areaInfo = nextLine.split(" ");
-      this.locations.put(areaInfo[1],
-                         Area.constructArea(areaInfo[0], areaInfo[1],
-                                            Integer.parseInt(areaInfo[2]),
-                                            Integer.parseInt(areaInfo[3])));
+      splitLine = nextLine.split(" ");
+      this.locations.put(splitLine[1],
+                         Area.constructArea(splitLine[0], splitLine[1],
+                                            Integer.parseInt(splitLine[2]),
+                                            Integer.parseInt(splitLine[3])));
       nextLine = input.readLine();
     }
     input.close();
 
+    // add gateways
+    input = new BufferedReader(new FileReader("assets/gamedata/map/Gateways"));
+    nextLine = input.readLine();
+    // (\w++) ?             group 1: area1 name, optionally followed by space
+    // \((\d++), ?(\d++)\)  group 2,3: coordinates of gateway in area1, with parentheses and optional space
+    // \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
+    // (\w++) ?             group 6: area2 name, optionally followed by space
+    // \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
+    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\)$");
+    Matcher gatewayMatch;
+    Gateway gateway1, gateway2;
+    while (!nextLine.equals("")) {
+      gatewayMatch = gatewayPattern.matcher(nextLine);
+      gatewayMatch.matches();
+      gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
+                             Integer.parseInt(gatewayMatch.group(3)),
+                             World.NORTH,
+                             gatewayMatch.group(4).equals("I"));
+      gateway2 = new Gateway(Integer.parseInt(gatewayMatch.group(7)),
+                             Integer.parseInt(gatewayMatch.group(8)),
+                             World.SOUTH,
+                             gatewayMatch.group(5).equals("I"));
+
+      gateway1.setDestinationArea(this.locations.get(gatewayMatch.group(6)));
+      gateway1.setDestinationGateway(gateway2);
+      gateway2.setDestinationArea(this.locations.get(gatewayMatch.group(1)));
+      gateway2.setDestinationGateway(gateway1);
+
+      this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
+      this.locations.get(gatewayMatch.group(6)).addGateway(gateway2);
+      nextLine = input.readLine();
+    }
+    input.close();
+
+    // load the tiles
     Iterator<Area> locationAreas = this.locations.values().iterator();
     while (locationAreas.hasNext()) {
-      World.loadAreaMap(locationAreas.next());
+      this.loadAreaMap(locationAreas.next());
     }
 
+    // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
     while (nextLine != null) {
-      areaInfo = input.readLine().split(" ");
+      splitLine = input.readLine().split(" ");
       for (int i = 0; i < 4; ++i) {
-        if (!areaInfo[i].equals("null")) {
+        if (!splitLine[i].equals("null")) {
           this.locations.get(nextLine)
               .getNeighbourZone(i)
-              .setDestinationArea(this.locations.get(areaInfo[i]));
+              .setDestinationArea(this.locations.get(splitLine[i]));
         }
       }
       nextLine = input.readLine();
@@ -533,10 +593,11 @@ public class World {
     input.close();
   }
 
-  public static void loadAreaMap(Area a) throws IOException {
+  public void loadAreaMap(Area a) throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
                                                              + a.getName()));
     String nextLine;
+
 
     for (int y = 0; y < a.getHeight(); ++y) {
       nextLine = input.readLine();
@@ -561,7 +622,18 @@ public class World {
             a.setMapAt(new OceanTile(x, y));
             break;
           case 'b':
-            a.setMapAt(new PathTile(x, y));
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            break;
+          case 'f':
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            break;
+          case 's':
+            Tile createdTile = new GroundTile(x, y);
+            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
+            a.setMapAt(createdTile);
+            break;
+          case 'g':
+            a.setMapAt(new GroundTile(x, y));
             break;
         }
       }

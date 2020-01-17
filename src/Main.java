@@ -3,15 +3,17 @@ public class Main {
     // TODO: make this less sketchy
     GroundTile.setGroundTileImages();
     GrassTile.setGrassTileImage();
-    PathTile.setPathTileImage();
+    DecorationTile.initializeTileImages();
     WaterTile.setWaterTileImage();
     WaterTile.setFishableTrash();
     PondTile.setFishableFish();
     RiverTile.setFishableFish();
     LakeTile.setFishableFish();
     OceanTile.setFishableFish();
+
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();
+    
     MineLevel.loadComponents();
 
     World stardube = new World();

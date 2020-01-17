@@ -2,6 +2,9 @@ import java.awt.image.BufferedImage;
 
 /**
  * [ExtrinsicMachine]
+ * A machine that is able to store specific information related to this object,
+ * like what is being produced. Uses IntrinsicMachine for information shared between
+ * machines of the same type.
  * 2020-01-08
  * @version 0.1
  * @author Joseph Wang
@@ -12,6 +15,12 @@ public class ExtrinsicMachine extends ExtrinsicHarvestableComponent {
   private HoldableStack product;
   private String itemToProcess;
 
+  /**
+   * [ExtrinsicMachine]
+   * Constructor for a new ExtrinsicMachine that takes a string with the name
+   * and finds the IntrinsicMachine with the related name.
+   * @param name
+   */
   public ExtrinsicMachine(String name) {
     super(name);
   }
@@ -43,7 +52,7 @@ public class ExtrinsicMachine extends ExtrinsicHarvestableComponent {
   /**
    * [setItemToProcess]
    * Sets the item that must be processed.
-   * @param itemToProcess the itemToProcess to set
+   * @param itemToProcess the item to be processed.
    */
   public void setItemToProcess(String itemToProcess) {
     this.itemToProcess = itemToProcess;

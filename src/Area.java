@@ -42,6 +42,10 @@ public abstract class Area {
       return new FarmArea(name, width, height);
     } else if (category.equals("WorldArea")) {
       return new WorldArea(name, width, height);
+    } else if (category.equals("BuildingArea")) {
+      return new BuildingArea(name, width, height);
+    } else if (category.equals("MineArea")) {
+      return new MineArea(name, width, height);
     } else {
       return null;
     }
@@ -168,23 +172,32 @@ public abstract class Area {
     return true;
   }
 
-  public int canMoveAreas(Iterator<Point> intersectingPoints) {
+  public Area moveAreas(Moveable m, Iterator<Point> intersectingPoints) {
     Point nextPoint;
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
-      if (!this.inMap((int)nextPoint.x, (int)nextPoint.y)) {
-        return this.getExitDirection((int)nextPoint.x, (int)nextPoint.y);
+      if (!this.inMap(nextPoint)) {
+        return this.moveAreas(m, this.getNeighbourZone(this.getExitDirection(nextPoint)));
+      // } else if (this.gateways.get(nextPoint) != null) {
+      //   return this.moveAreas(m, this.gateways.get(nextPoint));
       }
     }
-    return -1;
+    Gateway g = this.gateways.get(m.getPos().round());
+    if (g != null) {
+      return this.moveAreas(m, g);
+    }
+    return this;
   }
-
-  public Area moveAreas(Moveable m, int direction) {
-    GatewayZone gateway = this.getNeighbourZone(direction);
-    return this.moveAreas(m, gateway);
-  }
+  
+  // public Area moveAreas(Moveable m, int direction) {
+  //   GatewayZone gateway = this.getNeighbourZone(direction);
+  //   return this.moveAreas(m, gateway);
+  // }
 
   public Area moveAreas(Moveable m, Gateway g) {
+    if (g == null) {
+      return this;
+    }
     m.setPos(g.toDestinationPoint(m.getPos(), m.getSize()));
     this.moveables.remove(m);
     g.getDestinationArea().moveables.add(m);
@@ -203,8 +216,8 @@ public abstract class Area {
     this.gateways.put(g.getOrigin(), g);
   }
 
-  public Gateway getGateway(Point p) {
-    return this.gateways.get(p);
+  public Gateway getGateway(Point pos) {
+    return this.gateways.get(pos);
   }
 
   public Iterator<Moveable> getMoveables() {
@@ -252,7 +265,9 @@ public abstract class Area {
     return this.inMap((int)pos.x, (int)pos.y);
   }
 
-  public int getExitDirection(int x, int y) {
+  public int getExitDirection(Point pos) {
+    int x = (int)(pos.x);
+    int y = (int)(pos.y);
     if (x < 0) {
       return World.WEST;
     } else if (x >= this.width) {

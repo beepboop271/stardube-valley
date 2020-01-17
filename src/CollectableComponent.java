@@ -9,11 +9,24 @@ import java.io.IOException;
  */
 public class CollectableComponent extends IntrinsicTileComponent 
                                   implements Collectable, Drawable {
+  private final HoldableDrop[] products;
+
   public CollectableComponent(String name,
                               String imagePath,
                               int numProducts,
                               int[] offsets) throws IOException {
-    super(name, imagePath, numProducts, offsets);
+    super(name, imagePath, offsets);
+
+    this.products = new HoldableDrop[numProducts];
+  }
+
+  public void setProduct(int i, HoldableDrop product) {
+    this.products[i] = product;
+  }
+
+  @Override
+  public HoldableDrop[] getProducts() {
+    return this.products;
   }
 
   @Override
