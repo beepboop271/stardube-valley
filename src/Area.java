@@ -17,8 +17,7 @@ public abstract class Area {
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZones;
-  private HashMap<Point, Gateway> gatewaysByPos;
-  private HashMap<String, Gateway> gatewaysByName;
+  private HashMap<Point, Gateway> gateways;
   private long currentDay;
   private int currentSeason;
   
@@ -31,8 +30,7 @@ public abstract class Area {
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
     this.neighbourZones = new GatewayZone[4];
-    this.gatewaysByPos = new HashMap<Point, Gateway>();
-    this.gatewaysByName = new HashMap<String, Gateway>();
+    this.gateways = new HashMap<Point, Gateway>();
     this.currentDay = 0;
     this.currentSeason = 0;
   }
@@ -46,9 +44,8 @@ public abstract class Area {
       return new WorldArea(name, width, height);
     } else if (category.equals("BuildingArea")) {
       return new BuildingArea(name, width, height);
-    // } else if (category.equals("MineArea")) {
-    //   return new MineArea(name, width, height);
-    // }
+    } else if (category.equals("MineArea")) {
+      return new MineArea(name, width, height);
     } else {
       return null;
     }
@@ -181,9 +178,11 @@ public abstract class Area {
       nextPoint = intersectingPoints.next();
       if (!this.inMap(nextPoint)) {
         return this.moveAreas(m, this.getNeighbourZone(this.getExitDirection(nextPoint)));
+      // } else if (this.gateways.get(nextPoint) != null) {
+      //   return this.moveAreas(m, this.gateways.get(nextPoint));
       }
     }
-    Gateway g = this.gatewaysByPos.get(m.getPos().round());
+    Gateway g = this.gateways.get(m.getPos().round());
     if (g != null) {
       return this.moveAreas(m, g);
     }
@@ -214,16 +213,11 @@ public abstract class Area {
   }
 
   public void addGateway(Gateway g) {
-    this.gatewaysByPos.put(g.getOrigin(), g);
-    this.gatewaysByName.put(g.getDestinationArea().getName(), g);
+    this.gateways.put(g.getOrigin(), g);
   }
 
   public Gateway getGateway(Point pos) {
-    return this.gatewaysByPos.get(pos);
-  }
-
-  public Gateway getGateway(String name) {
-    return this.gatewaysByName.get(name);
+    return this.gateways.get(pos);
   }
 
   public Iterator<Moveable> getMoveables() {

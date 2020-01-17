@@ -6,9 +6,9 @@ public class MineArea extends Area {
   private Point elevator;
   
   public MineArea(String name,
-                  int width, int height,
-                  Point elevator, Point startingLadder) {
+                  int width, int height) {
     super(name, width, height);
+    this.levels = new MineLevel[MineArea.NUM_LEVELS];
     this.levels[0] = new MineLevel.Builder(0, 2).buildLevel();
   }
 

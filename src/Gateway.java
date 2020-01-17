@@ -2,15 +2,30 @@ public class Gateway {
   private Gateway destinationGateway;
   private Area destinationArea;
   private Point origin;
+  private int orientation;
+  private boolean interactToMove;
 
-  public Gateway(int originX, int originY) {
+  public Gateway(int originX, int originY,
+                 int orientation, boolean interactToMove) {
     this.origin = new Point(originX, originY);
+    this.orientation = orientation;
+    this.interactToMove = interactToMove;
   }
 
   public Point toDestinationPoint(Point p, double size) {
-    p.translate(-this.origin.x, -this.origin.y);
-    p.y = Math.copySign(0.5-size, -p.y);
-    p.translate(this.getDestinationGateway().getOrigin());
+    if (this.interactToMove) {
+      p.x += -this.origin.x+this.getDestinationGateway().getOrigin().x;
+      p.y = this.getDestinationGateway().getOrigin().y;
+    } else {
+      p.translate(-this.origin.x, -this.origin.y);
+      p.y = Math.copySign(0.5-size, -p.y);
+      p.translate(this.getDestinationGateway().getOrigin());
+      if (this.orientation == World.NORTH) {
+        p.translate(0, -0.51);
+      } else if (this.orientation == World.SOUTH) {
+        p.translate(0, 0.51);
+      }
+    }
     return p;
   }
 
@@ -32,6 +47,14 @@ public class Gateway {
 
   public Point getOrigin() {
     return this.origin;
+  }
+
+  public int getOrientation() {
+    return this.orientation;
+  }
+
+  public boolean requiresInteractToMove() {
+    return this.interactToMove;
   }
 
   @Override
