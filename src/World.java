@@ -199,7 +199,9 @@ public class World {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
+        this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
+
         int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
         int treeY = selectedTile.getY() + 1;
         Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
@@ -277,7 +279,6 @@ public class World {
               (((GroundTile)selectedTile).getTilledStatus() == true)) {
                 ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
               ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
-
           } else if (selectedTile.getContent() == null) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
               if (this.playerArea instanceof FarmArea) {
@@ -285,24 +286,24 @@ public class World {
                 ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
               }
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-              ((GroundTile)selectedTile).setTilledStatus(false); 
+              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) { 
+                ((GroundTile)selectedTile).setTilledStatus(false); 
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              }
+            }
+          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               if ((this.playerArea instanceof FarmArea)
                     && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+                ((GroundTile)selectedTile).setTilledStatus(false); 
+                selectedTile.setContent(null);
               }
             }
-          } else {
-            if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-              if (selectedTile.getContent() instanceof ExtrinsicCrop) {
-                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
-              }
-              //selectedTile.setContent(null);  <- unsure why we need this
-            }
+            ((GroundTile)selectedTile).determineImage(this.inGameDay);
           } //- Ground tile changes image based on what happened
-          ((GroundTile)selectedTile).determineImage(this.inGameDay);
-        }
       } else if (event instanceof PlayerInteractEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
+        int itemIndex = ((PlayerInteractEvent)event).getSelectedItemIndex();
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
@@ -311,8 +312,9 @@ public class World {
         } else if (currentTile != null) {
 
           if (currentTile.getContent() == null) {
-            if ((this.player.getSelectedItem() != null) &&
-                (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
+            if ((this.player.hasAtIndex(itemIndex)) &&
+                (this.player.getAtIndex(itemIndex)
+                                        .getContainedHoldable() instanceof Consumable)) {
               this.player.consume();
             } 
           }
@@ -358,33 +360,33 @@ public class World {
               }
             } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
                         (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
-              if (this.player.getSelectedItem() != null) {
-                HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+              if (this.player.hasAtIndex(itemIndex)) {
+                HoldableStack selectedItem = this.player.getAtIndex(itemIndex); //okay honestly this can be deleted this is just to make the next statement short
                 if (((ExtrinsicMachine)currentContent).canProcess(
-                            selectedItem.getContainedHoldable().getName()) &&
-                                selectedItem.getQuantity() >= 
-                                    ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+                                  selectedItem.getContainedHoldable().getName()) &&
+                                  selectedItem.getQuantity() >= 
+                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
                   if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
-                          this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
+                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
                     ((ExtrinsicMachine)currentContent).setItemToProcess(
-                                                        selectedItem.getContainedHoldable().getName());
+                        selectedItem.getContainedHoldable().getName());
                     ((ExtrinsicMachine)currentContent).increasePhase();   
-                    player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+                    player.decrementAtIndex(itemIndex, ((ExtrinsicMachine)currentContent).getRequiredQuantity());
                     player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
                     this.emplaceFutureEvent(
-                      ((ExtrinsicMachine)currentContent).getProcessingTime(
-                                          selectedItem.getContainedHoldable().getName()), 
-                      new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                        ((ExtrinsicMachine)currentContent).getProcessingTime(
+                            selectedItem.getContainedHoldable().getName()), 
+                            new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
                   }                                   
                 }
               } 
             } 
           } else if (currentContent instanceof ShippingContainer) {
-            if (this.player.getSelectedItem() != null) {
-              if (!(this.player.getSelectedItem().getContainedHoldable() instanceof Tool)) {
-                HoldableStack currentItem = this.player.getSelectedItem();
+            if (this.player.hasAtIndex(itemIndex)) {
+              if (!(this.player.getAtIndex(itemIndex).getContainedHoldable() instanceof Tool)) {
+                HoldableStack currentItem = this.player.getAtIndex(itemIndex);
                 this.player.increaseFutureFunds(((ShippingContainer)currentContent).sellItem(currentItem));
-                this.player.removeAtIndex(this.player.getSelectedItemIdx());
+                this.player.removeAtIndex(itemIndex);
               }
             }
           }
@@ -394,6 +396,7 @@ public class World {
 
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
+        this.player.decreaseEnergy(rodUsed.getEnergyCost());
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
         int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
         Point roundedPlayerPos = player.getPos().round();

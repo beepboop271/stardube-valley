@@ -54,9 +54,9 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("TulipSeeds", 15);
-    this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
-    this.inventory[7] = new HoldableStack("HotPepperSeeds", 5);
+    this.inventory[5] = new HoldableStack("BeetSeeds", 15);
+    this.inventory[6] = new HoldableStack("BlueberrySeeds", 10);
+    this.inventory[7] = new HoldableStack("CornSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
     //this.inventory[10] = new HoldableStack("IronItem", 10);
@@ -151,12 +151,24 @@ public class Player extends Moveable {
     }
   }
 
+  public void decrementAtIndex(int index, int amount) {
+    if (this.inventory[index].getQuantity() <= amount) {
+      this.inventory[index] = null;
+    } else {
+      this.inventory[index].subtractHoldables(amount);
+    }
+  }
+
   public void removeAtIndex(int index) {
     this.inventory[index] = null;
   }
 
   public boolean hasAtIndex(int index) {
     return !(this.inventory[index] == null);
+  }
+
+  public HoldableStack getAtIndex(int index) {
+    return this.inventory[index];
   }
 
   public boolean hasHoldable(Holdable item) {

@@ -6,6 +6,9 @@ TulipSeeds          crops/TulipSeeds          Seeds-to-start-the-best-crop-ever 
 StrawberrySeeds     crops/StrawberrySeeds     Seeds-to-start-a-new-strawberry-crop        Strawberry         
 WatermelonSeeds     crops/WatermelonSeeds     Seeds-to-start-a-new-watermelon-crop        Watermelon
 HotPepperSeeds      crops/HotPepperSeeds      Seeds-to-start-a-new-hot-pepper-crop        HotPepper
+RadishSeeds         crops/RadishSeeds         Seeds-to-start-a-new-radish-crop            Radish
+BlueberrySeeds      crops/BlueberrySeeds      Seeds-to-start-a-new-blueberry-"bush"       Blueberry
+BeetSeeds           crops/BeetSeeds           Seeds-to-start-a-new-beet-crop              Beet
 CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop              Corn                           
 
 name                directory path to assets  Description                         what it summons once clicked

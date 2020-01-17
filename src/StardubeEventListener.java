@@ -225,8 +225,9 @@ public class StardubeEventListener implements KeyListener,
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
         this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
-              new PlayerInteractEvent(this.stardubePlayer.getSelectedTile()));
+              (long)(0.5*5_000_000),
+              new PlayerInteractEvent(this.stardubePlayer.getSelectedTile(),
+                  this.stardubePlayer.getSelectedItemIdx()));
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection
