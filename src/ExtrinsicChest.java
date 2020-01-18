@@ -17,6 +17,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
   /**
    * [ExtrinsicChest]
    * Constructor for this ExtrinsicChest.
+   * @author Joseph Wang
    */
   public ExtrinsicChest() {
     super("Chest");
@@ -26,6 +27,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
   /**
    * [getInventory]
    * Returns this chest's inventory.
+   * @author Joseph Wang
    * @return HoldableStack[], the current inventory of this chest.
    */
   public HoldableStack[] getInventory() {
@@ -36,6 +38,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
    * [canAdd]
    * Checks to see if a specific item can be added to this chest, whether by
    * adding to an existing stack or by using a new space.
+   * @author Candice Zhang
    * @param item The item to add.
    * @return boolean, true if this chest can add the item, false otherwise.
    */
@@ -62,6 +65,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
    * [add]
    * Takes in items and either adds them to an existing HoldableStack or stores them
    * in an empty spot in inventory.
+   * @author Candice Zhang, Joseph Wang
    * @param items The items that are to be added to this inventory.
    */
   public void add(HoldableStack items) {
@@ -89,6 +93,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
   /**
    * [useAtIndex]
    * Removes one item from the inventory at the specified index, effectively "using" it.
+   * @author Candice Zhang
    * @param index The index of the item that is to be used.
    */
   public void useAtIndex(int index) {
@@ -102,6 +107,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
   /**
    * [removeAtIndex]
    * Completely removes everything at the specified index.
+   * @author Candice Zhang
    * @param index The index of the item that is to be removed.
    */
   public void removeAtIndex(int index) {
@@ -111,6 +117,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
   /**
    * [isEmpty]
    * Checks if the inventory is completely empty.
+   * @author Joseph Wang
    * @return boolean, true if the inventory is empty and false if not.
    */
   public boolean isEmpty() {

@@ -323,6 +323,10 @@ public class Player extends Moveable {
     this.energy = Math.max(this.energy-decrement, 0);
   }
 
+  public void resetEnergy() { // TODO: take in a modifier or smth later
+    this.energy = this.maxEnergy;
+  }
+
   public int getMaxEnergy() {
     return this.maxEnergy;
   }
