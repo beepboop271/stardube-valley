@@ -587,6 +587,7 @@ public class World {
     while (!nextLine.equals("")) {
       gatewayMatch = gatewayPattern.matcher(nextLine);
       gatewayMatch.matches();
+      System.out.println("Connecting " + gatewayMatch.group(1) + " to " + gatewayMatch.group(6));
       gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
                              Integer.parseInt(gatewayMatch.group(3)),
                              World.NORTH,
@@ -603,7 +604,7 @@ public class World {
 
       if (!(gatewayMatch.group(9).equals("none"))) {
         this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin()).setContent(
-                              IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
+                                  IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
       }
 
       this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
@@ -611,7 +612,6 @@ public class World {
       nextLine = input.readLine();
     }
     input.close();
-
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
@@ -638,10 +638,10 @@ public class World {
     
     System.out.println("Initializing " + a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
-      //System.out.println("on row" + y);
+      //System.out.println("on row " + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
-       // System.out.println("on col" + x);
+        //System.out.println("on col " + x);
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));

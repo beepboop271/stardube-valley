@@ -1,5 +1,17 @@
 MineEntrance (57, 12) <-> Mines (9, 4) none
 Farm (12, 13) <->I Farmhouse (9, 7) Farmhouse
+Town (11, 4) <->I Clinic (9, 7) Clinic
+Town (27, 4) <->I GeneralStore (9, 7) Store
+Town (28, 4) <->I GeneralStore (10, 7) none
+Town (48, 4) <->I House1 (9, 7) House1
+Town (10, 13) <->I McDonlads (9, 7) McDonlads
+Town (11, 13) <->I McDonlads (10, 7) none
+Town (27, 13) <->I House4 (9, 7) House4
+Town (45, 13) <->I House5 (9, 7) House5
+Town (12, 21) <->I House2 (9, 7) House2
+Town (27, 21) <->I House6 (9, 7) House6
+Town (48, 21) <->I House3 (9, 7) House3
+
 
 c a n c e r
 just match this
