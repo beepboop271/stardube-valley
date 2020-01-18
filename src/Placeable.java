@@ -9,7 +9,7 @@
 public interface Placeable {
   /**
    * [placeItem]
-   * Retrieves the associated item that needs to be placed.
+   * Retrieves and returns the associated item that needs to be placed.
    * @return TileComponent, with the item that should be placed at the use location.
    */
   public TileComponent placeItem();

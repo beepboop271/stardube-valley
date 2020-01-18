@@ -34,7 +34,9 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+        UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], 
+                                          "assets/images/"+nextLineData[1]+".png",
+                                          Integer.parseInt(nextLineData[3]));
         HoldableFactory.holdablePool.put(tool.getName(), tool);
         lineToRead = input.readLine();
       }
@@ -43,7 +45,9 @@ public class HoldableFactory {
       // - fishing rod
       input = new BufferedReader(new FileReader("assets/gamedata/FishingRod"));
       nextLineData = input.readLine().split("\\s+");
-      FishingRod rod = new FishingRod(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+".png");
+      FishingRod rod = new FishingRod(nextLineData[0], nextLineData[2], 
+                                      "assets/images/"+nextLineData[1]+".png",
+                                      Integer.parseInt(nextLineData[3]));
       HoldableFactory.holdablePool.put(rod.getName(), rod);
       input.close();
       // initialize seeds

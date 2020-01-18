@@ -18,8 +18,9 @@ public class FishingRod extends Tool {
   private long castingBeginNanoTime;
   private WaterTile tileToFish;
 
-  public FishingRod(String name, String description, String imagePath) throws IOException {
-    super(name, description, imagePath);
+  public FishingRod(String name, String description, 
+                    String imagePath, int energyCost) throws IOException {
+    super(name, description, imagePath, energyCost);
     this.currentStatus = FishingRod.IDLING_STATUS;
   }
 

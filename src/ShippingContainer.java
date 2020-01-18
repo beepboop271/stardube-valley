@@ -49,14 +49,15 @@ import java.util.HashMap;
 
   /**
    * [sellItem]
-   * Retrieves the given sell price for a item that is dropped in.
+   * Retrieves the given sell price for a item that is dropped in. If it cannot
+   * find the item, sells it for 1 dollar.
    * @author Joseph Wang
    * @param item The item that needs to be sold.
    * @return int, the amount the item is sold for.
    */
   public int sellItem(HoldableStack item) {
     if (sellPrices.get(item.getContainedHoldable().getName()) == null) {
-      return 0;
+      return 1;
     }
     return sellPrices.get(item.getContainedHoldable().getName()) * item.getQuantity();
   }

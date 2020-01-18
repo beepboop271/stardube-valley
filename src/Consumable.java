@@ -12,6 +12,16 @@ public class Consumable extends Useable {
   private int healthGain;
   private int energyGain;
 
+  /**
+   * [Consumable]
+   * Constructor for a new Consumable
+   * @param name The name of this consumable.
+   * @param description A description about this consumable.
+   * @param imagePath The path to the images related to this consumable.
+   * @param healthGain The amount of health gained when consuming.
+   * @param energyGain The amount of energy gained when consuming.
+   * @throws IOException
+   */
   public Consumable(String name, String description, String imagePath,
                     int healthGain, int energyGain) throws IOException {
     super(name, description, imagePath);

@@ -8,9 +8,9 @@ COLOURS = {
     (0  , 255, 203): "o"
 }
 
-img = pygame.image.load("mineArea.png")
+img = pygame.image.load("townArea.png")
 
-with open("Ocean", "w") as f:
+with open("Town", "w") as f:
     for y in range(img.get_height()):
         line = []
         for x in range(img.get_width()):
