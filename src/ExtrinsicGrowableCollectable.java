@@ -99,7 +99,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    */
   @Override
   public void grow() {
-    if (this.stage < ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) { 
+    if (this.stage < ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
       this.stage++;
     }
 

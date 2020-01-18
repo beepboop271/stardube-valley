@@ -202,11 +202,15 @@ public class World {
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
         int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
         int treeY = selectedTile.getY() + 1;
-        Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
-        TileComponent treeComponent = treeTile.getContent();
+        Tile treeTile;
+        TileComponent treeComponent = null;
+        if (this.playerArea.inMap(treeX, treeY)) {
+          treeTile = this.playerArea.getMapAt(treeX, treeY);
+          treeComponent = treeTile.getContent(); 
+        }
         TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (treeComponent instanceof ExtrinsicHarvestableComponent) {
+        if (treeComponent != null && treeComponent instanceof ExtrinsicHarvestableComponent) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
@@ -306,6 +310,16 @@ public class World {
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
+        TileComponent[] bushContents = new TileComponent[3];
+        if (this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
+            this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1)) {
+          bushContents[0] = this.playerArea.getMapAt(
+                            currentTile.getX()+1, currentTile.getY()).getContent();
+          bushContents[1] = this.playerArea.getMapAt(
+                            currentTile.getX()+1, currentTile.getY()+1).getContent();
+          bushContents[2] = this.playerArea.getMapAt(
+                            currentTile.getX(), currentTile.getY()+1).getContent();
+        }
         if (interactedGateway != null && interactedGateway.requiresInteractToMove()) {
           this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
         } else if (currentTile != null) {
@@ -319,7 +333,7 @@ public class World {
 
           //TODO: play foraging animation?
           TileComponent currentContent = currentTile.getContent();
-
+          
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -333,6 +347,32 @@ public class World {
                   currentTile.setContent(null);
                 }
               }
+            }
+          } else if (currentContent instanceof ExtrinsicGrowableCollectable) {
+            HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)currentContent).getProduct();
+            HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+            if (product !=null) {
+              new HoldableStackEntity(product, null);
+              if (this.player.canPickUp(product.getContainedHoldable())) {
+                this.player.pickUp(product);
+                ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
+              }
+            }
+          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
+            for (int i = 0; i < bushContents.length; i++) {
+              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicTree
+                  || bushContents[i] instanceof CollectableComponent) { // TODO: scuffed
+                continue;
+              }
+              HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
+              HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+              if (product !=null) {
+                new HoldableStackEntity(product, null);
+                if (this.player.canPickUp(product.getContainedHoldable())) {
+                    this.player.pickUp(product);
+                ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+              }
+            }
             }
           } else if (currentContent instanceof Collectable) {
             ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);

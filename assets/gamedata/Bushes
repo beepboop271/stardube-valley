@@ -1,9 +1,9 @@
-GrapeBush      /forageables/GrapeBush/      GrapeItem       any         5            -1 -1            2        18             3
-CoffeeBush     /forageables/CoffeeBush/     CoffeeBeanItem  any         5            -1 -1            2        18             3
-OrangeBush     /forageables/OrangeBush/     OrangeItem      any         5            -1 -1            2        18             3
-BlackberryBush /forageables/BlackberryBush/ BlackberryItem  any         5            -1 -1            2        18             3
-HazelnutBush   /forageables/HazelnutBush/   HazelnutItem    any         5            -1 -1            2        18             3
+GrapeBush      /forageables/GrapeBush/      GrapeItem       any         5            -1 -1      2        2 1           3
+CoffeeBush     /forageables/CoffeeBush/     CoffeeBeanItem  any         5            -1 -1      2        2 1           3
+OrangeBush     /forageables/OrangeBush/     OrangeItem      any         5            -1 -1      2        2 1           3
+BlackberryBush /forageables/BlackberryBush/ BlackberryItem  any         5            -1 -1      2        2 1           3
+HazelnutBush   /forageables/HazelnutBush/   HazelnutItem    any         5            -1 -1      2        2 1           3
 
-name           path                         drop            toolneeded  maxdrops     offsets          stages   daystogrow    regrow  
+name           path                         drop            toolneeded  maxdrops     offsets    stages   daystogrow    regrow  
                                                                         (x, y) by tile                                 (0 means no regrow)
                                                                                                             
