@@ -32,7 +32,7 @@ public class IntrinsicTileComponentFactory {
 
     IntrinsicTileComponent componentToAdd;
     
-    try {
+    try { //TODO: try to shrink this whoever idk im tired
       input = new BufferedReader(new FileReader("assets/gamedata/HarvestableComponents"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -132,6 +132,20 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      input = new BufferedReader(new FileReader("assets/gamedata/Buildings"));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        int[] offsets = {Integer.parseInt(nextLineData[2]), Integer.parseInt(nextLineData[3])};
+        componentToAdd = new Building(nextLineData[0], 
+                                            "assets/images"+nextLineData[1]+".png",
+                                            offsets);           
+                                          System.out.println(componentToAdd.getName());                     
+        componentPool.put(componentToAdd.getName(), componentToAdd);
+        lineToRead = input.readLine();  
+      }
+      input.close();
+
       input = new BufferedReader(new FileReader("assets/gamedata/ShippingData"));
       nextLineData = input.readLine().split("\\s+");
       int[] offsets = {Integer.parseInt(nextLineData[3]), Integer.parseInt(nextLineData[4])};
@@ -139,7 +153,6 @@ public class IntrinsicTileComponentFactory {
                                             nextLineData[2], offsets);
       componentPool.put(componentToAdd.getName(), componentToAdd);                                      
       input.close();
-
     } catch (IOException e) {
       e.printStackTrace();
     }

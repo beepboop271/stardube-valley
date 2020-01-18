@@ -528,6 +528,12 @@ public class World {
     }
     input.close();
 
+    // load the tiles
+    Iterator<Area> locationAreas = this.locations.values().iterator();
+    while (locationAreas.hasNext()) {
+      this.loadAreaMap(locationAreas.next());
+    }
+
     // add gateways
     input = new BufferedReader(new FileReader("assets/gamedata/map/Gateways"));
     nextLine = input.readLine();
@@ -536,7 +542,8 @@ public class World {
     // \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
     // (\w++) ?             group 6: area2 name, optionally followed by space
     // \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
-    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\)$");
+    //  ?(\\w++)*           group 9: name of the building for the second area to travel into (some will not have a building, in which they get "none")
+    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\) ?(\\w++)$");
     Matcher gatewayMatch;
     Gateway gateway1, gateway2;
     while (!nextLine.equals("")) {
@@ -556,17 +563,16 @@ public class World {
       gateway2.setDestinationArea(this.locations.get(gatewayMatch.group(1)));
       gateway2.setDestinationGateway(gateway1);
 
+      if (!(gatewayMatch.group(9).equals("none"))) {
+        this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin()).setContent(
+                              IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
+      }
+
       this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
       this.locations.get(gatewayMatch.group(6)).addGateway(gateway2);
       nextLine = input.readLine();
     }
     input.close();
-
-    // load the tiles
-    Iterator<Area> locationAreas = this.locations.values().iterator();
-    while (locationAreas.hasNext()) {
-      this.loadAreaMap(locationAreas.next());
-    }
 
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));

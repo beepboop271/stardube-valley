@@ -203,8 +203,8 @@ public class WorldPanel extends JPanel {
               int playerH = worldPlayer.getImage().getHeight();
               int componentW = ((Drawable)tileContent).getImage().getWidth();
               int componentH = ((Drawable)tileContent).getImage().getHeight();
-              // if the player is overlapping with the tree, set a transparency for the tree
-              if ((tileContent instanceof ExtrinsicTree) &&
+              // if the player is overlapping with the tree or building, set a transparency for it
+              if ((tileContent instanceof ExtrinsicTree || tileContent instanceof Building) &&
                   (playerScreenPos.x < drawX + componentW) &&
                   (playerScreenPos.x + playerW > drawX) &&
                   (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection

@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -126,6 +127,8 @@ public abstract class Area {
 
       if (t.getContent() != null) {
         if (t.getContent() instanceof CollectableComponent) {// ExtrinsicHarvestableComponent) {
+          return false;
+        } else if (t.getContent() instanceof Building) {
           return false;
         }
       }

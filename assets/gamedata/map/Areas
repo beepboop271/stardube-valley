@@ -6,3 +6,4 @@ WorldArea MineEntrance 72 42
 WorldArea TestArea1 45 10
 WorldArea TestArea2 23 5
 MineArea Mines 18 6
+BuildingArea Farmhouse 12 9
