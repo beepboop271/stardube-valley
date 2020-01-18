@@ -168,16 +168,6 @@ public class World {
           } else {
             nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
           }
-
-          // exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
-          // if (exitDirection > -1) {
-          //   System.out.println("oof");
-          //   if (nextMoveable instanceof Player) {
-          //     this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
-          //   } else {
-          //     nextArea.moveAreas(nextMoveable, exitDirection);
-          //   }
-          // }
         }
       }
     }
@@ -552,11 +542,11 @@ public class World {
       gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
                              Integer.parseInt(gatewayMatch.group(3)),
                              World.NORTH,
-                             gatewayMatch.group(4).equals("I"));
+                             gatewayMatch.group(5).equals("I"));
       gateway2 = new Gateway(Integer.parseInt(gatewayMatch.group(7)),
                              Integer.parseInt(gatewayMatch.group(8)),
                              World.SOUTH,
-                             gatewayMatch.group(5).equals("I"));
+                             gatewayMatch.group(4).equals("I"));
 
       gateway1.setDestinationArea(this.locations.get(gatewayMatch.group(6)));
       gateway1.setDestinationGateway(gateway2);

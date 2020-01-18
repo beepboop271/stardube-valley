@@ -174,16 +174,18 @@ public abstract class Area {
 
   public Area moveAreas(Moveable m, Iterator<Point> intersectingPoints) {
     Point nextPoint;
+    Gateway g;
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
       if (!this.inMap(nextPoint)) {
-        return this.moveAreas(m, this.getNeighbourZone(this.getExitDirection(nextPoint)));
-      // } else if (this.gateways.get(nextPoint) != null) {
-      //   return this.moveAreas(m, this.gateways.get(nextPoint));
+        g = this.getNeighbourZone(this.getExitDirection(nextPoint));
+        if (!g.requiresInteractToMove()) {
+          return this.moveAreas(m, g);
+        }
       }
     }
-    Gateway g = this.gateways.get(m.getPos().round());
-    if (g != null) {
+    g = this.gateways.get(m.getPos().round());
+    if (g != null && !g.requiresInteractToMove() && g.canMove(m)) {
       return this.moveAreas(m, g);
     }
     return this;
