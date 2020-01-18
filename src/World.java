@@ -296,8 +296,8 @@ public class World {
             this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
             this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1) &&
             this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()) != null &&
-            this.playerArea.getMapAt(currentTile.getX(), currentTile.getY()) != null &&
-            this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()) != null) {
+            this.playerArea.getMapAt(currentTile.getX(), currentTile.getY()+1) != null &&
+            this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()+1) != null) {
           bushContents[0] = this.playerArea.getMapAt(
                             currentTile.getX()+1, currentTile.getY()).getContent();
           bushContents[1] = this.playerArea.getMapAt(
