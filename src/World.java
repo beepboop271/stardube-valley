@@ -597,7 +597,7 @@ public class World {
     String nextLine;
 
     
-    System.out.println(a.getName());
+    System.out.println("Initializing " + a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
       //System.out.println("on row" + y);
       nextLine = input.readLine();

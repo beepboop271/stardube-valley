@@ -52,7 +52,7 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("BokChoySeeds", 15);
+    this.inventory[5] = new HoldableStack("PizzaSeeds", 15);
     this.inventory[6] = new HoldableStack("WatermelonItem", 99);
     this.inventory[7] = new HoldableStack("MangoSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
@@ -141,6 +141,13 @@ public class Player extends Moveable {
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(itemName), 1));
   }
 
+  /**
+   * [useAtIndex]
+   * Takes the item at the specified index in the player's inventory and decreases
+   * its quantity by 1. If it only has one, remove the item by setting it to null.
+   * @author Candice Zhang, Kevin Qiao
+   * @param index The index of the item to be used.
+   */
   public void useAtIndex(int index) {
     if (this.inventory[index].getQuantity() == 1) {
       this.inventory[index] = null;
@@ -149,6 +156,15 @@ public class Player extends Moveable {
     }
   }
 
+  /**
+   * [decrementAtIndex]
+   * Takes the item at the specified index and decreases its quantity by a specified amount.
+   * If the item at the index is less than the amount decreased, it will set the inventory index as 
+   * null, effectively removing the item.
+   * @author Joseph Wang
+   * @param index The index of the item of which to decrease quantity of.
+   * @param amount The amount that will be decreased.
+   */
   public void decrementAtIndex(int index, int amount) {
     if (this.inventory[index].getQuantity() <= amount) {
       this.inventory[index] = null;
@@ -157,18 +173,45 @@ public class Player extends Moveable {
     }
   }
 
+  /**
+   * [removeAtIndex]
+   * Removes the item at the specified index (ie. set it to null).
+   * @author Candice Zhang
+   * @param index The index of the item to remove.
+   */
   public void removeAtIndex(int index) {
     this.inventory[index] = null;
   }
 
+  /**
+   * [hasAtIndex]
+   * Checks to see if a spot in the inventory at the selected index has an item (ie. is not null).
+   * @author Candice Zhang
+   * @param index The index to check for an item.
+   * @return boolean, true if there is something at the index specified and false if it is null.
+   */
   public boolean hasAtIndex(int index) {
     return !(this.inventory[index] == null);
   }
 
+  /**
+   * [getAtIndex]
+   * Retrieves the item at the specified index in this player's inventory.
+   * @author Joseph Wang
+   * @param index The index of the item to get.
+   * @return HoldableStack, the item at the specified index.
+   */
   public HoldableStack getAtIndex(int index) {
     return this.inventory[index];
   }
 
+  /**
+   * [hasHoldable]
+   * Checks to see if the player already has a specified holdable in their inventory.
+   * @author Joseph Wang
+   * @param item The specified holdable that is being compared.
+   * @return boolean, true if this player's inventory has this holdable already, false otherwise.
+   */
   public boolean hasHoldable(Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
@@ -222,10 +265,22 @@ public class Player extends Moveable {
     return this.currentMenuPage;
   }
   
+  /**
+   * [getSelectedItemIdx]
+   * Retrieves the index number of the current selected item.
+   * @author Kevin Qiao
+   * @return int, the index number of the selected item.
+   */
   public int getSelectedItemIdx() {
     return this.selectedItemIdx;
   }
 
+  /**
+   * [getSelectedItem]
+   * Retrieves the current selected item using the selected item index.
+   * @author Kevin Qiao
+   * @return HoldableStack, the current selected item.
+   */
   public HoldableStack getSelectedItem() {
     return this.inventory[this.selectedItemIdx];
   }
@@ -273,10 +328,22 @@ public class Player extends Moveable {
     this.selectedItemIdx = selectedItemIdx;
   }
 
+  /**
+   * [isImmutable]
+   * Checks if this player is currently in its immutable state (ie. cannot move or change items).
+   * @author Candice Zhang
+   * @return boolean, true if is immutable and false otherwise.
+   */
   public boolean isImmutable() {
     return this.isImmutable;
   }
   
+  /**
+   * [setImmutable]
+   * Sets the immutable state of this player to either true or false.
+   * @author Candice Zhang
+   * @param isImmutable The boolean of which the player's immutable state will be.
+   */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
   }
@@ -375,16 +442,22 @@ public class Player extends Moveable {
 
   /**
    * [recover]
-   * Using the time, calculates how much energy the player should recover at the end of the day.
+   * Using the time, calculates how much energy the player should recover at the end of the day, based
+   * on time slept, and whether the player is exhaused or not. 
    * Also fully restores health to max.
    * @author Joseph Wang
    * @param time The time that the player ended the day at.
    */
-  public void recover(long time) { // TODO: take in a modifier or smth later
+  public void recover(long time) {
+    /* Recovered energy takes into consideration sleep time 
+     * (ie. if the player sleeps after midnight, they will have a penalty on their next day energy). 
+     * If the player is exhaused, recovered energy is equal to half. 
+     * The player only recovers energy if they go to bed with less than their determined recovered energy,
+     * unless they are exhausted.
+     */
     if (this.isExhausted) {
       this.energy = this.maxEnergy/2;
     } else if ((time > 0) && (time < 6*60*1_000_000_000L)) {
-     
       int lostEnergy = (int)(Math.min((long)(this.maxEnergy / 3), time / 1_000_000_000L));
       if (this.energy < this.maxEnergy - lostEnergy) {
         this.energy = this.maxEnergy - lostEnergy;
