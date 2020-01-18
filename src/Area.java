@@ -47,9 +47,11 @@ public abstract class Area {
       return new BuildingArea(name, width, height);
     } else if (category.equals("MineArea")) {
       return new MineArea(name, width, height);
-    } else {
-      return null;
+    } else if (category.equals("TownArea")) {
+      return new TownArea(name, width, height);
     }
+
+    return null;
   }
 
   public static int getDirection(Point p1, Point p2) {
@@ -119,6 +121,11 @@ public abstract class Area {
     if (this.inMap(pos)) {
       int treeX = (int)pos.x+2;     // TODO: make this less... sketchy, I guess
       int treeY = (int)pos.y+1;
+      
+      Tile bushTile = null;
+      if (this.inMap((int)pos.x+1, (int)pos.y)) {
+        bushTile = this.getMapAt((int)pos.x+1, (int)pos.y);
+      }
 
       Tile t = this.getMapAt(pos);
       if (t == null) {
@@ -126,14 +133,20 @@ public abstract class Area {
       }
 
       if (t.getContent() != null) {
-        if (t.getContent() instanceof CollectableComponent) {// ExtrinsicHarvestableComponent) {
+        if (t.getContent() instanceof NotWalkable) {// ExtrinsicHarvestableComponent) {
           return false;
-        } else if (t.getContent() instanceof Building) {
-          return false;
-        }
+        } else if (t.getContent() instanceof ExtrinsicGrowableCollectable && 
+                  !(t.getContent() instanceof ExtrinsicCrop)) {
+            return false;
+          }
+      } else if (bushTile != null && bushTile.getContent() != null) {
+         if (bushTile.getContent() instanceof ExtrinsicGrowableCollectable 
+            && !(bushTile.getContent() instanceof ExtrinsicCrop)) {
+           return false;
+         }
       }
 
-      if (t instanceof WaterTile) {
+      if (t instanceof NotWalkable) {
         return false;
       }
 

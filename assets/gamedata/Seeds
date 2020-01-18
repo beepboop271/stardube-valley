@@ -11,6 +11,7 @@ BlueberrySeeds      crops/BlueberrySeeds      Seeds-to-start-a-new-blueberry-"bu
 MangoSeeds          crops/MangoSeeds          Seeds-to...-"grow"-a-"mango-bush".-Plant-in-Summer.-Takes-7-days-to-grow,-and-regrows-every-3-days.             MangoBush
 BeetSeeds           crops/BeetSeeds           Seeds-to-start-a-new-beet-crop.-Plant-in-Autumn.-Takes-6-days-to-grow.                                          Beet
 BokChoySeeds        crops/BokChoySeeds        Seeds-to-start-a-new-bok-choy-crop.-Plant-in-Autumn.-Takes-5-days-to-grow.                                      BokChoy
+PizzaSeeds          crops/PizzaSeeds          Seeds-to-start-a-new-pizza-"crop".-Plant-in-Autumn.-Takes-10-days-to-grow.                                      Pizza
 CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop.-Plant-in-Autumn.-Takes-13-days-to-grow,-and-regrows-every-4-days.               Corn   
 CranberrySeeds      crops/CranberrySeeds      Seeds-to-start-a-new-cranberry-crop.-Plant-in-Autumn.-Takes-8-days-to-grow,-and-regrows-every-5-days.           Cranberry                        
 

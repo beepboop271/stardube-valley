@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Joseph Wang
  */
 public class CollectableComponent extends IntrinsicTileComponent 
-                                  implements Collectable, Drawable {
+                                  implements Collectable, Drawable, NotWalkable {
   private final HoldableDrop[] products;
 
   public CollectableComponent(String name,

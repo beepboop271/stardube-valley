@@ -291,6 +291,16 @@ public class World {
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
+        TileComponent[] bushContents = new TileComponent[3];
+        if (this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
+            this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1)) {
+          bushContents[0] = this.playerArea.getMapAt(
+                            currentTile.getX()+1, currentTile.getY()).getContent();
+          bushContents[1] = this.playerArea.getMapAt(
+                            currentTile.getX()+1, currentTile.getY()+1).getContent();
+          bushContents[2] = this.playerArea.getMapAt(
+                            currentTile.getX(), currentTile.getY()+1).getContent();
+        }
         if ((interactedGateway != null)
               && interactedGateway.requiresInteractToMove()
               && this.player.getPos().round().x == interactedGateway.getOrigin().x) {
@@ -307,7 +317,7 @@ public class World {
 
           //TODO: play foraging animation?
           TileComponent currentContent = currentTile.getContent();
-
+          
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -321,6 +331,32 @@ public class World {
                   currentTile.setContent(null);
                 }
               }
+            }
+          } else if (currentContent instanceof ExtrinsicGrowableCollectable) {
+            HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)currentContent).getProduct();
+            HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+            if (product !=null) {
+              new HoldableStackEntity(product, null);
+              if (this.player.canPickUp(product.getContainedHoldable())) {
+                this.player.pickUp(product);
+                ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
+              }
+            }
+          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
+            for (int i = 0; i < bushContents.length; i++) {
+              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicTree
+                  || bushContents[i] instanceof CollectableComponent) { // TODO: scuffed
+                continue;
+              }
+              HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
+              HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+              if (product !=null) {
+                new HoldableStackEntity(product, null);
+                if (this.player.canPickUp(product.getContainedHoldable())) {
+                    this.player.pickUp(product);
+                ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+              }
+            }
             }
           } else if (currentContent instanceof Collectable) {
             ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
@@ -595,13 +631,19 @@ public class World {
                                                              + a.getName()));
     String nextLine;
 
-
+    
+    System.out.println("Initializing " + a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
+      //System.out.println("on row" + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
+       // System.out.println("on col" + x);
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
+            break;
+          case ',':
+            a.setMapAt(new UnwalkableGround(x, y));
             break;
           case 'x':
             a.setMapAt(new GrassTile(x, y));
