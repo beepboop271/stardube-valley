@@ -27,12 +27,12 @@ public class HoldableStackEntity extends Moveable implements Drawable {
   }
 
   @Override
-  public int getXOffset() {
+  public double getXOffset() {
     return 0;
   }
 
   @Override
-  public int getYOffset() {
+  public double getYOffset() {
     return 0;
   }
 }

@@ -3,6 +3,12 @@ Farm (12, 13) <->I Farmhouse (9, 7) Farmhouse
 
 c a n c e r
 just match this
+ (\w++) ?             group 1: area1 name, optionally followed by space
+ \((\d++), ?(\d++)\)  group 2,3: coordinates of gateway in area1, with parentheses and optional space
+ \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
+ (\w++) ?             group 6: area2 name, optionally followed by space
+ \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
+  ?(\\w++)*           group 9: name of the building for the second area to travel into (some will not have a building, in which they get "none")
 also the area you go up into is on the right, the area you go
 down to is on the left
 if you need to interact to enter, e.g. door, put I directly on the

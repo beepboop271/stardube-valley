@@ -29,7 +29,7 @@ import java.util.HashMap;
    * @param offsets The total image offsets for this image.
    * @throws IOException
    */
-  public ShippingContainer(String imagesPath, String pricesPath, int[] offsets) throws IOException {
+  public ShippingContainer(String imagesPath, String pricesPath, double[] offsets) throws IOException {
     super("ShippingContainer", imagesPath, offsets);
 
     //- Initialize the selling prices

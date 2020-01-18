@@ -83,7 +83,6 @@ public class World {
       return;
     }
     this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
-    //this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;  //temp for zoomy
     this.inGameNanoTime %= 24*60*1_000_000_000L;
 
     // check for end of day
@@ -440,11 +439,9 @@ public class World {
             rodUsed.setCurrentStatus(FishingRod.WAITING_STATUS);
             this.player.setCurrentFishingGame(new FishingGame(rodUsed.getTileToFish()));
           } else {
-            // TODO: play animation
             this.player.setImmutable(false);
           }
         } else {
-          // TODO: play animation
           this.player.setImmutable(false);
         }
         
@@ -453,8 +450,9 @@ public class World {
         long catchNanoTime = ((CatchFishEvent)event).getCatchNanoTime();
         if ((catchNanoTime >= this.player.getCurrentFishingGame().getBiteNanoTime()) &&
             (catchNanoTime <= this.player.getCurrentFishingGame().getBiteNanoTime()+FishingGame.BITE_ELAPSE_NANOTIME)) {
+          // as luck increases, chance to get trash decreases (minimum chance to get a fish is 25%)
           if ((rodUsed.getTileToFish().getFishableFish().length==0)
-              || ((Math.random()*100) <= 30)) { // TODO: make this associated with luck
+              || (Math.random() >= (this.luckOfTheDay+0.25))) {
             Holdable trashEarned = HoldableFactory.getHoldable(
                                    WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*(WaterTile.getFishableTrash().length-1)))]);
             if (this.player.canPickUp(trashEarned)) {
@@ -628,6 +626,7 @@ public class World {
   }
 
   public void loadAreaMap(Area a) throws IOException {
+    //System.out.println(a.getName());
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
                                                              + a.getName()));
     String nextLine;
@@ -693,7 +692,7 @@ public class World {
 
     input.close();
   }
-  //shoot me
+  
   public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,
                                               int orientation) {

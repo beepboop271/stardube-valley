@@ -9,13 +9,13 @@ import javax.imageio.ImageIO;
  * A class for data shared between common TileComponents, like images or the name.
  * 2019-12-17
  * @version 0.3
- * @author Kevin Qiao, Paula Yuan, Joseph Wang
+ * @author Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
  */
 
 public abstract class IntrinsicTileComponent extends TileComponent {
   private final String name;
   private final BufferedImage[] images;
-  private final int[] offsets;
+  private final double[] offsets;
 
   /**
    * [IntrinsicTileComponent]
@@ -28,7 +28,7 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    */
   public IntrinsicTileComponent(String name,
                                 String imagesPath,
-                                int[] offsets) throws IOException {
+                                double[] offsets) throws IOException {
     this.name = name;
     this.offsets = offsets;
 
@@ -67,9 +67,9 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * [getXOffset]
    * Retrives the x offset of this IntrinsicTileComponent for image-drawing purposes.
    * @author Joseph Wang
-   * @return int, the x offset (in tiles) of which to consider during drawing.
+   * @return double, the x offset (in tiles) of which to consider during drawing.
    */
-  public int getXOffset() {
+  public double getXOffset() {
     return this.offsets[0];
   }
 
@@ -77,9 +77,9 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * [getYOffset]
    * Retrives the y offset of this IntrinsicTileComponent for image-drawing purposes.
    * @author Joseph Wang
-   * @return int, the y offset (in tiles) of which to consider during drawing.
+   * @return double, the y offset (in tiles) of which to consider during drawing.
    */
-  public int getYOffset() {
+  public double getYOffset() {
     return this.offsets[1];
   }
 

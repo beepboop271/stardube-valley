@@ -27,7 +27,7 @@ public class IntrinsicMachine extends IntrinsicHarvestableComponent {
    * @param catalyst A secondary item that is used to process. Only uses 1 of this. If none, is "None".
    * @throws IOException
    */
-  public IntrinsicMachine(String name, String imagePath, int[] offsets,
+  public IntrinsicMachine(String name, String imagePath, double[] offsets,
                           String[] processableItems, int totalProcessableItems,
                           int requiredItemQuantity, String catalyst) throws IOException {
     super(name, imagePath, "Pickaxe", 3, 1, offsets);

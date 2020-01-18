@@ -34,6 +34,7 @@ public class WorldPanel extends JPanel {
   public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
   public static final Color PALE_GREEN_COLOR = new Color(130, 230, 0);
+  public static final Color DIM_RED_COLOR = new Color(237, 69, 48);
 
   private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
@@ -195,8 +196,8 @@ public class WorldPanel extends JPanel {
         if (playerArea.inMap(x, y)) {
           Tile currentTile = playerArea.getMapAt(x, y);
           if (currentTile != null) {
-            int drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
-            int drawY = originY+(screenTileY*Tile.getSize());
+            double drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
+            double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
             if (tileContent != null) {
               drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
@@ -207,16 +208,24 @@ public class WorldPanel extends JPanel {
               int componentW = ((Drawable)tileContent).getImage().getWidth();
               int componentH = ((Drawable)tileContent).getImage().getHeight();
               // if the player is overlapping with the tree or building, set a transparency for it
-              if ((tileContent instanceof ExtrinsicTree || tileContent instanceof Building) &&
+              if ((tileContent instanceof ExtrinsicTree) &&
                   (playerScreenPos.x < drawX + componentW) &&
                   (playerScreenPos.x + playerW > drawX) &&
                   (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
                   (playerScreenPos.y + playerH > drawY)) {
                 imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+              } else if ((tileContent instanceof Building) &&
+                         (playerScreenPos.x < drawX + componentW) &&
+                         (playerScreenPos.x + playerW > drawX) &&
+                         (playerScreenPos.y < drawY + componentH) &&
+                         (playerScreenPos.y + playerH > drawY)) {
+                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
                 imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
               } else {
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), drawX, drawY, null);
+                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
               }     
               
             }
@@ -225,7 +234,7 @@ public class WorldPanel extends JPanel {
               Graphics2D g2 = (Graphics2D)g;
               g2.setStroke(new BasicStroke(4));
               g2.setColor(Color.RED);
-              g2.drawRect(drawX+2, drawY+2, Tile.getSize()-4, Tile.getSize()-6);
+              g2.drawRect((int)Math.round(drawX+2), (int)Math.round(drawY+2), Tile.getSize()-4, Tile.getSize()-6);
             }
           }
         }
@@ -623,9 +632,8 @@ public class WorldPanel extends JPanel {
       g.fillRect(gameX+this.getWidth()/160, gameY+(int)(targeBar.getY()*barScale), gameW/4, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
-      //g2d.setPaint( new GradientPaint( 0, 0, COL_GRADIENT_START, 0, 12, COL_GRADIENT_END ) );
-      g.setColor(Color.RED);
-      g.fillRect(gameX+this.getWidth()/40, (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
+      gameGraphics.setPaint( new GradientPaint(gameX+this.getWidth()/40, gameY, WorldPanel.PALE_GREEN_COLOR, gameX+this.getWidth()/40, gameY+gameH, WorldPanel.DIM_RED_COLOR) );
+      gameGraphics.fillRect(gameX+this.getWidth()/40, (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
                  gameW/2, (int)Math.round(gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0));
     }
 
@@ -638,10 +646,12 @@ public class WorldPanel extends JPanel {
       descriptionGraphics.setFont(this.STRING_FONT);
       descriptionGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-      int stringX = this.hotbarX + this.hoveredItemIdx*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP);
+      
       int stringW = Math.max(descriptionGraphics.getFontMetrics().stringWidth(name),
                               descriptionGraphics.getFontMetrics().stringWidth(description));
       int stringH = descriptionGraphics.getFontMetrics().getHeight();
+      int stringX = Math.min(this.hotbarX + this.hoveredItemIdx*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
+                             this.getWidth()-(stringW+30));
       int stringY = 0;
       if ((!worldPlayer.isInMenu()) && this.hotbarY < this.getHeight()/2) {
         stringY = this.hotbarY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2 + stringH + 10);

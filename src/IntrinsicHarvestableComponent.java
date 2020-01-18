@@ -28,7 +28,7 @@ public class IntrinsicHarvestableComponent extends CollectableComponent implemen
                                        String requiredTool,
                                        int hardness,
                                        int numProducts,
-                                       int[] offsets) throws IOException {
+                                       double[] offsets) throws IOException {
     super(name, imagePath, numProducts, offsets);
     this.requiredTool = requiredTool;
     this.hardness = hardness;

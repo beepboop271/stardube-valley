@@ -59,7 +59,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    * @author Joseph Wang
    */
   @Override
-  public int getXOffset() {
+  public double getXOffset() {
     return this.intrinsicSelf.getXOffset();
   }
 
@@ -68,7 +68,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    * @author Joseph Wang
    */
   @Override
-  public int getYOffset() {
+  public double getYOffset() {
     return this.intrinsicSelf.getYOffset();
   }
 }

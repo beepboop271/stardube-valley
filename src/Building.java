@@ -19,7 +19,7 @@ import java.io.IOException;
    * @param offsets The offsets (in tiles) that are considered when drawing the building.
    * @throws IOException
    */
-  public Building(String name, String imagePath, int[] offsets) throws IOException {
+  public Building(String name, String imagePath, double[] offsets) throws IOException {
     super(name, imagePath, offsets);
   }
 

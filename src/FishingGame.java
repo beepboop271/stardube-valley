@@ -24,16 +24,8 @@ public class FishingGame {
 
   private FishingGameBar playerBar;
   private FishingGameBar targetBar;
-  
-  //private Player player;
-  //private FishingRod fishingRod;
-  //private Tile tileToFish;
 
   public FishingGame(WaterTile tileToFish) {
-    //this.player = player;
-    //this.fishingRod = (FishingRod)(player.getInventory()[player.getSelectedItemIdx()].getContainedHoldable());
-    //this.tileToFish = tileToFish;
-    
     this.currentProgress = FishingGame.INIT_PROGRESS;
     this.tileToFish = tileToFish;
     this.hasStarted = false;
@@ -50,15 +42,11 @@ public class FishingGame {
       return;
     }
     
-    this.playerBar.setVelocity(
-        Math.max(0.5, Math.min(FishingGame.PLAYER_MAX_SPEED,
-                                FishingGame.PLAYER_ACCELERATION*mouseTimer.getNanoTimeElapsed()/1_000_000_000.0))
-    );
-
+    this.playerBar.setVelocity(Math.max(0.5, Math.min(FishingGame.PLAYER_MAX_SPEED,
+                                FishingGame.PLAYER_ACCELERATION*mouseTimer.getNanoTimeElapsed()/1_000_000_000.0)));                        
     if (!mouseDown) {
       this.playerBar.negateVelocity();
     }
-
     this.playerBar.setY(Math.max(0,
       Math.min(this.playerBar.getY()-this.playerBar.getVelocity(), MAX_HEIGHT-this.playerBar.getHeight())));
     
@@ -70,7 +58,7 @@ public class FishingGame {
     }
 
     this.targetBar.setY(Math.max(0,
-      Math.min(this.targetBar.getY()-this.targetBar.getVelocity(), MAX_HEIGHT-this.targetBar.getHeight())));
+          Math.min(this.targetBar.getY()-this.targetBar.getVelocity(), MAX_HEIGHT-this.targetBar.getHeight())));
 
     // compare collision and update progress progress accordingly
     if (targetBar.isInside(playerBar)) {
