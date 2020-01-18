@@ -82,8 +82,8 @@ public class World {
       this.lastUpdateTime = currentUpdateTime;
       return;
     }
-    
-    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime);
+    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    //this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;  //temp for zoomy
     this.inGameNanoTime %= 24*60*1_000_000_000L;
 
     // check for end of day
@@ -168,16 +168,6 @@ public class World {
           } else {
             nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
           }
-
-          // exitDirection = nextArea.canMoveAreas(intersectingTiles.iterator());
-          // if (exitDirection > -1) {
-          //   System.out.println("oof");
-          //   if (nextMoveable instanceof Player) {
-          //     this.playerArea = nextArea.moveAreas(nextMoveable, exitDirection);
-          //   } else {
-          //     nextArea.moveAreas(nextMoveable, exitDirection);
-          //   }
-          // }
         }
       }
     }
@@ -188,10 +178,10 @@ public class World {
   public void processEvents() {
     // pygame_irl
     EventObject event;
-    if (!this.eventQueue.isEmpty()) {
-      System.out.print(this.eventQueue.size()+" ");
-      System.out.println(this.eventQueue.peek());
-    }
+    // if (!this.eventQueue.isEmpty()) {
+    //   System.out.print(this.eventQueue.size()+" ");
+    //   System.out.println(this.eventQueue.peek());
+    // }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
@@ -199,57 +189,40 @@ public class World {
         // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
+        this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
-        int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
-        int treeY = selectedTile.getY() + 1;
-        Tile treeTile;
-        TileComponent treeComponent = null;
-        if (this.playerArea.inMap(treeX, treeY)) {
-          treeTile = this.playerArea.getMapAt(treeX, treeY);
-          treeComponent = treeTile.getContent(); 
-        }
-        TileComponent componentToHarvest = selectedTile.getContent();
 
-        if (treeComponent != null && treeComponent instanceof ExtrinsicHarvestableComponent) {
-          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
-          String requiredTool = ic.getRequiredTool();
-                  
-          if (requiredTool.equals("Axe")) {
-            // TODO: play breaking animation?
-            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)treeComponent);
-            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
-              Point point = new Point(toolEvent.getLocationUsed().x+2, toolEvent.getLocationUsed().y+1);
-              if (this.playerArea instanceof WorldArea) {
-                ExtrinsicTree tree = ((ExtrinsicTree)((WorldArea)this.playerArea).getMapAt(point).getContent());
-                if (tree.getStage() == 17) {
-                  tree.setStage(18);
-                } else {
-                  this.playerArea.removeComponentAt(point);
-                }
-              } else if (this.playerArea instanceof FarmArea) {
-                ExtrinsicTree tree = ((ExtrinsicTree)((FarmArea)this.playerArea).getMapAt(point).getContent());
-                if (tree.getStage() == 17) {
-                  tree.setStage(18);
-                } else {
-                  this.playerArea.removeComponentAt(point);
-                }
-              }
-              HoldableDrop[] drops = ic.getProducts();
-              HoldableStack product;
-              for (int i = 0; i < drops.length; ++i) {
-                product = drops[i].resolveDrop(this.luckOfTheDay);
-                if (product != null) {
-                  this.playerArea.addItemOnGround(
-                    new HoldableStackEntity(
-                        product,
-                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
-                    )
-                  );
-                }
-              }
+        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1);  // TODO: make this stuff less sketch
+        Tile treeTile;
+        if (this.playerArea.inMap(treePos)) {
+          treeTile = this.playerArea.getMapAt(treePos);
+        } else {
+          treeTile = null;
+        }
+
+        // prioritize harvesting the actual tile before using the tree tile
+        TileComponent componentToHarvest;
+        if (selectedTile == null) {
+          if (treeTile != null) {
+            componentToHarvest = treeTile.getContent();
+            if (!(componentToHarvest instanceof ExtrinsicTree)) {
+              componentToHarvest = null;
+            }
+          } else {
+            componentToHarvest = null;
+          }
+        } else {
+          componentToHarvest = selectedTile.getContent();
+          if (!(componentToHarvest instanceof ExtrinsicHarvestableComponent)) {
+            if (treeTile != null && treeTile.getContent() instanceof ExtrinsicTree) {
+              componentToHarvest = treeTile.getContent();
+            } else {
+              componentToHarvest = null;
             }
           }
-        } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+        }
+
+        if (componentToHarvest != null) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
@@ -258,7 +231,16 @@ public class World {
             // TODO: play breaking animation?
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
-              this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+              if (ec instanceof ExtrinsicTree) {
+                if (((ExtrinsicTree)ec).getStage() == 17) {
+                  ((ExtrinsicTree)ec).setStage(18);
+                  ec.setHardnessLeft(5); // TODO: maybe dont hard code
+                } else {
+                  this.playerArea.removeComponentAt(treePos);
+                }
+              } else {
+                this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+              }
 
               HoldableDrop[] drops = ic.getProducts();
               HoldableStack product;
@@ -277,10 +259,10 @@ public class World {
              //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
-          if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
-              (((GroundTile)selectedTile).getTilledStatus() == true)) {
-                ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
-              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+          if (toolEvent.getHoldableUsed().getName().equals("WateringCan")
+                &&  (((GroundTile)selectedTile).getTilledStatus() == true)) {
+            ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+            ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
 
           } else if (selectedTile.getContent() == null) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
@@ -289,24 +271,24 @@ public class World {
                 ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
               }
             } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-              ((GroundTile)selectedTile).setTilledStatus(false); 
+              if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) { 
+                ((GroundTile)selectedTile).setTilledStatus(false); 
+                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              }
+            }
+          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
               if ((this.playerArea instanceof FarmArea)
                     && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+                ((GroundTile)selectedTile).setTilledStatus(false); 
+                selectedTile.setContent(null);
               }
             }
-          } else {
-            if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
-              if (selectedTile.getContent() instanceof ExtrinsicCrop) {
-                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
-              }
-              //selectedTile.setContent(null);  <- unsure why we need this
-            }
+            ((GroundTile)selectedTile).determineImage(this.inGameDay);
           } //- Ground tile changes image based on what happened
-          ((GroundTile)selectedTile).determineImage(this.inGameDay);
-        }
       } else if (event instanceof PlayerInteractEvent) {
         //TODO: make this not just for forageables but also doors and stuff i guess
+        int itemIndex = ((PlayerInteractEvent)event).getSelectedItemIndex();
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
@@ -320,13 +302,16 @@ public class World {
           bushContents[2] = this.playerArea.getMapAt(
                             currentTile.getX(), currentTile.getY()+1).getContent();
         }
-        if (interactedGateway != null && interactedGateway.requiresInteractToMove()) {
+        if ((interactedGateway != null)
+              && interactedGateway.requiresInteractToMove()
+              && this.player.getPos().round().x == interactedGateway.getOrigin().x) {
           this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
         } else if (currentTile != null) {
 
           if (currentTile.getContent() == null) {
-            if ((this.player.getSelectedItem() != null) &&
-                (this.player.getSelectedItem().getContainedHoldable() instanceof Consumable)) {
+            if ((this.player.hasAtIndex(itemIndex)) &&
+                (this.player.getAtIndex(itemIndex)
+                                        .getContainedHoldable() instanceof Consumable)) {
               this.player.consume();
             } 
           }
@@ -398,33 +383,33 @@ public class World {
               }
             } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
                         (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
-              if (this.player.getSelectedItem() != null) {
-                HoldableStack selectedItem = this.player.getSelectedItem(); //okay honestly this can be deleted this is just to make the next statement short
+              if (this.player.hasAtIndex(itemIndex)) {
+                HoldableStack selectedItem = this.player.getAtIndex(itemIndex); //okay honestly this can be deleted this is just to make the next statement short
                 if (((ExtrinsicMachine)currentContent).canProcess(
-                            selectedItem.getContainedHoldable().getName()) &&
-                                selectedItem.getQuantity() >= 
-                                    ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
+                                  selectedItem.getContainedHoldable().getName()) &&
+                                  selectedItem.getQuantity() >= 
+                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
                   if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
-                          this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
+                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
                     ((ExtrinsicMachine)currentContent).setItemToProcess(
-                                                        selectedItem.getContainedHoldable().getName());
+                        selectedItem.getContainedHoldable().getName());
                     ((ExtrinsicMachine)currentContent).increasePhase();   
-                    player.decrementSelectedItem(((ExtrinsicMachine)currentContent).getRequiredQuantity());
+                    player.decrementAtIndex(itemIndex, ((ExtrinsicMachine)currentContent).getRequiredQuantity());
                     player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
                     this.emplaceFutureEvent(
-                      ((ExtrinsicMachine)currentContent).getProcessingTime(
-                                          selectedItem.getContainedHoldable().getName()), 
-                      new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                        ((ExtrinsicMachine)currentContent).getProcessingTime(
+                            selectedItem.getContainedHoldable().getName()), 
+                            new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
                   }                                   
                 }
               } 
             } 
           } else if (currentContent instanceof ShippingContainer) {
-            if (this.player.getSelectedItem() != null) {
-              if (!(this.player.getSelectedItem().getContainedHoldable() instanceof Tool)) {
-                HoldableStack currentItem = this.player.getSelectedItem();
+            if (this.player.hasAtIndex(itemIndex)) {
+              if (!(this.player.getAtIndex(itemIndex).getContainedHoldable() instanceof Tool)) {
+                HoldableStack currentItem = this.player.getAtIndex(itemIndex);
                 this.player.increaseFutureFunds(((ShippingContainer)currentContent).sellItem(currentItem));
-                this.player.removeAtIndex(this.player.getSelectedItemIdx());
+                this.player.removeAtIndex(itemIndex);
               }
             }
           }
@@ -434,6 +419,7 @@ public class World {
 
       } else if (event instanceof CastingEndedEvent) {
         FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
+        this.player.decreaseEnergy(rodUsed.getEnergyCost());
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
         int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
         Point roundedPlayerPos = player.getPos().round();
@@ -470,7 +456,7 @@ public class World {
           if ((rodUsed.getTileToFish().getFishableFish().length==0)
               || ((Math.random()*100) <= 30)) { // TODO: make this associated with luck
             Holdable trashEarned = HoldableFactory.getHoldable(
-                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*WaterTile.getFishableTrash().length))]);
+                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*(WaterTile.getFishableTrash().length-1)))]);
             if (this.player.canPickUp(trashEarned)) {
               this.player.pickUp(new HoldableStack(trashEarned, 1));
             }
@@ -525,6 +511,7 @@ public class World {
   }
 
   public void doDayEndActions() {
+    this.player.recover(this.inGameNanoTime);
     // day starts at 6 am
     this.inGameNanoTime = 6*60*1_000_000_000L;
     ++this.inGameDay;
@@ -553,10 +540,11 @@ public class World {
   }
 
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
-    System.out.printf("enqueue t=%d\n", this.inGameNanoTime+nanoTimeIntoFuture);
-    long start = System.nanoTime();
+    // long time = this.inGameNanoTime+nanoTimeIntoFuture;
+    // System.out.printf("enqueue t=%02d:%02d:%d\n", time/60, time%60, (this.inGameNanoTime+nanoTimeIntoFuture)%1_000_000_000);
+    // long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
-    System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
+    // System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
   public void loadAreas() throws IOException {
@@ -576,6 +564,12 @@ public class World {
     }
     input.close();
 
+    // load the tiles
+    Iterator<Area> locationAreas = this.locations.values().iterator();
+    while (locationAreas.hasNext()) {
+      this.loadAreaMap(locationAreas.next());
+    }
+
     // add gateways
     input = new BufferedReader(new FileReader("assets/gamedata/map/Gateways"));
     nextLine = input.readLine();
@@ -584,7 +578,8 @@ public class World {
     // \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
     // (\w++) ?             group 6: area2 name, optionally followed by space
     // \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
-    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\)$");
+    //  ?(\\w++)*           group 9: name of the building for the second area to travel into (some will not have a building, in which they get "none")
+    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\) ?(\\w++)$");
     Matcher gatewayMatch;
     Gateway gateway1, gateway2;
     while (!nextLine.equals("")) {
@@ -593,28 +588,27 @@ public class World {
       gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
                              Integer.parseInt(gatewayMatch.group(3)),
                              World.NORTH,
-                             gatewayMatch.group(4).equals("I"));
+                             gatewayMatch.group(5).equals("I"));
       gateway2 = new Gateway(Integer.parseInt(gatewayMatch.group(7)),
                              Integer.parseInt(gatewayMatch.group(8)),
                              World.SOUTH,
-                             gatewayMatch.group(5).equals("I"));
+                             gatewayMatch.group(4).equals("I"));
 
       gateway1.setDestinationArea(this.locations.get(gatewayMatch.group(6)));
       gateway1.setDestinationGateway(gateway2);
       gateway2.setDestinationArea(this.locations.get(gatewayMatch.group(1)));
       gateway2.setDestinationGateway(gateway1);
 
+      if (!(gatewayMatch.group(9).equals("none"))) {
+        this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin()).setContent(
+                              IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
+      }
+
       this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
       this.locations.get(gatewayMatch.group(6)).addGateway(gateway2);
       nextLine = input.readLine();
     }
     input.close();
-
-    // load the tiles
-    Iterator<Area> locationAreas = this.locations.values().iterator();
-    while (locationAreas.hasNext()) {
-      this.loadAreaMap(locationAreas.next());
-    }
 
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
@@ -638,13 +632,19 @@ public class World {
                                                              + a.getName()));
     String nextLine;
 
-
+    
+    System.out.println("Initializing " + a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
+      //System.out.println("on row" + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
+       // System.out.println("on col" + x);
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
+            break;
+          case ',':
+            a.setMapAt(new UnwalkableGround(x, y));
             break;
           case 'x':
             a.setMapAt(new GrassTile(x, y));

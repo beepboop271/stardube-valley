@@ -18,11 +18,27 @@ public class TimedEvent implements Comparable<TimedEvent> {
   @Override
   public String toString() {
     long time = this.time/1_000_000_000;
-    return "TE"+String.format("%02d:%02d", time/60, time%60);
+    return "TE("+String.format("%02d:%02d:%d, %s)",
+                               time/60, time%60, this.time%(1_000_000_000),
+                               this.getClass().getName());
   }
 
   public int compareTo(TimedEvent other) {
-    return (int)(other.time-this.time);
+    // System.out.printf("comparing this:%s to other:%s and returning %d\n",
+    //                   this.toString(), other.toString(),
+    //                   (int)(this.time-other.time));
+    
+    // typically would use this.time-other.time
+    // however, compareTo must return an int, which will
+    // overflow when the time difference is too high
+    if (this.time > other.time) {
+      return 1;
+    } else if (this.time == other.time) {
+      return 0;
+    } else {
+      return -1;
+    }
+    // return (int)(this.time-other.time);
   }
 
   public long getTime() {

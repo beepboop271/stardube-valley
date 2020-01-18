@@ -23,6 +23,7 @@ import java.util.HashMap;
    * [ShippingContainer]
    * Constructor for a new shipping container. Needs the image path of the container,
    * the path for the data and the image offsets.
+   * @author Joseph Wang
    * @param imagesPath The path to the image of the container.
    * @param pricesPath The path to the sell data of the container.
    * @param offsets The total image offsets for this image.
@@ -48,13 +49,15 @@ import java.util.HashMap;
 
   /**
    * [sellItem]
-   * Retrieves the given sell price for a item that is dropped in.
+   * Retrieves the given sell price for a item that is dropped in. If it cannot
+   * find the item, sells it for 1 dollar.
+   * @author Joseph Wang
    * @param item The item that needs to be sold.
    * @return int, the amount the item is sold for.
    */
   public int sellItem(HoldableStack item) {
     if (sellPrices.get(item.getContainedHoldable().getName()) == null) {
-      return 0;
+      return 1;
     }
     return sellPrices.get(item.getContainedHoldable().getName()) * item.getQuantity();
   }

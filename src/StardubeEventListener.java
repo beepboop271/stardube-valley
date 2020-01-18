@@ -107,12 +107,6 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubeWorld.generalStore);
         break;
-      case KeyEvent.VK_M:
-        Area dumb = new MineLevel.Builder(1, 5).buildLevel();
-        dumb.addMoveable(stardubePlayer);
-        stardubeWorld.getPlayerArea().removeMoveable(stardubePlayer);
-        stardubeWorld.setPlayerArea(dumb);
-        break;
       case KeyEvent.VK_I:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(0, -1));
         break;
@@ -225,8 +219,9 @@ public class StardubeEventListener implements KeyListener,
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
         this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
-              new PlayerInteractEvent(this.stardubePlayer.getSelectedTile()));
+              (long)(0.5*5_000_000),
+              new PlayerInteractEvent(this.stardubePlayer.getSelectedTile(),
+                  this.stardubePlayer.getSelectedItemIdx()));
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection

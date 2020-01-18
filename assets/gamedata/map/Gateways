@@ -1,6 +1,5 @@
-MineEntrance (57, 12) <-> Mines (9, 4)
-
-
+MineEntrance (57, 12) <-> Mines (9, 4) none
+Farm (12, 13) <->I Farmhouse (9, 7) Farmhouse
 
 c a n c e r
 just match this
@@ -8,4 +7,5 @@ also the area you go up into is on the right, the area you go
 down to is on the left
 if you need to interact to enter, e.g. door, put I directly on the
 side of the arrow you're going to (world <->I house)
-/^(\w++) ?\((\d++), ?(\d++)\)\s++(I?)<->(I?)\s++(\w++) ?\((\d++), ?(\d++)\)$/
+if there's a building, just put the name after the destination
+/^(\w++) ?\((\d++), ?(\d++)\)\s++(I?)<->(I?)\s++(\w++) ?\((\d++), ?(\d++)\) ?(\w++)$/

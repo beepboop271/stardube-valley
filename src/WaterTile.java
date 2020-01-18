@@ -10,7 +10,7 @@ import java.io.IOException;
  * @author Candice Zhang
  */
 
-public abstract class WaterTile extends Tile {
+public abstract class WaterTile extends Tile implements NotWalkable {
   private static BufferedImage waterTileImage;
   private static String[] fishableTrash;
 

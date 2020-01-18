@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -46,9 +47,11 @@ public abstract class Area {
       return new BuildingArea(name, width, height);
     } else if (category.equals("MineArea")) {
       return new MineArea(name, width, height);
-    } else {
-      return null;
+    } else if (category.equals("TownArea")) {
+      return new TownArea(name, width, height);
     }
+
+    return null;
   }
 
   public static int getDirection(Point p1, Point p2) {
@@ -130,7 +133,7 @@ public abstract class Area {
       }
 
       if (t.getContent() != null) {
-        if (t.getContent() instanceof CollectableComponent) {// ExtrinsicHarvestableComponent) {
+        if (t.getContent() instanceof NotWalkable) {// ExtrinsicHarvestableComponent) {
           return false;
         } else if (t.getContent() instanceof ExtrinsicGrowableCollectable && 
                   !(t.getContent() instanceof ExtrinsicCrop)) {
@@ -143,7 +146,7 @@ public abstract class Area {
          }
       }
 
-      if (t instanceof WaterTile) {
+      if (t instanceof NotWalkable) {
         return false;
       }
 
@@ -187,16 +190,18 @@ public abstract class Area {
 
   public Area moveAreas(Moveable m, Iterator<Point> intersectingPoints) {
     Point nextPoint;
+    Gateway g;
     while (intersectingPoints.hasNext()) {
       nextPoint = intersectingPoints.next();
       if (!this.inMap(nextPoint)) {
-        return this.moveAreas(m, this.getNeighbourZone(this.getExitDirection(nextPoint)));
-      // } else if (this.gateways.get(nextPoint) != null) {
-      //   return this.moveAreas(m, this.gateways.get(nextPoint));
+        g = this.getNeighbourZone(this.getExitDirection(nextPoint));
+        if (!g.requiresInteractToMove()) {
+          return this.moveAreas(m, g);
+        }
       }
     }
-    Gateway g = this.gateways.get(m.getPos().round());
-    if (g != null) {
+    g = this.gateways.get(m.getPos().round());
+    if (g != null && !g.requiresInteractToMove() && g.canMove(m)) {
       return this.moveAreas(m, g);
     }
     return this;

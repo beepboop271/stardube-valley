@@ -1,4 +1,7 @@
 public class Gateway {
+  public static final int OMNIDIRECTIONAL = 5;
+  public static final int ONE_WAY = 6;
+
   private Gateway destinationGateway;
   private Area destinationArea;
   private Point origin;
@@ -12,20 +15,31 @@ public class Gateway {
     this.interactToMove = interactToMove;
   }
 
-  public Point toDestinationPoint(Point p, double size) {
-    if (this.interactToMove) {
-      p.x += -this.origin.x+this.getDestinationGateway().getOrigin().x;
-      p.y = this.getDestinationGateway().getOrigin().y;
-    } else {
-      p.translate(-this.origin.x, -this.origin.y);
-      p.y = Math.copySign(0.5-size, -p.y);
-      p.translate(this.getDestinationGateway().getOrigin());
+  public boolean canMove(Moveable m) {
+    Point pos = m.getPos();
+    if ((Math.round(pos.x) == this.origin.x)
+          && (Math.round(pos.y) == this.origin.y)) {
+      System.out.println(pos);
       if (this.orientation == World.NORTH) {
-        p.translate(0, -0.51);
+        return (pos.y <= this.origin.y-0.5+Player.SIZE);
       } else if (this.orientation == World.SOUTH) {
-        p.translate(0, 0.51);
+        return (pos.y >= this.origin.y+0.5-Player.SIZE-0.1);
       }
     }
+    return false;
+  }
+
+  public Point toDestinationPoint(Point p, double size) {
+    if (this.orientation == Gateway.OMNIDIRECTIONAL) {
+      return this.getDestinationGateway().origin;
+    }
+    p.translate(-this.getOrigin().x, -this.getOrigin().y);
+    if (this.getDestinationGateway().requiresInteractToMove()) {
+      p.y = Math.copySign(0.5+size, p.y);
+    } else {
+      p.y = Math.copySign(0.5-size-0.1, -p.y);
+    }
+    p.translate(this.getDestinationGateway().getOrigin());
     return p;
   }
 

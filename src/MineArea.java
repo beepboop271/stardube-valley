@@ -10,6 +10,7 @@ public class MineArea extends Area {
     super(name, width, height);
     this.levels = new MineLevel[MineArea.NUM_LEVELS];
     this.levels[0] = new MineLevel.Builder(0, 2).buildLevel();
+    this.levels[1] = new MineLevel.Builder(1, 2).buildLevel();
   }
 
   @Override

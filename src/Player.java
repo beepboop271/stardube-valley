@@ -2,12 +2,12 @@
 /**
  * [Player]
  * 2019-12-19
- * @version 0.1
+ * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Joseph Wang
  */
 public class Player extends Moveable {
   public static final double SIZE = 0.35;
-  private static final double MAX_SPEED = 6;
+  private static final double MAX_SPEED = 12;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;
@@ -24,14 +24,11 @@ public class Player extends Moveable {
   private int selectedItemIdx;
   private Point selectedTile;
   private boolean isImmutable;
+  private boolean isExhausted;
   private FishingGame currentFishingGame;
-  private int currentFunds;
-  private int futureFunds;
-  private int totalEarnings;
-  private int health;
-  private int maxHealth;
-  private int energy;
-  private int maxEnergy;
+  private int currentFunds, futureFunds, totalEarnings;
+  private int health, maxHealth;
+  private int energy, maxEnergy;
   private int currentMenuPage;
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
 
@@ -40,6 +37,7 @@ public class Player extends Moveable {
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
+    this.isExhausted = false;
     this.health = 100;
     this.maxHealth = 100;
     this.energy = 270;
@@ -54,13 +52,13 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("TulipSeeds", 15);
-    this.inventory[6] = new HoldableStack("StrawberrySeeds", 10);
-    this.inventory[7] = new HoldableStack("CauliflowerSeeds", 5);
+    this.inventory[5] = new HoldableStack("PizzaSeeds", 15);
+    this.inventory[6] = new HoldableStack("WatermelonItem", 99);
+    this.inventory[7] = new HoldableStack("MangoSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
-    //this.inventory[10] = new HoldableStack("IronItem", 10);
-    //this.inventory[11] = new HoldableStack("CoalItem", 2);
+    this.inventory[10] = new HoldableStack("IronItem", 10);
+    this.inventory[11] = new HoldableStack("CoalItem", 2);
   }
   
   @Override
@@ -143,6 +141,13 @@ public class Player extends Moveable {
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(itemName), 1));
   }
 
+  /**
+   * [useAtIndex]
+   * Takes the item at the specified index in the player's inventory and decreases
+   * its quantity by 1. If it only has one, remove the item by setting it to null.
+   * @author Candice Zhang, Kevin Qiao
+   * @param index The index of the item to be used.
+   */
   public void useAtIndex(int index) {
     if (this.inventory[index].getQuantity() == 1) {
       this.inventory[index] = null;
@@ -151,14 +156,62 @@ public class Player extends Moveable {
     }
   }
 
+  /**
+   * [decrementAtIndex]
+   * Takes the item at the specified index and decreases its quantity by a specified amount.
+   * If the item at the index is less than the amount decreased, it will set the inventory index as 
+   * null, effectively removing the item.
+   * @author Joseph Wang
+   * @param index The index of the item of which to decrease quantity of.
+   * @param amount The amount that will be decreased.
+   */
+  public void decrementAtIndex(int index, int amount) {
+    if (this.inventory[index].getQuantity() <= amount) {
+      this.inventory[index] = null;
+    } else {
+      this.inventory[index].subtractHoldables(amount);
+    }
+  }
+
+  /**
+   * [removeAtIndex]
+   * Removes the item at the specified index (ie. set it to null).
+   * @author Candice Zhang
+   * @param index The index of the item to remove.
+   */
   public void removeAtIndex(int index) {
     this.inventory[index] = null;
   }
 
+  /**
+   * [hasAtIndex]
+   * Checks to see if a spot in the inventory at the selected index has an item (ie. is not null).
+   * @author Candice Zhang
+   * @param index The index to check for an item.
+   * @return boolean, true if there is something at the index specified and false if it is null.
+   */
   public boolean hasAtIndex(int index) {
     return !(this.inventory[index] == null);
   }
 
+  /**
+   * [getAtIndex]
+   * Retrieves the item at the specified index in this player's inventory.
+   * @author Joseph Wang
+   * @param index The index of the item to get.
+   * @return HoldableStack, the item at the specified index.
+   */
+  public HoldableStack getAtIndex(int index) {
+    return this.inventory[index];
+  }
+
+  /**
+   * [hasHoldable]
+   * Checks to see if the player already has a specified holdable in their inventory.
+   * @author Joseph Wang
+   * @param item The specified holdable that is being compared.
+   * @return boolean, true if this player's inventory has this holdable already, false otherwise.
+   */
   public boolean hasHoldable(Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
@@ -212,10 +265,22 @@ public class Player extends Moveable {
     return this.currentMenuPage;
   }
   
+  /**
+   * [getSelectedItemIdx]
+   * Retrieves the index number of the current selected item.
+   * @author Kevin Qiao
+   * @return int, the index number of the selected item.
+   */
   public int getSelectedItemIdx() {
     return this.selectedItemIdx;
   }
 
+  /**
+   * [getSelectedItem]
+   * Retrieves the current selected item using the selected item index.
+   * @author Kevin Qiao
+   * @return HoldableStack, the current selected item.
+   */
   public HoldableStack getSelectedItem() {
     return this.inventory[this.selectedItemIdx];
   }
@@ -263,10 +328,22 @@ public class Player extends Moveable {
     this.selectedItemIdx = selectedItemIdx;
   }
 
+  /**
+   * [isImmutable]
+   * Checks if this player is currently in its immutable state (ie. cannot move or change items).
+   * @author Candice Zhang
+   * @return boolean, true if is immutable and false otherwise.
+   */
   public boolean isImmutable() {
     return this.isImmutable;
   }
   
+  /**
+   * [setImmutable]
+   * Sets the immutable state of this player to either true or false.
+   * @author Candice Zhang
+   * @param isImmutable The boolean of which the player's immutable state will be.
+   */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
   }
@@ -279,50 +356,166 @@ public class Player extends Moveable {
     return (this.currentFishingGame != null);
   }
 
+  /**
+   * [getHealth]
+   * Retrieves this player's current health.
+   * @author Candice Zhang
+   * @return int, the current health of the player.
+   */
   public int getHealth() {
     return this.health;
   }
 
+  /**
+   * [increaseHealth]
+   * Increases this player's health by a specified amount.
+   * @author Candice Zhang
+   * @param increment The amount to increase this player's health by.
+   */
   public void increaseHealth(int increment) {
     this.health = Math.min(this.health+increment, this.maxHealth);
   }
 
+  /**
+   * [decreaseHealth]
+   * Decrements this player's health by a specified amount.
+   * @author Candice Zhang
+   * @param decrement The amount to decrease this player's health by.
+   */
   public void decreaseHealth(int decrement) {
     this.health = Math.max(this.health-decrement, 0);
   }
 
+  /**
+   * [getMaxHealth]
+   * Retrieves this player's maximum health.
+   * @author Candice Zhang
+   * @return int, the player's total maximum health.
+   */
   public int getMaxHealth() {
     return this.maxHealth;
   }
 
+  /**
+   * [increaseMaxHealth]
+   * Increases this player's maximum health.
+   * @author Candice Zhang
+   * @param increment The amount to increase this player's health by.
+   */
   public void increaseMaxHealth(int increment) {
     this.maxHealth += increment;
   }
 
+  /**
+   * [getEnergy]
+   * Retrieves this player's current total energy.
+   * @author Joseph Wang
+   * @return int, this player's current energy.
+   */
   public int getEnergy() {
     return this.energy;
   }
 
+  /**
+   * [increaseEnergy]
+   * Increases this player's total current energy.
+   * @author Joseph Wang
+   * @param increment The amount to increase the energy by.
+   */
   public void increaseEnergy(int increment) {
     this.energy = Math.min(this.energy+increment, this.maxEnergy);
   }
 
+  /**
+   * [decreaseEnergy]
+   * Decreases this player's total current energy.
+   * @author Joseph Wang
+   * @param decrement The amount to decrease the energy by.
+   */
   public void decreaseEnergy(int decrement) {
-    this.energy = Math.max(this.energy-decrement, 0);
+    this.energy -= decrement;
+
+    if (this.energy < 0) {
+      this.isExhausted = true;
+    }
   }
 
+  /**
+   * [recover]
+   * Using the time, calculates how much energy the player should recover at the end of the day, based
+   * on time slept, and whether the player is exhaused or not. 
+   * Also fully restores health to max.
+   * @author Joseph Wang
+   * @param time The time that the player ended the day at.
+   */
+  public void recover(long time) {
+    /* Recovered energy takes into consideration sleep time 
+     * (ie. if the player sleeps after midnight, they will have a penalty on their next day energy). 
+     * If the player is exhaused, recovered energy is equal to half. 
+     * The player only recovers energy if they go to bed with less than their determined recovered energy,
+     * unless they are exhausted.
+     */
+    if (this.isExhausted) {
+      this.energy = this.maxEnergy/2;
+    } else if ((time > 0) && (time < 6*60*1_000_000_000L)) {
+      int lostEnergy = (int)(Math.min((long)(this.maxEnergy / 3), time / 1_000_000_000L));
+      if (this.energy < this.maxEnergy - lostEnergy) {
+        this.energy = this.maxEnergy - lostEnergy;
+      }
+    } else {
+      this.energy = this.maxEnergy;
+    }
+
+    this.health = maxHealth;
+    this.isExhausted = false;
+  }
+
+  /**
+   * [getMaxEnergy]
+   * Retrieves the max possible energy that this player can have.
+   * @author Joseph Wang
+   * @return int, this player's max possible energy.
+   */
   public int getMaxEnergy() {
     return this.maxEnergy;
   }
 
+  /**
+   * [increaseMaxEnergy]
+   * Increases the max energy of this player.
+   * @author Candice Zhang
+   * @param increment, the amount to increase this player's maximum energy by.
+   */
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;
   }
 
+  /**
+   * [getExhaustionStatus]
+   * Retrieves the exhaustion status of this player.
+   * @author Joseph Wang
+   * @return boolean, whether the player has exhausted themself or not.
+   */
+  public boolean getExhaustionStatus() {
+    return this.isExhausted;
+  }
+
+  /**
+   * [getInventorySize]
+   * Retrieves this player's inventory's total capacity.
+   * @author Candice Zhang
+   * @return int, the total size of this player's inventory.
+   */
   public int getInventorySize() {
     return this.inventorySize;
   }
 
+  /**
+   * [setInventorySize]
+   * Sets this player's inventory size to a specified quantity.
+   * @author Candice Zhang
+   * @param size The new capacity of this inventory.
+   */
   public void setInventorySize(int size) {
     this.inventorySize = size;
   }
@@ -339,31 +532,72 @@ public class Player extends Moveable {
     return !(this.currentInteractingMenuObj == null);
   }
 
+  /**
+   * [getCurrentFunds]
+   * Retrieves this player's current funds (ie. the amount of spendable money they have at this instance)
+   * @author Candice Zhang
+   * @return int, the total funds of this player.
+   */
   public int getCurrentFunds() {
     return this.currentFunds;
   }
 
+  /**
+   * [increaseCurrentFunds]
+   * Increases this player's current funds by a specified value.
+   * @author Candice Zhang
+   * @param value The amount to be increased by.
+   */
   public void increaseCurrentFunds(int value) {
     this.currentFunds += value;
     this.totalEarnings += value;
   }
 
+  /**
+   * [decreaseCurrentFunds]
+   * Decreases this player's current funds by a specified value.
+   * @author Candice Zhang
+   * @param value The amount to be removed.
+   */
   public void decreaseCurrentFunds(int value) {
     this.currentFunds -= value;
   }
 
+  /**
+   * [getFutureFunds]
+   * Retrives this player's future funds (ie. How much they should earn at the end of this day).
+   * @author Joseph Wang
+   * @return int, how much this player should earn.
+   */
   public int getFutureFunds() {
     return this.futureFunds;
   }
 
+  /**
+   * [increaseFutureFunds]
+   * Adds a specified value to this player's future funds.
+   * @author Joseph Wang
+   * @param value The amount to be added.
+   */
   public void increaseFutureFunds(int value) {
     this.futureFunds += value;
   }
 
+  /**
+   * [resetFutureFunds]
+   * Sets this player's future funds (funds to be added) to 0.
+   * @author Joseph Wang
+   */
   public void resetFutureFunds() {
     this.futureFunds = 0;
   }
 
+  /**
+   * [getTotalEarnings]
+   * Retrieves this player's total earnings.
+   * @author Candice Zhang
+   * @return int, how much this player has earned in total.
+   */
   public int getTotalEarnings() {
     return this.totalEarnings;
   }

@@ -1,12 +1,18 @@
 /**
  * [BuildingArea]
+ * A class for any buildings that are created in Stardube Valley.
  * 2020-1-6
  * @version 0.1
  * @author Joseph Wang
  */
 public class BuildingArea extends Area {
-  private Furniture[] furniture; //- we might not actually need this cause we could hardcode furniture i guess
-
+  /**
+   * [BuildingArea]
+   * Constructor for a new BuildingArea.
+   * @param name The name of this area.
+   * @param width The tile width of this area.
+   * @param height The tile height of this area.
+   */
   public BuildingArea(String name, int width, int height) {
     super(name, width, height);
   }

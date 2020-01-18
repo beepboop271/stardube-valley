@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.awt.GradientPaint;
 
 /**
  * [WorldPanel]
@@ -32,6 +33,7 @@ public class WorldPanel extends JPanel {
   public static final Color PROFILE_COLOR = new Color(245, 180, 110);
   public static final Color PALE_YELLOW_COLOR = new Color(250, 230, 200);
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
+  public static final Color PALE_GREEN_COLOR = new Color(130, 230, 0);
 
   private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
@@ -39,6 +41,7 @@ public class WorldPanel extends JPanel {
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.PLAIN, 35);
   private final Font BIG_BOLD_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 35);
   private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
+  private final Font PROFILE_FONT = new Font("Comic Sans MS", Font.PLAIN, 30);
   
   private StardubeEventListener listener;
   private World worldToDisplay;
@@ -203,8 +206,8 @@ public class WorldPanel extends JPanel {
               int playerH = worldPlayer.getImage().getHeight();
               int componentW = ((Drawable)tileContent).getImage().getWidth();
               int componentH = ((Drawable)tileContent).getImage().getHeight();
-              // if the player is overlapping with the tree, set a transparency for the tree
-              if ((tileContent instanceof ExtrinsicTree) &&
+              // if the player is overlapping with the tree or building, set a transparency for it
+              if ((tileContent instanceof ExtrinsicTree || tileContent instanceof Building) &&
                   (playerScreenPos.x < drawX + componentW) &&
                   (playerScreenPos.x + playerW > drawX) &&
                   (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
@@ -353,26 +356,49 @@ public class WorldPanel extends JPanel {
         int profileY = (int)Math.round(this.menuY+4.5*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP));
         int profileW = this.menuW-WorldPanel.INVENTORY_CELLSIZE;
         int profileH = 4*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP);
+        String farmString = "Stardube Farm";
+        String fundString = "Current Funds: " + worldPlayer.getCurrentFunds() + " $D";
+        String earningString = "Total Earnings: " + worldPlayer.getTotalEarnings() + "$D";
         g.setColor(WorldPanel.PROFILE_COLOR);
         g.fillRect(profileX, profileY, profileW, profileH);
         Graphics2D profileGraphics = (Graphics2D)g;
         profileGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
-        profileGraphics.setFont(this.STRING_FONT);
+        profileGraphics.setFont(this.PROFILE_FONT);
         profileGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        profileGraphics.drawString("Current Funds: " + worldPlayer.getCurrentFunds() + "g", 0, 0);
-        profileGraphics.drawString("Total Earnings: " + worldPlayer.getTotalEarnings() + "g", 0, 50);
+        profileGraphics.drawString(farmString,
+                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(farmString)*1.75), (int)Math.round(profileY+profileH*0.25));
+        profileGraphics.drawString(fundString,
+                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(fundString)*1.3), (int)Math.round(profileY+profileH*0.5));
+        profileGraphics.drawString(earningString,
+                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(earningString)*1.3), (int)Math.round(profileY+profileH*0.75));
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         // TODO: insert gui code
+        Graphics2D dumbGraphics = (Graphics2D)g;
+        dumbGraphics.setColor(Color.WHITE);
+        dumbGraphics.setFont(this.PROFILE_FONT);
+        dumbGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        dumbGraphics.drawString("Crafting Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert gui code
+        
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
         // TODO: insert gui code
+        Graphics2D dumbGraphics = (Graphics2D)g;
+        dumbGraphics.setColor(Color.WHITE);
+        dumbGraphics.setFont(this.PROFILE_FONT);
+        dumbGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        dumbGraphics.drawString("Skills Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         // TODO: insert gui code
+        Graphics2D dumbGraphics = (Graphics2D)g;
+        dumbGraphics.setColor(Color.WHITE);
+        dumbGraphics.setFont(this.PROFILE_FONT);
+        dumbGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        dumbGraphics.drawString("Social Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
         // TODO: change hardcoded world.generalStore
@@ -487,7 +513,7 @@ public class WorldPanel extends JPanel {
           int meterW = this.getWidth()/10;
           int meterH = this.getHeight()/25;
           int meterX = (int)Math.round(playerScreenPos.x-meterW/2+Player.SIZE*Tile.getSize());
-          int meterY = (int)Math.round(playerScreenPos.y)-meterH-25;
+          int meterY = (int)Math.round(playerScreenPos.y)-meterH-35;
           g.setColor(new Color(0,0,0,175));
           g.fillRect(meterX, meterY, meterW, meterH);
           g.setColor(Color.GREEN);
@@ -497,16 +523,16 @@ public class WorldPanel extends JPanel {
           int lineX, lineY;
           if (worldPlayer.getOrientation() == World.NORTH) {
             lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
-            lineY = (int)Math.round(playerScreenPos.y);
+            lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2-worldPlayer.getImage().getHeight());
           } else if (worldPlayer.getOrientation() == World.SOUTH) {
             lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
             lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2);
           } else if (worldPlayer.getOrientation() == World.WEST) {
             lineX = (int)Math.round(playerScreenPos.x);
-            lineY = (int)Math.round(playerScreenPos.y);
+            lineY = (int)Math.round(playerScreenPos.y)+5;
           } else { // EAST
             lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize()*2);
-            lineY = (int)Math.round(playerScreenPos.y);
+            lineY = (int)Math.round(playerScreenPos.y)+5;
           }
           
           g.drawLine(lineX, lineY,
@@ -529,8 +555,17 @@ public class WorldPanel extends JPanel {
     // TODO: different colors for different ranges of health/energy;
     // also letter color is a hmm idk how to make it stand out with both black and white backgrounds
     // ok i can think of ways that im too lazy to implement so whatever
-    g.setColor(Color.YELLOW);
-    g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    if ((worldPlayer.getEnergy() < 20) || (worldPlayer.getExhaustionStatus())) {
+      g.setColor(Color.RED);
+    } else {
+      g.setColor(Color.YELLOW);
+    }
+    
+    if (!(worldPlayer.getEnergy() <= 0)) {
+      g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    }
+    g.setColor(Color.BLACK);
+    g.drawRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getMaxEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
     Graphics2D letterGraphics = (Graphics2D)g;
     letterGraphics.setColor(Color.WHITE);
     letterGraphics.setFont(this.LETTER_FONT);
@@ -545,30 +580,53 @@ public class WorldPanel extends JPanel {
       letterGraphics.drawString("H", this.getWidth()-125, this.getHeight()-20);
     }
     // if player is in fishing game, draw mini game stuff
-    // TODO: make the display postion beside the player
     if (worldPlayer.isInFishingGame() && worldPlayer.getCurrentFishingGame().hasStarted()) {
+      int gameX, gameY;
+      int gameW = this.getWidth()/20;
+      int gameH = this.getHeight()/2;
+      int frameWidth = 10;
+      if (playerScreenPos.x > this.getWidth()/2) {
+        gameX = (int)Math.round(playerScreenPos.x-gameW*2);
+      } else {
+        gameX = (int)Math.round(playerScreenPos.x+gameW*2);
+      }
+      if (playerScreenPos.y+gameH/2 > this.getHeight()) {
+        gameY = this.getHeight()-gameH;
+      } else {
+        gameY = (int)Math.round(playerScreenPos.y-gameH/2);
+      }
+
       // draw background
-      g.setColor(new Color(255, 255, 255, 100));
-      g.fillRect(0, 0, this.getWidth()/20, this.getHeight()/2);
+      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      Graphics2D gameGraphics = (Graphics2D)g;
+      gameGraphics.setStroke(new BasicStroke(frameWidth));
+      gameGraphics.setColor(WorldPanel.DARK_BROWN_COLOR);
+      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2, gameW+frameWidth, gameH+frameWidth);
+      gameGraphics.setStroke(new BasicStroke(frameWidth/2));
+      gameGraphics.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2, gameW+frameWidth, gameH+frameWidth);
+
+      // draw game and game bars
+      g.setColor(new Color(255, 255, 255, 150));
+      g.fillRect(gameX, gameY, gameW, gameH);
       
       double barScale = 1.0/FishingGame.MAX_HEIGHT*(this.getHeight()/2);
 
-      // draw player fishing bar
+      // player fishing bar
       FishingGameBar playerBar = worldPlayer.getCurrentFishingGame().getPlayerBar();
       g.setColor(Color.BLUE);
-      g.fillRect(0, (int)(playerBar.getY()*barScale),
-                 this.getWidth()/40, (int)(playerBar.getHeight()*barScale));
+      g.fillRect(gameX, gameY+(int)(playerBar.getY()*barScale), gameW/2, (int)(playerBar.getHeight()*barScale));
 
-      // draw target fishing bar
+      // target fishing bar
       FishingGameBar targeBar = worldPlayer.getCurrentFishingGame().getTargetBar();
-      g.setColor(Color.GREEN);
-      g.fillRect(this.getWidth()/160, (int)(targeBar.getY()*barScale),
-                 this.getWidth()/80, (int)(targeBar.getHeight()*barScale));
+      g.setColor(WorldPanel.PALE_GREEN_COLOR);
+      g.fillRect(gameX+this.getWidth()/160, gameY+(int)(targeBar.getY()*barScale), gameW/4, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
+      //g2d.setPaint( new GradientPaint( 0, 0, COL_GRADIENT_START, 0, 12, COL_GRADIENT_END ) );
       g.setColor(Color.RED);
-      g.fillRect(this.getWidth()/40, this.getHeight()/2-this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100,
-                 this.getWidth()/40, this.getHeight()/2*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100);
+      g.fillRect(gameX+this.getWidth()/40, (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
+                 gameW/2, (int)Math.round(gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0));
     }
 
     // display description of hovered item
