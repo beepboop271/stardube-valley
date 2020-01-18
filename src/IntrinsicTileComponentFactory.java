@@ -75,7 +75,7 @@ public class IntrinsicTileComponentFactory {
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        int[] offsets = {Integer.parseInt(nextLineData[5]), Integer.parseInt(nextLineData[6])};
+        double[] offsets = {Double.parseDouble(nextLineData[5]), Double.parseDouble(nextLineData[6])};
         componentToAdd = new IntrinsicGrowableCollectable(nextLineData[0], 
                                                           "assets/images" + nextLineData[1],
                                                           nextLineData[3],
