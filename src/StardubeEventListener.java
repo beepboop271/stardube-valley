@@ -107,12 +107,6 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubeWorld.generalStore);
         break;
-      case KeyEvent.VK_M:
-        Area dumb = new MineLevel.Builder(1, 5).buildLevel();
-        dumb.addMoveable(stardubePlayer);
-        stardubeWorld.getPlayerArea().removeMoveable(stardubePlayer);
-        stardubeWorld.setPlayerArea(dumb);
-        break;
       case KeyEvent.VK_I:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(0, -1));
         break;

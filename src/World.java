@@ -292,7 +292,9 @@ public class World {
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
-        if (interactedGateway != null && interactedGateway.requiresInteractToMove()) {
+        if ((interactedGateway != null)
+              && interactedGateway.requiresInteractToMove()
+              && this.player.getPos().round().x == interactedGateway.getOrigin().x) {
           this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
         } else if (currentTile != null) {
 

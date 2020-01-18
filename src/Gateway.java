@@ -1,4 +1,7 @@
 public class Gateway {
+  public static final int OMNIDIRECTIONAL = 5;
+  public static final int ONE_WAY = 6;
+
   private Gateway destinationGateway;
   private Area destinationArea;
   private Point origin;
@@ -27,9 +30,11 @@ public class Gateway {
   }
 
   public Point toDestinationPoint(Point p, double size) {
+    if (this.orientation == Gateway.OMNIDIRECTIONAL) {
+      return this.getDestinationGateway().origin;
+    }
     p.translate(-this.getOrigin().x, -this.getOrigin().y);
     if (this.getDestinationGateway().requiresInteractToMove()) {
-      // p.y = Math.copySign(0.5-size-9.1, -p.y);
       p.y = Math.copySign(0.5+size, p.y);
     } else {
       p.y = Math.copySign(0.5-size-0.1, -p.y);
