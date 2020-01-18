@@ -82,8 +82,8 @@ public class World {
       this.lastUpdateTime = currentUpdateTime;
       return;
     }
-    
-    this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime);
+    this.inGameNanoTime += currentUpdateTime-this.lastUpdateTime;
+    //this.inGameNanoTime += (currentUpdateTime-this.lastUpdateTime)*100;  //temp for zoomy
     this.inGameNanoTime %= 24*60*1_000_000_000L;
 
     // check for end of day
@@ -473,6 +473,7 @@ public class World {
   }
 
   public void doDayEndActions() {
+    this.player.recover(this.inGameNanoTime);
     // day starts at 6 am
     this.inGameNanoTime = 6*60*1_000_000_000L;
     ++this.inGameDay;

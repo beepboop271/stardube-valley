@@ -9,7 +9,9 @@ HotPepperSeeds      crops/HotPepperSeeds      Seeds-to-start-a-new-hot-pepper-cr
 RadishSeeds         crops/RadishSeeds         Seeds-to-start-a-new-radish-crop            Radish
 BlueberrySeeds      crops/BlueberrySeeds      Seeds-to-start-a-new-blueberry-"bush"       Blueberry
 BeetSeeds           crops/BeetSeeds           Seeds-to-start-a-new-beet-crop              Beet
-CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop              Corn                           
+BokChoySeeds        crops/BokChoySeeds        Seeds-to-start-a-new-bok-choy-crop          BokChoy
+CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop              Corn   
+CranberrySeeds      crops/CranberrySeeds      Seeds-to-start-a-new-cranberry-crop         Cranberry                        
 
 name                directory path to assets  Description                         what it summons once clicked
                                                                                       (null for nothing)

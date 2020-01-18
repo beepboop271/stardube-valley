@@ -24,6 +24,7 @@ public class Player extends Moveable {
   private int selectedItemIdx;
   private Point selectedTile;
   private boolean isImmutable;
+  private boolean isExhausted;
   private FishingGame currentFishingGame;
   private int currentFunds;
   private int futureFunds;
@@ -40,6 +41,7 @@ public class Player extends Moveable {
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
+    this.isExhausted = false;
     this.health = 100;
     this.maxHealth = 100;
     this.energy = 270;
@@ -54,8 +56,8 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("BeetSeeds", 15);
-    this.inventory[6] = new HoldableStack("BlueberrySeeds", 10);
+    this.inventory[5] = new HoldableStack("BokChoySeeds", 15);
+    this.inventory[6] = new HoldableStack("WatermelonItem", 99);
     this.inventory[7] = new HoldableStack("CornSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
@@ -320,11 +322,32 @@ public class Player extends Moveable {
   }
 
   public void decreaseEnergy(int decrement) {
-    this.energy = Math.max(this.energy-decrement, 0);
+    this.energy -= decrement;
+
+    if (this.energy < 0) {
+      this.isExhausted = true;
+      System.out.println("This homie is tired");
+    }
   }
 
-  public void resetEnergy() { // TODO: take in a modifier or smth later
-    this.energy = this.maxEnergy;
+  public void recover(long time) { // TODO: take in a modifier or smth later
+    if (this.isExhausted) {
+      System.out.println("This homie is tired");
+      this.energy = this.maxEnergy/2;
+    } else if ((time > 0) && (time < 6*60*1_000_000_000L)) {
+     
+      int lostEnergy = (int)(Math.min((long)(this.maxEnergy / 3), time / 1_000_000_000L));
+      System.out.println("Oh no this homie will lose " + lostEnergy + " hp bc of speding " + time / 1_000_000_000L + "mins outside");
+      if (this.energy < this.maxEnergy - lostEnergy) {
+        this.energy = this.maxEnergy - lostEnergy;
+      }
+    } else {
+      System.out.println("Full recovery!");
+      this.energy = this.maxEnergy;
+    }
+
+    this.health = maxHealth;
+    this.isExhausted = false;
   }
 
   public int getMaxEnergy() {
@@ -333,6 +356,10 @@ public class Player extends Moveable {
 
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;
+  }
+
+  public boolean getExhaustionStatus() {
+    return this.isExhausted;
   }
 
   public int getInventorySize() {
