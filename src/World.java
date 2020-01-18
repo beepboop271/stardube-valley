@@ -345,19 +345,19 @@ public class World {
             }
           } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
             for (int i = 0; i < bushContents.length; i++) {
-              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicTree
-                  || bushContents[i] instanceof CollectableComponent) { // TODO: scuffed
+              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
                 continue;
+              } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
+                HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
+                HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  new HoldableStackEntity(product, null);
+                  if (this.player.canPickUp(product.getContainedHoldable())) {
+                      this.player.pickUp(product);
+                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+                  } 
+                }
               }
-              HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
-              HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-              if (product !=null) {
-                new HoldableStackEntity(product, null);
-                if (this.player.canPickUp(product.getContainedHoldable())) {
-                    this.player.pickUp(product);
-                ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
-              }
-            }
             }
           } else if (currentContent instanceof Collectable) {
             ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
@@ -660,6 +660,9 @@ public class World {
             break;
           case 'o':
             a.setMapAt(new OceanTile(x, y));
+            break;
+          case '-':
+            a.setMapAt(new PlankTile(x, y));
             break;
           case 'b':
             a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
