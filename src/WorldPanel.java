@@ -529,8 +529,17 @@ public class WorldPanel extends JPanel {
     // TODO: different colors for different ranges of health/energy;
     // also letter color is a hmm idk how to make it stand out with both black and white backgrounds
     // ok i can think of ways that im too lazy to implement so whatever
-    g.setColor(Color.YELLOW);
-    g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    if ((worldPlayer.getEnergy() < 20) || (worldPlayer.getExhaustionStatus())) {
+      g.setColor(Color.RED);
+    } else {
+      g.setColor(Color.YELLOW);
+    }
+    
+    if (!(worldPlayer.getEnergy() <= 0)) {
+      g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    }
+    g.setColor(Color.BLACK);
+    g.drawRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getMaxEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
     Graphics2D letterGraphics = (Graphics2D)g;
     letterGraphics.setColor(Color.WHITE);
     letterGraphics.setFont(this.LETTER_FONT);

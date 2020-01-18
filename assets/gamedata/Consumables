@@ -18,8 +18,11 @@ WatermelonItem    /crops/         slap-to-check-quality                 40 90
 HotPepperItem     /crops/         as-spicy-as-kevin                      5 15
 RadishItem        /crops/         this-sells-for-a-fair-bit             20 40
 BlueberryItem     /crops/         a-nice,-blue,-niceblue-crop           10 25
+MangoItem         /crops/         to-commemorate-our-teacher,-Mr.-Mangat 10 25
 BeetItem          /crops/         don't-mistake-this-for-a-radish!      15 30
+BokChoyItem       /crops/         unfortunately-not-Mr.-Choi            15 35
 CornItem          /crops/         tamer-crop                            30 40
+CranberryItem     /crops/         sell-5,-buy-a-mansion-what-can-I-say  20 40
 TurnipItem        /forageables/   a-turnip                              10 15
 LeekItem          /forageables/   not-a-green-onion                     10 15
 BluebellItem      /forageables/   blueberry's-friend                    10 15

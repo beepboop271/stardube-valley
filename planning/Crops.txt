@@ -8,7 +8,7 @@ Spring:
 - cauliflower (d5) - Grows in 12 days
 Summer:
 - watermelon (d7) - Grows in 10 days
-- mango BUSH (n5) - Grows in 7 days
+- mango BUSH (~5) - Grows in 7 days
 - hot peppers (~7) - Grows in 5 days, regrow in 3 days
 - radish (~5) - Grows in 4 days
 - wheat (n5) - Grows in 4 days
@@ -16,7 +16,7 @@ Summer:
 Fall:
 - corn - (d7) - Grows in 13 days, regrow in 4 days (can exist in both summer and fall)
 - pizza - (n5) - Grows in 6 days
-- bok choy (n5) - Grows in 4 days
+- bok choy (~5) - Grows in 4 days
 - pumpkins (n6) - Grows in 12 days
 - beets (~5) - Grows in 6 days
-- cranberries (n6) - Grows in 8 days, regrow in 4 days
+- cranberries (~6) - Grows in 8 days, regrow in 4 days

@@ -1,15 +1,18 @@
-ParsnipSeeds        crops/ParsnipSeeds        Seeds-to-start-a-new-parsnip-crop           Parsnip
-GarlicSeeds         crops/GarlicSeeds         Seeds-to-start-a-new-garlic-crop            Garlic
-PotatoSeeds         crops/PotatoSeeds         Seeds-to-start-a-new-potato-crop            Potato
-CauliflowerSeeds    crops/CauliflowerSeeds    Seeds-to-start-a-new-cauliflower-crop       Cauliflower
-TulipSeeds          crops/TulipSeeds          Seeds-to-start-the-best-crop-ever           Tulip  
-StrawberrySeeds     crops/StrawberrySeeds     Seeds-to-start-a-new-strawberry-crop        Strawberry         
-WatermelonSeeds     crops/WatermelonSeeds     Seeds-to-start-a-new-watermelon-crop        Watermelon
-HotPepperSeeds      crops/HotPepperSeeds      Seeds-to-start-a-new-hot-pepper-crop        HotPepper
-RadishSeeds         crops/RadishSeeds         Seeds-to-start-a-new-radish-crop            Radish
-BlueberrySeeds      crops/BlueberrySeeds      Seeds-to-start-a-new-blueberry-"bush"       Blueberry
-BeetSeeds           crops/BeetSeeds           Seeds-to-start-a-new-beet-crop              Beet
-CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop              Corn                           
+ParsnipSeeds        crops/ParsnipSeeds        Seeds-to-start-a-new-parsnip-crop.-Plant-in-Spring.-Takes-5-days-to-grow.                                       Parsnip
+GarlicSeeds         crops/GarlicSeeds         Seeds-to-start-a-new-garlic-crop.-Plant-in-Spring.-Takes-5-days-to-grow.                                        Garlic
+PotatoSeeds         crops/PotatoSeeds         Seeds-to-start-a-new-potato-crop  .-Plant-in-Spring.-Takes-7-days-to-grow.                                      Potato
+CauliflowerSeeds    crops/CauliflowerSeeds    Seeds-to-start-a-new-cauliflower-crop.-Plant-in-Spring.-Takes-12-days-to-grow.                                  Cauliflower
+TulipSeeds          crops/TulipSeeds          Seeds-to-start-the-best-crop-ever.-Plant-in-Spring.-Takes-6-days-to-grow.                                       Tulip  
+StrawberrySeeds     crops/StrawberrySeeds     Seeds-to-start-a-new-strawberry-crop.-Plant-in-Spring.-Takes-8-days-to-grow,-and-regrows-every-4-days.          Strawberry         
+WatermelonSeeds     crops/WatermelonSeeds     Seeds-to-start-a-new-watermelon-crop.-Plant-in-Summer.-Takes-10-days-to-grow.                                   Watermelon
+HotPepperSeeds      crops/HotPepperSeeds      Seeds-to-start-a-new-hot-pepper-crop.-Plant-in-Summer.-Takes-6-days-to-grow,-and-regrows-every-3-days.          HotPepper
+RadishSeeds         crops/RadishSeeds         Seeds-to-start-a-new-radish-crop.-Plant-in-Summer.-Takes-6-days-to-grow.                                        Radish
+BlueberrySeeds      crops/BlueberrySeeds      Seeds-to-start-a-new-blueberry-"bush".-Plant-in-Summer.-Takes-14-days-to-grow,-and-regrows-every-3-days.        Blueberry
+MangoSeeds          crops/MangoSeeds          Seeds-to...-"grow"-a-"mango-bush".-Plant-in-Summer.-Takes-7-days-to-grow,-and-regrows-every-3-days.             MangoBush
+BeetSeeds           crops/BeetSeeds           Seeds-to-start-a-new-beet-crop.-Plant-in-Autumn.-Takes-6-days-to-grow.                                          Beet
+BokChoySeeds        crops/BokChoySeeds        Seeds-to-start-a-new-bok-choy-crop.-Plant-in-Autumn.-Takes-5-days-to-grow.                                      BokChoy
+CornSeeds           crops/CornSeeds           Seeds-to-start-a-new-corn-crop.-Plant-in-Autumn.-Takes-13-days-to-grow,-and-regrows-every-4-days.               Corn   
+CranberrySeeds      crops/CranberrySeeds      Seeds-to-start-a-new-cranberry-crop.-Plant-in-Autumn.-Takes-8-days-to-grow,-and-regrows-every-5-days.           Cranberry                        
 
-name                directory path to assets  Description                         what it summons once clicked
-                                                                                      (null for nothing)
+name                directory path to assets  Description                                                                                             what it summons once clicked
+                                                                                                                                                           (null for nothing)

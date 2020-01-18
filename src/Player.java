@@ -24,6 +24,7 @@ public class Player extends Moveable {
   private int selectedItemIdx;
   private Point selectedTile;
   private boolean isImmutable;
+  private boolean isExhausted;
   private FishingGame currentFishingGame;
   private int currentFunds;
   private int futureFunds;
@@ -40,6 +41,7 @@ public class Player extends Moveable {
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
+    this.isExhausted = false;
     this.health = 100;
     this.maxHealth = 100;
     this.energy = 270;
@@ -54,9 +56,9 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
-    this.inventory[5] = new HoldableStack("BeetSeeds", 15);
-    this.inventory[6] = new HoldableStack("BlueberrySeeds", 10);
-    this.inventory[7] = new HoldableStack("CornSeeds", 5);
+    this.inventory[5] = new HoldableStack("BokChoySeeds", 15);
+    this.inventory[6] = new HoldableStack("WatermelonItem", 99);
+    this.inventory[7] = new HoldableStack("MangoSeeds", 5);
     this.inventory[8] = new HoldableStack("ChestItem", 5);
     this.inventory[9] = new HoldableStack("FurnaceItem", 1);
     this.inventory[10] = new HoldableStack("IronItem", 10);
@@ -291,54 +293,160 @@ public class Player extends Moveable {
     return (this.currentFishingGame != null);
   }
 
+  /**
+   * [getHealth]
+   * Retrieves this player's current health.
+   * @author Candice Zhang
+   * @return int, the current health of the player.
+   */
   public int getHealth() {
     return this.health;
   }
 
+  /**
+   * [increaseHealth]
+   * Increases this player's health by a specified amount.
+   * @author Candice Zhang
+   * @param increment The amount to increase this player's health by.
+   */
   public void increaseHealth(int increment) {
     this.health = Math.min(this.health+increment, this.maxHealth);
   }
 
+  /**
+   * [decreaseHealth]
+   * Decrements this player's health by a specified amount.
+   * @author Candice Zhang
+   * @param decrement The amount to decrease this player's health by.
+   */
   public void decreaseHealth(int decrement) {
     this.health = Math.max(this.health-decrement, 0);
   }
 
+  /**
+   * [getMaxHealth]
+   * Retrieves this player's maximum health.
+   * @author Candice Zhang
+   * @return int, the player's total maximum health.
+   */
   public int getMaxHealth() {
     return this.maxHealth;
   }
 
+  /**
+   * [increaseMaxHealth]
+   * Increases this player's maximum health.
+   * @author Candice Zhang
+   * @param increment The amount to increase this player's health by.
+   */
   public void increaseMaxHealth(int increment) {
     this.maxHealth += increment;
   }
 
+  /**
+   * [getEnergy]
+   * Retrieves this player's current total energy.
+   * @author Joseph Wang
+   * @return int, this player's current energy.
+   */
   public int getEnergy() {
     return this.energy;
   }
 
+  /**
+   * [increaseEnergy]
+   * Increases this player's total current energy.
+   * @author Joseph Wang
+   * @param increment The amount to increase the energy by.
+   */
   public void increaseEnergy(int increment) {
     this.energy = Math.min(this.energy+increment, this.maxEnergy);
   }
 
+  /**
+   * [decreaseEnergy]
+   * Decreases this player's total current energy.
+   * @author Joseph Wang
+   * @param decrement The amount to decrease the energy by.
+   */
   public void decreaseEnergy(int decrement) {
-    this.energy = Math.max(this.energy-decrement, 0);
+    this.energy -= decrement;
+
+    if (this.energy < 0) {
+      this.isExhausted = true;
+    }
   }
 
-  public void resetEnergy() { // TODO: take in a modifier or smth later
-    this.energy = this.maxEnergy;
+  /**
+   * [recover]
+   * Using the time, calculates how much energy the player should recover at the end of the day.
+   * Also fully restores health to max.
+   * @author Joseph Wang
+   * @param time The time that the player ended the day at.
+   */
+  public void recover(long time) { // TODO: take in a modifier or smth later
+    if (this.isExhausted) {
+      this.energy = this.maxEnergy/2;
+    } else if ((time > 0) && (time < 6*60*1_000_000_000L)) {
+     
+      int lostEnergy = (int)(Math.min((long)(this.maxEnergy / 3), time / 1_000_000_000L));
+      if (this.energy < this.maxEnergy - lostEnergy) {
+        this.energy = this.maxEnergy - lostEnergy;
+      }
+    } else {
+      this.energy = this.maxEnergy;
+    }
+
+    this.health = maxHealth;
+    this.isExhausted = false;
   }
 
+  /**
+   * [getMaxEnergy]
+   * Retrieves the max possible energy that this player can have.
+   * @author Joseph Wang
+   * @return int, this player's max possible energy.
+   */
   public int getMaxEnergy() {
     return this.maxEnergy;
   }
 
+  /**
+   * [increaseMaxEnergy]
+   * Increases the max energy of this player.
+   * @author Candice Zhang
+   * @param increment, the amount to increase this player's maximum energy by.
+   */
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;
   }
 
+  /**
+   * [getExhaustionStatus]
+   * Retrieves the exhaustion status of this player.
+   * @author Joseph Wang
+   * @return boolean, whether the player has exhausted themself or not.
+   */
+  public boolean getExhaustionStatus() {
+    return this.isExhausted;
+  }
+
+  /**
+   * [getInventorySize]
+   * Retrieves this player's inventory's total capacity.
+   * @author Candice Zhang
+   * @return int, the total size of this player's inventory.
+   */
   public int getInventorySize() {
     return this.inventorySize;
   }
 
+  /**
+   * [setInventorySize]
+   * Sets this player's inventory size to a specified quantity.
+   * @author Candice Zhang
+   * @param size The new capacity of this inventory.
+   */
   public void setInventorySize(int size) {
     this.inventorySize = size;
   }
