@@ -561,33 +561,41 @@ public class WorldPanel extends JPanel {
     }
 
     // display health and energy
-    // TODO: different colors for different ranges of health/energy;
-    // also letter color is a hmm idk how to make it stand out with both black and white backgrounds
-    // ok i can think of ways that im too lazy to implement so whatever
-    if ((worldPlayer.getEnergy() < 20) || (worldPlayer.getExhaustionStatus())) {
-      g.setColor(Color.RED);
-    } else {
-      g.setColor(Color.YELLOW);
-    }
+    int barWidth = 45;
+    int energyX = this.getWidth()-75;
+    int energyH = Math.max(0, (int)Math.round(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
+    int energyY = this.getHeight()-50-energyH;
+    Graphics2D statusGraphics = (Graphics2D)g;
+
+    // - energy
+    g.setColor(new Color(255, 255, 255, 75));
+    g.fillRect(energyX, this.getHeight()-250, barWidth, 200);
+    statusGraphics.setPaint(new GradientPaint(energyX, this.getHeight()-250, WorldPanel.PALE_GREEN_COLOR, energyX, this.getHeight()-50, Color.YELLOW));
+    statusGraphics.fillRect(energyX, energyY, barWidth, energyH);
+    statusGraphics.setStroke(new BasicStroke(3));
+    statusGraphics.setColor(WorldPanel.DARK_BROWN_COLOR);
+    statusGraphics.drawRect(energyX, this.getHeight()-250, barWidth, 200);
+    g.setFont(this.LETTER_FONT);
+    g.setColor(Color.WHITE);
+    g.drawString("E", this.getWidth()-60, this.getHeight()-20);
     
-    if (!(worldPlayer.getEnergy() <= 0)) {
-      g.fillRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
-    }
-    g.setColor(Color.BLACK);
-    g.drawRect(this.getWidth()-75, this.getHeight()-250, 45, (int)(worldPlayer.getMaxEnergy()/1.0/worldPlayer.getMaxEnergy()*200));
-    Graphics2D letterGraphics = (Graphics2D)g;
-    letterGraphics.setColor(Color.WHITE);
-    letterGraphics.setFont(this.LETTER_FONT);
-    letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    letterGraphics.drawString("E", this.getWidth()-60, this.getHeight()-20);
+    // - health
     if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
-      g.setColor(Color.RED);
-      g.fillRect(this.getWidth()-140, this.getHeight()-250, 45, (int)(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
-      letterGraphics.setColor(Color.WHITE);
-      letterGraphics.setFont(this.LETTER_FONT);
-      letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-      letterGraphics.drawString("H", this.getWidth()-125, this.getHeight()-20);
+      int healthX = this.getWidth()-140;
+      int healthH = Math.max(0, (int)Math.round(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
+      int healthY = this.getHeight()-50-healthH;
+      g.setColor(new Color(255, 255, 255, 75));
+      g.fillRect(healthX, this.getHeight()-250, barWidth, 200);
+      statusGraphics.setPaint(new GradientPaint(healthX, this.getHeight()-250, WorldPanel.PALE_GREEN_COLOR, healthX, this.getHeight()-50, Color.RED));
+      statusGraphics.fillRect(healthX, healthY, barWidth, healthH);
+      statusGraphics.setStroke(new BasicStroke(3));
+      statusGraphics.setColor(WorldPanel.DARK_BROWN_COLOR);
+      statusGraphics.drawRect(healthX, this.getHeight()-250, barWidth, 200);
+      g.setColor(Color.WHITE);
+      g.setFont(this.LETTER_FONT);
+      g.drawString("H", this.getWidth()-125, this.getHeight()-20);
     }
+
     // if player is in fishing game, draw mini game stuff
     if (worldPlayer.isInFishingGame() && worldPlayer.getCurrentFishingGame().hasStarted()) {
       int gameX, gameY;
@@ -632,7 +640,7 @@ public class WorldPanel extends JPanel {
       g.fillRect(gameX+this.getWidth()/160, gameY+(int)(targeBar.getY()*barScale), gameW/4, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
-      gameGraphics.setPaint( new GradientPaint(gameX+this.getWidth()/40, gameY, WorldPanel.PALE_GREEN_COLOR, gameX+this.getWidth()/40, gameY+gameH, WorldPanel.DIM_RED_COLOR) );
+      gameGraphics.setPaint(new GradientPaint(gameX+this.getWidth()/40, gameY, WorldPanel.PALE_GREEN_COLOR, gameX+this.getWidth()/40, gameY+gameH, WorldPanel.DIM_RED_COLOR));
       gameGraphics.fillRect(gameX+this.getWidth()/40, (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
                  gameW/2, (int)Math.round(gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0));
     }

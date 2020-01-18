@@ -1,0 +1,12 @@
+Basic Fertilizer 1
+SapItem 2
+
+Chest 1
+Wood 50
+
+format(idk regex so imma use "pseudocode" but omitting str())
+for each piece of recipe:
+  print(name + n ingredients)
+  for i in range(n):
+    print(required thing + space + quantity)
+  print()
