@@ -5,5 +5,14 @@ WorldArea Ocean 72 42
 WorldArea MineEntrance 72 42
 WorldArea Sidepath 45 11
 MineArea Mines 18 6
-TownArea Town 72 42
+TownArea Town 68 27
 BuildingArea Farmhouse 12 9
+BuildingArea GeneralStore 13 9
+BuildingArea McDonlads 13 9
+BuildingArea Clinic 12 9
+BuildingArea House1 12 9
+BuildingArea House2 12 9
+BuildingArea House3 12 9
+BuildingArea House4 12 9
+BuildingArea House5 12 9
+BuildingArea House6 12 9
