@@ -19,14 +19,14 @@ public interface Drawable {
   /**
    * [getXOffset]
    * Gets the correct X pos offset for this image for proper drawing.
-   * @return int, the amount (in tiles) for the X offset for image drawing.
+   * @return double, the amount (in tiles) for the X offset for image drawing.
    */
-  public int getXOffset();
+  public double getXOffset();
 
   /**
    * [getYOffset]
    * Gets the correct Y pos offset for this image for proper drawing.
-   * @return int, the amount (in tiles) for the Y offset for image drawing.
+   * @return double, the amount (in tiles) for the Y offset for image drawing.
    */
-  public int getYOffset();
+  public double getYOffset();
 }

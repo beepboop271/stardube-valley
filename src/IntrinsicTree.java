@@ -13,7 +13,7 @@ public class IntrinsicTree extends IntrinsicHarvestableComponent {
 
   public IntrinsicTree(String name, String imagesPath, String requiredTool,
                        int hardness, int numProducts, String[] growthData, 
-                       int[] offsets) throws IOException {                
+                       double[] offsets) throws IOException {                
     super(name, imagesPath, requiredTool, hardness, numProducts, offsets);
   
     int totalStages = Integer.parseInt(growthData[0]);

@@ -14,7 +14,7 @@ public class CollectableComponent extends IntrinsicTileComponent
   public CollectableComponent(String name,
                               String imagePath,
                               int numProducts,
-                              int[] offsets) throws IOException {
+                              double[] offsets) throws IOException {
     super(name, imagePath, offsets);
 
     this.products = new HoldableDrop[numProducts];

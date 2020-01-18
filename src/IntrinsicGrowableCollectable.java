@@ -13,7 +13,7 @@ public class IntrinsicGrowableCollectable extends CollectableComponent implement
   private int maxGrowthStage, regrowTime;
   
   public IntrinsicGrowableCollectable(String name, String imagesPath, String requiredTool,
-                                     String[] growthData, int[] offsets) throws IOException {
+                                     String[] growthData, double[] offsets) throws IOException {
     super(name, imagesPath, 1, offsets); // All bushes only drop 1 product, the item.
     
     int totalStages = Integer.parseInt(growthData[0]);

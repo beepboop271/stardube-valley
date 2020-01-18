@@ -23,7 +23,7 @@ public class IntrinsicCrop extends IntrinsicGrowableCollectable implements Harve
    * @throws IOException
    */
   public IntrinsicCrop(String name, String imagesPath, String requiredTool,
-                       String[] growthData, int[] offsets, 
+                       String[] growthData, double[] offsets, 
                        int plantingSeason) throws IOException {
     super(name, imagesPath, requiredTool, growthData, offsets);
     

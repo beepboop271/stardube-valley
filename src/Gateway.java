@@ -19,7 +19,7 @@ public class Gateway {
     Point pos = m.getPos();
     if ((Math.round(pos.x) == this.origin.x)
           && (Math.round(pos.y) == this.origin.y)) {
-      System.out.println(pos);
+      //System.out.println(pos);
       if (this.orientation == World.NORTH) {
         return (pos.y <= this.origin.y-0.5+Player.SIZE);
       } else if (this.orientation == World.SOUTH) {
