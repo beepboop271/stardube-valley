@@ -292,7 +292,8 @@ public class World {
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
         TileComponent[] bushContents = new TileComponent[3];
-        if (this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
+        if (currentTile != null &&
+            this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
             this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1) &&
             this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()) != null &&
             this.playerArea.getMapAt(currentTile.getX(), currentTile.getY()) != null &&
