@@ -596,13 +596,19 @@ public class World {
                                                              + a.getName()));
     String nextLine;
 
-
+    
+    System.out.println(a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
+      //System.out.println("on row" + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
+       // System.out.println("on col" + x);
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
+            break;
+          case ',':
+            a.setMapAt(new UnwalkableGround(x, y));
             break;
           case 'x':
             a.setMapAt(new GrassTile(x, y));

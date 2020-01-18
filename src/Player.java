@@ -7,7 +7,7 @@
  */
 public class Player extends Moveable {
   public static final double SIZE = 0.35;
-  private static final double MAX_SPEED = 6;
+  private static final double MAX_SPEED = 12;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;
@@ -26,13 +26,9 @@ public class Player extends Moveable {
   private boolean isImmutable;
   private boolean isExhausted;
   private FishingGame currentFishingGame;
-  private int currentFunds;
-  private int futureFunds;
-  private int totalEarnings;
-  private int health;
-  private int maxHealth;
-  private int energy;
-  private int maxEnergy;
+  private int currentFunds, futureFunds, totalEarnings;
+  private int health, maxHealth;
+  private int energy, maxEnergy;
   private int currentMenuPage;
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
 

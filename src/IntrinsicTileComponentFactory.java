@@ -139,8 +139,7 @@ public class IntrinsicTileComponentFactory {
         int[] offsets = {Integer.parseInt(nextLineData[2]), Integer.parseInt(nextLineData[3])};
         componentToAdd = new Building(nextLineData[0], 
                                             "assets/images"+nextLineData[1]+".png",
-                                            offsets);           
-                                          System.out.println(componentToAdd.getName());                     
+                                            offsets);                              
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
       }

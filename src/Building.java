@@ -10,7 +10,7 @@ import java.io.IOException;
  * @author Joseph Wang
  */
 
- public class Building extends IntrinsicTileComponent implements Drawable {
+ public class Building extends IntrinsicTileComponent implements Drawable, NotWalkable {
   /**
    * [Building]
    * Constructor for a new Building.

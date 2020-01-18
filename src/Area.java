@@ -47,9 +47,11 @@ public abstract class Area {
       return new BuildingArea(name, width, height);
     } else if (category.equals("MineArea")) {
       return new MineArea(name, width, height);
-    } else {
-      return null;
+    } else if (category.equals("TownArea")) {
+      return new TownArea(name, width, height);
     }
+
+    return null;
   }
 
   public static int getDirection(Point p1, Point p2) {
@@ -126,14 +128,12 @@ public abstract class Area {
       }
 
       if (t.getContent() != null) {
-        if (t.getContent() instanceof CollectableComponent) {// ExtrinsicHarvestableComponent) {
-          return false;
-        } else if (t.getContent() instanceof Building) {
+        if (t.getContent() instanceof NotWalkable) {// ExtrinsicHarvestableComponent) {
           return false;
         }
       }
 
-      if (t instanceof WaterTile) {
+      if (t instanceof NotWalkable) {
         return false;
       }
 
