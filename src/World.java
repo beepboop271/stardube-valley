@@ -425,7 +425,7 @@ public class World {
           if ((rodUsed.getTileToFish().getFishableFish().length==0)
               || ((Math.random()*100) <= 30)) { // TODO: make this associated with luck
             Holdable trashEarned = HoldableFactory.getHoldable(
-                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*WaterTile.getFishableTrash().length))]);
+                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*(WaterTile.getFishableTrash().length-1)))]);
             if (this.player.canPickUp(trashEarned)) {
               this.player.pickUp(new HoldableStack(trashEarned, 1));
             }
