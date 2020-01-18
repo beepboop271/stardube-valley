@@ -8,7 +8,7 @@ Spring:
 - cauliflower (d5) - Grows in 12 days
 Summer:
 - watermelon (d7) - Grows in 10 days
-- mango BUSH (n5) - Grows in 7 days
+- mango BUSH (~5) - Grows in 7 days
 - hot peppers (~7) - Grows in 5 days, regrow in 3 days
 - radish (~5) - Grows in 4 days
 - wheat (n5) - Grows in 4 days
