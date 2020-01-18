@@ -188,10 +188,10 @@ public class World {
   public void processEvents() {
     // pygame_irl
     EventObject event;
-    if (!this.eventQueue.isEmpty()) {
-      System.out.print(this.eventQueue.size()+" ");
-      System.out.println(this.eventQueue.peek());
-    }
+    // if (!this.eventQueue.isEmpty()) {
+    //   System.out.print(this.eventQueue.size()+" ");
+    //   System.out.println(this.eventQueue.peek());
+    // }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
@@ -202,52 +202,37 @@ public class World {
         this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
 
-        int treeX = selectedTile.getX() + 2;  // TODO: make this stuff less sketch
-        int treeY = selectedTile.getY() + 1;
-        Tile treeTile = this.playerArea.getMapAt(treeX, treeY);
-        TileComponent treeComponent = treeTile.getContent();
-        TileComponent componentToHarvest = selectedTile.getContent();
+        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1);  // TODO: make this stuff less sketch
+        Tile treeTile;
+        if (this.playerArea.inMap(treePos)) {
+          treeTile = this.playerArea.getMapAt(treePos);
+        } else {
+          treeTile = null;
+        }
 
-        if (treeComponent instanceof ExtrinsicHarvestableComponent) {
-          IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)treeComponent).getIntrinsicSelf()));
-          String requiredTool = ic.getRequiredTool();
-                  
-          if (requiredTool.equals("Axe")) {
-            // TODO: play breaking animation?
-            ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)treeComponent);
-            if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
-              Point point = new Point(toolEvent.getLocationUsed().x+2, toolEvent.getLocationUsed().y+1);
-              if (this.playerArea instanceof WorldArea) {
-                ExtrinsicTree tree = ((ExtrinsicTree)((WorldArea)this.playerArea).getMapAt(point).getContent());
-                if (tree.getStage() == 17) {
-                  tree.setStage(18);
-                } else {
-                  this.playerArea.removeComponentAt(point);
-                }
-              } else if (this.playerArea instanceof FarmArea) {
-                ExtrinsicTree tree = ((ExtrinsicTree)((FarmArea)this.playerArea).getMapAt(point).getContent());
-                if (tree.getStage() == 17) {
-                  tree.setStage(18);
-                } else {
-                  this.playerArea.removeComponentAt(point);
-                }
-              }
-              HoldableDrop[] drops = ic.getProducts();
-              HoldableStack product;
-              for (int i = 0; i < drops.length; ++i) {
-                product = drops[i].resolveDrop(this.luckOfTheDay);
-                if (product != null) {
-                  this.playerArea.addItemOnGround(
-                    new HoldableStackEntity(
-                        product,
-                        toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
-                    )
-                  );
-                }
-              }
+        // prioritize harvesting the actual tile before using the tree tile
+        TileComponent componentToHarvest;
+        if (selectedTile == null) {
+          if (treeTile != null) {
+            componentToHarvest = treeTile.getContent();
+            if (!(componentToHarvest instanceof ExtrinsicTree)) {
+              componentToHarvest = null;
+            }
+          } else {
+            componentToHarvest = null;
+          }
+        } else {
+          componentToHarvest = selectedTile.getContent();
+          if (!(componentToHarvest instanceof ExtrinsicHarvestableComponent)) {
+            if (treeTile != null && treeTile.getContent() instanceof ExtrinsicTree) {
+              componentToHarvest = treeTile.getContent();
+            } else {
+              componentToHarvest = null;
             }
           }
-        } else if (componentToHarvest instanceof ExtrinsicHarvestableComponent) {
+        }
+
+        if (componentToHarvest != null) {
           IntrinsicHarvestableComponent ic = ((IntrinsicHarvestableComponent)(((ExtrinsicHarvestableComponent)componentToHarvest).getIntrinsicSelf()));
           String requiredTool = ic.getRequiredTool();
                   
@@ -256,7 +241,16 @@ public class World {
             // TODO: play breaking animation?
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
-              this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+              if (ec instanceof ExtrinsicTree) {
+                if (((ExtrinsicTree)ec).getStage() == 17) {
+                  ((ExtrinsicTree)ec).setStage(18);
+                  ec.setHardnessLeft(5); // TODO: maybe dont hard code
+                } else {
+                  this.playerArea.removeComponentAt(treePos);
+                }
+              } else {
+                this.playerArea.removeComponentAt(toolEvent.getLocationUsed());
+              }
 
               HoldableDrop[] drops = ic.getProducts();
               HoldableStack product;
@@ -275,10 +269,11 @@ public class World {
              //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
-          if (toolEvent.getHoldableUsed().getName().equals("WateringCan") && 
-              (((GroundTile)selectedTile).getTilledStatus() == true)) {
-                ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
-              ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+          if (toolEvent.getHoldableUsed().getName().equals("WateringCan")
+                &&  (((GroundTile)selectedTile).getTilledStatus() == true)) {
+            ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
+            ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
+
           } else if (selectedTile.getContent() == null) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
               if (this.playerArea instanceof FarmArea) {
@@ -516,10 +511,11 @@ public class World {
   }
 
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
-    System.out.printf("enqueue t=%d\n", this.inGameNanoTime+nanoTimeIntoFuture);
-    long start = System.nanoTime();
+    // long time = this.inGameNanoTime+nanoTimeIntoFuture;
+    // System.out.printf("enqueue t=%02d:%02d:%d\n", time/60, time%60, (this.inGameNanoTime+nanoTimeIntoFuture)%1_000_000_000);
+    // long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
-    System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
+    // System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
   public void loadAreas() throws IOException {
