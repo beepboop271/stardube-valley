@@ -20,6 +20,7 @@ public class Player extends Moveable {
   public static final int SOCIAL_PAGE = 4;
   public static final int SHOP_PAGE = 5;
   public static final int CHEST_PAGE = 6;
+  public static final int ELEVATOR_PAGE = 7;
 
   private int inventorySize = 12;
   private HoldableStack[] inventory;
@@ -292,6 +293,9 @@ public class Player extends Moveable {
   }
 
   public void setSelectedTile(Point selectedTile) {
+    if (this.isImmutable()) {
+      return;
+    }
     this.selectedTile = selectedTile;
   }
 
@@ -557,7 +561,7 @@ public class Player extends Moveable {
    * [increaseMaxEnergy]
    * Increases the max energy of this player.
    * @author Candice Zhang
-   * @param increment, the amount to increase this player's maximum energy by.
+   * @param increment the amount to increase this player's maximum energy by.
    */
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;

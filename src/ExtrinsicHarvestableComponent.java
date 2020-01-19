@@ -5,7 +5,7 @@
  * @version 0.2
  * @author Kevin Qiao, Paula Yuan
  */
-public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent {
+public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent implements NotWalkable {
   private int hardnessLeft;
 
   public ExtrinsicHarvestableComponent(String name) {

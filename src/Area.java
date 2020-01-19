@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
@@ -18,7 +18,7 @@ public abstract class Area {
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZones;
-  private HashMap<Point, Gateway> gateways;
+  private LinkedHashMap<Point, Gateway> gateways;
   private long currentDay;
   private int currentSeason;
   
@@ -31,7 +31,7 @@ public abstract class Area {
     this.moveables = new LinkedHashSet<Moveable>();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
     this.neighbourZones = new GatewayZone[4];
-    this.gateways = new HashMap<Point, Gateway>();
+    this.gateways = new LinkedHashMap<Point, Gateway>();
     this.currentDay = 0;
     this.currentSeason = 0;
   }
@@ -45,8 +45,6 @@ public abstract class Area {
       return new WorldArea(name, width, height);
     } else if (category.equals("BuildingArea")) {
       return new BuildingArea(name, width, height);
-    } else if (category.equals("MineArea")) {
-      return new MineArea(name, width, height);
     } else if (category.equals("TownArea")) {
       return new TownArea(name, width, height);
     }
@@ -133,12 +131,13 @@ public abstract class Area {
       }
 
       if (t.getContent() != null) {
-        if (t.getContent() instanceof NotWalkable) {// ExtrinsicHarvestableComponent) {
+        if (!(t.getContent() instanceof ExtrinsicTree)
+              && (t.getContent() instanceof NotWalkable)) {
           return false;
         } else if (t.getContent() instanceof ExtrinsicGrowableCollectable && 
                   !(t.getContent() instanceof ExtrinsicCrop)) {
-            return false;
-          }
+          return false;
+        }
       } else if (bushTile != null && bushTile.getContent() != null) {
          if (bushTile.getContent() instanceof ExtrinsicGrowableCollectable 
             && !(bushTile.getContent() instanceof ExtrinsicCrop)) {
@@ -164,6 +163,10 @@ public abstract class Area {
   }
 
   public boolean hasLineOfSight(Enemy e, Player p) {
+    if (e.getHeight() == 3) {
+      // flying enemies always have line of sight
+      return true;
+    }
     Point p1 = e.getPos();
     Point p2 = p.getPos();
     Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.5);
@@ -181,8 +184,6 @@ public abstract class Area {
             return false;
           }
           break;
-        case 3:
-          return true;
       }
     }
     return true;
@@ -238,17 +239,16 @@ public abstract class Area {
     return this.gateways.get(pos);
   }
 
+  public Iterator<Gateway> getGateways() {
+    return this.gateways.values().iterator();
+  }
+
   public Iterator<Moveable> getMoveables() {
     return this.moveables.iterator();
   }
 
   public void addMoveable(Moveable m) {
     this.moveables.add(m);
-  }
-
-  public void removeMoveable(Moveable m) {
-    //testing only TODO: remove
-    this.moveables.remove(m);
   }
 
   public void addHarvestableAt(int x, int y, String harvestable) {

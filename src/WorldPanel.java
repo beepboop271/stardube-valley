@@ -559,6 +559,8 @@ public class WorldPanel extends JPanel {
             }
           }
         }
+      } else if (worldPlayer.getCurrentMenuPage() == Player.ELEVATOR_PAGE) {
+        // hi candy
       }
     }
     
