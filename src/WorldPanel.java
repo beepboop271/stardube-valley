@@ -410,16 +410,16 @@ public class WorldPanel extends JPanel {
             textGraphics.setFont(this.STRING_FONT);
             textGraphics.drawString(product.getName() + " - " + product.getDescription(),
                                     this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
-            int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE) / ingredients.length;
+            int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
             for ( int j = 0; j < ingredients.length; j++) {
               Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
               g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
                                                  curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
               g.drawString("x "+Integer.toString(craftingMachine.recipeOf(products[startIdx+i]).quantityOf(ingredients[j])),
                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
-              g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
-                          curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
             }
+            g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
+                        curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
           }
         }
 
@@ -820,11 +820,16 @@ public class WorldPanel extends JPanel {
             (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
   }
 
-  public boolean isPosInCraftingItemList(int x, int y) {
-    return ((x >= this.craftX) &&
-            (x <= this.craftX + this.craftW) &&
-            (y >= this.craftY) &&
-            (y <= this.craftY + this.craftItemH * WorldPanel.CRAFTING_ITEMS_PER_PAGE));
+  public boolean isPosInCraftButton(int x, int y) {
+    for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
+      if ((x >= this.craftX+this.craftW-this.craftButtonImage.getWidth()) &&
+          (x <= this.craftX+this.craftW) &&
+          (y >= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH-this.craftButtonImage.getHeight()) &&
+          (y <= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public int getInventoryMenuInventoryY() {

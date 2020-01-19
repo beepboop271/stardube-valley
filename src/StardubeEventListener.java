@@ -289,7 +289,11 @@ public class StardubeEventListener implements KeyListener,
         }
         
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
-        // TODO: insert code
+        if (this.worldPanel.isPosInCraftButton((int)this.mousePos.x, (int)this.mousePos.y)) {
+          String product = this.stardubePlayer.getCraftingMachine().getProducts()[
+                           this.worldPanel.craftingItemIdxAt((int)this.mousePos.y) + this.stardubePlayer.getAmountScrolled()];
+          this.stardubePlayer.craft(product);
+        }
 
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert code
