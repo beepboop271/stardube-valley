@@ -75,7 +75,7 @@ public class MineLevel extends Area {
       Point anchorToPrevious, anchorToNext;
       MineLevelComponent existingComponent, newComponent;
 
-      for (int attempt = 0; attempt < this.components.length-1; ++attempt) {
+      while (numComponents < this.components.length) {
         int existingIdx = (int)(Math.random()*numComponents);
         existingComponent = this.components[existingIdx];
         newComponent = MineLevel.levelComponents[(int)(Math.random()*MineLevel.numLevelComponents)];
@@ -119,6 +119,7 @@ public class MineLevel extends Area {
       Point offset;
       int realX, realY;
       int i = -1;
+      int numLaddersCreated = 0;
       while (++i < this.components.length && this.components[i] != null) {
         offset = this.componentPoints[i];
         for (int y = 0; y < this.components[i].getHeight(); ++y) {
@@ -137,7 +138,6 @@ public class MineLevel extends Area {
                       level.addHarvestableAt(realX, realY, choices[(int)(Math.random()*choices.length)]);
                     }
                   } else {                    //     90% to be an ore
-                    System.out.println(this.level/MineLevel.LEVELS_PER_TIER);
                     level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[Math.min(MineLevel.METAL_ORES.length,
                                                                                        this.level/MineLevel.LEVELS_PER_TIER)]);
                   }
@@ -150,11 +150,29 @@ public class MineLevel extends Area {
                 }
 
                 if (Math.random() < 0.06 && this.level != MineArea.NUM_LEVELS-1) {
+                  ++numLaddersCreated;
                   level.addGateway(new Gateway(realX, realY, Gateway.OMNIDIRECTIONAL, true));
                 }
               }
             }
           }
+        }
+      }
+      if ((numLaddersCreated == 0) && (this.level != MineArea.NUM_LEVELS-1)) {
+        int randomComponentIdx = (int)(Math.random()*this.components.length);
+        Point randomPosition;
+        do {
+          randomPosition = new Point((int)(Math.random()*this.components[randomComponentIdx].getWidth()),
+                                     (int)(Math.random()*this.components[randomComponentIdx].getHeight()));
+          randomPosition.translate(this.componentPoints[randomComponentIdx].x+1,
+                                   this.componentPoints[randomComponentIdx].y+1);
+        } while (level.getMapAt(randomPosition) == null);
+
+        level.addGateway(new Gateway((int)(randomPosition.x), (int)(randomPosition.y),
+                                     Gateway.OMNIDIRECTIONAL, true));
+        if (level.getMapAt(randomPosition).getContent() == null) {
+          level.setMapAt(new MineGatewayTile((int)(randomPosition.x), (int)(randomPosition.y),
+                                             MineGatewayTile.DOWNWARDS_LADDER));
         }
       }
     }
