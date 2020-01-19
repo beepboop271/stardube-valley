@@ -373,32 +373,29 @@ public class World {
           } else if (currentContent instanceof ExtrinsicChest) {
             this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
+            
           } else if (currentContent instanceof ExtrinsicMachine) {
-            if (((ExtrinsicMachine)currentContent).getProduct() != null) {
-              if (this.player.canPickUp(((ExtrinsicMachine)currentContent)
-                                          .getProduct().getContainedHoldable())) {
-                this.player.pickUp(((ExtrinsicMachine)currentContent).getProduct());
-                ((ExtrinsicMachine)currentContent).resetProduct();
+            ExtrinsicMachine machine = ((ExtrinsicMachine)currentContent);
+            if (machine.getProduct() != null) {
+              if (this.player.canPickUp(machine.getProduct().getContainedHoldable())) {
+                this.player.pickUp(machine.getProduct());
+                machine.resetProduct();
               }
-            } else if ((((ExtrinsicMachine)currentContent).getProduct() == null) && 
-                        (((ExtrinsicMachine)currentContent).getItemToProcess() == null)){
+            } else if ((machine.getProduct() == null) && (machine.getItemToProcess() == null)){
               if (this.player.hasAtIndex(itemIndex)) {
                 HoldableStack selectedItem = this.player.getAtIndex(itemIndex); //okay honestly this can be deleted this is just to make the next statement short
-                if (((ExtrinsicMachine)currentContent).canProcess(
-                                  selectedItem.getContainedHoldable().getName()) &&
-                                  selectedItem.getQuantity() >= 
-                                  ((ExtrinsicMachine)currentContent).getRequiredQuantity()) {
-                  if (((ExtrinsicMachine)currentContent).getCatalyst() == null ||
-                        this.player.hasHoldable(((ExtrinsicMachine)currentContent).getCatalyst())) {
-                    ((ExtrinsicMachine)currentContent).setItemToProcess(
-                        selectedItem.getContainedHoldable().getName());
-                    ((ExtrinsicMachine)currentContent).increasePhase();   
-                    player.decrementAtIndex(itemIndex, ((ExtrinsicMachine)currentContent).getRequiredQuantity());
-                    player.decrementHoldable(1, ((ExtrinsicMachine)currentContent).getCatalyst());
-                    this.emplaceFutureEvent(
-                        ((ExtrinsicMachine)currentContent).getProcessingTime(
-                            selectedItem.getContainedHoldable().getName()), 
-                            new MachineProductionFinishedEvent((ExtrinsicMachine)currentContent));   
+                if (machine.canProcess(selectedItem.getContainedHoldable().getName()) 
+                    && selectedItem.getQuantity() >= machine.getRequiredQuantity()) {
+                  if ((machine.getCatalyst() == null)  
+                      || (this.player.hasHoldable(machine.getCatalyst()))) {
+                    machine.setItemToProcess(selectedItem.getContainedHoldable().getName());
+                    machine.increasePhase();   
+                    player.decrementAtIndex(itemIndex, machine.getRequiredQuantity());
+                    player.decrementHoldable(1, machine.getCatalyst());
+                    this.emplaceFutureEvent(machine.getProcessingTime(selectedItem
+                                                                      .getContainedHoldable()
+                                                                      .getName()), 
+                                            new MachineProductionFinishedEvent(machine));   
                   }                                   
                 }
               } 
@@ -488,8 +485,8 @@ public class World {
           Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event)
                                                       .getLocationUsed());
           TileComponent currentContent = currentTile.getContent();
-          //- Anything that you can place must not be placed over something and not over water
-          if ((currentContent == null) && (!(currentTile instanceof WaterTile))) { 
+          //- Anything that you can place must not be placed over something and not over something you can't walk over.
+          if ((currentContent == null) && (!(currentTile instanceof NotWalkable))) { 
             //- We need to make sure that the tile is both a ground tile and is tilled if
             //- we're trying to plant a crop in that tile
             if (((ComponentPlacedEvent)event).getComponentToPlace() instanceof ExtrinsicCrop) {
@@ -679,7 +676,7 @@ public class World {
             a.setMapAt(new OceanTile(x, y));
             break;
           case '-':
-            a.setMapAt(new PlankTile(x, y));
+            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
             break;
           case 'b':
             a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));

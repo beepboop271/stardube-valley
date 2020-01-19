@@ -5,7 +5,7 @@ Chair-NULL              /holdables/                       what's-this??
 StoneItem               /ores/                            Looks-stoney.
 CoalItem                /ores/                            bad-kid-fuel
 CopperItem              /ores/                            essencial
-IronItem                /ores/                            I-mean-you-can-beat-the-wither-with-full-iron-armor-so-it's-good
+IronItem                /ores/                            you-can-beat-the-wither-with-iron-armor-so-it's-good
 GoldItem                /ores/                            useless
 EmeraldItem             /ores/                            best-gem
 RubyItem                /ores/                            cool-gem
@@ -17,5 +17,6 @@ IronBarItem             /ores/                            a-white-rectangle-thin
 GoldBarItem             /ores/                            a-gold-thingy
 WoodItem                /forageables/                     stick                
 SapItem                 /forageables/                     sticky
+PumpkinItem             /crops/                           the-only-inedible-crop-we-have...-also-very-spooky
 
 name                    imagePath                         description

@@ -1,10 +1,19 @@
-ParsnipSeeds        10.00
-GarlicSeeds         10.00
-PotatoSeeds         10.00
-CauliflowerSeeds    10.00
-TulipSeeds          10.00
-StrawberrySeeds     10.00   
-WatermelonSeeds     10.00
-CornSeeds           10.00
+ParsnipSeeds        15.00
+GarlicSeeds         30.00
+PotatoSeeds         40.00
+CauliflowerSeeds    50.00
+TulipSeeds          20.00
+StrawberrySeeds     90.00   
+WatermelonSeeds     80.00
+HotPepperSeeds      40.00
+RadishSeeds         40.00
+BlueberrySeeds      80.00
+MangoSeeds          20.00
+BeetSeeds           20.00
+BokChoySeeds        50.00
+PizzaSeeds          60.00
+PumpkinSeeds        100.00
+CornSeeds           80.00
+CranberrySeeds      200.00
 
 price list format: String itemName, double price

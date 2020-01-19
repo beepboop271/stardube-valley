@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 public class DecorationTile extends Tile {
   private static BufferedImage pathTileImage;
   private static BufferedImage floorTileImage;
+  private static BufferedImage plankTileImage;
 
   private BufferedImage tileImage;
 
@@ -37,6 +38,9 @@ public class DecorationTile extends Tile {
       case 'f':
         this.tileImage = DecorationTile.floorTileImage;
         break;
+      case '-':
+        this.tileImage = DecorationTile.plankTileImage;
+        break;
     }
   }
 
@@ -56,6 +60,7 @@ public class DecorationTile extends Tile {
     try {
       DecorationTile.pathTileImage = ImageIO.read(new File("assets/images/tiles/RockPath.png"));
       DecorationTile.floorTileImage = ImageIO.read(new File("assets/images/tiles/FloorTile.png"));
+      DecorationTile.plankTileImage = ImageIO.read(new File("assets/images/tiles/PlankTile.png"));
 
     } catch (IOException e) {
       e.printStackTrace();
