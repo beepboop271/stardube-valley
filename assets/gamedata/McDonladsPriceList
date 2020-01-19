@@ -1,0 +1,4 @@
+JavacakeItem  1234.56
+SapItem       0.99
+
+price list format: String itemName, double price

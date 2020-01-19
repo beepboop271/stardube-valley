@@ -50,8 +50,6 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
-  public Shop generalStore; // TODO: make this private / move to area.readmap or sth like that after GS appears on the map
-
   public World() {
     this.locations = new LinkedHashMap<String, Area>();
     try {
@@ -67,8 +65,6 @@ public class World {
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
-
-    this.generalStore = new Shop("GeneralStore");
 
     // spawn first day items
     this.doDayEndActions();
@@ -415,8 +411,12 @@ public class World {
                 this.player.removeAtIndex(itemIndex);
               }
             }
+          } else if (currentContent instanceof Shop) {
+            this.player.enterMenu(Player.SHOP_PAGE);
+            this.player.setCurrentInteractingMenuObj((Shop)currentContent);
           }
         }
+
       } else if (event instanceof MachineProductionFinishedEvent) {
         ((ExtrinsicMachine)event.getSource()).processItem();
 
@@ -437,7 +437,7 @@ public class World {
         } else {
           destX += castDistance;
         }
-        if (playerArea.hasValidXYAt(destX, destY)) {
+        if (playerArea.inMap(destX, destY)) {
           if (playerArea.getMapAt(destX, destY) instanceof WaterTile) {
             rodUsed.setTileToFish((WaterTile)(playerArea.getMapAt(destX, destY)));
             rodUsed.setCurrentStatus(FishingRod.WAITING_STATUS);
@@ -612,6 +612,7 @@ public class World {
       nextLine = input.readLine();
     }
     input.close();
+
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
@@ -625,6 +626,19 @@ public class World {
         }
       }
       nextLine = input.readLine();
+    }
+    input.close();
+
+    // add shops
+    input = new BufferedReader(new FileReader("assets/gamedata/Shops"));
+    String lineToRead = input.readLine();
+    String[] nextLineData;
+    while (lineToRead.length() > 0) {
+      nextLineData = lineToRead.split("\\s+");
+      Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(nextLineData[0]));
+      int x = Integer.parseInt(nextLineData[6]), y = Integer.parseInt(nextLineData[7]);
+      this.locations.get(nextLineData[5]).getMapAt(x, y).setContent(shopToAdd);
+      lineToRead = input.readLine();
     }
     input.close();
   }

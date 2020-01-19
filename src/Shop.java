@@ -3,22 +3,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.awt.image.BufferedImage;
 
 /**
  * [Shop]
  * 2020-01-14
- * @version 0.1
+ * @version 0.2
  * @author Candice Zhang
  */
 
-public class Shop {
+public class Shop extends IntrinsicTileComponent implements Drawable {
   private LinkedHashMap<String, Double> priceList;
   private final String[] items;
   
-  Shop(String fileName) {
+  Shop(String name, String imagesPath, double[] offsets, String priceListPath) throws IOException {
+    super(name, imagesPath, offsets);
     this.priceList = new LinkedHashMap<String, Double>();
     try {
-      BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/"+fileName));
+      BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/"+priceListPath));
       String lineToRead = input.readLine();
       String[] nextLineData;
       while(lineToRead.length() > 0) {
@@ -50,4 +52,13 @@ public class Shop {
   public String[] getItems() {
     return this.items;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public BufferedImage getImage() {
+    return this.getImages()[0];
+  }
+
 }

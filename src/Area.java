@@ -340,14 +340,6 @@ public abstract class Area {
   public int getSeason() {
     return this.currentSeason;
   }
-
-  public boolean hasValidXYAt(int x, int y) {
-    return (((y >= 0) && (y < this.height) && (x >= 0) && (x < this.width)));
-  }
-  
-  public boolean hasValidPointAt(Point pos) {
-    return ((((int)pos.y >= 0) && ((int)pos.y < this.height) && ((int)pos.x >= 0) && ((int)pos.x < this.width)));
-  }
   
   public void doDayEndActions() {
   }

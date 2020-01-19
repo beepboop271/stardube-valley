@@ -1,0 +1,4 @@
+GeneralStoreShop   0 0      /shops/shopDumbTestImg    StorePriceList       GeneralStore   1 1
+McDonladsShop      0 0      /shops/shopDumbTestImg    McDonladsPriceList   McDonlads      1 1
+
+name               offset   imgPath assets\images+    pricelist filepath   area name      x y

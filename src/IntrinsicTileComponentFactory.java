@@ -71,6 +71,7 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load bushes
       input = new BufferedReader(new FileReader("assets/gamedata/Bushes"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -89,6 +90,7 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load crops
       input = new BufferedReader(new FileReader("assets/gamedata/Crops"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -109,6 +111,7 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load trees
       input = new BufferedReader(new FileReader("assets/gamedata/Trees"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -131,6 +134,7 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load machines
       input = new BufferedReader(new FileReader("assets/gamedata/Machines"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -150,6 +154,7 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load buildings
       input = new BufferedReader(new FileReader("assets/gamedata/Buildings"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
@@ -159,11 +164,24 @@ public class IntrinsicTileComponentFactory {
                                             "assets/images"+nextLineData[1]+".png",
                                             offsets);                              
         componentPool.put(componentToAdd.getName(), componentToAdd);
-        //System.out.println(componentToAdd.getName());
         lineToRead = input.readLine();  
       }
       input.close();
 
+      // load shops
+      input = new BufferedReader(new FileReader("assets/gamedata/Shops"));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        double[] offsets = {Double.parseDouble(nextLineData[1]), Double.parseDouble(nextLineData[2])};
+        System.out.println(nextLineData[3]+".png");
+        Shop shop = new Shop(nextLineData[0], "assets/images"+nextLineData[3]+".png", offsets, nextLineData[4]);
+        componentPool.put(shop.getName(), shop);
+        lineToRead = input.readLine();
+      }
+      input.close();
+
+      // load shipping data
       input = new BufferedReader(new FileReader("assets/gamedata/ShippingData"));
       nextLineData = input.readLine().split("\\s+");
       double[] offsets = {Double.parseDouble(nextLineData[3]), Double.parseDouble(nextLineData[4])};

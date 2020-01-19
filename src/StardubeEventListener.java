@@ -103,9 +103,9 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
         break;
-      case KeyEvent.VK_B: // press b to buy cuz S_hop/P_urchase are taken lol
+        case KeyEvent.VK_B:
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
-        this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubeWorld.generalStore);
+        this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
         break;
       case KeyEvent.VK_I:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(0, -1));

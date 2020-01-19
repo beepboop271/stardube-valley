@@ -42,6 +42,7 @@ public class WorldPanel extends JPanel {
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.PLAIN, 35);
   private final Font BIG_BOLD_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 35);
   private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
+  private final Font DESCRIPTION_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
   private final Font PROFILE_FONT = new Font("Comic Sans MS", Font.PLAIN, 30);
   
   private StardubeEventListener listener;
@@ -70,7 +71,7 @@ public class WorldPanel extends JPanel {
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
     this.chestMenuChestY = (int)Math.round(this.menuY + 4.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
     this.shopX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
-    this.shopY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
+    this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
     this.shopItemsPerPage = 5;
@@ -410,30 +411,29 @@ public class WorldPanel extends JPanel {
         dumbGraphics.drawString("Social Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
-        // TODO: change hardcoded world.generalStore
-        Shop shop = worldToDisplay.generalStore;
+        Shop shop = (Shop)(worldPlayer.getCurrentInteractingMenuObj());
         String[] shopItems = shop.getItems();
         g.setColor(MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+        g.setColor(INVENTORY_SLOT_COLOR);
+        g.setFont(this.BIG_LETTER_FONT);
+        g.drawString("Welcome to "+shop.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
         
         for (int i = 0; i < this.shopItemsPerPage; i++) {
           int curDrawY = this.shopY + i*(this.shopItemH+WorldPanel.INVENTORY_CELLGAP);
           g.setColor(INVENTORY_SLOT_COLOR);
           g.fillRect(this.shopX, curDrawY, this.shopW, this.shopItemH);
-          if (shopItems.length > i) {
+          if (i < shopItems.length) {
             Holdable itemToDraw = HoldableFactory.getHoldable(shopItems[i]);
             g.drawImage(itemToDraw.getImage(), this.shopX, curDrawY, null);
             Graphics2D textGraphics = (Graphics2D)g;
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
             textGraphics.setFont(this.STRING_FONT);
-            textGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            textGraphics.drawString(itemToDraw.getName(), this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+            textGraphics.drawString(itemToDraw.getName() + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
+                                    this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+            textGraphics.setFont(this.DESCRIPTION_FONT);
             textGraphics.drawString(" - " + itemToDraw.getDescription(),
                         this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE);
-            textGraphics.setFont(this.BIG_LETTER_FONT);
-            textGraphics.drawString("$ " + Double.toString(shop.getPriceOf(itemToDraw.getName())),
-                        this.shopX + this.shopW - g.getFontMetrics().stringWidth("$ " + Double.toString(shop.getPriceOf(itemToDraw.getName()))) - 30,
-                        curDrawY + WorldPanel.INVENTORY_CELLSIZE*4/3  - g.getFontMetrics().getHeight()/2);
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
