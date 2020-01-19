@@ -53,12 +53,14 @@ public class WorldPanel extends JPanel {
   private Point playerScreenPos;
   private int hotbarX, hotbarY;
   private int shopX, shopY, shopW, shopItemH;
+  private int craftX, craftY, craftW, craftItemH;
   private int menuX, menuY, menuW, menuH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
   private int chestMenuChestY;
   private int hoveredItemIdx;
-  private BufferedImage[] MENU_BUTTON_IMAGES;
+  private BufferedImage[] menuButtonImages;
+  private BufferedImage craftButtonImage;
 
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
@@ -75,15 +77,20 @@ public class WorldPanel extends JPanel {
     this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
-    this.MENU_BUTTON_IMAGES = new BufferedImage[5];
+    this.craftX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
+    this.craftY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
+    this.craftW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
+    this.craftItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
+    this.menuButtonImages = new BufferedImage[5];
     try {
-      BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/MenuTabButtons"));
+      BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Buttons"));
       String imagePath;
-      for (int i = 0; i < this.MENU_BUTTON_IMAGES.length; i++) {
+      for (int i = 0; i < this.menuButtonImages.length; i++) {
         imagePath = input.readLine();
         BufferedImage buttonImage = ImageIO.read(new File("assets/images/"+imagePath));
-        this.MENU_BUTTON_IMAGES[i] = buttonImage;
+        this.menuButtonImages[i] = buttonImage;
       }
+      this.craftButtonImage = ImageIO.read(new File("assets/images/"+input.readLine()));
       input.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -315,10 +322,10 @@ public class WorldPanel extends JPanel {
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
-      g.setColor(MENU_BKGD_COLOR);
+      g.setColor(WorldPanel.MENU_BKGD_COLOR);
       g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
-      for (int i = 0; i < this.MENU_BUTTON_IMAGES.length; i++) {
-        g.drawImage(this.MENU_BUTTON_IMAGES[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+      for (int i = 0; i < this.menuButtonImages.length; i++) {
+        g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
       }
 
       if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
@@ -383,12 +390,38 @@ public class WorldPanel extends JPanel {
                   (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(earningString)*1.3), (int)Math.round(profileY+profileH*0.75));
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
-        // TODO: insert gui code
-        Graphics2D dumbGraphics = (Graphics2D)g;
-        dumbGraphics.setColor(Color.WHITE);
-        dumbGraphics.setFont(this.PROFILE_FONT);
-        dumbGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        dumbGraphics.drawString("Crafting Page - Coming Soon ;)", 350, 500);
+        CraftingMachine craftingMachine = worldPlayer.getCraftingMachine();
+        String[] products = craftingMachine.getProducts();
+        g.setColor(WorldPanel.MENU_BKGD_COLOR);
+        g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
+        g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+        g.drawString("Crafting Menu Page", this.craftX, this.craftY-20);
+        int startIdx = worldPlayer.getAmountScrolled();
+        for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
+          int curDrawY = this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP);
+          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+          g.fillRect(this.craftX, curDrawY, this.craftW, this.craftItemH);
+          if ((startIdx+i) < products.length) {   
+            Holdable product = HoldableFactory.getHoldable(products[startIdx+i]);
+            String[] ingredients = craftingMachine.ingredientsOf(products[startIdx+i]);
+            g.drawImage(product.getImage(), this.craftX, curDrawY, null);
+            Graphics2D textGraphics = (Graphics2D)g;
+            textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
+            textGraphics.setFont(this.STRING_FONT);
+            textGraphics.drawString(product.getName() + " - " + product.getDescription(),
+                                    this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+            int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE) / ingredients.length;
+            for ( int j = 0; j < ingredients.length; j++) {
+              Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
+              g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
+                                                 curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
+              g.drawString("x "+Integer.toString(craftingMachine.recipeOf(products[startIdx+i]).quantityOf(ingredients[j])),
+                           this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+              g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
+                          curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
+            }
+          }
+        }
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert gui code
@@ -413,16 +446,16 @@ public class WorldPanel extends JPanel {
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
         Shop shop = (Shop)(worldPlayer.getCurrentInteractingMenuObj());
         String[] shopItems = shop.getItems();
-        g.setColor(MENU_BKGD_COLOR);
+        g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-        g.setColor(INVENTORY_SLOT_COLOR);
+        g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
         g.setFont(this.BIG_LETTER_FONT);
         g.drawString("Welcome to "+shop.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
         
         int startIdx = worldPlayer.getAmountScrolled();
         for (int i = 0; i < WorldPanel.SHOP_ITEMS_PER_PAGE; i++) {
           int curDrawY = this.shopY + i*(this.shopItemH+WorldPanel.INVENTORY_CELLGAP);
-          g.setColor(INVENTORY_SLOT_COLOR);
+          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
           g.fillRect(this.shopX, curDrawY, this.shopW, this.shopItemH);
           if ((startIdx+i) < shopItems.length) {
             Holdable itemToDraw = HoldableFactory.getHoldable(shopItems[startIdx+i]);
@@ -439,7 +472,7 @@ public class WorldPanel extends JPanel {
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
         ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingMenuObj());
-        g.setColor(MENU_BKGD_COLOR);
+        g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
         for (int i = 0; i < 3; i++) {
@@ -742,11 +775,15 @@ public class WorldPanel extends JPanel {
 
   public int menuTabButtonAt(int x) {
     return Math.min((int)(Math.floor((x-this.menuX)/
-           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.MENU_BUTTON_IMAGES.length-1);
+           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.menuButtonImages.length-1);
   }
 
   public int shopItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.SHOP_ITEMS_PER_PAGE-1);
+  }
+
+  public int craftingItemIdxAt(int y) {
+    return Math.min((int)(Math.floor((y-this.craftY) / (this.craftItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.CRAFTING_ITEMS_PER_PAGE-1);
   }
 
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
@@ -781,6 +818,13 @@ public class WorldPanel extends JPanel {
             (x <= this.shopX + this.shopW) &&
             (y >= this.shopY) &&
             (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
+  }
+
+  public boolean isPosInCraftingItemList(int x, int y) {
+    return ((x >= this.craftX) &&
+            (x <= this.craftX + this.craftW) &&
+            (y >= this.craftY) &&
+            (y <= this.craftY + this.craftItemH * WorldPanel.CRAFTING_ITEMS_PER_PAGE));
   }
 
   public int getInventoryMenuInventoryY() {

@@ -1,8 +1,8 @@
-Basic Fertilizer 1
+BasicFertilizer 1
 SapItem 2
 
-Chest 1
-Wood 50
+ChestItem 1
+WoodItem 50
 
 end
 

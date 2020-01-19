@@ -13,6 +13,7 @@ class Recipe {
   private LinkedHashMap<String, Integer> ingredientQuantities;
 
   Recipe(String productName) {
+    this.ingredientQuantities = new LinkedHashMap<String, Integer>();
     this.productName = productName;
   }
 

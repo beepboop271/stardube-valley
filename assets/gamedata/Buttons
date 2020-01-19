@@ -1,0 +1,14 @@
+buttons/inventoryTabButton.png
+buttons/craftingTabButton.png
+buttons/mapTabButton.png
+buttons/craftingTabButton.png
+buttons/craftingTabButton.png
+buttons/craftButton.png
+
+order:
+inventory
+crafting
+map
+skills
+social
+craft button

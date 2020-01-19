@@ -1,6 +1,6 @@
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
+
 /**
  * [CollectableComponent] 
  * A component that is able to be on a tile and gets a product to

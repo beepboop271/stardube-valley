@@ -50,7 +50,7 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
-  public World() {
+  public World() throws IOException {
     this.locations = new LinkedHashMap<String, Area>();
     try {
       this.loadAreas();

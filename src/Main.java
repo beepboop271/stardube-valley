@@ -1,5 +1,7 @@
+import java.io.IOException;
+
 public class Main {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: make this less sketchy
     GroundTile.setGroundTileImages();
     GrassTile.setGrassTileImage();

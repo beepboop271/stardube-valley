@@ -1,3 +1,4 @@
+import java.io.IOException;
 
 /**
  * [Player]
@@ -5,6 +6,7 @@
  * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Joseph Wang
  */
+
 public class Player extends Moveable {
   public static final double SIZE = 0.35;
   private static final double MAX_SPEED = 12;
@@ -32,8 +34,9 @@ public class Player extends Moveable {
   private int currentMenuPage;
   private int amountScrolled;
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
+  private CraftingMachine craftingMachine;
 
-  public Player(Point position, String filePath) {
+  public Player(Point position, String filePath) throws IOException {
     super(position, Player.SIZE, filePath);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
@@ -47,6 +50,7 @@ public class Player extends Moveable {
     this.currentInteractingMenuObj = null;
     this.currentFunds = 5_000;
     this.totalEarnings = this.currentFunds;
+    this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
     this.inventory[0] = new HoldableStack("Pickaxe", 1);
     this.inventory[1] = new HoldableStack("Axe", 1);
@@ -58,6 +62,7 @@ public class Player extends Moveable {
     this.inventory[7] = new HoldableStack("IronItem", 10);
     this.inventory[8] = new HoldableStack("CoalItem", 2);
     this.inventory[9] = new HoldableStack("PumpkinSeeds", 5);
+    this.inventory[10] = new HoldableStack("WoodItem", 99);
   }
 
   @Override
@@ -628,5 +633,15 @@ public class Player extends Moveable {
    */
   public int getTotalEarnings() {
     return this.totalEarnings;
+  }
+
+  /**
+   * [getCraftingMachine]
+   * Retrieves this player's crafting machine.
+   * @author Candice Zhang
+   * @return CraftingMachine, the crafting machine that belongs to the player.
+   */
+  public CraftingMachine getCraftingMachine () {
+    return this.craftingMachine;
   }
 }
