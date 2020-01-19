@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
  * @author Joseph Wang
  */
 
-public class ExtrinsicMachine extends ExtrinsicHarvestableComponent {
+public class ExtrinsicMachine extends ExtrinsicHarvestableComponent implements NotWalkable {
   private int phase;
   private HoldableStack product;
   private String itemToProcess;

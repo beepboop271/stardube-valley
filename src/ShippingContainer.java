@@ -16,7 +16,7 @@ import java.util.HashMap;
  * @author Joseph Wang
  */
 
- public class ShippingContainer extends IntrinsicTileComponent implements Drawable {
+ public class ShippingContainer extends IntrinsicTileComponent implements NotWalkable, Drawable {
   private HashMap<String, Integer> sellPrices;
 
   /**

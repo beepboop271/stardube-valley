@@ -8,7 +8,7 @@
  * @author Joseph Wang, Candice Zhang
  */
 
-public class ExtrinsicChest extends ExtrinsicHarvestableComponent {
+public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements NotWalkable{
   //- IntrinsicChest is just IntrinsicHarvestableComponent
   public static int CHEST_SIZE = 36;
 

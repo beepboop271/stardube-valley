@@ -633,8 +633,11 @@ public class World {
       gateway2.setDestinationGateway(gateway1);
 
       if (gatewayMatch.group(9) != null) {
-        this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin()).setContent(
-                                  IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
+        this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin())
+                                                 .setContent(IntrinsicTileComponentFactory
+                                                            .getComponent(gatewayMatch.group(9)));
+        ((BuildingArea)this.locations.get(gatewayMatch.group(6)))
+                                     .setDrawLocation(gateway2.getOrigin()); //-prep for layout design. (if its in a building, it has a layout)
       }
 
       this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
@@ -643,6 +646,19 @@ public class World {
     }
     input.close();
 
+    //- add layouts to buildings that need one
+    input = new BufferedReader(new FileReader("assets/gamedata/BuildingLayouts"));
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      ((BuildingArea)this.locations.get(splitLine[0])).loadImage("assets/images" + splitLine[1]);
+      double[] offsets = {Double.parseDouble(splitLine[2]), Double.parseDouble(splitLine[3])};
+      ((BuildingArea)this.locations.get(splitLine[0])).setOffsets(offsets);
+
+      nextLine = input.readLine();
+    }
+
+    input.close();
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
