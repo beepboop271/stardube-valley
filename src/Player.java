@@ -30,6 +30,7 @@ public class Player extends Moveable {
   private int health, maxHealth;
   private int energy, maxEnergy;
   private int currentMenuPage;
+  private int amountScrolled;
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
 
   public Player(Point position, String filePath) {
@@ -58,7 +59,7 @@ public class Player extends Moveable {
     this.inventory[8] = new HoldableStack("CoalItem", 2);
     this.inventory[9] = new HoldableStack("PumpkinSeeds", 5);
   }
-  
+
   @Override
   public Vector2D getMove(long elapsedNanoTime) {
     if (this.isImmutable()) {
@@ -70,7 +71,7 @@ public class Player extends Moveable {
     // this.translatePos(positionChange);
     return positionChange;
   }
-  
+
   /**
    * [getInventory]
    * Retrieves this player's inventory.
@@ -162,7 +163,7 @@ public class Player extends Moveable {
   /**
    * [decrementAtIndex]
    * Takes the item at the specified index and decreases its quantity by a specified amount.
-   * If the item at the index is less than the amount decreased, it will set the inventory index as 
+   * If the item at the index is less than the amount decreased, it will set the inventory index as
    * null, effectively removing the item.
    * @author Joseph Wang
    * @param index The index of the item of which to decrease quantity of.
@@ -256,18 +257,42 @@ public class Player extends Moveable {
   public void enterMenu(int menuPage) {
     this.isImmutable = true;
     this.currentMenuPage = menuPage;
+    this.amountScrolled = 0;
   }
 
   public void exitMenu() {
     this.isImmutable = false;
     this.currentMenuPage = Player.NO_MENU;
+    this.amountScrolled = 0;
     this.currentInteractingMenuObj = null;
   }
 
   public int getCurrentMenuPage() {
     return this.currentMenuPage;
   }
-  
+
+  public int getAmountScrolled() {
+    return this.amountScrolled;
+  }
+
+  public void incrementAmountScrolled() {
+    if ((this.currentMenuPage == Player.SHOP_PAGE) &&
+        ((this.amountScrolled+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)this.currentInteractingMenuObj).getItems().length)) {
+      this.amountScrolled += 1;
+    } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) &&
+              ((this.amountScrolled+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < ((CraftingMachine)this.currentInteractingMenuObj).getProducts().length)) {
+      this.amountScrolled += 1;
+    }
+  }
+
+  public void decrementAmountScrolled() {
+    if ((this.currentMenuPage == Player.SHOP_PAGE) && (this.amountScrolled > 0)) {
+      this.amountScrolled -= 1;
+    } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) && (this.amountScrolled > 0)) {
+      this.amountScrolled -= 1;
+    }
+  }
+
   /**
    * [getSelectedItemIdx]
    * Retrieves the index number of the current selected item.
@@ -340,7 +365,7 @@ public class Player extends Moveable {
   public boolean isImmutable() {
     return this.isImmutable;
   }
-  
+
   /**
    * [setImmutable]
    * Sets the immutable state of this player to either true or false.
@@ -446,15 +471,15 @@ public class Player extends Moveable {
   /**
    * [recover]
    * Using the time, calculates how much energy the player should recover at the end of the day, based
-   * on time slept, and whether the player is exhaused or not. 
+   * on time slept, and whether the player is exhaused or not.
    * Also fully restores health to max.
    * @author Joseph Wang
    * @param time The time that the player ended the day at.
    */
   public void recover(long time) {
-    /* Recovered energy takes into consideration sleep time 
-     * (ie. if the player sleeps after midnight, they will have a penalty on their next day energy). 
-     * If the player is exhaused, recovered energy is equal to half. 
+    /* Recovered energy takes into consideration sleep time
+     * (ie. if the player sleeps after midnight, they will have a penalty on their next day energy).
+     * If the player is exhaused, recovered energy is equal to half.
      * The player only recovers energy if they go to bed with less than their determined recovered energy,
      * unless they are exhausted.
      */

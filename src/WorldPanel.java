@@ -26,6 +26,8 @@ import java.awt.GradientPaint;
 public class WorldPanel extends JPanel {
   public static final int INVENTORY_CELLSIZE = 64;
   public static final int INVENTORY_CELLGAP = 4;
+  public static final int SHOP_ITEMS_PER_PAGE = 5;
+  public static final int CRAFTING_ITEMS_PER_PAGE = 3;
 
   public static final Color MENU_BKGD_COLOR = new Color(140, 50, 0);
   public static final Color INVENTORY_SLOT_COLOR = new Color(255, 200, 120);
@@ -55,7 +57,6 @@ public class WorldPanel extends JPanel {
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
   private int chestMenuChestY;
-  private int shopItemsPerPage;
   private int hoveredItemIdx;
   private BufferedImage[] MENU_BUTTON_IMAGES;
 
@@ -74,7 +75,6 @@ public class WorldPanel extends JPanel {
     this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
-    this.shopItemsPerPage = 5;
     this.MENU_BUTTON_IMAGES = new BufferedImage[5];
     try {
       BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/MenuTabButtons"));
@@ -419,12 +419,13 @@ public class WorldPanel extends JPanel {
         g.setFont(this.BIG_LETTER_FONT);
         g.drawString("Welcome to "+shop.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
         
-        for (int i = 0; i < this.shopItemsPerPage; i++) {
+        int startIdx = worldPlayer.getAmountScrolled();
+        for (int i = 0; i < WorldPanel.SHOP_ITEMS_PER_PAGE; i++) {
           int curDrawY = this.shopY + i*(this.shopItemH+WorldPanel.INVENTORY_CELLGAP);
           g.setColor(INVENTORY_SLOT_COLOR);
           g.fillRect(this.shopX, curDrawY, this.shopW, this.shopItemH);
-          if (i < shopItems.length) {
-            Holdable itemToDraw = HoldableFactory.getHoldable(shopItems[i]);
+          if ((startIdx+i) < shopItems.length) {
+            Holdable itemToDraw = HoldableFactory.getHoldable(shopItems[startIdx+i]);
             g.drawImage(itemToDraw.getImage(), this.shopX, curDrawY, null);
             Graphics2D textGraphics = (Graphics2D)g;
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
@@ -745,7 +746,7 @@ public class WorldPanel extends JPanel {
   }
 
   public int shopItemIdxAt(int y) {
-    return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), this.shopItemsPerPage-1);
+    return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.SHOP_ITEMS_PER_PAGE-1);
   }
 
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
@@ -779,7 +780,7 @@ public class WorldPanel extends JPanel {
     return ((x >= this.shopX) &&
             (x <= this.shopX + this.shopW) &&
             (y >= this.shopY) &&
-            (y <= this.shopY + this.shopItemH* this.shopItemsPerPage));
+            (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
   }
 
   public int getInventoryMenuInventoryY() {
@@ -793,4 +794,5 @@ public class WorldPanel extends JPanel {
   public int getChestMenuChestY() {
     return this.chestMenuChestY;
   }
+
 }

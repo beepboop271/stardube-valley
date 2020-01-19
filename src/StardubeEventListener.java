@@ -171,12 +171,13 @@ public class StardubeEventListener implements KeyListener,
         }
       } 
 
-    } else if (player.getCurrentMenuPage() == Player.SHOP_PAGE) {
+    } else if ((player.getCurrentMenuPage() == Player.SHOP_PAGE) &&
+               (e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
       if (worldPanel.isPosInShopItemList(mouseX, mouseY)) {
         Shop shop = (Shop)(this.stardubePlayer.getCurrentInteractingMenuObj());
-        String itemName = shop.getItems()[worldPanel.shopItemIdxAt(mouseY)];
-        if ((e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
-          player.purchase(shop, itemName);
+        int itemIdx = this.stardubePlayer.getAmountScrolled() + worldPanel.shopItemIdxAt(mouseY);
+        if (itemIdx < shop.getItems().length) {
+          player.purchase(shop, shop.getItems()[itemIdx]);
         }
       }
     }
@@ -343,10 +344,19 @@ public class StardubeEventListener implements KeyListener,
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
     int rotation = e.getWheelRotation();
-    if (rotation < 0) {
-      this.stardubePlayer.decrementSelectedItemIdx();
-    } else if (rotation > 0) {
-      this.stardubePlayer.incrementSelectedItemIdx();
+    if ((this.stardubePlayer.getCurrentMenuPage() == Player.SHOP_PAGE) ||
+        (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE)) {
+      if (rotation < 0) {
+        this.stardubePlayer.decrementAmountScrolled();
+      } else if (rotation > 0) {
+        this.stardubePlayer.incrementAmountScrolled();
+      }
+    } else {
+      if (rotation < 0) {
+        this.stardubePlayer.decrementSelectedItemIdx();
+      } else if (rotation > 0) {
+        this.stardubePlayer.incrementSelectedItemIdx();
+      }
     }
   }
 
