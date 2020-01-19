@@ -653,6 +653,7 @@ public class World {
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
         //System.out.println("on col " + x);
+        
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
