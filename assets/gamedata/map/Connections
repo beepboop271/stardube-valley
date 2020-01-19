@@ -1,14 +1,12 @@
 Farm
-Forest Sidepath Lake null
+Forest Town Lake null
 Forest
 null Ocean Farm null
 Lake
 Farm MineEntrance null null
 Ocean
 null null Town Forest
-Sidepath
-null Town null Farm
 MineEntrance
 Town null null Lake
 Town
-Ocean null MineEntrance Sidepath
+Ocean null MineEntrance Farm
