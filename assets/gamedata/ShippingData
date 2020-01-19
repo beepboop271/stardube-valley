@@ -3,7 +3,7 @@ Joseph's-Compsci-Mark       1                                this is where items
 Kevin's-Ethics-Assignment   1 
 MakBooc                     5
 Chair-NULL                  5
-StoneItem                   2                                     
+StoneItem                   2
 CoalItem                    15
 CopperItem                  15
 IronItem                    15
@@ -33,7 +33,7 @@ GarlicItem                  60
 PotatoItem                  80
 CauliflowerItem             175
 TulipItem                   40
-StrawberryItem              90              
+StrawberryItem              90
 WatermelonItem              250
 HotPepperItem               40
 RadishItem                  85
@@ -54,6 +54,9 @@ WinterRootItem              30
 JavacakeItem                55           haha more like 3 BILLION
 DaffodilItem                40
 HealthPotionItem            100
-EnergyPotionItem            100
+EnergyPotionItem            150
+MasterPotionItem            250
+Mangat'sBlessingItem        5000
+PhenolphthaleinItem         3000
 
 name                    sell price 

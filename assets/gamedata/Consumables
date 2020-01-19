@@ -37,8 +37,11 @@ OrangeItem        /forageables/   rhymes-with-porridge                  10 15
 HazelnutItem      /forageables/   not-as-good-as-hazelwood              10 15
 CoffeeBeanItem    /forageables/   essential-for-starhacks               20 40
 GrapeItem         /forageables/   it's-like-baby-wine                   10 15
-HealthPotionItem  /holdables/     2000g-of-liquid-advil-extra-strong   100 50
-EnergyPotionItem  /holdables/     2000g-of-pure-liquid-coffee-sweetener 20 250
+HealthPotionItem  /holdables/     2000g-of-liquid-advil-extra-strong                             100  50
+EnergyPotionItem  /holdables/     2000g-of-pure-liquid-coffee-sweetener                           20 250
+MasterPotionItem  /holdables/     it's-like-an-energy-potion-but-has-blood-and-is-better.        500 500
+Mangat'sBlessingItem /holdables/  Blessed-to-get-good-compsci-marks-and-better-max-energy        50 1000  0 50
+PhenolphthaleinItem  /holdables/  A-bit-of-base-got-in-but-it'll-still-increase-your-max-health. 1000 50 50  0
 
 name              imagePath                    description     health gain
                                                                energy gain

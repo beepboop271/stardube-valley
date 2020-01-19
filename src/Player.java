@@ -49,7 +49,7 @@ public class Player extends Moveable {
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
-    this.currentFunds = 5_000;
+    this.currentFunds = 5_000_000;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
@@ -139,6 +139,11 @@ public class Player extends Moveable {
     }
     Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
+    if (thingConsumed instanceof SpecialConsumable) { //TODO: maybe make this better
+      this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
+      this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
+    }
+    
     this.increaseEnergy(thingConsumed.getEnergyGain());
     this.increaseHealth(thingConsumed.getHealthGain());
   }
