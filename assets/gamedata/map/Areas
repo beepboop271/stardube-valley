@@ -3,7 +3,6 @@ WorldArea Lake 72 42
 WorldArea Forest 72 42
 WorldArea Ocean 72 42
 WorldArea MineEntrance 72 42
-WorldArea Sidepath 45 10
 MineArea Mines 18 6
 TownArea Town 68 27
 BuildingArea Farmhouse 12 9
