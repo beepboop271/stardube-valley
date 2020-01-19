@@ -2,9 +2,9 @@ MineEntrance (57, 12) <-> Mines (9, 4)
 Farm (12, 13) <->I Farmhouse (9, 7) Farmhouse
 Town (11, 4) <->I Clinic (5, 9) Clinic
 Town (27, 4) <->I GeneralStore (9, 10) Store
-Town (28, 4) <->I GeneralStore (10, 10) none
+Town (28, 4) <->I GeneralStore (10, 10)
 Town (10, 13) <->I McDonlads (8, 7) McDonlads
-Town (11, 13) <->I McDonlads (9, 7) none
+Town (11, 13) <->I McDonlads (9, 7)
 Town (48, 4) <->I House1 (17, 7) House1
 Town (12, 21) <->I House2 (17, 7) House1
 Town (48, 21) <->I House3 (17, 7) House1
