@@ -1,0 +1,3 @@
+WatermelonItem    100
+
+price list format: String itemName, double price

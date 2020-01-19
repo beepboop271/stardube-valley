@@ -20,7 +20,7 @@ import java.awt.GradientPaint;
  * [WorldPanel]
  * 2019-12-19
  * @version 0.4
- * @author Kevin Qiao, Candice Zhang, Paula Yuan
+ * @author Kevin Qiao, Candice Zhang, Paula Yuan, Joseph Wang
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
@@ -185,6 +185,20 @@ public class WorldPanel extends JPanel {
       }
     }
     
+    // draw building layout
+    if (playerArea instanceof BuildingArea) {
+      if (((BuildingArea)playerArea).hasInteriorImage()) {
+        BuildingArea area = (BuildingArea)playerArea;
+        // System.out.println(area.getDrawLocation().x);
+        // System.out.println(area.getDrawLocation().y);
+        // System.out.println(area.getXOffset() * Tile.getSize());
+        // System.out.println(area.getYOffset() * Tile.getSize());
+        g.drawImage(area.getImage(), 
+                    (int)((area.getDrawLocation().x*Tile.getSize())+(area.getXOffset()*Tile.getSize())), 
+                    (int)((area.getDrawLocation().y*Tile.getSize())+(area.getYOffset()*Tile.getSize())), null);
+      }
+    }
+
     // draw player
     //g.setColor(Color.RED);
     this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
@@ -251,6 +265,8 @@ public class WorldPanel extends JPanel {
       screenTileX = 0;
       ++screenTileY;
     }
+
+    
 
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
