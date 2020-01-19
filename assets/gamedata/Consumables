@@ -35,8 +35,10 @@ DaffodilItem      /forageables/   doesn't-actually-exist                10 15
 BlackberryItem    /forageables/   as-black-as-my-soul                   10 15
 OrangeItem        /forageables/   rhymes-with-porridge                  10 15
 HazelnutItem      /forageables/   not-as-good-as-hazelwood              10 15
-CoffeeBeanItem    /forageables/   essential-for-starhacks               100 150
+CoffeeBeanItem    /forageables/   essential-for-starhacks               20 40
 GrapeItem         /forageables/   it's-like-baby-wine                   10 15
+HealthPotionItem  /holdables/     2000g-of-liquid-advil-extra-strong   100 50
+EnergyPotionItem  /holdables/     2000g-of-pure-liquid-coffee-sweetener 20 250
 
 name              imagePath                    description     health gain
                                                                energy gain

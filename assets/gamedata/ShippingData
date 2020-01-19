@@ -53,5 +53,7 @@ MushroomItem                40
 WinterRootItem              30
 JavacakeItem                55           haha more like 3 BILLION
 DaffodilItem                40
+HealthPotionItem            100
+EnergyPotionItem            100
 
 name                    sell price 

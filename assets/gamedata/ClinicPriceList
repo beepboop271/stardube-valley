@@ -1,3 +1,4 @@
-WatermelonItem    100
+HealthPotionItem 500
+EnergyPotionItem 750
 
 price list format: String itemName, double price
