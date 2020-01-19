@@ -150,6 +150,46 @@ public class Player extends Moveable {
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(itemName), 1));
   }
 
+  public boolean canCraft(String product) {
+    if (!(this.canPickUp(HoldableFactory.getHoldable(product)))) {
+      return false;
+    }
+    if (!(this.craftingMachine.hasProduct(product))) {
+      return false;
+    }
+
+    Recipe recipe = this.craftingMachine.recipeOf(product);
+    String[] ingredients = recipe.getIngredients();
+    for (int i = 0; i < ingredients.length; i++) {
+      if (this.quantityOf(HoldableFactory.getHoldable(ingredients[i])) < recipe.quantityOf(ingredients[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public void craft(String product) {
+    if (!(this.canCraft(product))) {
+      return;
+    }
+    Recipe recipe = this.craftingMachine.recipeOf(product);
+    String[] ingredients = recipe.getIngredients();
+    for (int i = 0; i < ingredients.length; i++) {
+      this.decrementHoldable(recipe.quantityOf(ingredients[i]), HoldableFactory.getHoldable(ingredients[i]));
+    }
+    this.pickUp(new HoldableStack(HoldableFactory.getHoldable(product), 1));
+  }
+  public int quantityOf(Holdable item) {
+    for (int i = 0; i < this.inventorySize; ++i) {
+      if (this.inventory[i] != null) {
+        if (this.inventory[i].getContainedHoldable() == item) {
+          return this.inventory[i].getQuantity();
+        }
+      }
+    }
+    return 0;
+  }
+
   /**
    * [useAtIndex]
    * Takes the item at the specified index in the player's inventory and decreases
@@ -285,7 +325,7 @@ public class Player extends Moveable {
         ((this.amountScrolled+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)this.currentInteractingMenuObj).getItems().length)) {
       this.amountScrolled += 1;
     } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) &&
-              ((this.amountScrolled+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < ((CraftingMachine)this.currentInteractingMenuObj).getProducts().length)) {
+              ((this.amountScrolled+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.craftingMachine.getProducts().length)) {
       this.amountScrolled += 1;
     }
   }
