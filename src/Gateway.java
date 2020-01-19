@@ -15,6 +15,19 @@ public class Gateway {
     this.interactToMove = interactToMove;
   }
 
+  public Gateway(int originX, int originY,
+                 String orientation, boolean interactToMove) {
+    this.origin = new Point(originX, originY);
+    if (orientation.equals("OMNIDIRECTIONAL")) {
+      this.orientation = Gateway.OMNIDIRECTIONAL;
+    } else if (orientation.equals("ONEWAY")) {
+      this.orientation = Gateway.ONE_WAY;
+    } else {
+      throw new IllegalArgumentException("nonexistent orientation");
+    }
+    this.interactToMove = interactToMove;
+  }
+
   public boolean canMove(Moveable m) {
     Point pos = m.getPos();
     if ((Math.round(pos.x) == this.origin.x)
@@ -31,15 +44,22 @@ public class Gateway {
 
   public Point toDestinationPoint(Point p, double size) {
     if (this.orientation == Gateway.OMNIDIRECTIONAL) {
-      return this.getDestinationGateway().origin;
+      if (this.destinationGateway.orientation == World.NORTH) {
+        return this.destinationGateway.origin.translateNew(0, 0.5+size);
+      } else {
+        return this.destinationGateway.origin;
+      }
     }
-    p.translate(-this.getOrigin().x, -this.getOrigin().y);
-    if (this.getDestinationGateway().requiresInteractToMove()) {
+    if (this.destinationGateway.orientation == Gateway.ONE_WAY) {
+      return this.destinationGateway.origin;
+    }
+    p.translate(-this.origin.x, -this.origin.y);
+    if (this.destinationGateway.requiresInteractToMove()) {
       p.y = Math.copySign(0.5+size, p.y);
     } else {
       p.y = Math.copySign(0.5-size-0.1, -p.y);
     }
-    p.translate(this.getDestinationGateway().getOrigin());
+    p.translate(this.destinationGateway.origin);
     return p;
   }
 

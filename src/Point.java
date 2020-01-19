@@ -13,6 +13,11 @@ public class Point implements Cloneable {
     this.y = y;
   }
 
+  public Point(String[] p) {
+    this.x = Double.parseDouble(p[0]);
+    this.y = Double.parseDouble(p[1]);
+  }
+
   public Point(Point p) {
     this(p.x, p.y);
   }

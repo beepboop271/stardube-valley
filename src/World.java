@@ -44,6 +44,7 @@ public class World {
   private PriorityBlockingQueue<TimedEvent> eventQueue;
   private Area playerArea;
   private Player player;
+  private MineArea mines;
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay;
@@ -66,7 +67,7 @@ public class World {
     this.inGameDay = 0;
     this.inGameSeason = 0;
 
-    // spawn first day items
+    // spawn first day items, init mines
     this.doDayEndActions();
   }
 
@@ -107,67 +108,74 @@ public class World {
     
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;
-    Iterator<Moveable> moveables;
-    Moveable nextMoveable;
-    LinkedHashSet<Point> intersectingTiles;
-    Vector2D move;
-    int collideDirection;
+    if (this.locations.get(this.playerArea.getName()) == null) {
+      this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
+    }
     while (areas.hasNext()) {
       nextArea = areas.next();
-      moveables = nextArea.getMoveables();
-
-      while (moveables.hasNext()) {
-        nextMoveable = moveables.next();
-        move = nextMoveable.getMove(currentUpdateTime-this.lastUpdateTime);
-        if (move != null) {
-          intersectingTiles = nextMoveable.getIntersectingTiles(move.getXVector());
-          collideDirection = nextArea.collides(intersectingTiles,
-                                                   this.player.getPos().translateNew(move.getX(), 0),
-                                                   true);
-          if (collideDirection == World.EAST) {
-            // subtract 0.0001 to prevent rounding from counting it as still colliding
-            nextMoveable.translatePos(
-                nextMoveable.getPos().round().x + 0.5-Player.SIZE - nextMoveable.getPos().x - 0.0001,
-                0
-            );
-          } else if (collideDirection == World.WEST) {
-            nextMoveable.translatePos(
-                nextMoveable.getPos().round().x - 0.5+Player.SIZE - nextMoveable.getPos().x,
-                0
-            );
-          } else if (collideDirection == -1) {
-            nextMoveable.translatePos(move.getXVector());
-          }
-
-          intersectingTiles = nextMoveable.getIntersectingTiles(move.getYVector());
-          collideDirection = nextArea.collides(intersectingTiles,
-                                               this.player.getPos().translateNew(0, move.getY()),
-                                               false);
-          if (collideDirection == World.NORTH) {
-            nextMoveable.translatePos(
-                0,
-                nextMoveable.getPos().round().y - 0.5+Player.SIZE - nextMoveable.getPos().y
-            );
-          } else if (collideDirection == World.SOUTH) {
-            // subtract 0.0001 to prevent rounding from counting it as still colliding
-            nextMoveable.translatePos(
-                0,
-                nextMoveable.getPos().round().y + 0.5-Player.SIZE - nextMoveable.getPos().y - 0.0001
-            );
-          } else if (collideDirection == -1) {
-            nextMoveable.translatePos(move.getYVector());
-          }
-          
-          if (nextMoveable instanceof Player) {
-            this.playerArea = nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
-          } else {
-            nextArea.moveAreas(nextMoveable, intersectingTiles.iterator());
-          }
-        }
-      }
+      this.moveMoveablesInArea(nextArea, currentUpdateTime);
     }
 
     this.lastUpdateTime = currentUpdateTime;
+  }
+
+  public void moveMoveablesInArea(Area a, long updateTime) {
+    Iterator<Moveable> moveables = a.getMoveables();
+    Moveable nextMoveable;
+    Vector2D move;
+    while (moveables.hasNext()) {
+      nextMoveable = moveables.next();
+      move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
+      if (move != null) {
+        World.doCollision(a, nextMoveable, move.getXVector(), true);
+        World.doCollision(a, nextMoveable, move.getYVector(), false);
+        if (nextMoveable instanceof Player) {
+          this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+        } else {
+          a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+        }
+      }
+    }
+  }
+
+  public static void doCollision(Area a, Moveable m, Vector2D move, boolean isHorizontal) {
+    LinkedHashSet<Point> intersectingTiles;
+    int collideDirection;
+    intersectingTiles = m.getIntersectingTiles(move);
+    collideDirection = a.collides(intersectingTiles,
+                                  m.getPos().translateNew(move.getX(), move.getY()),
+                                  isHorizontal);
+    if (collideDirection == -1) {
+      m.translatePos(move);
+    } else {
+      World.fixCollision(m, collideDirection);
+    }
+  }
+
+  public static void fixCollision(Moveable m, int collideDirection) {
+    if (collideDirection == World.EAST) {
+      // subtract 0.0001 to prevent rounding from counting it as still colliding
+      m.translatePos(
+          m.getPos().round().x + 0.5-Player.SIZE - m.getPos().x - 0.0001,
+          0
+      );
+    } else if (collideDirection == World.WEST) {
+      m.translatePos(
+          m.getPos().round().x - 0.5+Player.SIZE - m.getPos().x,
+          0
+      );
+    } else if (collideDirection == World.NORTH) {
+      m.translatePos(
+          0,
+          m.getPos().round().y - 0.5+Player.SIZE - m.getPos().y
+      );
+    } else if (collideDirection == World.SOUTH) {
+      // subtract 0.0001 to prevent rounding from counting it as still colliding
+      m.translatePos(
+          0,
+          m.getPos().round().y + 0.5-Player.SIZE - m.getPos().y - 0.0001
+      );
+    }
   }
 
   public void processEvents() {
@@ -259,7 +267,8 @@ public class World {
             ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
             ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
 
-          } else if (selectedTile.getContent() == null) {
+          } else if ((this.playerArea instanceof FarmArea)
+                     && (selectedTile.getContent() == null)) {
             if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
               if (this.playerArea instanceof FarmArea) {
                 ((GroundTile)selectedTile).setTilledStatus(true);
@@ -282,7 +291,6 @@ public class World {
             ((GroundTile)selectedTile).determineImage(this.inGameDay);
           } //- Ground tile changes image based on what happened
       } else if (event instanceof PlayerInteractEvent) {
-        //TODO: make this not just for forageables but also doors and stuff i guess
         int itemIndex = ((PlayerInteractEvent)event).getSelectedItemIndex();
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
@@ -303,8 +311,22 @@ public class World {
         }
         if ((interactedGateway != null)
               && interactedGateway.requiresInteractToMove()
-              && this.player.getPos().round().x == interactedGateway.getOrigin().x) {
-          this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
+              && ((this.player.getPos().round().x == interactedGateway.getOrigin().x)
+                  || (interactedGateway.getOrientation() == Gateway.OMNIDIRECTIONAL))) {
+          if (interactedGateway instanceof ElevatorGateway) {
+            if (interactedGateway.getDestinationGateway() == null) {
+              this.player.enterMenu(Player.ELEVATOR_PAGE);
+            } else {
+              this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
+              this.mines.loadLevel(((MineLevel)this.playerArea).getLevel()+1);
+              ((ElevatorGateway)interactedGateway).resetElevatorDestination();
+            }
+          } else {
+            this.playerArea = this.playerArea.moveAreas(this.player, interactedGateway);
+            if (this.playerArea instanceof MineLevel) {
+              this.mines.loadLevel(((MineLevel)this.playerArea).getLevel()+1);
+            }
+          }
         } else if (currentTile != null) {
 
           if (currentTile.getContent() == null) {
@@ -563,6 +585,17 @@ public class World {
     }
     input.close();
 
+    input = new BufferedReader(new FileReader("assets/gamedata/map/Mines"));
+    splitLine = input.readLine().split(" ");
+    this.mines = new MineArea(splitLine[0],
+                              Integer.parseInt(splitLine[1]),
+                              Integer.parseInt(splitLine[2]),
+                              new Point(input.readLine().split(" ")),
+                              new Point(input.readLine().split(" ")),
+                              new Point(input.readLine().split(" ")));
+    this.locations.put(splitLine[0], this.mines);
+    input.close();
+
     // load the tiles
     Iterator<Area> locationAreas = this.locations.values().iterator();
     while (locationAreas.hasNext()) {
@@ -572,13 +605,13 @@ public class World {
     // add gateways
     input = new BufferedReader(new FileReader("assets/gamedata/map/Gateways"));
     nextLine = input.readLine();
-    // (\w++) ?             group 1: area1 name, optionally followed by space
-    // \((\d++), ?(\d++)\)  group 2,3: coordinates of gateway in area1, with parentheses and optional space
-    // \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
-    // (\w++) ?             group 6: area2 name, optionally followed by space
-    // \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
-    //  ?(\\w++)*           group 9: name of the building for the second area to travel into (some will not have a building, in which they get "none")
-    Pattern gatewayPattern = Pattern.compile("^(\\w++) ?\\((\\d++), ?(\\d++)\\)\\s++(I?)<->(I?)\\s++(\\w++) ?\\((\\d++), ?(\\d++)\\) ?(\\w++)$");
+    // (\w++)               group 1: area1 name
+    // \((\d++), (\d++)\)   group 2,3: coordinates of gateway in area1, with parentheses
+    //  (I?)<->(I?)         group 4,5: <-> and whether or not interaction is required to travel
+    // (\w++)               group 6: area2 name
+    // \((\d++), (\d++)\)   group 7,8: coordinates of gateway in area2, with parentheses
+    // (?: (\\w++))?        group 9: optional: name of the building for the second area to travel into
+    Pattern gatewayPattern = Pattern.compile("^(\\w++) \\((\\d++), (\\d++)\\) (I?)<->(I?) (\\w++) \\((\\d++), (\\d++)\\)(?: (\\w++))?$");
     Matcher gatewayMatch;
     Gateway gateway1, gateway2;
     while (!nextLine.equals("")) {
@@ -599,7 +632,7 @@ public class World {
       gateway2.setDestinationArea(this.locations.get(gatewayMatch.group(1)));
       gateway2.setDestinationGateway(gateway1);
 
-      if (!(gatewayMatch.group(9).equals("none"))) {
+      if (gatewayMatch.group(9) != null) {
         this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin()).setContent(
                                   IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
       }
@@ -693,6 +726,11 @@ public class World {
           case 'g':
             a.setMapAt(new GroundTile(x, y));
             break;
+          case 'd':
+            a.setMapAt(new MineGatewayTile(x, y, MineGatewayTile.DOWNWARDS_LADDER));
+            break;
+          case 'e':
+            a.setMapAt(new MineGatewayTile(x, y, MineGatewayTile.ELEVATOR));
         }
       }
     }
@@ -738,10 +776,8 @@ public class World {
     return this.playerArea;
   }
 
-  public void setPlayerArea(Area a) {
-    // testing only
-    this.playerArea = a;
-    // TODO: die
+  public MineArea getMines() {
+    return this.mines;
   }
 
   public long getInGameNanoTime() {

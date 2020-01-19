@@ -15,9 +15,10 @@ public class MineLevel extends Area {
       {"AmethystOre", "EmeraldOre"},
       {"RubyOre", "DiamondOre"}
   };
-  private static final int LEVELS_PER_TIER = 40;
+  private static final int LEVELS_PER_TIER = 20;
 
   private final int level;
+  private Gateway entranceGateway;
 
   public static class Builder {
     private String name;
@@ -28,7 +29,7 @@ public class MineLevel extends Area {
     private MineLevelComponent[] components;
     private Point[] componentPoints;
 
-    public Builder(int level, int size) {
+    public Builder(int level) {
       if (!MineLevel.componentsInitialized) {
         throw new RuntimeException("MineLevelComponents not initialized");
       }
@@ -37,11 +38,13 @@ public class MineLevel extends Area {
 
       this.width = 0;
       this.height = 0;
+
+      int size = (int)((Math.random()*4)+1+level/LEVELS_PER_TIER);
       this.componentPoints = new Point[size];
       this.components = new MineLevelComponent[size];
     }
 
-    public MineLevel buildLevel() {
+    public MineLevel buildLevel(MineArea containingArea) {
       this.components[0] = MineLevel.levelComponents[(int)(Math.random()*MineLevel.numLevelComponents)];
       this.componentPoints[0] = new Point(0, 0);
       
@@ -60,40 +63,8 @@ public class MineLevel extends Area {
 
       MineLevel level = new MineLevel(this);
       
-      Point offset;
-      int realX, realY;
-      i = -1;
-      while (++i < this.components.length && this.components[i] != null) {
-        offset = this.componentPoints[i];
-        for (int y = 0; y < this.components[i].getHeight(); ++y) {
-          for (int x = 0; x < this.components[i].getWidth(); ++x) {
-            if (this.components[i].isWalkableAt(x, y)) {
-              realX = (int)offset.x+x+1;
-              realY = (int)offset.y+y+1;
-              level.setMapAt(new GroundTile(realX, realY).setMineImage());
-              // ores here
-              if (Math.random() < 0.4) {      // 40% to be occupied
-                if (Math.random() < 0.3) {    //   30% to be special
-                  if (Math.random() < 0.1) {  //     10% to be very special
-                    String[] choices = MineLevel.SPECIAL_ORES[this.level/MineLevel.LEVELS_PER_TIER];
-                    if (choices.length > 0) {
-                      level.addHarvestableAt(realX, realY, choices[(int)(Math.random()*choices.length)]);
-                    }
-                  } else {                    //     90% to be an ore
-                    level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[this.level/MineLevel.LEVELS_PER_TIER]);
-                  }
-                } else {                      //   70% to be rock
-                  if (Math.random() < 0.1) {  //     10% to be hard rock
-                    level.addHarvestableAt(realX, realY, "HardRock");
-                  } else {                    //     90% to be normal rock
-                    level.addHarvestableAt(realX, realY, "Rock");
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      this.assembleArea(level);
+      this.setExitGateway(level, containingArea);
 
       return level;
     }
@@ -143,11 +114,88 @@ public class MineLevel extends Area {
         }
       }
     }
+
+    private void assembleArea(MineLevel level) {
+      Point offset;
+      int realX, realY;
+      int i = -1;
+      while (++i < this.components.length && this.components[i] != null) {
+        offset = this.componentPoints[i];
+        for (int y = 0; y < this.components[i].getHeight(); ++y) {
+          for (int x = 0; x < this.components[i].getWidth(); ++x) {
+            if (this.components[i].isWalkableAt(x, y)) {
+              realX = (int)offset.x+x+1;
+              realY = (int)offset.y+y+1;
+              level.setMapAt(new GroundTile(realX, realY).setMineImage());
+              // ores here
+              if (Math.random() < 0.3) {      // 30% to be occupied
+                if (Math.random() < 0.15) {   //   15% to be special
+                  if (Math.random() < 0.1) {  //     10% to be very special
+                    String[] choices = MineLevel.SPECIAL_ORES[Math.min(MineLevel.SPECIAL_ORES.length, 
+                                                                       this.level/MineLevel.LEVELS_PER_TIER)];
+                    if (choices.length > 0) {
+                      level.addHarvestableAt(realX, realY, choices[(int)(Math.random()*choices.length)]);
+                    }
+                  } else {                    //     90% to be an ore
+                    System.out.println(this.level/MineLevel.LEVELS_PER_TIER);
+                    level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[Math.min(MineLevel.METAL_ORES.length,
+                                                                                       this.level/MineLevel.LEVELS_PER_TIER)]);
+                  }
+                } else {                      //   85% to be rock
+                  if (Math.random() < 0.1) {  //     10% to be hard rock
+                    level.addHarvestableAt(realX, realY, "HardRock");
+                  } else {                    //     90% to be normal rock
+                    level.addHarvestableAt(realX, realY, "Rock");
+                  }
+                }
+
+                if (Math.random() < 0.06 && this.level != MineArea.NUM_LEVELS-1) {
+                  level.addGateway(new Gateway(realX, realY, Gateway.OMNIDIRECTIONAL, true));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    private void setExitGateway(MineLevel level, MineArea containingArea) {
+      for (int y = 1; y < this.height; ++y) {
+        for (int x = 1; x < this.width; ++x) {
+          if (level.getMapAt(x, y) != null) {
+            level.setMapAt(new MineGatewayTile(x, y-1, MineGatewayTile.UPWARDS_LADDER));
+            level.setMapAt(new GroundTile(x, y).setMineImage());  // so the player doesn't spawn on a rock
+            Gateway exit = new Gateway(x, y-1, World.NORTH, true);
+            exit.setDestinationArea(containingArea);
+            exit.setDestinationGateway(containingArea.getLevelExitGateway());
+            level.addGateway(exit);
+            level.entranceGateway = exit;
+            return;
+          }
+        }
+      }
+    }
   }
 
   private MineLevel(Builder b) {
     super(b.name, b.width, b.height);
     this.level = b.level;
+  }
+
+  public int getLevel() {
+    return this.level;
+  }
+
+  @Override
+  public void removeComponentAt(Point pos) {
+    super.removeComponentAt(pos);
+    if (this.getGateway(pos) != null) {
+      this.setMapAt(new MineGatewayTile((int)(pos.x), (int)(pos.y), MineGatewayTile.DOWNWARDS_LADDER));
+    }
+  }
+
+  public Gateway getEntranceGateway() {
+    return this.entranceGateway;
   }
 
   public static void loadComponents() {
@@ -193,9 +241,5 @@ public class MineLevel extends Area {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  public int getLevel() {
-    return this.level;
   }
 }
