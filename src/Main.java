@@ -10,7 +10,6 @@ public class Main {
     RiverTile.setFishableFish();
     LakeTile.setFishableFish();
     OceanTile.setFishableFish();
-    PlankTile.setPlankTileImage();
 
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();

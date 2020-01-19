@@ -169,7 +169,7 @@ public class StardubeEventListener implements KeyListener,
             chest.removeAtIndex(itemIdx);
           }
         }
-      }
+      } 
 
     } else if (player.getCurrentMenuPage() == Player.SHOP_PAGE) {
       if (worldPanel.isPosInShopItemList(mouseX, mouseY)) {

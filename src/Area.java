@@ -8,7 +8,7 @@ import java.util.LinkedList;
 /**
  * [Area]
  * 2019-12-19
- * @version 0.2
+ * @version 0.3
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 public abstract class Area {
@@ -299,10 +299,20 @@ public abstract class Area {
     }
   }
 
+  /**
+   * [getWidth]
+   * Retrieves the width of this area, in tiles.
+   * @return int, the width of this area.
+   */
   public int getWidth() {
     return this.width;
   }
 
+  /**
+   * [getHeight]
+   * Retrieves the height of this area, in tiles.
+   * @return int, the height of this area.
+   */
   public int getHeight() {
     return this.height;
   }
@@ -323,20 +333,42 @@ public abstract class Area {
     this.map[t.getY()][t.getX()] = t;
   }
 
+  /**
+   * [updateDay]
+   * Increases the day stored in this area by one, effectively updating it.
+   * @author Joseph Wang
+   */
   public void updateDay() {
     this.currentDay += 1;
   }
 
+  /**
+   * [getCurrentDay]
+   * Retrieves the day stored in this area.
+   * @author Joseph Wang
+   * @return long, the day stored in this area.
+   */
   public long getCurrentDay() {
     return this.currentDay;
   }
 
+  /**
+   * [updateSeason]
+   * Updates the stored season in this area according to the day stored in this area.
+   * @author Joseph Wang, Candice Zhang
+   */
   public void updateSeason() {
     if ((this.currentDay % World.getDaysPerSeason() == 1) && (this.currentDay != 1)) {
       this.currentSeason = (this.currentSeason + 1) % 4;
     }
   }
 
+  /**
+   * [getSeason]
+   * Retrieves the current season stored in this area.
+   * @author Joseph Wang
+   * @return int, the current season stored in this area.
+   */
   public int getSeason() {
     return this.currentSeason;
   }
