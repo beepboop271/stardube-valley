@@ -172,12 +172,12 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
     Recipe recipe;
 
-    if (this.currentInteractingMenuObj instanceof CraftingStore) {
-      if (!(((CraftingStore)this.getCurrentInteractingMenuObj()).hasItem(product))) {
+    if (this.currentInteractingObj instanceof CraftingStore) {
+      if (!(((CraftingStore)this.getCurrentInteractingObj()).hasItem(product))) {
         return false;
       }
 
-      recipe = ((CraftingStore)this.getCurrentInteractingMenuObj()).recipeOf(product);
+      recipe = ((CraftingStore)this.getCurrentInteractingObj()).recipeOf(product);
     } else {
       if (!(this.craftingMachine.hasProduct(product))) {
         return false;
@@ -671,7 +671,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.currentInteractingObj = component;
   }
 
-  public boolean hasInteractingMenuObj() {
+  public boolean hasInteractingObj() {
     return !(this.currentInteractingObj == null);
   }
 
