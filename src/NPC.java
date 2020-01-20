@@ -5,7 +5,7 @@ import java.io.IOException;
  * 2020-01-19
  * 
  * @version 0.1
- * @author Paula Yuan, Candcie Zhang
+ * @author Paula Yuan, Candice Zhang
  */
 
 public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
