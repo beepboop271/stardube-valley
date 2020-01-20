@@ -47,7 +47,6 @@ public class IntrinsicTree extends IntrinsicHarvestableComponent {
     }
 
     //- totalStages convieniently contains the last stage--the mature tree
-    // System.out.println(totalStages-1);
     this.stageToDisplay[this.maxGrowthStage - 1] = totalStages-2;
     this.stageToDisplay[this.maxGrowthStage] = totalStages-1;
   }

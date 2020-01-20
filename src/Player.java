@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends LoopAnimatedMoveable implements Animatable { //TODO: JAVADOCS
+public class Player extends LoopAnimatedMoveable implements Animatable {
   public static final double SIZE = 0.35;
   private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
@@ -68,11 +68,12 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("BambooRod", 1);
     this.inventory[5] = new HoldableStack("ChestItem", 1);
-    this.inventory[6] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("CornSeeds", 10);
-    this.inventory[9] = new HoldableStack("PotatoSeeds", 10);
-    this.inventory[10] = new HoldableStack("TulipSeeds", 10);
+    this.inventory[6] = new HoldableStack("FurnaceItem", 10);
+    this.inventory[7] = new HoldableStack("WoodItem", 999);
+    this.inventory[8] = new HoldableStack("CopperItem", 50);
+    this.inventory[9] = new HoldableStack("CoalItem", 10);
+    this.inventory[10] = new HoldableStack("IronBarItem", 10);
+    this.inventory[11] = new HoldableStack("GoldBarItem", 10);
   }
 
   @Override
@@ -149,7 +150,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
     Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
-    if (thingConsumed instanceof SpecialConsumable) { //TODO: maybe make this better
+    if (thingConsumed instanceof SpecialConsumable) {
       this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
       this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
     }
@@ -217,7 +218,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
 
     String[] ingredients = recipe.getIngredients();
     this.currentFunds -= recipe.getPrice();
-    System.out.println(recipe.getPrice());
     for (int i = 0; i < ingredients.length; i++) {
       this.decrementHoldable(recipe.quantityOf(ingredients[i]), HoldableFactory.getHoldable(ingredients[i]));
     }

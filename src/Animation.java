@@ -1,6 +1,6 @@
 import java.awt.image.BufferedImage;
 
-public abstract class Animation implements Cloneable { //TODO: JAVADOCS
+public abstract class Animation implements Cloneable { 
   private boolean doneAnimating;
   private long lastUpdateNanoTime;
 

@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Paula Yuan, Candice Zhang
  */
 
-public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
+public class NPC extends LoopAnimatedMoveable {
   private static final double MAX_SPEED = 1;
   public static final double SIZE = 0.35;
   private int index;

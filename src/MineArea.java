@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class MineArea extends Area { //TODO: JAVADOCS
+public class MineArea extends Area { 
   public static final int NUM_LEVELS = 60;
 
   private MineLevel[] levels;
@@ -47,7 +47,6 @@ public class MineArea extends Area { //TODO: JAVADOCS
     while (gateways.hasNext()) {
       nextGateway = gateways.next();
       if (nextGateway.getDestinationGateway() == null) {
-        System.out.println(nextGateway.getOrigin());
         nextGateway.setDestinationArea(this.levels[level]);
         nextGateway.setDestinationGateway(this.levels[level].getEntranceGateway());
       }

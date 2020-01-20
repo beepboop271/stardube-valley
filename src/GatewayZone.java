@@ -4,7 +4,7 @@
  * @version 0.1
  * @author Kevin Qiao, Joseph Wang
  */
-public class GatewayZone extends Gateway { //TODO: JAVADOCS
+public class GatewayZone extends Gateway {
   public GatewayZone(int originX, int originY, int orientation) {
     super(originX, originY, orientation, false);
   }

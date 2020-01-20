@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -18,7 +17,7 @@ import java.util.LinkedHashSet;
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 
-public class World { //TODO: JAVADOCS
+public class World { 
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -246,7 +245,7 @@ public class World { //TODO: JAVADOCS
         this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
 
-        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1);  // TODO: make this stuff less sketch
+        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1); 
         Tile treeTile;
         if (this.playerArea.inMap(treePos)) {
           treeTile = this.playerArea.getMapAt(treePos);
@@ -282,13 +281,13 @@ public class World { //TODO: JAVADOCS
                   
           if (requiredTool.equals("Any")
                 || requiredTool.equals(((Tool)toolEvent.getHoldableUsed()).getType())) {
-            // TODO: play breaking animation?
+    
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
               if (ec instanceof ExtrinsicTree) {
                 if (((ExtrinsicTree)ec).getStage() == 17) {
                   ((ExtrinsicTree)ec).setStage(18);
-                  ec.setHardnessLeft(5); // TODO: maybe dont hard code
+                  ec.setHardnessLeft(5); 
                 } else {
                   this.playerArea.removeComponentAt(treePos);
                 }
@@ -310,7 +309,6 @@ public class World { //TODO: JAVADOCS
                 }
               }
             }
-             //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
           if (((Tool)toolEvent.getHoldableUsed()).getType().equals("WateringCan")
@@ -388,13 +386,8 @@ public class World { //TODO: JAVADOCS
             } 
           }
 
-          //TODO: play foraging animation?
           TileComponent currentContent = currentTile.getContent();
-          // if (currentContent == null) {
-          //   System.out.println("This tile is null");
-          // } else {
-          //   System.out.println("on component is " + currentContent);
-          // }
+
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -469,11 +462,10 @@ public class World { //TODO: JAVADOCS
             if (this.playerArea instanceof WorldArea) {
               ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
             }
-            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
             HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
             HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
             if (drop != null) {
-              new HoldableStackEntity(drop, null); // TODO: change the pos
+              new HoldableStackEntity(drop, null);
               if (this.player.canPickUp(drop.getContainedHoldable())) {
                 this.player.pickUp(drop);
                 currentTile.setContent(null);
@@ -502,7 +494,7 @@ public class World { //TODO: JAVADOCS
         ((ExtrinsicMachine)event.getSource()).processItem();
 
       } else if (event instanceof CastingEndedEvent) {
-        FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); // TODO: send into the fishing game as a parameter
+        FishingRod rodUsed = ((CastingEndedEvent)event).getRodUsed(); 
         this.player.decreaseEnergy(rodUsed.getEnergyCost());
         int meterPercentage = ((CastingEndedEvent)event).getMeterPercentage();
         int castDistance = (int)(Math.round(FishingRod.MAX_CASTING_DISTANCE*(meterPercentage/100.0)));
@@ -940,7 +932,7 @@ public class World { //TODO: JAVADOCS
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 8; // TODO: change number to match # of NPCs
+    int totalNPCs = 8;
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
@@ -993,7 +985,6 @@ public class World { //TODO: JAVADOCS
     for (int i = 0; i < cols; i++) {
       String[] rowData = input.readLine().split("\\s+");
       for (int j = 0; j < rows; j++) {
-        System.out.println(rowData[j]);
         worldMap[i][j] = rowData[j];
       }
     }

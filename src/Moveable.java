@@ -23,7 +23,6 @@ public abstract class Moveable implements Drawable {
     this.size = size;
   }
 
-  //TODO: finish this
   /**
    * [getIntersectingTiles] 
    * @param offset 
@@ -32,7 +31,6 @@ public abstract class Moveable implements Drawable {
   public LinkedHashSet<Point> getIntersectingTiles(Vector2D offset) {
     LinkedHashSet<Point> intersections = new LinkedHashSet<Point>();
     // size will always be < 2 so this is enough
-    // System.out.println(this.position);
     Point movedPosition = this.position.translateNew(offset.getX(), offset.getY());
     intersections.add(movedPosition.translateNew(-this.size, -this.size).round());
     intersections.add(movedPosition.translateNew(this.size, -this.size).round());
@@ -145,8 +143,7 @@ public abstract class Moveable implements Drawable {
   public double getSize() {
     return this.size;
   }
-
-  //TODO: finish this
+  
   /**
    * [getMove]
    * @param elapsedNanoTime
