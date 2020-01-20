@@ -330,7 +330,7 @@ public class StardubeEventListener implements KeyListener,
     } else if (this.stardubePlayer.isInMenu()) {
       int menuPage = this.stardubePlayer.getCurrentMenuPage();
       
-      if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
+      if ((menuPage >= 0 && menuPage <= 3) && // for menu tab buttons; 0-3: INVENTORY, CRAFTING, MAP, SOCIAL
           (this.worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
         this.stardubePlayer.enterMenu(this.worldPanel.menuTabButtonAt((int)this.mousePos.x));
 
@@ -357,9 +357,6 @@ public class StardubeEventListener implements KeyListener,
         }
 
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
-        // TODO: insert code
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
         // TODO: insert code
 
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {

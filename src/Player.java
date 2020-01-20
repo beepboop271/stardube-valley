@@ -2,6 +2,7 @@ import java.io.IOException;
 
 /**
  * [Player]
+ * A moveable to represent the player of the game.
  * 2019-12-19
  * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
@@ -16,11 +17,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
   public static final int INVENTORY_PAGE = 0;
   public static final int CRAFTING_PAGE = 1;
   public static final int MAP_PAGE = 2;
-  public static final int SKILLS_PAGE = 3;
-  public static final int SOCIAL_PAGE = 4;
-  public static final int SHOP_PAGE = 5;
-  public static final int CHEST_PAGE = 6;
-  public static final int ELEVATOR_PAGE = 7;
+  public static final int SOCIAL_PAGE = 3;
+  public static final int SHOP_PAGE = 4;
+  public static final int CHEST_PAGE = 5;
+  public static final int ELEVATOR_PAGE = 6;
 
   private int inventorySize = 12;
   private HoldableStack[] inventory;
@@ -38,6 +38,14 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
   private CraftingMachine craftingMachine;
 
+  /**
+   * [Player]
+   * Constructor to make a new Player.
+   * @param position Point, the position of the player.
+   * @param filePath String, the filePath of the player's images.
+   * @param name     String, the name of the player.
+   * @throws         IOException
+   */
   public Player(Point position, String filePath, String name) throws IOException {
     super(position, Player.SIZE, filePath, name);
     this.inventory = new HoldableStack[this.inventorySize];
