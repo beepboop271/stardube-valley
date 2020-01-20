@@ -199,17 +199,16 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    // draw player
-    //g.setColor(Color.RED);
-    this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
-    this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
-    //g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
-    //           (int)(Tile.getSize()*2*Player.SIZE),
-    //           (int)(Tile.getSize()*2*Player.SIZE));
-    g.setColor(Color.BLACK);
-    g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
-    g.drawImage(worldPlayer.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*Player.SIZE)), null);
-    
+    Iterator<Moveable> moveables = playerArea.getMoveables();
+    while (moveables.hasNext()) {
+      Moveable currentMoveable = moveables.next(); // TODO: rename playerScreenPos, also clarify use of NPC.SIZE?
+      this.playerScreenPos.x = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+0.5-(NPC.SIZE))+originX);
+      this.playerScreenPos.y = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+0.5-(NPC.SIZE))+originY);
+      g.setColor(Color.BLACK);
+      g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
+      g.drawImage(currentMoveable.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*NPC.SIZE)), null);
+    }
+
     // draw tile components
     screenTileX = 0;
     screenTileY = 0;

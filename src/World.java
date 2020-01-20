@@ -9,6 +9,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Random;
 
 /**
  * [World]
@@ -18,6 +19,7 @@ import java.util.LinkedHashSet;
  */
 
 public class World {
+  private Random random = new Random();
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -45,6 +47,8 @@ public class World {
   private Area playerArea;
   private Player player;
   private MineArea mines;
+  private NPC[] npcs = new NPC[3]; //TODO: change NPC numbers to match # of NPCs
+  private Area[] npcAreas = new Area[3];
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay;
@@ -60,9 +64,11 @@ public class World {
     }
     this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
     
-    this.player = new Player(new Point(13, 13), "assets/gamedata/PlayerImages");
+    this.player = new Player(new Point(13, 13), "assets/gamedata/NPCImages", "player");
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    this.loadNPCS();
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
@@ -74,7 +80,7 @@ public class World {
   public void update() {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
-
+    
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
       return;
@@ -131,6 +137,11 @@ public class World {
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+        } else if (nextMoveable instanceof NPC) { 
+          this.npcAreas[((NPC)nextMoveable).getIndex()] = a.moveAreas(nextMoveable,
+                                                        nextMoveable.getIntersectingTiles(move).iterator());
+          this.emplaceFutureEvent(this.random.nextLong(), new AutoMovementEvent((NPC)nextMoveable));
+          nextMoveable.updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         }
@@ -527,6 +538,22 @@ public class World {
             }
           }
         }
+      } else if (event instanceof AutoMovementEvent) {
+        int randDir = random.nextInt(4);
+        NPC currentNPC = ((NPC)event.getSource());
+        if (randDir == 0 && currentNPC.getVerticalSpeed() != -1) {
+          currentNPC.setVerticalSpeed(-1);
+          currentNPC.setOrientation(World.NORTH);
+        } else if (randDir == 1 && currentNPC.getHorizontalSpeed() != 1) {
+          currentNPC.setHorizontalSpeed(1);
+          currentNPC.setOrientation(World.EAST);
+        } else if (randDir == 2 && currentNPC.getVerticalSpeed() != 1) {
+          currentNPC.setVerticalSpeed(1);
+          currentNPC.setOrientation(World.SOUTH);
+        } else if (currentNPC.getHorizontalSpeed() != -1) {
+          currentNPC.setHorizontalSpeed(-1);
+          currentNPC.setOrientation(World.WEST);
+        }
       }
     }
   }
@@ -784,6 +811,28 @@ public class World {
     return null;
   }
 
+  public void loadNPCS() throws IOException {
+    BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/NPCdata"));
+    String lineToRead = input.readLine();
+    String[] nextLineData = lineToRead.split("\\s+");
+    String name;
+    String[] dialogue = new String[5];
+    for (int i = 0; i < 3; i++) { // TODO: change number to match # of NPCs
+      name = nextLineData[0];
+      this.npcAreas[i] = this.locations.get(nextLineData[1]);
+      for (int j = 0; j < 5; j++) {
+        lineToRead = input.readLine();
+        dialogue[j] = lineToRead;
+      }
+      this.npcs[i] = new NPC(new Point(3, 3), "assets/gamedata/NPCImages", "npcs/"+name, i, 
+                            dialogue);
+      this.npcAreas[i].addMoveable(this.npcs[i]);
+      lineToRead = input.readLine();
+      nextLineData = lineToRead.split("\\s+");
+    }
+    input.close();
+  }
+
   public Player getPlayer() {
     return this.player;
   }
@@ -814,5 +863,9 @@ public class World {
 
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
+  }
+
+  public Area[] getNPCAreas() {
+    return this.npcAreas;
   }
 }
