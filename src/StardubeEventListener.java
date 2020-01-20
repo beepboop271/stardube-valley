@@ -464,7 +464,7 @@ public class StardubeEventListener implements KeyListener,
   /**
    * [updateSelectedTile]
    * Updates the selected tile of the player according to current mouse position.
-   * @author unknown (probly kiwi)
+   * @author Kevin Qiao
    */
   private void updateSelectedTile() {
     Vector2D mouseOffset = new Vector2D(this.mousePos.x-this.worldPanel.getPlayerScreenPos().x,
