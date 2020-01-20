@@ -40,13 +40,14 @@ public class WorldPanel extends JPanel {
   public static final Color DIM_RED_COLOR = new Color(237, 69, 48);
   public static final Color LOCKED_SLOT_COLOR = new Color(230, 165, 100);
 
-  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
+  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 30);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
   private final Font LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 25);
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.PLAIN, 35);
   private final Font BIG_BOLD_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 35);
   private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
-  private final Font DESCRIPTION_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
+  private final Font DESCRIPTION_BOLD_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
+  private final Font DESCRIPTION_FONT = new Font("Comic Sans MS", Font.PLAIN, 15);
   private final Font PROFILE_FONT = new Font("Comic Sans MS", Font.PLAIN, 30);
   
   private StardubeEventListener listener;
@@ -217,10 +218,6 @@ public class WorldPanel extends JPanel {
     if (playerArea instanceof BuildingArea) {
       if (((BuildingArea)playerArea).hasInteriorImage()) {
         BuildingArea area = (BuildingArea)playerArea;
-        // System.out.println(area.getDrawLocation().x);
-        // System.out.println(area.getDrawLocation().y);
-        // System.out.println(area.getXOffset() * Tile.getSize());
-        // System.out.println(area.getYOffset() * Tile.getSize());
         g.drawImage(area.getImage(), 
                     (int)((area.getDrawLocation().x*Tile.getSize())+(area.getXOffset()*Tile.getSize())), 
                     (int)((area.getDrawLocation().y*Tile.getSize())+(area.getYOffset()*Tile.getSize())), null);
@@ -228,9 +225,9 @@ public class WorldPanel extends JPanel {
     }
 
     // draw player
-    //g.setColor(Color.RED);
     this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
     this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
+    //g.setColor(Color.RED);
     //g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
     //           (int)(Tile.getSize()*2*Player.SIZE),
     //           (int)(Tile.getSize()*2*Player.SIZE));
@@ -341,28 +338,38 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    // time stuff
-    // one real world second is one in game minute
+    // time, day, current funds
+    // (one real world second is one in game minute)
     long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
     Graphics2D g2 = (Graphics2D)g;
-    String currentSeason = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
-    String currentDay;
-    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
-      currentDay = "Day 28";
-    } else {
-      currentDay = "Day " + String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason());
-    }
-    g2.setColor(Color.BLACK);
     g2.setFont(this.TIME_FONT);
+    String dateString = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
+    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
+      dateString += ", Day 28";
+    } else {
+      dateString += ", Day " + String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason());
+    }
+    String timeString = "Time: " + String.format("%02d:%02d", time/60, time%60);
+    String fundsString = "Funds: " + Integer.toString(worldPlayer.getCurrentFunds())+" D$";
+
+    int dateStringWidth = g2.getFontMetrics().stringWidth(dateString);
+    int timeStringWidth = g2.getFontMetrics().stringWidth(timeString);
+    int fundsStringWidth = g2.getFontMetrics().stringWidth(fundsString);
+    int boxWidth = 35 + Math.max(Math.max(dateStringWidth, timeStringWidth), fundsStringWidth);
+
+    g2.setColor(new Color(255, 255, 255, 125));
+    g2.fillRect(this.getWidth()-boxWidth, 0, boxWidth, 180);
+    g2.setColor(new Color(0, 0, 0, 125));
+    g2.drawRect(this.getWidth()-boxWidth, 0, boxWidth, 180);
+
+    g2.setColor(Color.BLACK);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
-    g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
-    g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
-    g2.drawString(Integer.toString(worldPlayer.getCurrentFunds())+" D$", 
-                  this.getWidth()-g2.getFontMetrics().stringWidth(
-                                        Integer.toString(worldPlayer.getCurrentFunds()) + " D$")-20,
-                  215);
+    g2.drawString(timeString, this.getWidth()-timeStringWidth-20, 45);
+    g2.drawString(dateString, this.getWidth()-dateStringWidth-20, 100);
+    g2.drawString(fundsString, 
+                  this.getWidth()-g2.getFontMetrics().stringWidth(fundsString)-20,
+                  155);
     
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
@@ -512,11 +519,36 @@ public class WorldPanel extends JPanel {
             Graphics2D textGraphics = (Graphics2D)g;
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
             textGraphics.setFont(this.STRING_FONT);
-            textGraphics.drawString(itemToDraw.getName() + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
+            textGraphics.drawString(itemToDraw.getName().replace("Item", "") + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
                                     this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
-            textGraphics.setFont(this.DESCRIPTION_FONT);
+            
+            if (itemToDraw instanceof Consumable) {
+              textGraphics.setFont(this.DESCRIPTION_FONT);
+              String consumableText = "";
+              if (((Consumable)itemToDraw).getEnergyGain()>0) {
+                consumableText += "Energy Gain: " + ((Consumable)itemToDraw).getEnergyGain() + ", ";
+              }
+              if (((Consumable)itemToDraw).getHealthGain()>0) {
+                consumableText += "Health Gain: " + ((Consumable)itemToDraw).getHealthGain() + ", ";
+              }
+              if (itemToDraw instanceof SpecialConsumable) {
+                if (((SpecialConsumable)itemToDraw).getMaxEnergyGain() > 0) {
+                  consumableText += "Max Energy Gain: " + (((SpecialConsumable)itemToDraw).getMaxEnergyGain() + ", ");
+                }
+                if (((SpecialConsumable)itemToDraw).getMaxHealthGain() > 0) {
+                  consumableText += "Max Health Gain: " + (((SpecialConsumable)itemToDraw).getMaxHealthGain() + ", ");
+                }
+              }
+              if (consumableText.length() > 0) {
+                // add brackets and strip the comma at the end
+                consumableText = "( " + consumableText.substring(0, consumableText.length()-2) + " )"; 
+              }
+              textGraphics.drawString(consumableText, this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2+25);
+            }
+
+            textGraphics.setFont(this.DESCRIPTION_BOLD_FONT);
             textGraphics.drawString(" - " + itemToDraw.getDescription(),
-                        this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE);
+                        this.shopX + 10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.2));
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
