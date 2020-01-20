@@ -17,7 +17,6 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
   /**
    * [ExtrinsicChest]
    * Constructor for this ExtrinsicChest.
-   * @author Joseph Wang
    */
   public ExtrinsicChest() {
     super("Chest");
@@ -27,7 +26,6 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
   /**
    * [getInventory]
    * Returns this chest's inventory.
-   * @author Joseph Wang
    * @return HoldableStack[], the current inventory of this chest.
    */
   public HoldableStack[] getInventory() {
@@ -38,9 +36,9 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
    * [canAdd]
    * Checks to see if a specific item can be added to this chest, whether by
    * adding to an existing stack or by using a new space.
-   * @author Candice Zhang
-   * @param item The item to add.
-   * @return boolean, true if this chest can add the item, false otherwise.
+   * @author       Candice Zhang
+   * @param item   The item to add.
+   * @return       boolean, true if this chest can add the item, false otherwise.
    */
   public boolean canAdd(Holdable item) {
     if (item == null) {
@@ -63,10 +61,10 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
 
   /**
    * [add]
-   * Takes in items and either adds them to an existing HoldableStack or stores them
+   * Takes in items and either adds them to an existing HoldableStack or stores them.
    * in an empty spot in inventory.
-   * @author Candice Zhang, Joseph Wang
-   * @param items The items that are to be added to this inventory.
+   * @author        Candice Zhang, Joseph Wang
+   * @param items   The items that are to be added to this inventory.
    */
   public void add(HoldableStack items) {
     if (!this.canAdd(items.getContainedHoldable())) {
@@ -93,7 +91,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
   /**
    * [useAtIndex]
    * Removes one item from the inventory at the specified index, effectively "using" it.
-   * @author Candice Zhang
+   * @author      Candice Zhang
    * @param index The index of the item that is to be used.
    */
   public void useAtIndex(int index) {
@@ -107,7 +105,7 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
   /**
    * [removeAtIndex]
    * Completely removes everything at the specified index.
-   * @author Candice Zhang
+   * @author      Candice Zhang
    * @param index The index of the item that is to be removed.
    */
   public void removeAtIndex(int index) {
@@ -117,8 +115,8 @@ public class ExtrinsicChest extends ExtrinsicHarvestableComponent implements Not
   /**
    * [isEmpty]
    * Checks if the inventory is completely empty.
-   * @author Joseph Wang
-   * @return boolean, true if the inventory is empty and false if not.
+   * @author  Joseph Wang
+   * @return  boolean, true if the inventory is empty and false if not.
    */
   public boolean isEmpty() {
     return (this.inventory.length == 0);

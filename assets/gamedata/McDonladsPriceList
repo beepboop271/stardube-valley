@@ -1,4 +1,9 @@
-JavacakeItem  1234.56
-SapItem       0.99
+BurgerItem              200
+ChickenNoodleSoupItem   275
+CookiesItem             150
+FriesItem               175
+JavacakeItem            100
+PancakesItem            175
+TacoItem                225
 
 price list format: String itemName, double price

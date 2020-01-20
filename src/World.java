@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,6 +12,7 @@ import java.util.Random;
 
 /**
  * [World]
+ * Contains essential components and methods for a world to function.
  * 2019-12-19
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
@@ -55,6 +55,11 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
+  /**
+   * [World]
+   * Constructor for a new World.
+   * @throws IOException;
+   */
   public World() throws IOException {
     this.locations = new LinkedHashMap<String, Area>();
     try {
@@ -77,6 +82,11 @@ public class World {
     this.doDayEndActions();
   }
 
+  /**
+   * [update]
+   * Updates the world, including all its components and events.
+   * @author unknown
+   */
   public void update() {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
@@ -189,18 +199,18 @@ public class World {
     }
   }
 
+  /**
+   * [processEvents]
+   * Process all events with the time that is lower than or equal to the current game time.
+   * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
+   */
   public void processEvents() {
     // pygame_irl
     EventObject event;
-    // if (!this.eventQueue.isEmpty()) {
-    //   System.out.print(this.eventQueue.size()+" ");
-    //   System.out.println(this.eventQueue.peek());
-    // }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
       if (event instanceof UtilityToolUsedEvent) {
-        // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
         this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
@@ -350,7 +360,11 @@ public class World {
 
           //TODO: play foraging animation?
           TileComponent currentContent = currentTile.getContent();
-          
+          // if (currentContent == null) {
+          //   System.out.println("This tile is null");
+          // } else {
+          //   System.out.println("on component is " + currentContent);
+          // }
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -373,22 +387,6 @@ public class World {
               if (this.player.canPickUp(product.getContainedHoldable())) {
                 this.player.pickUp(product);
                 ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
-              }
-            }
-          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
-            for (int i = 0; i < bushContents.length; i++) {
-              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
-                continue;
-              } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
-                HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
-                HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-                if (product != null) {
-                  new HoldableStackEntity(product, null);
-                  if (this.player.canPickUp(product.getContainedHoldable())) {
-                      this.player.pickUp(product);
-                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
-                  } 
-                }
               }
             }
           } else if (currentContent instanceof Collectable) {
@@ -444,7 +442,26 @@ public class World {
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
             this.player.setCurrentInteractingMenuObj((Shop)currentContent);
-          }
+            
+          } else if (currentContent instanceof Bed) {
+            this.doDayEndActions();
+          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
+            for (int i = 0; i < bushContents.length; i++) {
+              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
+                continue;
+              } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
+                HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
+                HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  new HoldableStackEntity(product, null);
+                  if (this.player.canPickUp(product.getContainedHoldable())) {
+                      this.player.pickUp(product);
+                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+                  } 
+                }
+              }
+            }
+          } 
         }
 
       } else if (event instanceof MachineProductionFinishedEvent) {
@@ -558,7 +575,25 @@ public class World {
     }
   }
 
+  /**
+   * [doDayEndActions]
+   * Does actions that need to be performed at the end of day.
+   * @author unknown
+   * 
+   */
   public void doDayEndActions() {
+    //- handle the player position, whether they passed out or went to bed and
+    //- whereso they passed out or slept. If they passed out outside of the farm
+    //- area, they go to the clinic instead of the farmhouse and are charged money.
+    Area spawnArea;
+    if ((this.playerArea instanceof FarmArea) || (this.playerArea.getName().equals("Farmhouse"))) {
+      spawnArea = this.locations.get("Farmhouse");
+    } else {
+      spawnArea = this.locations.get("Clinic");
+      this.player.decreaseCurrentFunds(1000);
+    }
+    this.playerArea = this.player.moveToSpawnPosition(this.playerArea, (SpawnableArea)spawnArea);
+    
     this.player.recover(this.inGameNanoTime);
     // day starts at 6 am
     this.inGameNanoTime = 6*60*1_000_000_000L;
@@ -576,25 +611,46 @@ public class World {
       nextArea.doDayEndActions();
     }
 
-    this.player.increaseCurrentFunds(this.player.getFutureFunds()); //TODO: make this a cool menu screen
+    this.player.increaseCurrentFunds(this.player.getFutureFunds());
   }
 
+  /**
+   * [queueEvent]
+   * @author unknown
+   */
   public void queueEvent(TimedEvent te) {
     this.eventQueue.offer(te);
   }
 
+  /**
+   * [emplaceEvent]
+   * Emplaces an event to this world's event queue.
+   * @author Kevin Qiao
+   * @param time   long, the nanotime of the event.
+   * @param event  EventObject, the event to emplace.
+   */
   public void emplaceEvent(long time, EventObject event) {
     this.eventQueue.offer(new TimedEvent(time, event));
   }
 
+  /**
+   * [emplaceFutureEvent]
+   * Emplaces an event that will happen at a future time to this world's event queue.
+   * @author Kevin Qiao
+   * @param nanoTimeIntoFuture   long that represents the time the event
+   *                             will be processed, in nanotime into future.
+   * @param event                EventObject, the event to emplace.
+   */
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
-    // long time = this.inGameNanoTime+nanoTimeIntoFuture;
-    // System.out.printf("enqueue t=%02d:%02d:%d\n", time/60, time%60, (this.inGameNanoTime+nanoTimeIntoFuture)%1_000_000_000);
-    // long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
-    // System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
+  /**
+   * [loadAreas]
+   * Loads all areas this world contains.
+   * @author Kevin Qiao, Candice Zhang
+   * @throws IOException;
+   */
   public void loadAreas() throws IOException {
     String[] splitLine;
     String nextLine;
@@ -684,6 +740,20 @@ public class World {
 
       nextLine = input.readLine();
     }
+    input.close();
+
+    //- add spawning locations
+    input = new BufferedReader(new FileReader("assets/gamedata/SpawningLocations"));
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      ((SpawnBuildingArea)this.locations.get(splitLine[0]))
+                                        .setSpawnLocation(new Point(Double.parseDouble(splitLine[1]),
+                                                                    Double.parseDouble(splitLine[2])));
+
+      nextLine = input.readLine();
+    }
+    input.close();
 
     input.close();
     // add gateway zones
@@ -704,32 +774,34 @@ public class World {
 
     // add shops
     input = new BufferedReader(new FileReader("assets/gamedata/Shops"));
-    String lineToRead = input.readLine();
-    String[] nextLineData;
-    while (lineToRead.length() > 0) {
-      nextLineData = lineToRead.split("\\s+");
-      Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(nextLineData[0]));
-      int x = Integer.parseInt(nextLineData[6]), y = Integer.parseInt(nextLineData[7]);
-      this.locations.get(nextLineData[5]).getMapAt(x, y).setContent(shopToAdd);
-      lineToRead = input.readLine();
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
+      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      this.locations.get(splitLine[5]).getMapAt(x, y).setContent(shopToAdd);
+      nextLine = input.readLine();
     }
     input.close();
   }
 
+  /**
+   * [loadAreaMap]
+   * Loads the map of the given area.
+   * @author    Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
+   * @param a   Area, the area used to load map.
+   * @throws IOException;
+   */
   public void loadAreaMap(Area a) throws IOException {
-    //System.out.println(a.getName());
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
                                                              + a.getName()));
     String nextLine;
-
     
     System.out.println("Initializing " + a.getName());
+    Tile createdTile;
     for (int y = 0; y < a.getHeight(); ++y) {
-      //System.out.println("on row " + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
-        //System.out.println("on col " + x);
-        
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
@@ -761,11 +833,6 @@ public class World {
           case 'f':
             a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
             break;
-          case 's':
-            Tile createdTile = new GroundTile(x, y);
-            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
-            a.setMapAt(createdTile);
-            break;
           case 'g':
             a.setMapAt(new GroundTile(x, y));
             break;
@@ -774,6 +841,17 @@ public class World {
             break;
           case 'e':
             a.setMapAt(new MineGatewayTile(x, y, MineGatewayTile.ELEVATOR));
+            break;
+          case 's':
+            createdTile = new GroundTile(x, y);
+            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
+            a.setMapAt(createdTile);
+            break;
+          case 'z':
+            createdTile = new DecorationTile(x, y, 'f');
+            createdTile.setContent(new Bed());
+            a.setMapAt(createdTile);
+            break;
         }
       }
     }
@@ -789,7 +867,11 @@ public class World {
 
     input.close();
   }
-  
+
+  /**
+   * [findNeighbourZone]
+   * @author unknown  (i know its you kevin i just dont want to write this)
+   */
   public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,
                                               int orientation) {
@@ -833,10 +915,20 @@ public class World {
     input.close();
   }
 
+  /**
+   * [getPlayer]
+   * Retrieves the player in this world.
+   * @return Player, the player in this world.
+   */
   public Player getPlayer() {
     return this.player;
   }
 
+  /**
+   * [getPlayerArea]
+   * Retrieves the area that the player is currently in.
+   * @return Area, the area that the player is currently in.
+   */
   public Area getPlayerArea() {
     return this.playerArea;
   }
@@ -845,22 +937,47 @@ public class World {
     return this.mines;
   }
 
+  /**
+   * [getInGameNanoTime]
+   * Retrieves the number of nanoseconds passed since last midnight.
+   * @return long, the number of nanoseconds passed since last midnight.
+   */
   public long getInGameNanoTime() {
     return this.inGameNanoTime;
   }
 
+  /**
+   * [getInGameDay]
+   * Retrieves the current day of a season.
+   * @return long, the current day of the season.
+   */
   public long getInGameDay() {
     return this.inGameDay;
   }
 
+  /**
+   * [getInGameSeason]
+   * Retrieves the current season in this world.
+   * @return an integer that represents the current season.
+   */
   public int getInGameSeason() {
     return this.inGameSeason;
   }
 
+  /**
+   * [getSeasons]
+   * Retrieves all seasons this world can have.
+   * @return String[], a string array containing all seasons.
+   */
   public static String[] getSeasons() {
     return World.SEASONS;
   }
 
+  /**
+   * [getDaysPerSeason]
+   * Retrieves the number of days per season in this world.
+   * @return int, number of days per season in this world.
+   */
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
   }

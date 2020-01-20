@@ -11,7 +11,7 @@ Town (48, 21) <->I House3 (17, 7) House1
 Town (27, 13) <->I House4 (4, 10) House2
 Town (45, 13) <->I House5 (4, 10) House2
 Town (27, 21) <->I House6 (4, 10) House2
-
+Town (62, 23) <->I Blacksmith (6, 6) Blacksmith
 
 
 just match this:

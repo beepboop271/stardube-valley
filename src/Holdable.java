@@ -20,9 +20,9 @@ public abstract class Holdable {
   /**
    * [Holdable]
    * Constructor for a new Holdable.
-   * @param name The name of this holdable.
-   * @param description A description about this holdable.
-   * @param imagePath The path to the images related to this holdable.
+   * @param name         String, the name of this holdable.
+   * @param description  String, a description about this holdable.
+   * @param imagePath    String, the path to the images related to this holdable.
    * @throws IOException
    */
   public Holdable(String name, String description, String imagePath) throws IOException {

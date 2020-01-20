@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 0.3
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
+
 public abstract class Area {
   private String name;
   private Tile[][] map;
@@ -23,9 +24,16 @@ public abstract class Area {
   private LinkedHashMap<Point, Gateway> gateways;
   private long currentDay;
   private int currentSeason;
-  
-  public Area(String name,
-              int width, int height) {
+
+  /**
+   * [Area]
+   * Constructor for a new Area.
+   * @author         unknown
+   * @param name     String, The name of the area.
+   * @param width    int, The width of the area, in tiles.
+   * @param height   int, The height of the area, in tiles.
+   */
+  public Area(String name, int width, int height) {
     this.name = name;
     this.width = width;
     this.height = height;
@@ -38,6 +46,16 @@ public abstract class Area {
     this.currentSeason = 0;
   }
 
+  /**
+   * [constructArea]
+   * Constructs and retrieves a new area.
+   * @author          unknown
+   * @param category  String, the category of the area.
+   * @param name      String, the name of the area.
+   * @param width     Int, the width of the area.
+   * @param height    Int, the height of the area.
+   * @return          Area, the contructed area.
+   */
   public static Area constructArea(String category,
                                    String name,
                                    int width, int height) {
@@ -47,6 +65,8 @@ public abstract class Area {
       return new WorldArea(name, width, height);
     } else if (category.equals("BuildingArea")) {
       return new BuildingArea(name, width, height);
+    } else if (category.equals("SpawnBuildingArea")) {
+      return new SpawnBuildingArea(name, width, height);
     } else if (category.equals("TownArea")) {
       return new TownArea(name, width, height);
     }
@@ -54,8 +74,15 @@ public abstract class Area {
     return null;
   }
 
+  /**
+   * [getDirection]
+   * Retrieves the direction from a point to another point.
+   * @author        unknown
+   * @param p1      Point, the first point.
+   * @param p2      Point, the second point.
+   * @return        int, the direction from point 1 to point 2.
+   */
   public static int getDirection(Point p1, Point p2) {
-    // direction from p1 to p2
     if (p2.x-p1.x > 0) {
       return World.EAST;
     } else if (p2.x-p1.x < 0) {
@@ -69,6 +96,10 @@ public abstract class Area {
     }
   }
 
+  /**
+   * [collides]
+   * @author unknown
+   */
   public int collides(LinkedHashSet<Point> intersectingPoints, Point pos,
                       boolean horizontalOnly) {
     Point nextPoint;
@@ -117,6 +148,10 @@ public abstract class Area {
     return -1;
   }
 
+  /**
+   * [walkableAt]
+   * @author unknown
+   */
   public boolean walkableAt(Point pos) {
     if (this.inMap(pos)) {
       int treeX = (int)pos.x+2;     // TODO: make this less... sketchy, I guess
@@ -164,6 +199,10 @@ public abstract class Area {
     return true;
   }
 
+  /**
+   * [hasLineOfSight]
+   * @author unknown
+   */
   public boolean hasLineOfSight(Enemy e, Player p) {
     if (e.getHeight() == 3) {
       // flying enemies always have line of sight
@@ -191,6 +230,10 @@ public abstract class Area {
     return true;
   }
 
+  /**
+   * [moveAreas]
+   * @author unknown
+   */
   public Area moveAreas(Moveable m, Iterator<Point> intersectingPoints) {
     Point nextPoint;
     Gateway g;
@@ -209,12 +252,11 @@ public abstract class Area {
     }
     return this;
   }
-  
-  // public Area moveAreas(Moveable m, int direction) {
-  //   GatewayZone gateway = this.getNeighbourZone(direction);
-  //   return this.moveAreas(m, gateway);
-  // }
 
+  /**
+   * [moveAreas]
+   * @author unknown
+   */
   public Area moveAreas(Moveable m, Gateway g) {
     if (g == null) {
       return this;
@@ -225,66 +267,167 @@ public abstract class Area {
     return g.getDestinationArea();
   }
 
+  /**
+   * [moveAreas]
+   * Takes the specified moveable and removes it from this area's list
+   * of moveables, then adds it to the destination area's list of
+   * moveables. Sets position in the other area to the specific position.
+   * @author Joseph Wang
+   * @param m           the moveable to be moved to a specific point.
+   * @param position    the position of spawn inside the destination.
+   * @param destination the area to go to.a
+   * @return Area, the destination area.
+   */
+  public Area moveAreas(Moveable m, Point position, Area destination) {
+    m.setPos(position);
+    this.moveables.remove(m);
+    destination.moveables.add(m);
+
+    return destination;
+  }
+
+  /**
+   * [getNeighbourZone]
+   * @author unknown
+   */
   public GatewayZone getNeighbourZone(int i) {
     return this.neighbourZones[i];
   }
 
+  /**
+   * [setNeighbourZone]
+   * @author unknown
+   */
   public void setNeighbourZone(int i, GatewayZone g) {
     this.neighbourZones[i] = g;
   }
 
+  /**
+   * [addGateway]
+   * @author unknown
+   */
   public void addGateway(Gateway g) {
     this.gateways.put(g.getOrigin(), g);
   }
 
+  /**
+   * [getGateway]
+   * @author unknown
+   */
   public Gateway getGateway(Point pos) {
     return this.gateways.get(pos);
   }
 
+  /**
+   * [getGateways]
+   * Retrieves the iteartor of the gateways in this area.
+   * @return    Iterator<Gateway>, the iterator of the gateways.
+   */
   public Iterator<Gateway> getGateways() {
     return this.gateways.values().iterator();
   }
 
+  /**
+   * [getMoveables]
+   * Retrieves the iteartor of the moveables in this area.
+   * @return    Iterator<Moveable>, the iterator of the moveables.
+   */
   public Iterator<Moveable> getMoveables() {
     return this.moveables.iterator();
   }
 
+  /**
+   * [addMoveable]
+   * Adds the moveable to this area.
+   * @param m   The Moveable to add.
+   */
   public void addMoveable(Moveable m) {
     this.moveables.add(m);
   }
 
+  /**
+   * [addHarvestableAt]
+   * Adds a harvestable at the given location in this area.
+   * @param x             int, the x position of the destinated location.
+   * @param y             int, the y position of the destinated location.
+   * @param harvestable   String, the name of the harvestable to add.
+   */
   public void addHarvestableAt(int x, int y, String harvestable) {
     this.getMapAt(x, y).setContent(new ExtrinsicHarvestableComponent(harvestable));
   }
 
+  /**
+   * [removeComponentAt]
+   * Removes the component at the given location in this area.
+   * @param pos     Point, the destinated tile location.
+   */
   public void removeComponentAt(Point pos) {
     this.getMapAt(pos).setContent(null);
   }
 
+  /**
+   * [getItemsOnGroundList]
+   * Retrieves the linked list of the items on ground in this area.
+   * @return  LinkedList<HoldableStackEntity>, a linked list of the items on ground in this area.
+   */
   public LinkedList<HoldableStackEntity> getItemsOnGroundList() {
     return this.itemsOnGround;
   }
 
+  /**
+   * [getItemsOnGround]
+   * Retrieves the iterator of the items on ground in this area.
+   * @return  Iterator<HoldableStackEntity>, an iterator of the items on ground in this area.
+   */
   public Iterator<HoldableStackEntity> getItemsOnGround() {
     return this.itemsOnGround.iterator();
   }
 
+  /**
+   * [addItemOnGround]
+   * Adds an item on ground in this area.
+   * @param e   HoldableStackEntity, the item to add.
+   */
   public void addItemOnGround(HoldableStackEntity e) {
     this.itemsOnGround.addLast(e);
   }
 
+  /**
+   * [getName]
+   * Retrieves the name of this area.
+   * @return    String, the name of this area.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * [inMap]
+   * Checks if the given location is within the map of the area.
+   * @param x   int, the x position to check.
+   * @param y   int, the y position to check.
+   * @return    boolean, true if the position is within the area map,
+   *            false otherwise.
+   */
   public boolean inMap(int x, int y) {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
+  /**
+   * [inMap]
+   * Checks if the given location is within the map of the area.
+   * @param pos   Point, the point to check.
+   * @return      boolean, true if the position is within the area map,
+   *              false otherwise.
+   */
   public boolean inMap(Point pos) {
     return this.inMap((int)pos.x, (int)pos.y);
   }
 
+  /**
+   * [getExitDirection]
+   * @author unknown
+   */
   public int getExitDirection(Point pos) {
     int x = (int)(pos.x);
     int y = (int)(pos.y);
@@ -319,18 +462,41 @@ public abstract class Area {
     return this.height;
   }
 
+  /**
+   * [getMap]
+   * Retrieves the map of this area.
+   * @return Tile[][], the map of this area.
+   */
   public Tile[][] getMap() {
     return this.map;
   }
   
+  /**
+   * [getMapAt]
+   * Retrieves the tile at the given position in map.
+   * @param x   int, the x position in map.
+   * @param y   int, the y position in map.
+   * @return    Tile, the tile at the given position in map.
+   */
   public Tile getMapAt(int x, int y) {
     return this.map[y][x];
   }
 
+  /**
+   * [getMapAt]
+   * Retrieves the tile at the given position in map.
+   * @param pos  Point, the posistion in map.
+   * @return     Tile, the tile at the given position in map.
+   */
   public Tile getMapAt(Point pos) {
     return this.map[(int)pos.y][(int)pos.x];
   }
 
+  /**
+   * [setMapAt]
+   * Sets the given tile into the area map.
+   * @param t  Tile, the tile to set.
+   */
   public void setMapAt(Tile t) {
     this.map[t.getY()][t.getX()] = t;
   }
@@ -338,7 +504,6 @@ public abstract class Area {
   /**
    * [updateDay]
    * Increases the day stored in this area by one, effectively updating it.
-   * @author Joseph Wang
    */
   public void updateDay() {
     this.currentDay += 1;
@@ -347,7 +512,6 @@ public abstract class Area {
   /**
    * [getCurrentDay]
    * Retrieves the day stored in this area.
-   * @author Joseph Wang
    * @return long, the day stored in this area.
    */
   public long getCurrentDay() {
@@ -368,13 +532,16 @@ public abstract class Area {
   /**
    * [getSeason]
    * Retrieves the current season stored in this area.
-   * @author Joseph Wang
    * @return int, the current season stored in this area.
    */
   public int getSeason() {
     return this.currentSeason;
   }
   
+  /**
+   * [doDayEndActions]
+   * Does actions that need to be performed at the end of day.
+   */
   public void doDayEndActions() {
   }
 }

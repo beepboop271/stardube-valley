@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 /**
  * [HoldableFactory]
+ * The factory of all holdables in stardube valley.
  * 2019-12-20
  * @version 0.3
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
@@ -12,11 +13,19 @@ import java.util.HashMap;
 public class HoldableFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, Holdable> holdablePool;
-
+  
+  /**
+   * [HoldableFactory]
+   * Constructor for a new Holdable.
+   * Does not allow anyone to create an object of this class.
+   */
   private HoldableFactory(){
-    // do not allow anyone to create an object of this class
   }
 
+  /**
+   * [initializeItems]
+   * Reads gamedata files and initialze the holdables.
+   */
   public static void initializeItems() {
     if (HoldableFactory.isInitialized) {
       return;
@@ -68,9 +77,24 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        Consumable consumable = new Consumable(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
-                                               Integer.parseInt(nextLineData[3]), Integer.parseInt(nextLineData[4]));
-        HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        if (nextLineData.length > 5) {
+          SpecialConsumable consumable = new SpecialConsumable(nextLineData[0], 
+                                                               nextLineData[2],
+                                                               "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
+                                                               Integer.parseInt(nextLineData[3]), 
+                                                               Integer.parseInt(nextLineData[4]),
+                                                               Integer.parseInt(nextLineData[5]),
+                                                               Integer.parseInt(nextLineData[6]));
+          HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        } else {
+          Consumable consumable = new Consumable(nextLineData[0], 
+                                                 nextLineData[2], 
+                                                 "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
+                                                 Integer.parseInt(nextLineData[3]), 
+                                                 Integer.parseInt(nextLineData[4]));
+          HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        }
+        
         lineToRead = input.readLine();
       }
       input.close();
@@ -102,6 +126,12 @@ public class HoldableFactory {
     }
   }
 
+  /**
+   * [getHoldable]
+   * Retrieves the corresponding holdable for the given holdable name.
+   * @param holdable  String, the name of the holdable.
+   * @return          Holdable, the holdable with the given name.
+   */
   public static Holdable getHoldable(String holdable) {
     if (!HoldableFactory.isInitialized) {
       throw new RuntimeException("HoldableFactory not initialized");

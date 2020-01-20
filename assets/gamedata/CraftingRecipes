@@ -1,8 +1,9 @@
-BasicFertilizer 1
-SapItem 2
-
 ChestItem 1
 WoodItem 50
+
+FurnaceItem 2
+StoneItem 25
+CoalItem 10
 
 Kevin's-Ethics-Assignment 3
 Chair-NULL 2
@@ -17,7 +18,7 @@ IceCreamItem 5
 
 end
 
-Format(idk regex so imma use "pseudocode" but omitting str() - candice):
+Format(idk regex so imma use "python 3 pseudocode" but omitting str() - candice):
 for each piece of recipe:
   print(name + n ingredients)
   for i in range(n):

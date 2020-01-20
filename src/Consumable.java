@@ -5,7 +5,7 @@ import java.io.IOException;
  * A class for anything that can be eaten or consumed.
  * 2019-12-27
  * @version 0.2
- * @author Paula Yuan, Candice Zhang
+ * @author Paula Yuan, Candice Zhang, Joseph Wang
  */
 
 public class Consumable extends Useable {
@@ -15,11 +15,11 @@ public class Consumable extends Useable {
   /**
    * [Consumable]
    * Constructor for a new Consumable
-   * @param name The name of this consumable.
-   * @param description A description about this consumable.
-   * @param imagePath The path to the images related to this consumable.
-   * @param healthGain The amount of health gained when consuming.
-   * @param energyGain The amount of energy gained when consuming.
+   * @param name          String, the name of this consumable.
+   * @param description   String, a description about this consumable.
+   * @param imagePath     String, the path to the images related to this consumable.
+   * @param healthGain    int, the amount of health gained when consuming.
+   * @param energyGain    int, The amount of energy gained when consuming.
    * @throws IOException
    */
   public Consumable(String name, String description, String imagePath,

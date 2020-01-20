@@ -18,9 +18,9 @@ public class ComponentPlacedEvent extends EventObject {
    * [ComponentPlacedEvent]
    * Constructor for a new ComponentPlacedEvent.
    * @author Candice Zhang, Joseph Wang
-   * @param component The TileComponent to be placed on the tile.
-   * @param componentIndex The index of an inventory where the component is located.
-   * @param locationUsed The point where the component is to be placed.
+   * @param component       The TileComponent to be placed on the tile.
+   * @param componentIndex  The index of an inventory where the component is located.
+   * @param locationUsed    The point where the component is to be placed.
    */
   public ComponentPlacedEvent(TileComponent component, int componentIndex, Point locationUsed) {
     super(component);

@@ -18,6 +18,7 @@ import java.awt.GradientPaint;
 
 /**
  * [WorldPanel]
+ * A JPanel for graphic display of a World.
  * 2019-12-19
  * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Paula Yuan, Joseph Wang
@@ -37,14 +38,16 @@ public class WorldPanel extends JPanel {
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
   public static final Color PALE_GREEN_COLOR = new Color(130, 230, 0);
   public static final Color DIM_RED_COLOR = new Color(237, 69, 48);
+  public static final Color LOCKED_SLOT_COLOR = new Color(230, 165, 100);
 
-  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
+  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 30);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
   private final Font LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 25);
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.PLAIN, 35);
   private final Font BIG_BOLD_LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 35);
   private final Font STRING_FONT = new Font("Comic Sans MS", Font.PLAIN, 20);
-  private final Font DESCRIPTION_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
+  private final Font DESCRIPTION_BOLD_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
+  private final Font DESCRIPTION_FONT = new Font("Comic Sans MS", Font.PLAIN, 15);
   private final Font PROFILE_FONT = new Font("Comic Sans MS", Font.PLAIN, 30);
   
   private StardubeEventListener listener;
@@ -54,6 +57,7 @@ public class WorldPanel extends JPanel {
   private int hotbarX, hotbarY;
   private int shopX, shopY, shopW, shopItemH;
   private int craftX, craftY, craftW, craftItemH;
+  private int elevatorX, elevatorY;
   private int menuX, menuY, menuW, menuH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
@@ -62,26 +66,42 @@ public class WorldPanel extends JPanel {
   private BufferedImage[] menuButtonImages;
   private BufferedImage craftButtonImage;
 
+  /**
+   * [WorldPanel]
+   * Constructor for a new WorldPanel.
+   * @param worldToDisplay World, the World used to display.
+   * @param width          int, width of the panel.
+   * @param height         int, height of the panel.
+   */
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
     this.playerScreenPos = new Point(0, 0);
+
     this.menuW = 13*WorldPanel.INVENTORY_CELLGAP+12*WorldPanel.INVENTORY_CELLSIZE;
     this.menuH = 8*(WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE);
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
+
     this.inventoryMenuInventoryY = this.menuY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
     this.chestMenuChestY = (int)Math.round(this.menuY + 4.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
+
     this.shopX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
+
     this.craftX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.craftY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
     this.craftW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.craftItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
+
+    this.elevatorX = this.menuX+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*4;
+    this.elevatorY = this.menuY+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*3;
+
     this.menuButtonImages = new BufferedImage[5];
+
     try {
       BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Buttons"));
       String imagePath;
@@ -114,10 +134,22 @@ public class WorldPanel extends JPanel {
     this.setOpaque(true);
   }
 
+  /**
+   * [clamp]
+   * Restricts a value to a given range and retrieves the result.
+   * @author unknown
+   * @param val int, value to clamp.
+   * @param min int, the minimum allowed value.
+   * @param max int, the maximum allowed value.
+   * @return int, the clamped value.
+   */
   public static int clamp(int val, int min, int max) {
     return Math.max(min, Math.min(val, max));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void paintComponent(Graphics g) {
     g.setColor(Color.BLACK);
@@ -126,8 +158,8 @@ public class WorldPanel extends JPanel {
     Player worldPlayer = this.worldToDisplay.getPlayer();
     Point playerPos = worldPlayer.getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
-    int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2);
-    int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2);
+    int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2+0.5);
+    int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2+0.5);
 
     int tileStartX = WorldPanel.clamp(unboundedTileStartX, 0, playerArea.getWidth()-this.tileWidth);
     int tileStartY = WorldPanel.clamp(unboundedTileStartY, 0, playerArea.getHeight()-this.tileHeight);
@@ -135,20 +167,17 @@ public class WorldPanel extends JPanel {
     int originX;
     int originY;
     
-    if ((playerPos.x < this.tileWidth/2) || (playerPos.x > playerArea.getWidth()-this.tileWidth/2)) {
+    if ((playerPos.x < this.tileWidth/2-0.5) || (playerPos.x > playerArea.getWidth()-this.tileWidth/2-0.5)) {
       originX = 0;
     } else {
-      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX)));
+      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX+0.5)));
     }
 
-    if ((playerPos.y < this.tileHeight/2) || (playerPos.y > playerArea.getHeight()-this.tileHeight/2)) {
+    if ((playerPos.y < this.tileHeight/2-0.5) || (playerPos.y > playerArea.getHeight()-this.tileHeight/2-0.5)) {
       originY = 0;
     } else {
-      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY)));
+      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY+0.5)));
     }
-
-    // System.out.printf("%d %d, %d %d, %d %d, %.2f %.2f\n",
-    //    unboundedTileStartX, unboundedTileStartY, tileStartX, tileStartY, originX, originY, playerPos.x, playerPos.y);
       
     int screenTileX = 0;
     int screenTileY = 0;
@@ -189,10 +218,6 @@ public class WorldPanel extends JPanel {
     if (playerArea instanceof BuildingArea) {
       if (((BuildingArea)playerArea).hasInteriorImage()) {
         BuildingArea area = (BuildingArea)playerArea;
-        // System.out.println(area.getDrawLocation().x);
-        // System.out.println(area.getDrawLocation().y);
-        // System.out.println(area.getXOffset() * Tile.getSize());
-        // System.out.println(area.getYOffset() * Tile.getSize());
         g.drawImage(area.getImage(), 
                     (int)((area.getDrawLocation().x*Tile.getSize())+(area.getXOffset()*Tile.getSize())), 
                     (int)((area.getDrawLocation().y*Tile.getSize())+(area.getYOffset()*Tile.getSize())), null);
@@ -220,42 +245,43 @@ public class WorldPanel extends JPanel {
             double drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
             double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
-            if (tileContent != null) {
-              drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
-              drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
-              Graphics2D imgGraphics = (Graphics2D)g;
-              int playerW = worldPlayer.getImage().getWidth();
-              int playerH = worldPlayer.getImage().getHeight();
-              int componentW = ((Drawable)tileContent).getImage().getWidth();
-              int componentH = ((Drawable)tileContent).getImage().getHeight();
-              // if the player is overlapping with the tree or building, set a transparency for it
-              if ((tileContent instanceof ExtrinsicTree) &&
-                  (playerScreenPos.x < drawX + componentW) &&
-                  (playerScreenPos.x + playerW > drawX) &&
-                  (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
-                  (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else if ((tileContent instanceof Building) &&
-                         (playerScreenPos.x < drawX + componentW) &&
-                         (playerScreenPos.x + playerW > drawX) &&
-                         (playerScreenPos.y < drawY + componentH) &&
-                         (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else {
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-              }     
-              
-            }
-
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
               Graphics2D g2 = (Graphics2D)g;
               g2.setStroke(new BasicStroke(4));
               g2.setColor(Color.RED);
               g2.drawRect((int)Math.round(drawX+2), (int)Math.round(drawY+2), Tile.getSize()-4, Tile.getSize()-6);
+            }
+
+            if (tileContent != null) {
+              if (tileContent instanceof Drawable) {
+                drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
+                drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
+                Graphics2D imgGraphics = (Graphics2D)g;
+                int playerW = worldPlayer.getImage().getWidth();
+                int playerH = worldPlayer.getImage().getHeight();
+                int componentW = ((Drawable)tileContent).getImage().getWidth();
+                int componentH = ((Drawable)tileContent).getImage().getHeight();
+                // if the player is overlapping with the tree or building, set a transparency for it
+                if ((tileContent instanceof ExtrinsicTree) &&
+                    (playerScreenPos.x < drawX + componentW) &&
+                    (playerScreenPos.x + playerW > drawX) &&
+                    (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
+                    (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else if ((tileContent instanceof Building) &&
+                          (playerScreenPos.x < drawX + componentW) &&
+                          (playerScreenPos.x + playerW > drawX) &&
+                          (playerScreenPos.y < drawY + componentH) &&
+                          (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else {
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                }     
+              }
             }
           }
         }
@@ -311,38 +337,52 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    // time stuff
-    // one real world second is one in game minute
+    // time, day, current funds
+    // (one real world second is one in game minute)
     long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
     Graphics2D g2 = (Graphics2D)g;
-    String currentSeason = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
-    String currentDay;
-    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
-      currentDay = "Day 28";
-    } else {
-      currentDay = "Day " + String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason());
-    }
-    g2.setColor(Color.BLACK);
     g2.setFont(this.TIME_FONT);
+    String dateString = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
+    if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
+      dateString += ", Day 28";
+    } else {
+      dateString += ", Day " + String.valueOf(this.worldToDisplay.getInGameDay() % World.getDaysPerSeason());
+    }
+    String timeString = "Time: " + String.format("%02d:%02d", time/60, time%60);
+    String fundsString = "Funds: " + Integer.toString(worldPlayer.getCurrentFunds())+" D$";
+
+    int dateStringWidth = g2.getFontMetrics().stringWidth(dateString);
+    int timeStringWidth = g2.getFontMetrics().stringWidth(timeString);
+    int fundsStringWidth = g2.getFontMetrics().stringWidth(fundsString);
+    int boxWidth = 35 + Math.max(Math.max(dateStringWidth, timeStringWidth), fundsStringWidth);
+
+    g2.setColor(new Color(255, 255, 255, 125));
+    g2.fillRect(this.getWidth()-boxWidth, 0, boxWidth, 180);
+    g2.setColor(new Color(0, 0, 0, 125));
+    g2.drawRect(this.getWidth()-boxWidth, 0, boxWidth, 180);
+
+    g2.setColor(Color.BLACK);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    g2.drawString(String.format("%02d:%02d", time/60, time%60), this.getWidth()-130, 45);
-    g2.drawString(currentSeason, this.getWidth()-g2.getFontMetrics().stringWidth(currentSeason)-20, 100);
-    g2.drawString(currentDay, this.getWidth()-g2.getFontMetrics().stringWidth(currentDay)-20, 155);
-    g2.drawString(Integer.toString(worldPlayer.getCurrentFunds())+" D$", 
-                  this.getWidth()-g2.getFontMetrics().stringWidth(
-                                        Integer.toString(worldPlayer.getCurrentFunds()) + " D$")-20,
-                  215);
+    g2.drawString(timeString, this.getWidth()-timeStringWidth-20, 45);
+    g2.drawString(dateString, this.getWidth()-dateStringWidth-20, 100);
+    g2.drawString(fundsString, 
+                  this.getWidth()-g2.getFontMetrics().stringWidth(fundsString)-20,
+                  155);
     
     if (worldPlayer.isInMenu()) {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       g.setColor(WorldPanel.MENU_BKGD_COLOR);
-      g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
-      for (int i = 0; i < this.menuButtonImages.length; i++) {
-        g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+      if ((worldPlayer.getCurrentMenuPage() >= 0 && worldPlayer.getCurrentMenuPage() <= 4)) {
+        g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
+        for (int i = 0; i < this.menuButtonImages.length; i++) {
+          g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+        }
+      } else {
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
       }
-
+      
       if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
         // inventory display (y:this.menuY+1~3(cellgap+cellsize))
         for (int i = 0; i < 3; i++) {
@@ -370,7 +410,7 @@ public class WorldPanel extends JPanel {
                 }
               }
             } else { // display locked slots in a different color
-              g.setColor(new Color(230, 165, 100));
+              g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
@@ -478,11 +518,36 @@ public class WorldPanel extends JPanel {
             Graphics2D textGraphics = (Graphics2D)g;
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
             textGraphics.setFont(this.STRING_FONT);
-            textGraphics.drawString(itemToDraw.getName() + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
+            textGraphics.drawString(itemToDraw.getName().replace("Item", "") + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
                                     this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
-            textGraphics.setFont(this.DESCRIPTION_FONT);
+            
+            if (itemToDraw instanceof Consumable) {
+              textGraphics.setFont(this.DESCRIPTION_FONT);
+              String consumableText = "";
+              if (((Consumable)itemToDraw).getEnergyGain()>0) {
+                consumableText += "Energy Gain: " + ((Consumable)itemToDraw).getEnergyGain() + ", ";
+              }
+              if (((Consumable)itemToDraw).getHealthGain()>0) {
+                consumableText += "Health Gain: " + ((Consumable)itemToDraw).getHealthGain() + ", ";
+              }
+              if (itemToDraw instanceof SpecialConsumable) {
+                if (((SpecialConsumable)itemToDraw).getMaxEnergyGain() > 0) {
+                  consumableText += "Max Energy Gain: " + (((SpecialConsumable)itemToDraw).getMaxEnergyGain() + ", ");
+                }
+                if (((SpecialConsumable)itemToDraw).getMaxHealthGain() > 0) {
+                  consumableText += "Max Health Gain: " + (((SpecialConsumable)itemToDraw).getMaxHealthGain() + ", ");
+                }
+              }
+              if (consumableText.length() > 0) {
+                // add brackets and strip the comma at the end
+                consumableText = "( " + consumableText.substring(0, consumableText.length()-2) + " )"; 
+              }
+              textGraphics.drawString(consumableText, this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2+25);
+            }
+
+            textGraphics.setFont(this.DESCRIPTION_BOLD_FONT);
             textGraphics.drawString(" - " + itemToDraw.getDescription(),
-                        this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE);
+                        this.shopX + 10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.2));
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
@@ -515,7 +580,7 @@ public class WorldPanel extends JPanel {
                 }
               }
             } else { // display locked slots in a different color
-              g.setColor(new Color(230, 165, 100));
+              g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
@@ -559,7 +624,34 @@ public class WorldPanel extends JPanel {
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.ELEVATOR_PAGE) {
-        // hi candy
+        int floorNumber = 0;
+        String stringToDisplay = "Mine Elevator: Select Floor Number";
+        g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+        g.fillRect(this.menuX+15, this.menuY+15, this.menuW-30, this.menuH-30);
+        g.setColor(WorldPanel.DARK_BROWN_COLOR);
+        g.fillRect(this.elevatorX-20, this.elevatorY-20,
+                   4*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+40,
+                   3*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+40);
+        g.setFont(this.BIG_LETTER_FONT);
+        g.drawString(stringToDisplay,
+                     this.menuX+(this.menuW-g.getFontMetrics().stringWidth(stringToDisplay))/2, this.elevatorY-50);
+
+        g.setFont(this.BIG_BOLD_LETTER_FONT);
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 4; j++) {
+            floorNumber += 5;
+            int drawX = this.elevatorX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP;
+            int drawY = this.elevatorY + (int)Math.round(i*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP));
+            if (this.worldToDisplay.getMines().hasElevatorFloorUnlocked(floorNumber)) {
+              g.setColor(WorldPanel.PALE_GREEN_COLOR);
+            } else {
+              g.setColor(WorldPanel.DIM_RED_COLOR);
+            }
+            g.fillRect(drawX, drawY, WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+            g.setColor(WorldPanel.DARK_BROWN_COLOR);
+            g.drawString(Integer.toString(floorNumber), drawX + 5, drawY + g.getFontMetrics().getHeight());
+          }
+        }
       }
     }
     
@@ -631,7 +723,7 @@ public class WorldPanel extends JPanel {
     g.drawString("E", this.getWidth()-60, this.getHeight()-20);
     
     // - health
-    if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
+    if ((worldToDisplay.getPlayerArea() instanceof MineLevel) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
       int healthX = this.getWidth()-140;
       int healthH = Math.max(0, (int)Math.round(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
       int healthY = this.getHeight()-50-healthH;
@@ -732,83 +824,193 @@ public class WorldPanel extends JPanel {
     }
   }
 
-  public void updateHoveredItemIdx(int x, int y) {
+  /**
+   * [updateHoveredItemIdx]
+   * Updates the index of inventory item that the mouse is currently hovering.
+   * @author Candice Zhang
+   * @param mouseX int, the x value of the mouse position
+   * @param mouseY int, the x value of the mouse position
+   */
+  public void updateHoveredItemIdx(int mouseX, int mouseY) {
     Player worldPlayer = this.worldToDisplay.getPlayer();
-    if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(x, y)) {
-      this.hoveredItemIdx = this.hotbarItemIdxAt(x);
+    if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(mouseX, mouseY)) {
+      this.hoveredItemIdx = this.hotbarItemIdxAt(mouseX);
     } else if ((worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE)
-               && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, x, y)) {
-      if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) < worldPlayer.getInventorySize())
-          && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) >= 0)) {
-        this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y);
+               && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY) >= 0)) {
+        this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY);
       }
     } else if ((worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE)
-               && this.isPosInInventory(this.menuX, this.chestMenuInventoryY, x, y)) {
-      if ((this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) < worldPlayer.getInventorySize())
-          && (this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) >= 0)) {
-      this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y);
+               && this.isPosInInventory(this.menuX, this.chestMenuInventoryY, mouseX, mouseY)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY) >= 0)) {
+      this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY);
       }  
     } else {
       this.hoveredItemIdx = -1;
     }
   }
-  
+
+  /**
+   * [getHotbarX]
+   * Retrieves the x position of the hotbar.
+   * @return int, the x position of the hotbar.
+   */
   public int getHotbarX() {
     return this.hotbarX;
   }
 
+  /**
+   * [getHotbarY]
+   * Retrieves the y position of the hotbar.
+   * @return int, the y position of the hotbar.
+   */
   public int getHotbarY() {
     return this.hotbarY;
   }
 
+  /**
+   * [getMenuX]
+   * Retrieves the x position of the menu.
+   * @return int, the x position of the menu.
+   */
   public int getMenuX() {
     return this.menuX;
   }
 
+  /**
+   * [getMenuY]
+   * Retrieves the y position of the menu.
+   * @return int, the y position of the menu.
+   */
   public int getMenuY() {
     return this.menuY;
   }
 
+  /**
+   * [getMenuW]
+   * Retrieves the width of the menu.
+   * @return int, the width of the menu.
+   */
   public int getMenuW() {
     return this.menuW;
   }
 
+  /**
+   * [getMenuH]
+   * Retrieves the height of the menu.
+   * @return int, the height of the menu.
+   */
   public int getMenuH() {
     return this.menuH;
   }
 
+  /**
+   * [getPlayerScreenPos]
+   * Retrieves the player position in the panel window.
+   * @return Point, the player position in the panel window.
+   */
   public Point getPlayerScreenPos() {
     return ((Point)this.playerScreenPos.clone());
   }
 
+  /**
+   * [getListener]
+   * Retrieves the StardubeEventListener of this panel.
+   * @return StardubeEventListener, the StardubeEventListener of this panel.
+   */
   public StardubeEventListener getListener() {
     return this.listener;
   } 
 
+  /**
+   * [hotbarItemIdxAt]
+   * Retrieves the index of the hotbar item at the given x position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @return    int, the index of the hotbar item at the given x position.
+   */
   public int hotbarItemIdxAt(int x) {
     return Math.min((int)(Math.floor((x-this.hotbarX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 11);
   }
 
+  /**
+   * [menuTabButtonAt]
+   * Retrieves the index of the menu tab button at the given x position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @return    int, the index of the menu tab button at the given x position.
+   */
   public int menuTabButtonAt(int x) {
     return Math.min((int)(Math.floor((x-this.menuX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.menuButtonImages.length-1);
   }
 
+  /**
+   * [shopItemIdxAt]
+   * Retrieves the index of the shop item at the given y position.
+   * @author    Candice Zhang
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the shop item at the given y position.
+   */
   public int shopItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.SHOP_ITEMS_PER_PAGE-1);
   }
 
+  /**
+   * [craftingItemIdxAt]
+   * Retrieves the index of the crafting item at the given y position.
+   * @author    Candice Zhang
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the crafting item at the given y position.
+   */
   public int craftingItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.craftY) / (this.craftItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.CRAFTING_ITEMS_PER_PAGE-1);
   }
 
+  /**
+   * [elevatorButtonIdxAt]
+   * Retrieves the index of the elevator button at the given y position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the elevator button at the given y position.
+   */
+  public int elevatorButtonIdxAt(int x, int y) {
+    return Math.min((int)(Math.floor(x-this.elevatorX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 3)
+           + 4*Math.min((int)(Math.floor((y-this.elevatorY)/
+                                         (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
+  }
+
+  /**
+   * [inventoryItemIdxAt]
+   * Asks for the x and y location of the inventory and
+   * the x and y location of the targeted point, and
+   * retrieves the index of the inventory item at the targeted point.
+   * @author    Candice Zhang
+   * @param inventoryX   int, the x position of the inventory.
+   * @param inventoryY   int, the y position of the inventory.
+   * @param targetX      int, the x position of the targeted point.
+   * @param targetY      int, the y position of the targeted point.
+   * @return             int, the index of the inventory item at the targeted point.
+   */
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
     return Math.min((int)(Math.floor(targetX-inventoryX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 11)
            + 12*Math.min((int)(Math.floor((targetY-inventoryY)/
                                           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
   }
   
+  /**
+   * [isPosInHotbar]
+   * Checks if the given position is inside the hotbar.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is inside the hotbar,
+   *            false otherwise.
+   */
   public boolean isPosInHotbar(int x, int y) {
     return ((x >= this.hotbarX) &&
             (x <= this.hotbarX+12*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)) &&
@@ -816,6 +1018,15 @@ public class WorldPanel extends JPanel {
             (y <= this.hotbarY + WorldPanel.INVENTORY_CELLSIZE));
   }
 
+  /**
+   * [isPosInHotbar]
+   * Checks if the given position is inside the menu tab.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in the menu tab,
+   *            false otherwise.
+   */
   public boolean isPosInMenuTab(int x, int y) {
     return ((x >= this.menuX) &&
             (x <= this.menuX + this.menuW) &&
@@ -823,6 +1034,19 @@ public class WorldPanel extends JPanel {
             (y <= this.inventoryMenuInventoryY));
   }
 
+  /**
+   * [isPosInInventory]
+   * Asks for the x and y location of the inventory and
+   * the x and y location of the targeted point, and
+   * checks if the targeted point is inside the inventory.
+   * @author    Candice Zhang
+   * @param inventoryX   int, the x position of the inventory.
+   * @param inventoryY   int, the y position of the inventory.
+   * @param targetX      int, the x position of the targeted point.
+   * @param targetY      int, the y position of the targeted point.
+   * @return             boolean, true if the given position is the inventory,
+   *                     false otherwise.
+   */
   public boolean isPosInInventory(int inventoryX, int inventoryY, int targetX, int targetY) {
     return ((targetX >= inventoryX) &&
             (targetX <= inventoryX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*12) &&
@@ -830,6 +1054,15 @@ public class WorldPanel extends JPanel {
             (targetY <= inventoryY + 3*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)));
   }
 
+  /**
+   * [isPosInShopItemList]
+   * Checks if the given position is inside the shop item list display.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in the shop item list display,
+   *            false otherwise.
+   */
   public boolean isPosInShopItemList(int x, int y) {
     return ((x >= this.shopX) &&
             (x <= this.shopX + this.shopW) &&
@@ -837,6 +1070,15 @@ public class WorldPanel extends JPanel {
             (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
   }
 
+  /**
+   * [isPosInCraftButton]
+   * Checks if the given position is inside any craft button location on the screen.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is inside a craft button,
+   *            false otherwise.
+   */
   public boolean isPosInCraftButton(int x, int y) {
     for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
       if ((x >= this.craftX+this.craftW-this.craftButtonImage.getWidth()) &&
@@ -849,14 +1091,45 @@ public class WorldPanel extends JPanel {
     return false;
   }
 
+  /**
+   * [isPosInElevatorButtons]
+   * Checks if the given position is inside any elevator button.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in an elevator button,
+   *            false otherwise.
+   */
+  public boolean isPosInElevatorButtons(int x, int y) {
+    return ((x >= this.elevatorX) &&
+            (x <= this.elevatorX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*4) &&
+            (y > this.elevatorY) &&
+            (y <= this.elevatorY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)*3));
+  }
+
+  /**
+   * [getInventoryMenuInventoryY]
+   * Retrieves the y position of the player's inventory in the inventory menu.
+   * @return int, the y position of the player's inventory in the inventory menu.
+   */
   public int getInventoryMenuInventoryY() {
     return this.inventoryMenuInventoryY;
   }
 
+  /**
+   * [getChestMenuInventoryY]
+   * Retrieves the y position of the player's inventory in the chest menu.
+   * @return int, the y position of the player's inventory in the chest menu.
+   */
   public int getChestMenuInventoryY() {
     return this.chestMenuInventoryY;
   }
 
+  /**
+   * [getChestMenuChestY]
+   * Retrieves the y position of the chest's inventory in the chest menu.
+   * @return int, the y position of the chest's inventory in the chest menu.
+   */
   public int getChestMenuChestY() {
     return this.chestMenuChestY;
   }

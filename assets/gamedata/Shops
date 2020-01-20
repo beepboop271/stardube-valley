@@ -3,4 +3,3 @@ McDonladsShop      0 -1      /shops/CashRegister    McDonladsPriceList   McDonla
 ClinicShop         0 -1      /shops/CashRegister    ClinicPriceList      Clinic         3 3
 
 name               offset   imgPath assets\images+    pricelist filepath   area name      x y
-make one for clinic

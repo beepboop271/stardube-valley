@@ -49,7 +49,7 @@ public class Player extends Moveable {
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
-    this.currentFunds = 5_000;
+    this.currentFunds = 5_000_000;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
@@ -57,13 +57,10 @@ public class Player extends Moveable {
     this.inventory[1] = new HoldableStack("Axe", 1);
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
-    this.inventory[4] = new HoldableStack("Fishing-Rod", 1);
+    this.inventory[4] = new HoldableStack("BambooRod", 1);
     this.inventory[5] = new HoldableStack("ChestItem", 5);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[7] = new HoldableStack("IronItem", 10);
-    this.inventory[8] = new HoldableStack("CoalItem", 2);
-    this.inventory[9] = new HoldableStack("PumpkinSeeds", 5);
-    this.inventory[10] = new HoldableStack("WoodItem", 99);
+    this.inventory[7] = new HoldableStack("WoodItem", 99);
   }
 
   @Override
@@ -139,6 +136,11 @@ public class Player extends Moveable {
     }
     Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
+    if (thingConsumed instanceof SpecialConsumable) { //TODO: maybe make this better
+      this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
+      this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
+    }
+    
     this.increaseEnergy(thingConsumed.getEnergyGain());
     this.increaseHealth(thingConsumed.getHealthGain());
   }
@@ -419,7 +421,7 @@ public class Player extends Moveable {
    * [setImmutable]
    * Sets the immutable state of this player to either true or false.
    * @author Candice Zhang
-   * @param isImmutable The boolean of which the player's immutable state will be.
+   * @param isImmutable Whether or not the player is immutable.
    */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
@@ -578,6 +580,19 @@ public class Player extends Moveable {
   }
 
   /**
+   * [moveToSpawnPosition]
+   * Used if the player dies or passes out and must be moved to
+   * a specified spawn area at a specified spawn location.
+   * @author Joseph Wang
+   * @param spawnLocation  The position to spawn at.
+   * @return Area, the new area that the player is in.
+   */
+  public Area moveToSpawnPosition(Area currentArea, SpawnableArea spawnArea) {
+    Point spawnPos = spawnArea.getSpawnLocation();
+    return currentArea.moveAreas(this, spawnPos, (Area)spawnArea);
+  }
+
+  /**
    * [getInventorySize]
    * Retrieves this player's inventory's total capacity.
    * @author Candice Zhang
@@ -637,7 +652,7 @@ public class Player extends Moveable {
    * @param value The amount to be removed.
    */
   public void decreaseCurrentFunds(int value) {
-    this.currentFunds -= value;
+    this.currentFunds = Math.max(this.currentFunds-value, 0);
   }
 
   /**
