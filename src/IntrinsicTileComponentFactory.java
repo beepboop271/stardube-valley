@@ -95,6 +95,7 @@ public class IntrinsicTileComponentFactory {
         ((CollectableComponent)componentToAdd).setProduct(0,
                                   new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
         componentPool.put(componentToAdd.getName(), componentToAdd);
+
         lineToRead = input.readLine();
       }
       input.close();
@@ -199,7 +200,6 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[1]), Double.parseDouble(nextLineData[2])};
-        System.out.println(nextLineData[3]+".png");
         Shop shop = new Shop(nextLineData[0], "assets/images"+nextLineData[3]+".png", offsets, nextLineData[4]);
         componentPool.put(shop.getName(), shop);
         lineToRead = input.readLine();
@@ -212,7 +212,6 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[1]), Double.parseDouble(nextLineData[2])};
-        System.out.println(nextLineData[3]+".png");
         CraftingStore craftingStore = new CraftingStore(nextLineData[0],
                                       "assets/images"+nextLineData[3]+".png", offsets, nextLineData[4]);
         componentPool.put(craftingStore.getName(), craftingStore);

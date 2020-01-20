@@ -70,9 +70,9 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.inventory[5] = new HoldableStack("ChestItem", 1);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
     this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("CopperBarItem", 10);
-    this.inventory[9] = new HoldableStack("IronBarItem", 10);
-    this.inventory[10] = new HoldableStack("GoldBarItem", 10);
+    this.inventory[8] = new HoldableStack("CornSeeds", 10);
+    this.inventory[9] = new HoldableStack("PotatoSeeds", 10);
+    this.inventory[10] = new HoldableStack("TulipSeeds", 10);
   }
 
   @Override

@@ -27,8 +27,8 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   /**
    * [ExtrinsicTileComponent]
    * Constructor for a new ExtrinsicTileComponent.
-   * @author Kevin Qiao, Joseph Wang
-   * @param intrinsicSelf a String with the associated intrinsic component.
+   * @author                Kevin Qiao, Joseph Wang
+   * @param intrinsicSelf   a String with the associated intrinsic component.
    */
   public ExtrinsicTileComponent(String intrinsicSelf) {
     super();
