@@ -139,6 +139,7 @@ public class StardubeEventListener implements KeyListener,
             );
           }
         }
+        break;
       case KeyEvent.VK_I:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(0, -1));
         break;
@@ -453,6 +454,5 @@ public class StardubeEventListener implements KeyListener,
         .setSelectedTile(new Point(mouseOffset.getX(), mouseOffset.getY())
                                   .translate(this.stardubePlayer.getPos())
                                   .round());
-
   }
 }
