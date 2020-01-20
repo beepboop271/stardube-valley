@@ -24,6 +24,11 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     super(name, width, height);
   }
 
+  /**
+   * [spawnBushes]
+   * Randomly spawns the bushes for the area but checks that they meet given critera.
+   * @author Paula Yuan
+   */
   private void spawnBushes() {
     int spawnNum = this.random.nextInt(5) + 10;
     if (this.bushTiles.size() >=20) {
@@ -52,6 +57,12 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [spawnForageables]
+   * Spawns normal forageables (i.e. non-bushes, non-trees) for the area randomly, 
+   * but checking against criteria
+   * @author Paula Yuan
+   */
   private void spawnForageables() {
     int maxToSpawn = 6 - numForageableTiles;
     int spawnNum = Math.min(this.random.nextInt(3) + 2, maxToSpawn);
@@ -79,6 +90,11 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [spawnTrees]
+   * Spawns trees randomly for the area, but making sure that they meet certain citeria
+   * @author Paula Yuan
+   */
   private void spawnTrees() {
     int spawnNum = this.random.nextInt(10) + 20;
     if (this.treeTiles.size() >= 30) { // max 20 trees
@@ -105,10 +121,22 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [getNumForageableTiles]
+   * Gets this area's number of tiles with forageables on them.
+   * @author Paula Yuan
+   * @return int, the number of forageable tiles in the area
+   */
   public int getNumForageableTiles() {
     return this.numForageableTiles;
   }
 
+  /**
+   * [setNumForageableTiles]
+   * Sets the number of tiles with forageables in the area to a specified quantity.
+   * @author Paula Yuan
+   * @param num The new number of forageable tiles.
+   */
   public void setNumForageableTiles(int num) {
     this.numForageableTiles = num;
   }
