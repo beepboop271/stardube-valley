@@ -23,7 +23,6 @@ public class World { //TODO: JAVADOCS
   public static final int SOUTH = 2;
   public static final int WEST = 3;
   public static final int getOppositeDirection(int direction) {
-    // can be moved wherever idc just needed to quickly write
     if (direction == World.NORTH) {
       return World.SOUTH;
     } else if (direction == World.EAST) {
@@ -134,6 +133,13 @@ public class World { //TODO: JAVADOCS
     this.lastUpdateTime = currentUpdateTime;
   }
 
+  /**
+   * [moveMoveablesInArea]
+   * Moves all the moveables in an area.
+   * @author Author Unknown
+   * @param a, the area the moving is happening in.
+   * @param updateTime, the long time the update will be happening
+   */
   public void moveMoveablesInArea(Area a, long updateTime) {
     Iterator<Moveable> moveables = a.getMoveables();
     Moveable nextMoveable;
@@ -167,6 +173,15 @@ public class World { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [doCollision]
+   * Process an individual collision.
+   * @author Author Unknown
+   * @param a, the area the collision is happening in
+   * @param m, the moveable that is being collided
+   * @param move, the vector move being made
+   * @param isHorizontal, whether the collision is horizontal
+   */
   public static void doCollision(Area a, Moveable m, Vector2D move, boolean isHorizontal) {
     LinkedHashSet<Point> intersectingTiles;
     int collideDirection;
@@ -181,6 +196,13 @@ public class World { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [fixCollision]
+   * Fix collisions of a moveable entity, given the direction it is colliding in
+   * @author Author Unknown
+   * @param m, the moveable that is colliding
+   * @param collideDirection, the direction of the collision, with ints 0-1 representing cardinal directions
+   */
   public static void fixCollision(Moveable m, int collideDirection) {
     if (collideDirection == World.EAST) {
       // subtract 0.0001 to prevent rounding from counting it as still colliding
@@ -213,7 +235,6 @@ public class World { //TODO: JAVADOCS
    * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
    */
   public void processEvents() {
-    // pygame_irl
     EventObject event;
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
@@ -904,6 +925,11 @@ public class World { //TODO: JAVADOCS
     return null;
   }
 
+  /**
+   * [loadNPCS]
+   * Loads in all the NPC data, and creates and stores NPCs accordingly
+   * @author Paula Yuan
+   */
   public void loadNPCS() throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/NPCdata"));
     String lineToRead = input.readLine();
@@ -1035,6 +1061,11 @@ public class World { //TODO: JAVADOCS
     return this.playerArea;
   }
 
+  /**
+   * [getMines]
+   * Retrieves the mine areas.
+   * @return MineArea, the mines
+   */
   public MineArea getMines() {
     return this.mines;
   }
