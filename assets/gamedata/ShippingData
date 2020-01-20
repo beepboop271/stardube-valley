@@ -64,5 +64,9 @@ CookiesItem                 100
 FriesItem                   125
 PancakesItem                125
 TacoItem                    175
+OakTableItem                 45
+OakChairItem                 40
+MahoganyTableItem            45
+MangatSquareItem             50
 
 name                    sell price 

@@ -1,4 +1,8 @@
-ChestItem         /furniture/        hold-ur-stuff       Chest      
-FurnaceItem       /machines/         cook-ur-stuff       Furnace
+ChestItem         /furniture/    hold-ur-stuff          Chest      
+FurnaceItem       /machines/     cook-ur-stuff          Furnace
+OakTableItem      /furniture/    a-nice-small-table     OakTable
+OakChairItem      /furniture/    a-chair-to-look-at     OakChair
+MahoganyTableItem /furniture/    a-cooler-small-table   MahoganyTable
+MangatSquareItem  /furniture/    an-interesting-square  MangatSquare
 
 name              image path          description        what is placed when used

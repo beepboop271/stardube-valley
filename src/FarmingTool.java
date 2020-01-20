@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class FarmingTool extends UtilityTool {
+public class FarmingTool extends Tool {
   public FarmingTool(String name, String description, String imagePath) throws IOException {
     super(name, description, imagePath, 2);
   }

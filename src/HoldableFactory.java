@@ -45,7 +45,8 @@ public class HoldableFactory {
         nextLineData = lineToRead.split("\\s+");
         UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], 
                                           "assets/images/"+nextLineData[1]+".png",
-                                          Integer.parseInt(nextLineData[3]));
+                                          Integer.parseInt(nextLineData[3]),
+                                          Integer.parseInt(nextLineData[4]));
         HoldableFactory.holdablePool.put(tool.getName(), tool);
         lineToRead = input.readLine();
       }

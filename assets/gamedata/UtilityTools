@@ -1,6 +1,12 @@
-Pickaxe         /holdables/Pickaxe      mineeeee-diaaaaaamondddddsss    2 
-Axe             /holdables/Axe          chop-chop                       2
-Hoe             /holdables/Hoe          till-dirt-because-fun           2
-WateringCan     /holdables/WateringCan  water-dirt-because-fun          2
+Pickaxe         /holdables/Pickaxe           mineeeee-diaaaaaamondddddsss             3       1
+Axe             /holdables/Axe               go-show-the-lorax-you-mean-business      3       1
+CopperPickaxe   /holdables/CopperPickaxe     mineeeee-obsidiannnnnn                   2       2
+CopperAxe       /holdables/CopperAxe         its-a-better-choppy-machine              2       2
+SteelPickaxe    /holdables/SteelPickaxe      break-bedrock-with-this-baby             2       3
+SteelAxe        /holdables/SteelAxe          a-slow-chainsaw                          2       3
+GoldPickaxe     /holdables/GoldPickaxe       soft-mineral-but-beefy-pick              1       4
+GoldAxe         /holdables/GoldAxe           illegal-in-some-provinces                1       4
+Hoe             /holdables/Hoe               till-dirt-because-fun                    2       1
+WateringCan     /holdables/WateringCan       water-dirt-because-fun                   2       1
 
-name        img                         description                 energy cost
+name            img path                     description                       energy cost   effectiveness

@@ -1,5 +1,6 @@
-GeneralStoreShop   0 -1      /shops/CashRegister    StorePriceList       GeneralStore   1 3
-McDonladsShop      0 -1      /shops/CashRegister    McDonladsPriceList   McDonlads      4 3
-ClinicShop         0 -1      /shops/CashRegister    ClinicPriceList      Clinic         3 3
+GeneralStoreShop   0 -1      /shops/CashRegister      StorePriceList       GeneralStore   1 3
+McDonladsShop      0 -1      /shops/CashRegister      McDonladsPriceList   McDonlads      4 3
+ClinicShop         0 -1      /shops/CashRegister      ClinicPriceList      Clinic         3 3
+BlacksmithShop     0  0      /shops/SmallCashRegister BlacksmithPriceList  Blacksmith     2 2
 
 name               offset   imgPath assets\images+    pricelist filepath   area name      x y
