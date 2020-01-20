@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * [Area]
@@ -15,7 +17,7 @@ import java.util.LinkedList;
 public abstract class Area {
   private String name;
   private Tile[][] map;
-  private LinkedHashSet<Moveable> moveables;
+  private Set<Moveable> moveables;
   private LinkedList<HoldableStackEntity> itemsOnGround;
   private final int width, height;
   private GatewayZone[] neighbourZones;
@@ -36,7 +38,7 @@ public abstract class Area {
     this.width = width;
     this.height = height;
     this.map = new Tile[this.height][this.width];
-    this.moveables = new LinkedHashSet<Moveable>();
+    this.moveables = ConcurrentHashMap.newKeySet();
     this.itemsOnGround = new LinkedList<HoldableStackEntity>();
     this.neighbourZones = new GatewayZone[4];
     this.gateways = new LinkedHashMap<Point, Gateway>();

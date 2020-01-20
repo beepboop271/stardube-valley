@@ -10,11 +10,31 @@ Chair-NULL 2
 JavacakeItem 1
 WoodItem 10
 
+Joseph's-Compsci-Mark 3
+JavacakeItem 2
+WatermelonItem 2
+MakBooc 2
+
 JavacakeItem 4
 GarlicItem 1
 PumpkinItem 1
 HotPepperItem 10
 IceCreamItem 5
+
+OakTableItem 1
+WoodItem 40
+
+OakChairItem 1
+WoodItem 45
+
+MahoganyTableItem 1
+WoodItem 55
+
+MangatSquareItem 4
+WoodItem 15
+Joseph's-Compsci-Mark 5
+Kevin's-Ethics-Assignment 5
+Chair-NULL 5
 
 end
 

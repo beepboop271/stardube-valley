@@ -4,12 +4,12 @@ import java.io.IOException;
  * [Player]
  * 2019-12-19
  * @version 0.4
- * @author Kevin Qiao, Candice Zhang, Joseph Wang
+ * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
 public class Player extends Moveable {
   public static final double SIZE = 0.35;
-  private static final double MAX_SPEED = 12;
+  private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;
@@ -37,8 +37,8 @@ public class Player extends Moveable {
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
   private CraftingMachine craftingMachine;
 
-  public Player(Point position, String filePath) throws IOException {
-    super(position, Player.SIZE, filePath);
+  public Player(Point position, String filePath, String name) throws IOException {
+    super(position, Player.SIZE, filePath, name);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
@@ -58,9 +58,12 @@ public class Player extends Moveable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("BambooRod", 1);
-    this.inventory[5] = new HoldableStack("ChestItem", 5);
+    this.inventory[5] = new HoldableStack("ChestItem", 1);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
     this.inventory[7] = new HoldableStack("WoodItem", 99);
+    this.inventory[8] = new HoldableStack("Kevin's-Ethics-Assignment", 99);
+    this.inventory[9] = new HoldableStack("Joseph's-Compsci-Mark", 99);
+    this.inventory[10] = new HoldableStack("Chair-NULL", 99);
   }
 
   @Override

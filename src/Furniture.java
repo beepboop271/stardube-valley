@@ -8,8 +8,16 @@ import java.io.IOException;
  * @author Joseph Wang
  */
 
-public class Furniture extends IntrinsicTileComponent {
+public class Furniture extends CollectableComponent implements NotWalkable {
+  /**
+   * [Furniture]
+   * Constructor for a new Furniture.
+   * @param name        The name of this furniture.
+   * @param imagePath   The path to this furniture's image.
+   * @param offsets     The offsets in tiles to consider during drawing.
+   * @throws IOException
+   */
   public Furniture(String name, String imagePath, double[] offsets) throws IOException {
-    super(name, imagePath, offsets);
+    super(name, imagePath, 1, offsets);
   }
 }

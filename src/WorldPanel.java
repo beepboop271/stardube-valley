@@ -224,17 +224,16 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    // draw player
-    this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
-    this.playerScreenPos.y = (Tile.getSize()*(playerPos.y-tileStartY+0.5-(Player.SIZE))+originY);
-    //g.setColor(Color.RED);
-    //g.fillRect((int)this.playerScreenPos.x, (int)this.playerScreenPos.y,
-    //           (int)(Tile.getSize()*2*Player.SIZE),
-    //           (int)(Tile.getSize()*2*Player.SIZE));
-    g.setColor(Color.BLACK);
-    g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
-    g.drawImage(worldPlayer.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*Player.SIZE)), null);
-    
+    Iterator<Moveable> moveables = playerArea.getMoveables();
+    while (moveables.hasNext()) {
+      Moveable currentMoveable = moveables.next(); // TODO: rename playerScreenPos, also clarify use of NPC.SIZE?
+      this.playerScreenPos.x = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+0.5-(NPC.SIZE))+originX);
+      this.playerScreenPos.y = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+0.5-(NPC.SIZE))+originY);
+      g.setColor(Color.BLACK);
+      g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
+      g.drawImage(currentMoveable.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*NPC.SIZE)), null);
+    }
+
     // draw tile components
     screenTileX = 0;
     screenTileY = 0;
@@ -488,7 +487,6 @@ public class WorldPanel extends JPanel {
           String[] storeItems = craftingStore.getItems();
           g.setColor(WorldPanel.MENU_BKGD_COLOR);
           g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
-          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
           g.setFont(this.BIG_LETTER_FONT);
           g.drawString("Welcome to "+craftingStore.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
           
@@ -773,7 +771,7 @@ public class WorldPanel extends JPanel {
     g.drawString("E", this.getWidth()-60, this.getHeight()-20);
     
     // - health
-    if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
+    if ((worldToDisplay.getPlayerArea() instanceof MineLevel) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
       int healthX = this.getWidth()-140;
       int healthH = Math.max(0, (int)Math.round(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
       int healthY = this.getHeight()-50-healthH;

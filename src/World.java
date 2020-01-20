@@ -8,6 +8,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Random;
 
 /**
  * [World]
@@ -18,6 +19,7 @@ import java.util.LinkedHashSet;
  */
 
 public class World {
+  private Random random = new Random();
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -45,6 +47,8 @@ public class World {
   private Area playerArea;
   private Player player;
   private MineArea mines;
+  private NPC[] npcs = new NPC[3]; //TODO: change NPC numbers to match # of NPCs
+  private Area[] npcAreas = new Area[3];
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay;
@@ -66,11 +70,12 @@ public class World {
     }
     this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
     
-    this.player = new Player(new Point(13, 13), "assets/gamedata/PlayerImages");
+    this.player = new Player(new Point(13, 13), "assets/gamedata/NPCImages", "player");
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
     this.loadWorldMap("assets/gamedata/map/WorldMap");
+    this.loadNPCS();
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
@@ -87,7 +92,7 @@ public class World {
   public void update() {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
-
+    
     if (this.player.isInMenu()) {
       this.lastUpdateTime = currentUpdateTime;
       return;
@@ -144,6 +149,11 @@ public class World {
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+        } else if (nextMoveable instanceof NPC) { 
+          this.npcAreas[((NPC)nextMoveable).getIndex()] = a.moveAreas(nextMoveable,
+                                                        nextMoveable.getIntersectingTiles(move).iterator());
+          this.emplaceFutureEvent(this.random.nextLong(), new AutoMovementEvent((NPC)nextMoveable));
+          nextMoveable.updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         }
@@ -381,18 +391,6 @@ public class World {
                 ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
               }
             }
-          } else if (currentContent instanceof Collectable) {
-            ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
-            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
-            HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-            HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
-            if (drop != null) {
-              new HoldableStackEntity(drop, null); // TODO: change the pos
-              if (this.player.canPickUp(drop.getContainedHoldable())) {
-                this.player.pickUp(drop);
-                currentTile.setContent(null);
-              }
-            }
           } else if (currentContent instanceof ExtrinsicChest) {
             this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
@@ -437,6 +435,20 @@ public class World {
             
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
+          } else if (currentContent instanceof Collectable) {
+            if (this.playerArea instanceof WorldArea) {
+              ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
+            }
+            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+            HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
+            HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
+            if (drop != null) {
+              new HoldableStackEntity(drop, null); // TODO: change the pos
+              if (this.player.canPickUp(drop.getContainedHoldable())) {
+                this.player.pickUp(drop);
+                currentTile.setContent(null);
+              }
+            }
           } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
             for (int i = 0; i < bushContents.length; i++) {
               if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
@@ -546,6 +558,22 @@ public class World {
               this.player.useAtIndex(((ComponentPlacedEvent)event).getComponentIndex());
             }
           }
+        }
+      } else if (event instanceof AutoMovementEvent) {
+        int randDir = random.nextInt(4);
+        NPC currentNPC = ((NPC)event.getSource());
+        if (randDir == 0 && currentNPC.getVerticalSpeed() != -1) {
+          currentNPC.setVerticalSpeed(-1);
+          currentNPC.setOrientation(World.NORTH);
+        } else if (randDir == 1 && currentNPC.getHorizontalSpeed() != 1) {
+          currentNPC.setHorizontalSpeed(1);
+          currentNPC.setOrientation(World.EAST);
+        } else if (randDir == 2 && currentNPC.getVerticalSpeed() != 1) {
+          currentNPC.setVerticalSpeed(1);
+          currentNPC.setOrientation(World.SOUTH);
+        } else if (currentNPC.getHorizontalSpeed() != -1) {
+          currentNPC.setHorizontalSpeed(-1);
+          currentNPC.setOrientation(World.WEST);
         }
       }
     }
@@ -869,6 +897,28 @@ public class World {
     return null;
   }
 
+  public void loadNPCS() throws IOException {
+    BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/NPCdata"));
+    String lineToRead = input.readLine();
+    String[] nextLineData = lineToRead.split("\\s+");
+    String name;
+    String[] dialogue = new String[5];
+    for (int i = 0; i < 3; i++) { // TODO: change number to match # of NPCs
+      name = nextLineData[0];
+      this.npcAreas[i] = this.locations.get(nextLineData[1]);
+      for (int j = 0; j < 5; j++) {
+        lineToRead = input.readLine();
+        dialogue[j] = lineToRead;
+      }
+      this.npcs[i] = new NPC(new Point(3, 3), "assets/gamedata/NPCImages", "npcs/"+name, i, 
+                            dialogue);
+      this.npcAreas[i].addMoveable(this.npcs[i]);
+      lineToRead = input.readLine();
+      nextLineData = lineToRead.split("\\s+");
+    }
+    input.close();
+  }
+
   /**
    * [loadWorldMap]
    * Loads the areas of the world into a 2D array.
@@ -968,5 +1018,9 @@ public class World {
    */
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
+  }
+
+  public Area[] getNPCAreas() {
+    return this.npcAreas;
   }
 }
