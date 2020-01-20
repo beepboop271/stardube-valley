@@ -148,7 +148,10 @@ public class WorldPanel extends JPanel {
   }
 
   /**
-   * {@inheritDoc}
+   * [paintComponent]
+   * Paints the graphics of the world on the screen.
+   * @author Candice Zhang, Kevin Qiao, Paula Yuan
+   * @param g The Graphics object that is used to paint graphics.
    */
   @Override
   public void paintComponent(Graphics g) {
@@ -535,15 +538,6 @@ public class WorldPanel extends JPanel {
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
         // TODO: insert gui code
-        
-
-      } else if (worldPlayer.getCurrentMenuPage() == Player.SKILLS_PAGE) {
-        // TODO: insert gui code
-        Graphics2D dumbGraphics = (Graphics2D)g;
-        dumbGraphics.setColor(Color.WHITE);
-        dumbGraphics.setFont(this.PROFILE_FONT);
-        dumbGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        dumbGraphics.drawString("Skills Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         // TODO: insert gui code
