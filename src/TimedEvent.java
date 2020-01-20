@@ -52,7 +52,6 @@ public class TimedEvent implements Comparable<TimedEvent> {
     } else {
       return -1;
     }
-    // return (int)(this.time-other.time);
   }
 
   /**

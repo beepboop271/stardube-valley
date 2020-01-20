@@ -200,37 +200,16 @@ public class WorldPanel extends JPanel {
     int screenTileY = 0;
 
     Point selectedTile = worldPlayer.getSelectedTile();
+    Iterator<HoldableStackEntity> items;
+    // HoldableStackEntity[] items;
+    HoldableStackEntity nextItem;
+    Iterator<Moveable> moveables;
+    // Moveable[] moveables;
+    Moveable nextMoveable;
+    double nextX, nextY;
 
-    // draw tiles
-    for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
-      for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
-        if (playerArea.inMap(x, y)) {
-          Tile currentTile = playerArea.getMapAt(x, y);
-          if (currentTile != null) {
-            int drawX = originX+(screenTileX*Tile.getSize());
-            int drawY = originY+(screenTileY*Tile.getSize());
-            g.drawImage(currentTile.getImage(), drawX, drawY, null);
-          }
-        }
-        ++screenTileX;
-      }
-      screenTileX = 0;
-      ++screenTileY;
-    }
-    
-    // draw items
-    synchronized (playerArea.getItemsOnGroundList()) {
-      Iterator<HoldableStackEntity> items = playerArea.getItemsOnGround();
-      HoldableStackEntity nextItem;
-      while (items.hasNext()) {
-        nextItem = items.next();
-        g.drawImage(nextItem.getImage(),
-                    (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
-                    (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
-                    null);
-      }
-    }
-    
+    // System.out.println(playerPos+" "+playerArea.getName());
+
     // draw building layout
     if (playerArea instanceof BuildingArea) {
       if (((BuildingArea)playerArea).hasInteriorImage()) {
@@ -241,22 +220,35 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
-    this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
-
-    Iterator<Moveable> moveables = playerArea.getMoveables();
-    double nextX, nextY;
-    while (moveables.hasNext()) {
-      Moveable currentMoveable = moveables.next();
-      nextX = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+currentMoveable.getXOffset())+originX);
-      nextY = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+currentMoveable.getYOffset())+originY);
-      g.drawImage(currentMoveable.getImage(), (int)nextX, (int)nextY, null);
-    }
-
-    // draw tile components
-    screenTileX = 0;
-    screenTileY = 0;
+    // draw tiles
+    //System.out.println("hi--------------------------------");
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
+      if (!(playerArea instanceof BuildingArea)) {
+        for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
+          if (playerArea.inMap(x, y)) {
+            Tile currentTile = playerArea.getMapAt(x, y);
+            if (currentTile != null) {
+              int drawX = originX+(screenTileX*Tile.getSize());
+              int drawY = originY+(screenTileY*Tile.getSize());
+              g.drawImage(currentTile.getImage(), drawX, drawY, null);
+              // if (playerArea.walkableAt(new Point(x, y))){
+              //   g.setColor(Color.GREEN);
+              //   g.fillRect(drawX, drawY, 30, 30);
+              // } else {
+              //   g.setColor(Color.RED);
+              //   g.fillRect(drawX, drawY, 30, 30);
+              // }
+              g.setColor(Color.BLACK);
+              g.setFont(this.QUANTITY_FONT);
+              g.drawString(String.format("%d %d", (int)x, (int)y), drawX+8, drawY+40);
+            }
+          }
+          ++screenTileX;
+        }
+        screenTileX = 0;
+      }
+
+      // tile components
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
         if (playerArea.inMap(x, y)) {
           Tile currentTile = playerArea.getMapAt(x, y);
@@ -307,10 +299,55 @@ public class WorldPanel extends JPanel {
         ++screenTileX;
       }
       screenTileX = 0;
+
+      // synchronized (playerArea.getMoveableList()) {
+        // draw moveables
+        //System.out.println("start------------------");
+        moveables = playerArea.getMoveables(y-1);
+        // for (int i = 0; i < moveables.length; ++i) {
+        //   System.out.println(moveables[i].getClass().getName());
+        //   nextX = (Tile.getSize()*(moveables[i].getPos().x-tileStartX+moveables[i].getXOffset())+originX);
+        //   nextY = (Tile.getSize()*(moveables[i].getPos().y-tileStartY+moveables[i].getYOffset())+originY);
+        //   g.drawImage(moveables[i].getImage(), (int)nextX, (int)nextY, null);
+        // }
+        while (moveables.hasNext()) {
+          nextMoveable = moveables.next();
+          // System.out.println(nextMoveable.getClass().getName());
+          nextX = (Tile.getSize()*(nextMoveable.getPos().x-tileStartX+nextMoveable.getXOffset())+originX);
+          nextY = (Tile.getSize()*(nextMoveable.getPos().y-tileStartY+nextMoveable.getYOffset())+originY);
+          g.drawImage(nextMoveable.getImage(), (int)nextX, (int)nextY, null);
+        }
+      // }
+
+      // synchronized (playerArea.getItemsOnGroundList()) {
+        // draw items
+        items = playerArea.getItemsOnGround(y-1);
+        while (items.hasNext()) {
+          nextItem = items.next();
+          g.drawImage(nextItem.getImage(),
+                      (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
+                      (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
+                      null);
+        }
+        // for (int i = 0; i < items.length; ++i) {
+        //   g.drawImage(items[i].getImage(),
+        //               (int)(Tile.getSize()*(items[i].getPos().x-tileStartX+0.5)-8+originX),
+        //               (int)(Tile.getSize()*(items[i].getPos().y-tileStartY+0.5)-8+originY),
+        //               null);
+        // }
+      // }
+
       ++screenTileY;
     }
 
-    
+    this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
+    this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
+
+    g.setColor(Color.RED);
+    g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
+               (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
+   
+
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2){

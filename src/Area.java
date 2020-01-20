@@ -1,9 +1,16 @@
+import java.util.List;
+import java.util.ListIterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.TreeSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * [Area]
@@ -15,8 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Area {
   private String name;
   private Tile[][] map;
-  private Set<Moveable> moveables;
-  private LinkedList<HoldableStackEntity> itemsOnGround;
+  private List<Moveable> moveables;
+  private List<HoldableStackEntity> itemsOnGround;
+  // private SortedSet<Moveable> moveables;                 //
+  // private SortedSet<HoldableStackEntity> itemsOnGround;  //
+  // private ConcurrentLinkedQueue<Moveable> moveableQueue;
+  // private ConcurrentLinkedQueue<HoldableStackEntity> itemsOnGroundQueue;
   private final int width, height;
   private GatewayZone[] neighbourZones;
   private LinkedHashMap<Point, Gateway> gateways;
@@ -36,8 +47,10 @@ public abstract class Area {
     this.width = width;
     this.height = height;
     this.map = new Tile[this.height][this.width];
-    this.moveables = ConcurrentHashMap.newKeySet();
-    this.itemsOnGround = new LinkedList<HoldableStackEntity>();
+    this.moveables = Collections.synchronizedList(new ArrayList<Moveable>());
+    this.itemsOnGround = Collections.synchronizedList(new ArrayList<HoldableStackEntity>());
+    // this.moveables = Collections.synchronizedSortedSet(new TreeSet<Moveable>());
+    // this.itemsOnGround = Collections.synchronizedSortedSet(new TreeSet<HoldableStackEntity>());
     this.neighbourZones = new GatewayZone[4];
     this.gateways = new LinkedHashMap<Point, Gateway>();
     this.currentDay = 0;
@@ -113,11 +126,14 @@ public abstract class Area {
       }
       nextPoint = intersectingPoints.iterator().next();
       if (!this.walkableAt(nextPoint)) {
+        System.out.print(nextPoint+" ");
+        // System.out.println(this.walkableAt(nextPoint));
         return Area.getDirection(pos, nextPoint);
       } else {
         return -1;
       }
     } else if (intersectingPoints.size() == 4) {
+      System.out.println("help me aaaaaaaaaaaa");
       Point[] intersections = new Point[4];
       intersectingPoints.toArray(intersections);
       int collisions = 0;
@@ -126,6 +142,7 @@ public abstract class Area {
           collisions |= (1<<i);
         }
       }
+      System.out.println(Integer.toBinaryString(collisions));
       if (collisions == 0) {
         return -1;
       }
@@ -168,15 +185,18 @@ public abstract class Area {
 
       Tile t = this.getMapAt(pos);
       if (t == null) {
+        System.out.println("t null");
         return false;
       }
 
       if (t.getContent() != null) {
         if (!(t.getContent() instanceof ExtrinsicTree)
               && (t.getContent() instanceof NotWalkable)) {
+          System.out.println("t not walkable");
           return false;
         } else if (t.getContent() instanceof ExtrinsicGrowableCollectable && 
                   !(t.getContent() instanceof ExtrinsicCrop)) {
+          System.out.println("")
           return false;
         }
       } else if (bushTile != null && bushTile.getContent() != null) {
@@ -220,6 +240,7 @@ public abstract class Area {
       p1.translate(step.getX(), step.getY());
       switch (e.getHeight()) {
         case 1:
+          //System.out.println(p1);
           if (!this.walkableAt(p1.round())) {
             return false;
           }
@@ -278,7 +299,7 @@ public abstract class Area {
       return this;
     }
     m.setPos(g.toDestinationPoint(m.getPos(), m.getSize()));
-    this.moveables.remove(m);
+    // this.moveables.remove(m);
     g.getDestinationArea().moveables.add(m);
     return g.getDestinationArea();
   }
@@ -296,7 +317,7 @@ public abstract class Area {
    */
   public Area moveAreas(Moveable m, Point position, Area destination) {
     m.setPos(position);
-    this.moveables.remove(m);
+    // this.moveables.remove(m);
     destination.moveables.add(m);
 
     return destination;
@@ -355,13 +376,49 @@ public abstract class Area {
     return this.gateways.values().iterator();
   }
 
+  // public ArrayList<Moveable> getMoveableList() {
+  //   return this.moveables;
+  // }
+
   /**
    * [getMoveables]
-   * Retrieves the iteartor of the moveables in this area.
+   * Retrieves the iterator of the moveables in this area.
    * @return    Iterator<Moveable>, the iterator of the moveables.
    */
-  public Iterator<Moveable> getMoveables() {
-    return this.moveables.iterator();
+  public ListIterator<Moveable> getMoveables() {
+    return this.moveables.listIterator();
+    // return this.moveables.iterator();
+  }
+
+  // public Moveable[] getMoveables(int row) {
+  public Iterator<Moveable> getMoveables(int row) {
+    // moveable is abstract, any subclass will do
+    // HoldableStackEntity is the only non animated Moveable
+    Moveable lowerBound = new HoldableStackEntity(null, new Point(0, row));
+    Moveable upperBound = new HoldableStackEntity(null, new Point(this.width, row+1));
+    // subSet: elements in range [lowerBound, upperBound)
+    int startIdx = Collections.binarySearch(this.moveables, lowerBound);
+    if (startIdx < 0) {
+      startIdx = -(startIdx+1);
+    }
+    int endIdx = Collections.binarySearch(this.moveables, upperBound);
+    if (endIdx < 0) {
+      endIdx = -(endIdx+1);
+    }
+    return this.moveables.subList(startIdx, endIdx).iterator();//.toArray(new Moveable[0]);
+    // synchronized (this.moveables) {
+    //   return this.moveables.subSet(lowerBound, upperBound).toArray(new Moveable[0]);
+    // }
+  }
+
+  // public void removeMoveable(Moveable m) {
+  //   this.moveables.remove(m);
+  // }
+
+  public void sortMoveables() {
+    synchronized (this.moveables) {
+      Collections.sort(this.moveables);
+    }
   }
 
   /**
@@ -396,33 +453,56 @@ public abstract class Area {
     this.getMapAt(pos).setContent(null);
   }
 
-  /**
-   * [getItemsOnGroundList]
-   * Retrieves the linked list of the items on ground in this area.
-   * @author Kevin Qiao
-   * @return  LinkedList<HoldableStackEntity>, a linked list of the items on ground in this area.
-   */
-  public LinkedList<HoldableStackEntity> getItemsOnGroundList() {
-    return this.itemsOnGround;
-  }
+  // public ArrayList<HoldableStackEntity> getItemsOnGroundList() {
+  //   return this.itemsOnGround;
+  // }
 
   /**
    * [getItemsOnGround]
    * Retrieves the iterator of the items on ground in this area.
    * @return  Iterator<HoldableStackEntity>, an iterator of the items on ground in this area.
    */
-  public Iterator<HoldableStackEntity> getItemsOnGround() {
-    return this.itemsOnGround.iterator();
+  public ListIterator<HoldableStackEntity> getItemsOnGround() {
+    return this.itemsOnGround.listIterator();
   }
+
+  // public HoldableStackEntity[] getItemsOnGround(int row) {
+  public Iterator<HoldableStackEntity> getItemsOnGround(int row) {
+    // moveable is abstract, any subclass will do
+    // HoldableStackEntity is the only non animated Moveable
+    HoldableStackEntity lowerBound = new HoldableStackEntity(null, new Point(0, row));
+    HoldableStackEntity upperBound = new HoldableStackEntity(null, new Point(this.width, row+1));
+    // subSet: elements in range [lowerBound, upperBound)
+    int startIdx = Collections.binarySearch(this.itemsOnGround, lowerBound);
+    if (startIdx < 0) {
+      startIdx = -(startIdx+1);
+    }
+    int endIdx = Collections.binarySearch(this.itemsOnGround, upperBound);
+    if (endIdx < 0) {
+      endIdx = -(endIdx+1);
+    }
+    return this.itemsOnGround.subList(startIdx, endIdx).iterator();//.toArray(new HoldableStackEntity[0]);
+    // return this.itemsOnGround.subSet(lowerBound, upperBound).toArray(new HoldableStackEntity[0]);
+  }
+
+  public void sortItemsOnGround() {
+    synchronized (this.itemsOnGround) {
+      Collections.sort(this.itemsOnGround);
+    }
+  }
+
+  // public void removeItemOnGround(HoldableStackEntity stack) {
+  //   this.itemsOnGround.remove(stack);
+  // }
 
   /**
    * [addItemOnGround]
    * Adds an item on ground in this area.
    * @param e   HoldableStackEntity, the item to add.
    */
-  public void addItemOnGround(HoldableStackEntity e) {
-    this.itemsOnGround.addLast(e);
-  }
+  // public void addItemOnGround(HoldableStackEntity e) {
+  //   this.itemsOnGround.add(e);
+  // }
 
   /**
    * [getName]

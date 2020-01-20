@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
  * @version 0.2
  * @author Kevin Qiao, Candice Zhang, Paula Yuan
  */
-public abstract class Moveable implements Drawable {
+public abstract class Moveable implements Drawable, Comparable<Moveable> {
   private Point position;
   private Vector2D velocity;
   private double size;
@@ -143,6 +143,27 @@ public abstract class Moveable implements Drawable {
   public double getSize() {
     return this.size;
   }
+
+  @Override
+  public int compareTo(Moveable other) {
+    if (this.position.equals(other.position)) {
+      return 0;
+    }
+    if (this.position.y < other.position.y) {
+      return -1;
+    } else if (this.position.y > other.position.y) {
+      return 1;
+    } else {
+      if (this.position.x < other.position.x) {
+        return -1;
+      } else if (this.position.x > other.position.x) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
   /**
    * [getMove]
    * @param elapsedNanoTime
