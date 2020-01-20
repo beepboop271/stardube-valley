@@ -1,8 +1,9 @@
-BasicFertilizer 1
-SapItem 2
-
 ChestItem 1
 WoodItem 50
+
+FurnaceItem 2
+StoneItem 25
+CoalItem 10
 
 Kevin's-Ethics-Assignment 3
 Chair-NULL 2

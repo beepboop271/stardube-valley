@@ -1,10 +1,10 @@
-MineEntrance (57, 12) <-> Mines (9, 4) none
+MineEntrance (57, 12) <-> Mines (9, 4)
 Farm (12, 13) <->I Farmhouse (9, 7) Farmhouse
 Town (11, 4) <->I Clinic (5, 9) Clinic
 Town (27, 4) <->I GeneralStore (9, 10) Store
-Town (28, 4) <->I GeneralStore (10, 10) none
+Town (28, 4) <->I GeneralStore (10, 10)
 Town (10, 13) <->I McDonlads (8, 7) McDonlads
-Town (11, 13) <->I McDonlads (9, 7) none
+Town (11, 13) <->I McDonlads (9, 7)
 Town (48, 4) <->I House1 (17, 7) House1
 Town (12, 21) <->I House2 (17, 7) House1
 Town (48, 21) <->I House3 (17, 7) House1
@@ -13,17 +13,17 @@ Town (45, 13) <->I House5 (4, 10) House2
 Town (27, 21) <->I House6 (4, 10) House2
 
 
-c a n c e r
-just match this
- (\w++) ?             group 1: area1 name, optionally followed by space
- \((\d++), ?(\d++)\)  group 2,3: coordinates of gateway in area1, with parentheses and optional space
- \s++(I?)<->(I?)\s++  group 4,5: any number of spaces surrounding <-> and whether or not interaction is required to travel
- (\w++) ?             group 6: area2 name, optionally followed by space
- \((\d++), ?(\d++)\)  group 7,8: coordinates of gateway in area2, with parentheses and optional space
-  ?(\\w++)*           group 9: name of the building for the second area to travel into (some will not have a building, in which they get "none")
+
+just match this:
+(\w++)               group 1: area1 name
+\((\d++), (\d++)\)   group 2,3: coordinates of gateway in area1, with parentheses
+ (I?)<->(I?)         group 4,5: <-> and whether or not interaction is required to travel
+(\w++)               group 6: area2 name
+\((\d++), (\d++)\)   group 7,8: coordinates of gateway in area2, with parentheses
+(?: (\\w++))?        group 9: optional: name of the building for the second area to travel into
+
 also the area you go up into is on the right, the area you go
 down to is on the left
 if you need to interact to enter, e.g. door, put I directly on the
 side of the arrow you're going to (world <->I house)
 if there's a building, just put the name after the destination
-/^(\w++) ?\((\d++), ?(\d++)\)\s++(I?)<->(I?)\s++(\w++) ?\((\d++), ?(\d++)\) ?(\w++)$/

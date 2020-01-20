@@ -21,7 +21,7 @@ import java.awt.GradientPaint;
  * A JPanel for graphic display of a World.
  * 2019-12-19
  * @version 0.4
- * @author Kevin Qiao, Candice Zhang, Paula Yuan
+ * @author Kevin Qiao, Candice Zhang, Paula Yuan, Joseph Wang
  */
 @SuppressWarnings("serial")
 public class WorldPanel extends JPanel {
@@ -205,6 +205,20 @@ public class WorldPanel extends JPanel {
       }
     }
     
+    // draw building layout
+    if (playerArea instanceof BuildingArea) {
+      if (((BuildingArea)playerArea).hasInteriorImage()) {
+        BuildingArea area = (BuildingArea)playerArea;
+        // System.out.println(area.getDrawLocation().x);
+        // System.out.println(area.getDrawLocation().y);
+        // System.out.println(area.getXOffset() * Tile.getSize());
+        // System.out.println(area.getYOffset() * Tile.getSize());
+        g.drawImage(area.getImage(), 
+                    (int)((area.getDrawLocation().x*Tile.getSize())+(area.getXOffset()*Tile.getSize())), 
+                    (int)((area.getDrawLocation().y*Tile.getSize())+(area.getYOffset()*Tile.getSize())), null);
+      }
+    }
+
     // draw player
     //g.setColor(Color.RED);
     this.playerScreenPos.x = (Tile.getSize()*(playerPos.x-tileStartX+0.5-(Player.SIZE))+originX);
@@ -228,34 +242,35 @@ public class WorldPanel extends JPanel {
             double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
             if (tileContent != null) {
-              drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
-              drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
-              Graphics2D imgGraphics = (Graphics2D)g;
-              int playerW = worldPlayer.getImage().getWidth();
-              int playerH = worldPlayer.getImage().getHeight();
-              int componentW = ((Drawable)tileContent).getImage().getWidth();
-              int componentH = ((Drawable)tileContent).getImage().getHeight();
-              // if the player is overlapping with the tree or building, set a transparency for it
-              if ((tileContent instanceof ExtrinsicTree) &&
-                  (playerScreenPos.x < drawX + componentW) &&
-                  (playerScreenPos.x + playerW > drawX) &&
-                  (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
-                  (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else if ((tileContent instanceof Building) &&
-                         (playerScreenPos.x < drawX + componentW) &&
-                         (playerScreenPos.x + playerW > drawX) &&
-                         (playerScreenPos.y < drawY + componentH) &&
-                         (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else {
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-              }     
-              
+              if (tileContent instanceof Drawable) {
+                drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
+                drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
+                Graphics2D imgGraphics = (Graphics2D)g;
+                int playerW = worldPlayer.getImage().getWidth();
+                int playerH = worldPlayer.getImage().getHeight();
+                int componentW = ((Drawable)tileContent).getImage().getWidth();
+                int componentH = ((Drawable)tileContent).getImage().getHeight();
+                // if the player is overlapping with the tree or building, set a transparency for it
+                if ((tileContent instanceof ExtrinsicTree) &&
+                    (playerScreenPos.x < drawX + componentW) &&
+                    (playerScreenPos.x + playerW > drawX) &&
+                    (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
+                    (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else if ((tileContent instanceof Building) &&
+                          (playerScreenPos.x < drawX + componentW) &&
+                          (playerScreenPos.x + playerW > drawX) &&
+                          (playerScreenPos.y < drawY + componentH) &&
+                          (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else {
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                }     
+              }
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
@@ -271,6 +286,8 @@ public class WorldPanel extends JPanel {
       screenTileX = 0;
       ++screenTileY;
     }
+
+    
 
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
@@ -563,6 +580,8 @@ public class WorldPanel extends JPanel {
             }
           }
         }
+      } else if (worldPlayer.getCurrentMenuPage() == Player.ELEVATOR_PAGE) {
+        // hi candy
       }
     }
     

@@ -9,11 +9,11 @@ Tuna              /holdables/     precanned                             10 15
 Anchovy           /holdables/     idk-you-can-put-on-pizzas             10 15
 Sardine           /holdables/     sardine-more-like-yasqueen            10 15
 ParsnipItem       /crops/         a-boring-crop-but-it's-still-cool     15 30  
-GarlicItem        /crops/         not-as-spicy-as-kevin-but-still-good  8 20
+GarlicItem        /crops/         not-as-spicy-as-kevin-but-still-good   8 20
 PotatoItem        /crops/         no-more-famine-here                   15 25  
 CauliflowerItem   /crops/         it'll-grow-in-price-soon              50 25
 TulipItem         /crops/         probably-the-only-good-flower         30 15
-StrawberryItem    /crops/         a-sweet-berry                         20 50                            
+StrawberryItem    /crops/         a-sweet-berry                         20 50
 WatermelonItem    /crops/         slap-to-check-quality                 40 90
 HotPepperItem     /crops/         as-spicy-as-kevin                      5 15
 RadishItem        /crops/         this-sells-for-a-fair-bit             20 40
@@ -21,22 +21,33 @@ BlueberryItem     /crops/         a-nice,-blue,-niceblue-crop           10 25
 MangoItem         /crops/         to-commemorate-our-teacher,-Mr.-Mangat 10 25
 BeetItem          /crops/         don't-mistake-this-for-a-radish!      15 30
 BokChoyItem       /crops/         unfortunately-not-Mr.-Choi            15 35
-PizzaItem         /crops/         why-does-this-grow-and-why-is-it-a-root-veggie?? 20 45
+PizzaItem         /crops/ why-does-this-grow-and-why-is-it-a-root-veggie?? 20 45
 CornItem          /crops/         tamer-crop                            30 40
 CranberryItem     /crops/         sell-5,-buy-a-mansion-what-can-I-say  20 40
-TurnipItem        /forageables/   a-turnip                              10 15
-LeekItem          /forageables/   not-a-green-onion                     10 15
-BluebellItem      /forageables/   blueberry's-friend                    10 15
-IceCreamItem      /forageables/   for-winter                            10 15
+TurnipItem        /forageables/   a-turnip                              15 35
+LeekItem          /forageables/   not-a-green-onion                     15 30
+BluebellItem      /forageables/   blueberry's-friend                    10 20
+IceCreamItem      /forageables/   for-winter                            20 40
 MushroomItem      /forageables/   one-up                                10 15
-WinterRootItem    /forageables/   taro-for-bubble-tea                   10 15
-JavacakeItem      /forageables/   "lets-get-some-javacake"              10 15
-DaffodilItem      /forageables/   doesn't-actually-exist                10 15
-BlackberryItem    /forageables/   as-black-as-my-soul                   10 15
-OrangeItem        /forageables/   rhymes-with-porridge                  10 15
-HazelnutItem      /forageables/   not-as-good-as-hazelwood              10 15
-CoffeeBeanItem    /forageables/   essential-for-starhacks               100 150
-GrapeItem         /forageables/   it's-like-baby-wine                   10 15
+WinterRootItem    /forageables/   taro-for-bubble-tea                   10 25
+JavacakeItem      /forageables/   "lets-get-some-javacake"              15 50
+DaffodilItem      /forageables/   doesn't-actually-exist                10 20
+BlackberryItem    /forageables/   as-black-as-my-soul                   15 30
+OrangeItem        /forageables/   rhymes-with-porridge                  20 20
+HazelnutItem      /forageables/   not-as-good-as-hazelwood              15 30
+CoffeeBeanItem    /forageables/   essential-for-starhacks               20 45
+GrapeItem         /forageables/   it's-like-baby-wine                   15 40
+BurgerItem        /holdables/     A-yummy-McDuber-from-McDonlads        50 100
+ChickenNoodleSoupItem /holdables/ yummy-yummy-generic-soup              50 150
+CookiesItem       /holdables/     nothing-like-grandmas                 30 80
+FriesItem         /holdables/     Served-on-a-plate-for-convienience-:) 50 80
+PancakesItem      /holdables/     The-only-proper-breakfast-item        40 90
+TacoItem          /holdables/     hope-you-have-a-bathroom              75 100
+HealthPotionItem  /holdables/     2000g-of-liquid-advil-extra-strong                             200  50
+EnergyPotionItem  /holdables/     2000g-of-pure-liquid-coffee-sweetener                           20 500
+MasterPotionItem  /holdables/     it's-like-an-energy-potion-but-has-blood-and-is-better.        500 750
+Mangat'sBlessingItem /holdables/  Blessed-to-get-good-compsci-marks-and-better-max-energy        50 1000  0 50
+PhenolphthaleinItem  /holdables/  A-bit-of-base-got-in-but-it'll-still-increase-your-max-health. 1000 50 50  0
 
 name              imagePath                    description     health gain
                                                                energy gain

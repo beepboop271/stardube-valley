@@ -129,6 +129,16 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
         break;
+      case KeyEvent.VK_M:
+        for (int y = 1; y < this.stardubeWorld.getPlayerArea().getHeight()-1; ++y) {
+          for (int x = 1; x < this.stardubeWorld.getPlayerArea().getWidth()-1; ++x) {
+            this.stardubeWorld.emplaceFutureEvent(
+                0,
+                new UtilityToolUsedEvent(((UtilityTool)HoldableFactory.getHoldable("Pickaxe")),
+                                          new Point(x, y))
+            );
+          }
+        }
       case KeyEvent.VK_I:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(0, -1));
         break;
@@ -259,7 +269,7 @@ public class StardubeEventListener implements KeyListener,
         this.stardubeWorld.emplaceFutureEvent(
               (long)(0.5*5_000_000),
               new PlayerInteractEvent(this.stardubePlayer.getSelectedTile(),
-                  this.stardubePlayer.getSelectedItemIdx()));
+                                      this.stardubePlayer.getSelectedItemIdx()));
       }
       if (e.getButton() == MouseEvent.BUTTON1) {
         // if the mousepress is within the hotbar, update item selection
@@ -354,6 +364,23 @@ public class StardubeEventListener implements KeyListener,
         if (selectedItemIdx < this.stardubePlayer.getInventory().length) {
           this.stardubePlayer.setSelectedItemIdx(selectedItemIdx);
         }
+      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.ELEVATOR_PAGE) {
+        int buttonSelected = 0;
+        // hi candy
+        // magically get the button# clicked (button 1 -> floor 5, button 2 -> floor 10)
+        //
+        // gui...
+        //
+        //
+        // profit??
+        //
+        this.stardubeWorld.getMines().setElevatorDestination(buttonSelected*5);
+        this.stardubePlayer.exitMenu();
+        this.stardubeWorld.emplaceFutureEvent(
+            0,
+            new PlayerInteractEvent(this.stardubeWorld.getMines().getElevatorPosition(),
+                                    this.stardubePlayer.getSelectedItemIdx())
+        );
       }
     }
   }

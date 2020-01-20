@@ -24,9 +24,9 @@ public class DecorationTile extends Tile {
    * [DecorationTile]
    * Constructor for a new decoration tile. Needs the position of the tile and
    * what type of tile it is.
-   * @param x The x position of this tile.
-   * @param y The y position of this tile.
-   * @param tileType A char used to identify which type of tile this is.
+   * @param x         The x position of this tile.
+   * @param y         The y position of this tile.
+   * @param tileType  A char used to identify which type of tile this is.
    */
   public DecorationTile(int x, int y, char tileType) {
     super(x, y);

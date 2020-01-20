@@ -20,6 +20,7 @@ public class Player extends Moveable {
   public static final int SOCIAL_PAGE = 4;
   public static final int SHOP_PAGE = 5;
   public static final int CHEST_PAGE = 6;
+  public static final int ELEVATOR_PAGE = 7;
 
   private int inventorySize = 12;
   private HoldableStack[] inventory;
@@ -48,7 +49,7 @@ public class Player extends Moveable {
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingMenuObj = null;
-    this.currentFunds = 5_000;
+    this.currentFunds = 5_000_000;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
@@ -138,6 +139,11 @@ public class Player extends Moveable {
     }
     Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
+    if (thingConsumed instanceof SpecialConsumable) { //TODO: maybe make this better
+      this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
+      this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
+    }
+    
     this.increaseEnergy(thingConsumed.getEnergyGain());
     this.increaseHealth(thingConsumed.getHealthGain());
   }
@@ -292,6 +298,9 @@ public class Player extends Moveable {
   }
 
   public void setSelectedTile(Point selectedTile) {
+    if (this.isImmutable()) {
+      return;
+    }
     this.selectedTile = selectedTile;
   }
 
@@ -415,7 +424,7 @@ public class Player extends Moveable {
    * [setImmutable]
    * Sets the immutable state of this player to either true or false.
    * @author Candice Zhang
-   * @param isImmutable The boolean of which the player's immutable state will be.
+   * @param isImmutable Whether or not the player is immutable.
    */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
@@ -557,7 +566,7 @@ public class Player extends Moveable {
    * [increaseMaxEnergy]
    * Increases the max energy of this player.
    * @author Candice Zhang
-   * @param increment, the amount to increase this player's maximum energy by.
+   * @param increment the amount to increase this player's maximum energy by.
    */
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;
@@ -571,6 +580,19 @@ public class Player extends Moveable {
    */
   public boolean getExhaustionStatus() {
     return this.isExhausted;
+  }
+
+  /**
+   * [moveToSpawnPosition]
+   * Used if the player dies or passes out and must be moved to
+   * a specified spawn area at a specified spawn location.
+   * @author Joseph Wang
+   * @param spawnLocation  The position to spawn at.
+   * @return Area, the new area that the player is in.
+   */
+  public Area moveToSpawnPosition(Area currentArea, SpawnableArea spawnArea) {
+    Point spawnPos = spawnArea.getSpawnLocation();
+    return currentArea.moveAreas(this, spawnPos, (Area)spawnArea);
   }
 
   /**
@@ -633,7 +655,7 @@ public class Player extends Moveable {
    * @param value The amount to be removed.
    */
   public void decreaseCurrentFunds(int value) {
-    this.currentFunds -= value;
+    this.currentFunds = Math.max(this.currentFunds-value, 0);
   }
 
   /**

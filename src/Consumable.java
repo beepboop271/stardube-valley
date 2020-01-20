@@ -5,7 +5,7 @@ import java.io.IOException;
  * A class for anything that can be eaten or consumed.
  * 2019-12-27
  * @version 0.2
- * @author Paula Yuan, Candice Zhang
+ * @author Paula Yuan, Candice Zhang, Joseph Wang
  */
 
 public class Consumable extends Useable {

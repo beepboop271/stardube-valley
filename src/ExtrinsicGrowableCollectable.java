@@ -14,10 +14,11 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
 
   /**
    * [ExtrinsicGrowableCollectable]
-   * Constructor for a new ExtrinsicGrowableCollectable that takes in a predetermined
-   * IntrinsicGrowableCollectable and sets that as this object's IntrinsicGrowableCollectable.
+   * Constructor for a new ExtrinsicGrowableCollectable that takes 
+   * in a predetermined IntrinsicGrowableCollectable and sets that 
+   * as this object's IntrinsicGrowableCollectable.
    * @author Joseph Wang
-   * @param item The predetermined IntrinsicGrowableCollectable which this object will set as its own.
+   * @param item A predetermined IntrinsicGrowableCollectable.
    */
   public ExtrinsicGrowableCollectable(IntrinsicGrowableCollectable item) {
     super(item);
@@ -27,8 +28,9 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
 
   /**
    * [ExtrinsicGrowableCollectable]
-   * Contructor for a new ExtrinsicGrowableCollectable that takes in a string and
-   * finds the IntrinsicGrowableCollectable related to that string.
+   * Contructor for a new ExtrinsicGrowableCollectable that takes
+   * in a string and finds the IntrinsicGrowableCollectable related
+   * to that string.
    * @author Joseph Wang
    * @param item The string with the item's name.
    */
@@ -85,8 +87,8 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
 
   /**
    * [getImage]
-   * Retrieves this growable object's image. Dependant on whether it is growing to its
-   * max stage or regrowing produce (if applicable).
+   * Retrieves this growable object's image. Dependant on whether 
+   * it is growing to its max stage or regrowing produce (if applicable).
    * @author Joseph Wang
    * @return BufferedImage, the current image that is associated to this growable's stage.
    */

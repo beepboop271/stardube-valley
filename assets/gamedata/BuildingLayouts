@@ -1,0 +1,12 @@
+House1          /floorLayouts/Layouts/House1Layout.png        -16 -7
+House2          /floorLayouts/Layouts/House2Layout.png        -16 -7
+House3          /floorLayouts/Layouts/House3Layout.png        -16 -7
+House4          /floorLayouts/Layouts/House4Layout.png        -3 -10
+House5          /floorLayouts/Layouts/House5Layout.png        -3 -10
+House6          /floorLayouts/Layouts/House6Layout.png        -3 -10
+Farmhouse       /floorLayouts/Layouts/FarmhouseLayout.png     -8 -7
+GeneralStore    /floorLayouts/Layouts/GeneralStoreLayout.png  -8 -10
+McDonlads       /floorLayouts/Layouts/McDonladsLayout.png     -7 -7
+Clinic          /floorLayouts/Layouts/ClinicLayout.png        -4 -9
+
+building        image path                          offsets

@@ -77,9 +77,24 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        Consumable consumable = new Consumable(nextLineData[0], nextLineData[2], "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
-                                               Integer.parseInt(nextLineData[3]), Integer.parseInt(nextLineData[4]));
-        HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        if (nextLineData.length > 5) {
+          SpecialConsumable consumable = new SpecialConsumable(nextLineData[0], 
+                                                               nextLineData[2],
+                                                               "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
+                                                               Integer.parseInt(nextLineData[3]), 
+                                                               Integer.parseInt(nextLineData[4]),
+                                                               Integer.parseInt(nextLineData[5]),
+                                                               Integer.parseInt(nextLineData[6]));
+          HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        } else {
+          Consumable consumable = new Consumable(nextLineData[0], 
+                                                 nextLineData[2], 
+                                                 "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
+                                                 Integer.parseInt(nextLineData[3]), 
+                                                 Integer.parseInt(nextLineData[4]));
+          HoldableFactory.holdablePool.put(consumable.getName(), consumable);
+        }
+        
         lineToRead = input.readLine();
       }
       input.close();

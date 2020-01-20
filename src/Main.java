@@ -12,6 +12,7 @@ public class Main {
     RiverTile.setFishableFish();
     LakeTile.setFishableFish();
     OceanTile.setFishableFish();
+    MineGatewayTile.setLadderImage();
 
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();
