@@ -50,11 +50,12 @@ public class World {
   private long inGameDay;
   private int inGameSeason;
   private double luckOfTheDay;
+  private String[][] worldMap;
 
   /**
    * [World]
    * Constructor for a new World.
-   * @throws IOException;
+   * @throws IOException
    */
   public World() throws IOException {
     this.locations = new LinkedHashMap<String, Area>();
@@ -68,6 +69,8 @@ public class World {
     this.player = new Player(new Point(13, 13), "assets/gamedata/PlayerImages");
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
+
+    this.loadWorldMap("assets/gamedata/map/WorldMap");
 
     this.inGameDay = 0;
     this.inGameSeason = 0;
@@ -622,7 +625,7 @@ public class World {
    * [loadAreas]
    * Loads all areas this world contains.
    * @author Kevin Qiao, Candice Zhang
-   * @throws IOException;
+   * @throws IOException
    */
   public void loadAreas() throws IOException {
     String[] splitLine;
@@ -763,7 +766,7 @@ public class World {
    * Loads the map of the given area.
    * @author    Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
    * @param a   Area, the area used to load map.
-   * @throws IOException;
+   * @throws IOException
    */
   public void loadAreaMap(Area a) throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
@@ -864,6 +867,40 @@ public class World {
       }
     }
     return null;
+  }
+
+  /**
+   * [loadWorldMap]
+   * Loads the areas of the world into a 2D array.
+   * @author           Candice Zhang
+   * @param filePath   String, the file path of the world map
+   * @throws IOException
+   */
+  private void loadWorldMap(String filePath) throws IOException {
+    BufferedReader input = new BufferedReader(new FileReader(filePath));
+    String[] nextLineData = input.readLine().split("\\s+");
+    int rows = Integer.parseInt(nextLineData[0]), cols = Integer.parseInt(nextLineData[1]);
+
+    String[][] worldMap = new String[cols][rows];
+    for (int i = 0; i < cols; i++) {
+      String[] rowData = input.readLine().split("\\s+");
+      for (int j = 0; j < rows; j++) {
+        System.out.println(rowData[j]);
+        worldMap[i][j] = rowData[j];
+      }
+    }
+    input.close();
+
+    this.worldMap = worldMap;
+  }
+
+  /**
+   * [getWorldMap]
+   * Retrieves the areas of the world, in a 2D array.
+   * @return String[][], map of the areas of the world.
+   */
+  public String[][] getWorldMap() {
+    return this.worldMap;
   }
 
   /**

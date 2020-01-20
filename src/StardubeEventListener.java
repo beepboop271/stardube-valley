@@ -152,6 +152,10 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_L:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(1, 0));
         break;
+      case KeyEvent.VK_Q:
+        this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("ToolStore"));
+        this.stardubePlayer.enterMenu(Player.CRAFTING_PAGE);
+        break;
     }
   }
 
@@ -329,6 +333,11 @@ public class StardubeEventListener implements KeyListener,
       if ((menuPage >= 0 && menuPage <= 4) && // for menu tab buttons; 0-4: INVENTORY, CRAFTING, MAP, SKILLS, SOCIAL
           (this.worldPanel.isPosInMenuTab((int)this.mousePos.x, (int)this.mousePos.y))) {
         this.stardubePlayer.enterMenu(this.worldPanel.menuTabButtonAt((int)this.mousePos.x));
+
+        if((this.worldPanel.menuTabButtonAt((int)this.mousePos.x)) == Player.CRAFTING_PAGE) {
+          this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubePlayer.getCraftingMachine());
+        }
+
       } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getInventoryMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {

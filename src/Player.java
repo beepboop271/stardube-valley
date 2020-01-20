@@ -162,6 +162,11 @@ public class Player extends Moveable {
     }
 
     Recipe recipe = this.craftingMachine.recipeOf(product);
+
+    if (this.currentFunds < recipe.getPrice()) {
+      return false;
+    }
+
     String[] ingredients = recipe.getIngredients();
     for (int i = 0; i < ingredients.length; i++) {
       if (this.quantityOf(HoldableFactory.getHoldable(ingredients[i])) < recipe.quantityOf(ingredients[i])) {
@@ -175,13 +180,26 @@ public class Player extends Moveable {
     if (!(this.canCraft(product))) {
       return;
     }
-    Recipe recipe = this.craftingMachine.recipeOf(product);
+
+    Recipe recipe = null;
+    if (this.currentInteractingMenuObj instanceof CraftingMachine) {
+      recipe = this.craftingMachine.recipeOf(product);
+    } else if (this.currentInteractingMenuObj instanceof CraftingStore) {
+      recipe = ((CraftingStore)(this.currentInteractingMenuObj)).recipeOf(product);
+    }
+    if (recipe == null) {
+      return;
+    }
+
     String[] ingredients = recipe.getIngredients();
+    this.currentFunds -= recipe.getPrice();
+    System.out.println(recipe.getPrice());
     for (int i = 0; i < ingredients.length; i++) {
       this.decrementHoldable(recipe.quantityOf(ingredients[i]), HoldableFactory.getHoldable(ingredients[i]));
     }
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(product), 1));
   }
+
   public int quantityOf(Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {

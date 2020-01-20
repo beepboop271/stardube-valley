@@ -26,7 +26,7 @@ public class Shop extends IntrinsicTileComponent implements Drawable {
    * @param imagePath      String, image path of the shop.
    * @param offsets        double[], the offsets (in tiles) that should be considered during drawing.
    * @param priceListPath  String, the path for the price list of this shop.
-   * @throws IOException;
+   * @throws IOException
    */
   public Shop(String name, String imagesPath, double[] offsets, String priceListPath) throws IOException {
     super(name, imagesPath, offsets);

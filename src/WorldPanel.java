@@ -40,7 +40,7 @@ public class WorldPanel extends JPanel {
   public static final Color DIM_RED_COLOR = new Color(237, 69, 48);
   public static final Color LOCKED_SLOT_COLOR = new Color(230, 165, 100);
 
-  private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 30);
+  private final Font TITLE_FONT =  new Font("Comic Sans MS", Font.BOLD, 30);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
   private final Font LETTER_FONT = new Font("Comic Sans MS", Font.BOLD, 25);
   private final Font BIG_LETTER_FONT = new Font("Comic Sans MS", Font.PLAIN, 35);
@@ -342,7 +342,7 @@ public class WorldPanel extends JPanel {
     // (one real world second is one in game minute)
     long time = this.worldToDisplay.getInGameNanoTime()/1_000_000_000;
     Graphics2D g2 = (Graphics2D)g;
-    g2.setFont(this.TIME_FONT);
+    g2.setFont(this.TITLE_FONT);
     String dateString = World.getSeasons()[this.worldToDisplay.getInGameSeason()];
     if (this.worldToDisplay.getInGameDay() % World.getDaysPerSeason() == 0) {
       dateString += ", Day 28";
@@ -446,36 +446,85 @@ public class WorldPanel extends JPanel {
                   (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(earningString)*1.3), (int)Math.round(profileY+profileH*0.75));
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
-        CraftingMachine craftingMachine = worldPlayer.getCraftingMachine();
-        String[] products = craftingMachine.getProducts();
-        g.setColor(WorldPanel.MENU_BKGD_COLOR);
-        g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
-        g.setColor(WorldPanel.PALE_YELLOW_COLOR);
-        g.drawString("Crafting Menu Page", this.craftX, this.craftY-20);
-        int startIdx = worldPlayer.getAmountScrolled();
-        for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
-          int curDrawY = this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP);
-          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
-          g.fillRect(this.craftX, curDrawY, this.craftW, this.craftItemH);
-          if ((startIdx+i) < products.length) {   
-            Holdable product = HoldableFactory.getHoldable(products[startIdx+i]);
-            String[] ingredients = craftingMachine.ingredientsOf(products[startIdx+i]);
-            g.drawImage(product.getImage(), this.craftX, curDrawY, null);
-            Graphics2D textGraphics = (Graphics2D)g;
-            textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
-            textGraphics.setFont(this.STRING_FONT);
-            textGraphics.drawString(product.getName() + " - " + product.getDescription(),
-                                    this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
-            int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
-            for ( int j = 0; j < ingredients.length; j++) {
-              Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
-              g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
-                                                 curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
-              g.drawString("x "+Integer.toString(craftingMachine.recipeOf(products[startIdx+i]).quantityOf(ingredients[j])),
-                           this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+
+        if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingMachine) {
+          CraftingMachine craftingMachine = worldPlayer.getCraftingMachine();
+          String[] products = craftingMachine.getProducts();
+          g.setFont(this.TITLE_FONT);
+          g.setColor(WorldPanel.MENU_BKGD_COLOR);
+          g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
+          g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+          g.drawString("Crafting Menu Page", this.craftX, this.craftY-20);
+        
+          int startIdx = worldPlayer.getAmountScrolled();
+          for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
+            int curDrawY = this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP);
+            g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+            g.fillRect(this.craftX, curDrawY, this.craftW, this.craftItemH);
+            if ((startIdx+i) < products.length) {   
+              Holdable product = HoldableFactory.getHoldable(products[startIdx+i]);
+              String[] ingredients = craftingMachine.ingredientsOf(products[startIdx+i]);
+              g.drawImage(product.getImage(), this.craftX, curDrawY, null);
+              Graphics2D textGraphics = (Graphics2D)g;
+              textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
+              textGraphics.setFont(this.STRING_FONT);
+              textGraphics.drawString(product.getName() + " - " + product.getDescription(),
+                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+              int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
+              for ( int j = 0; j < ingredients.length; j++) {
+                Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
+                g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
+                                                  curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
+                g.drawString("x "+Integer.toString(craftingMachine.recipeOf(products[startIdx+i]).quantityOf(ingredients[j])),
+                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+              }
+              g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
+                          curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
             }
-            g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
-                        curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
+          }
+
+        } else if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingStore) {        
+          CraftingStore craftingStore = (CraftingStore)(worldPlayer.getCurrentInteractingMenuObj());
+          String[] storeItems = craftingStore.getItems();
+          g.setColor(WorldPanel.MENU_BKGD_COLOR);
+          g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+          g.setFont(this.BIG_LETTER_FONT);
+          g.drawString("Welcome to "+craftingStore.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
+          
+          int startIdx = worldPlayer.getAmountScrolled();
+          for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
+            int curDrawY = this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP);
+            g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+            g.fillRect(this.craftX, curDrawY, this.craftW, this.craftItemH);
+            if ((startIdx+i) < storeItems.length) {   
+              Holdable product = HoldableFactory.getHoldable(storeItems[startIdx+i]);
+              Recipe recipe = craftingStore.recipeOf(storeItems[startIdx+i]);
+              String[] ingredients = recipe.getIngredients();
+              g.drawImage(product.getImage(), this.craftX, curDrawY, null);
+              Graphics2D textGraphics = (Graphics2D)g;
+              textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
+              textGraphics.setFont(this.STRING_FONT);
+              textGraphics.drawString(product.getName() + " - " + product.getDescription(),
+                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+              int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
+              for ( int j = 0; j < ingredients.length; j++) {
+                Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
+                g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
+                                                  curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
+                g.drawString("x "+Integer.toString(craftingStore.recipeOf(storeItems[startIdx+i]).quantityOf(ingredients[j])),
+                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+              }
+              if (recipe.getPrice() > 0) {
+                String priceString = "Cost: "+Double.toString(recipe.getPrice())+" $D";
+                g.setColor(WorldPanel.DARK_BROWN_COLOR);
+                g.setFont(this.STRING_FONT);
+                g.drawString(priceString, this.craftX+this.craftW-g.getFontMetrics().stringWidth(priceString)-10,
+                             curDrawY+this.craftItemH-this.craftButtonImage.getHeight()-10);
+              }
+              g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
+                          curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
+            }
           }
         }
 

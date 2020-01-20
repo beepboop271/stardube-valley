@@ -181,6 +181,20 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load crafting stores
+      input = new BufferedReader(new FileReader("assets/gamedata/CraftingStores"));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        double[] offsets = {Double.parseDouble(nextLineData[1]), Double.parseDouble(nextLineData[2])};
+        System.out.println(nextLineData[3]+".png");
+        CraftingStore craftingStore = new CraftingStore(nextLineData[0],
+                                      "assets/images"+nextLineData[3]+".png", offsets, nextLineData[4]);
+        componentPool.put(craftingStore.getName(), craftingStore);
+        lineToRead = input.readLine();
+      }
+      input.close();
+
       // load shipping data
       input = new BufferedReader(new FileReader("assets/gamedata/ShippingData"));
       nextLineData = input.readLine().split("\\s+");

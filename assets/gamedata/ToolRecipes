@@ -1,20 +1,5 @@
-ChestItem 1
+ChestItem 1 10.00
 WoodItem 50
-
-FurnaceItem 2
-StoneItem 25
-CoalItem 10
-
-Kevin's-Ethics-Assignment 3
-Chair-NULL 2
-JavacakeItem 1
-WoodItem 10
-
-JavacakeItem 4
-GarlicItem 1
-PumpkinItem 1
-HotPepperItem 10
-IceCreamItem 5
 
 end
 
