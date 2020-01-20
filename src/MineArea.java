@@ -36,15 +36,18 @@ public class MineArea extends Area {
     if (level == 0) {
       return;
     }
-    this.elevatorLevelsUnlocked = Math.max(this.elevatorLevelsUnlocked,
-                                           (int)(level-1/5.0));
-
-    this.levels[level] = new MineLevel.Builder(level).buildLevel(this);
+    if (this.levels[level] == null) {
+      this.elevatorLevelsUnlocked = Math.max(this.elevatorLevelsUnlocked,
+                                             (int)((level-1)/5.0));
+  
+      this.levels[level] = new MineLevel.Builder(level).buildLevel(this);
+    }
     Iterator<Gateway> gateways = this.levels[level-1].getGateways();
     Gateway nextGateway;
     while (gateways.hasNext()) {
       nextGateway = gateways.next();
-      if (nextGateway.getDestinationArea() == null) {
+      if (nextGateway.getDestinationGateway() == null) {
+        System.out.println(nextGateway.getOrigin());
         nextGateway.setDestinationArea(this.levels[level]);
         nextGateway.setDestinationGateway(this.levels[level].getEntranceGateway());
       }
@@ -79,6 +82,6 @@ public class MineArea extends Area {
   }
 
   public boolean hasElevatorFloorUnlocked(int floor) {
-    return floor/5 >= this.elevatorLevelsUnlocked;
+    return ((floor/5) <= this.elevatorLevelsUnlocked);
   }
 }

@@ -38,7 +38,7 @@ Chair-NULL 5
 
 end
 
-Format(idk regex so imma use "pseudocode" but omitting str() - candice):
+Format(idk regex so imma use "python 3 pseudocode" but omitting str() - candice):
 for each piece of recipe:
   print(name + n ingredients)
   for i in range(n):

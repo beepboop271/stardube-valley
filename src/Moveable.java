@@ -10,7 +10,7 @@ import java.io.FileReader;
  * [Moveable]
  * 2019-12-19
  * @version 0.2
- * @author Kevin Qiao, Candice Zhang
+ * @author Kevin Qiao, Candice Zhang, Paula Yuan
  */
 public abstract class Moveable {
   public final static int WALKSTEP_FRAMES = 8;
@@ -32,7 +32,7 @@ public abstract class Moveable {
     this.orientation = World.SOUTH;
   }
 
-  public Moveable(Point position, double size, String filePath) {
+  public Moveable(Point position, double size, String filePath, String name) {
     this.position = position;
     this.velocity = new Vector2D(0, 0);
     this.size = size;
@@ -45,7 +45,7 @@ public abstract class Moveable {
     try {
       BufferedReader input = new BufferedReader(new FileReader(filePath));
       for (int i = 0; i < 4; i++) {
-        String folderPath = input.readLine();
+        String folderPath = name + input.readLine();
         String[] folderFiles = new File("assets/images/"+folderPath).list();
         BufferedImage[] folderimgs = new BufferedImage[folderFiles.length];
         for (int j = 0; j < folderFiles.length; j++) {

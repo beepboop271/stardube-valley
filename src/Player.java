@@ -4,12 +4,12 @@ import java.io.IOException;
  * [Player]
  * 2019-12-19
  * @version 0.4
- * @author Kevin Qiao, Candice Zhang, Joseph Wang
+ * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
 public class Player extends Moveable {
   public static final double SIZE = 0.35;
-  private static final double MAX_SPEED = 12;
+  private static final double MAX_SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;
@@ -37,8 +37,8 @@ public class Player extends Moveable {
   private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
   private CraftingMachine craftingMachine;
 
-  public Player(Point position, String filePath) throws IOException {
-    super(position, Player.SIZE, filePath);
+  public Player(Point position, String filePath, String name) throws IOException {
+    super(position, Player.SIZE, filePath, name);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
