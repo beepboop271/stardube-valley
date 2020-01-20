@@ -385,18 +385,6 @@ public class World {
                 ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
               }
             }
-          } else if (currentContent instanceof Collectable) {
-            ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
-            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
-            HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
-            HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
-            if (drop != null) {
-              new HoldableStackEntity(drop, null); // TODO: change the pos
-              if (this.player.canPickUp(drop.getContainedHoldable())) {
-                this.player.pickUp(drop);
-                currentTile.setContent(null);
-              }
-            }
           } else if (currentContent instanceof ExtrinsicChest) {
             this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
@@ -441,6 +429,20 @@ public class World {
             
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
+          } else if (currentContent instanceof Collectable) {
+            if (this.playerArea instanceof WorldArea) {
+              ((WorldArea)this.playerArea).setNumForageableTiles(((WorldArea)this.playerArea).getNumForageableTiles()-1);
+            }
+            //TODO: make sure that when you create a new UtilityUsedEvent you check collectable
+            HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
+            HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
+            if (drop != null) {
+              new HoldableStackEntity(drop, null); // TODO: change the pos
+              if (this.player.canPickUp(drop.getContainedHoldable())) {
+                this.player.pickUp(drop);
+                currentTile.setContent(null);
+              }
+            }
           } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
             for (int i = 0; i < bushContents.length; i++) {
               if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {

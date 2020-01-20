@@ -154,6 +154,22 @@ public class IntrinsicTileComponentFactory {
       }
       input.close();
 
+      // load furniture
+      input = new BufferedReader(new FileReader("assets/gamedata/Furniture"));
+      lineToRead = input.readLine();
+      while (lineToRead.length() > 0) {
+        nextLineData = lineToRead.split("\\s+");
+        double[] offsets = {Double.parseDouble(nextLineData[2]), Double.parseDouble(nextLineData[3])};
+        componentToAdd = new Furniture(nextLineData[0], 
+                                      "assets/images"+nextLineData[1] +".png",
+                                      offsets);
+        ((CollectableComponent)componentToAdd).setProduct(0, 
+                          new HoldableDrop(1, 1, nextLineData[0] + "Item"));                                    
+        componentPool.put(componentToAdd.getName(), componentToAdd);
+        lineToRead = input.readLine();  
+      }
+      input.close();
+
       // load buildings
       input = new BufferedReader(new FileReader("assets/gamedata/Buildings"));
       lineToRead = input.readLine();

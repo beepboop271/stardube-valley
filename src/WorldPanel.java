@@ -472,7 +472,7 @@ public class WorldPanel extends JPanel {
             textGraphics.drawString(product.getName() + " - " + product.getDescription(),
                                     this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
             int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
-            for ( int j = 0; j < ingredients.length; j++) {
+            for (int j = 0; j < ingredients.length; j++) {
               Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
               g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
                                                  curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);

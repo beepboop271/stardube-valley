@@ -1,0 +1,7 @@
+StoneItem    10
+CoalItem    100
+CopperItem   75
+IronItem    150
+GoldItem    300
+
+price list format: String itemName, double price
