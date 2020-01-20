@@ -54,11 +54,7 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
   public void setIndex(int index) {
     this.index = index;
   }
-
-  public String getName() {
-    return this.name;
-  }
-
+  
   @Override
   public double getXOffset() {
     return 0;
