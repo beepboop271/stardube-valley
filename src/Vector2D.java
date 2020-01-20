@@ -201,6 +201,11 @@ public class Vector2D implements Cloneable {
     return this;
   }
 
+  /** 
+   * [scale]
+   * Scales this Vector2D according to a multiplier.
+   * @param multiplier The multiplier to which we are scaling this vector.
+   */
   public Vector2D scale(double multiplier) {
     if (length < 0) {
       this.length *= Math.abs(multiplier);

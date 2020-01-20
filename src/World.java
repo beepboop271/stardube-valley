@@ -940,7 +940,7 @@ public class World { //TODO: JAVADOCS
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 4; // TODO: change number to match # of NPCs
+    int totalNPCs = 8; // TODO: change number to match # of NPCs
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];

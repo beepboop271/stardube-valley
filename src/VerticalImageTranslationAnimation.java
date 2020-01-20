@@ -1,5 +1,12 @@
 import java.awt.image.BufferedImage;
 
+/**
+ * [VerticalImageTranslationAnimation] 
+ * an animation for vertical image translation
+ * 2020-01-17
+ * @version 0.1
+ * @author Kevin Qiao
+ */
 public class VerticalImageTranslationAnimation extends ImageTransformationAnimation {
   private Point offset;
 
