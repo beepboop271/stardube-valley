@@ -222,34 +222,35 @@ public class WorldPanel extends JPanel {
             double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
             if (tileContent != null) {
-              drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
-              drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
-              Graphics2D imgGraphics = (Graphics2D)g;
-              int playerW = worldPlayer.getImage().getWidth();
-              int playerH = worldPlayer.getImage().getHeight();
-              int componentW = ((Drawable)tileContent).getImage().getWidth();
-              int componentH = ((Drawable)tileContent).getImage().getHeight();
-              // if the player is overlapping with the tree or building, set a transparency for it
-              if ((tileContent instanceof ExtrinsicTree) &&
-                  (playerScreenPos.x < drawX + componentW) &&
-                  (playerScreenPos.x + playerW > drawX) &&
-                  (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
-                  (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else if ((tileContent instanceof Building) &&
-                         (playerScreenPos.x < drawX + componentW) &&
-                         (playerScreenPos.x + playerW > drawX) &&
-                         (playerScreenPos.y < drawY + componentH) &&
-                         (playerScreenPos.y + playerH > drawY)) {
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-                imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-              } else {
-                imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
-              }     
-              
+              if (tileContent instanceof Drawable) {
+                drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
+                drawY += ((Drawable)tileContent).getYOffset() * Tile.getSize();
+                Graphics2D imgGraphics = (Graphics2D)g;
+                int playerW = worldPlayer.getImage().getWidth();
+                int playerH = worldPlayer.getImage().getHeight();
+                int componentW = ((Drawable)tileContent).getImage().getWidth();
+                int componentH = ((Drawable)tileContent).getImage().getHeight();
+                // if the player is overlapping with the tree or building, set a transparency for it
+                if ((tileContent instanceof ExtrinsicTree) &&
+                    (playerScreenPos.x < drawX + componentW) &&
+                    (playerScreenPos.x + playerW > drawX) &&
+                    (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
+                    (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else if ((tileContent instanceof Building) &&
+                          (playerScreenPos.x < drawX + componentW) &&
+                          (playerScreenPos.x + playerW > drawX) &&
+                          (playerScreenPos.y < drawY + componentH) &&
+                          (playerScreenPos.y + playerH > drawY)) {
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                  imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
+                } else {
+                  imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
+                }     
+              }
             }
 
             if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {

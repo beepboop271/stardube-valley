@@ -433,6 +433,9 @@ public class World {
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
             this.player.setCurrentInteractingMenuObj((Shop)currentContent);
+            
+          } else if (currentContent instanceof Bed) {
+            this.doDayEndActions();
           }
         }
 
@@ -532,6 +535,18 @@ public class World {
   }
 
   public void doDayEndActions() {
+    //- handle the player position, whether they passed out or went to bed and
+    //- whereso they passed out or slept. If they passed out outside of the farm
+    //- area, they go to the clinic instead of the farmhouse and are charged money.
+    Area spawnArea;
+    if ((this.playerArea instanceof FarmArea) || (this.playerArea.getName().equals("Farmhouse"))) {
+      spawnArea = this.locations.get("Farmhouse");
+    } else {
+      spawnArea = this.locations.get("Clinic");
+      this.player.decreaseCurrentFunds(1000);
+    }
+    this.playerArea = this.player.moveToSpawnPosition(this.playerArea, (SpawnableArea)spawnArea);
+    
     this.player.recover(this.inGameNanoTime);
     // day starts at 6 am
     this.inGameNanoTime = 6*60*1_000_000_000L;
@@ -549,7 +564,7 @@ public class World {
       nextArea.doDayEndActions();
     }
 
-    this.player.increaseCurrentFunds(this.player.getFutureFunds()); //TODO: make this a cool menu screen
+    this.player.increaseCurrentFunds(this.player.getFutureFunds());
   }
 
   public void queueEvent(TimedEvent te) {
@@ -657,6 +672,20 @@ public class World {
 
       nextLine = input.readLine();
     }
+    input.close();
+
+    //- add spawning locations
+    input = new BufferedReader(new FileReader("assets/gamedata/SpawningLocations"));
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      ((SpawnBuildingArea)this.locations.get(splitLine[0]))
+                                        .setSpawnLocation(new Point(Double.parseDouble(splitLine[1]),
+                                                                    Double.parseDouble(splitLine[2])));
+
+      nextLine = input.readLine();
+    }
+    input.close();
 
     input.close();
     // add gateway zones
@@ -677,14 +706,13 @@ public class World {
 
     // add shops
     input = new BufferedReader(new FileReader("assets/gamedata/Shops"));
-    String lineToRead = input.readLine();
-    String[] nextLineData;
-    while (lineToRead.length() > 0) {
-      nextLineData = lineToRead.split("\\s+");
-      Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(nextLineData[0]));
-      int x = Integer.parseInt(nextLineData[6]), y = Integer.parseInt(nextLineData[7]);
-      this.locations.get(nextLineData[5]).getMapAt(x, y).setContent(shopToAdd);
-      lineToRead = input.readLine();
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
+      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      this.locations.get(splitLine[5]).getMapAt(x, y).setContent(shopToAdd);
+      nextLine = input.readLine();
     }
     input.close();
   }
@@ -697,12 +725,12 @@ public class World {
 
     
     System.out.println("Initializing " + a.getName());
+    Tile createdTile;
     for (int y = 0; y < a.getHeight(); ++y) {
       //System.out.println("on row " + y);
       nextLine = input.readLine();
       for (int x = 0; x < a.getWidth(); ++x) {
         //System.out.println("on col " + x);
-        
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
@@ -734,11 +762,6 @@ public class World {
           case 'f':
             a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
             break;
-          case 's':
-            Tile createdTile = new GroundTile(x, y);
-            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
-            a.setMapAt(createdTile);
-            break;
           case 'g':
             a.setMapAt(new GroundTile(x, y));
             break;
@@ -747,6 +770,17 @@ public class World {
             break;
           case 'e':
             a.setMapAt(new MineGatewayTile(x, y, MineGatewayTile.ELEVATOR));
+            break;
+          case 's':
+            createdTile = new GroundTile(x, y);
+            createdTile.setContent(IntrinsicTileComponentFactory.getComponent("ShippingContainer"));
+            a.setMapAt(createdTile);
+            break;
+          case 'z':
+            createdTile = new DecorationTile(x, y, 'f');
+            createdTile.setContent(new Bed());
+            a.setMapAt(createdTile);
+            break;
         }
       }
     }

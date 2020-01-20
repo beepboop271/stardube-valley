@@ -53,10 +53,16 @@ MushroomItem                40
 WinterRootItem              30
 JavacakeItem                55           haha more like 3 BILLION
 DaffodilItem                40
-HealthPotionItem            100
+HealthPotionItem            100                              consumables here
 EnergyPotionItem            150
 MasterPotionItem            250
 Mangat'sBlessingItem        5000
 PhenolphthaleinItem         3000
+BurgerItem                  150
+ChickenNoodleSoupItem       225
+CookiesItem                 100
+FriesItem                   125
+PancakesItem                125
+TacoItem                    175
 
 name                    sell price 

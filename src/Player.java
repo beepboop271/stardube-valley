@@ -424,7 +424,7 @@ public class Player extends Moveable {
    * [setImmutable]
    * Sets the immutable state of this player to either true or false.
    * @author Candice Zhang
-   * @param isImmutable The boolean of which the player's immutable state will be.
+   * @param isImmutable Whether or not the player is immutable.
    */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
@@ -583,6 +583,19 @@ public class Player extends Moveable {
   }
 
   /**
+   * [moveToSpawnPosition]
+   * Used if the player dies or passes out and must be moved to
+   * a specified spawn area at a specified spawn location.
+   * @author Joseph Wang
+   * @param spawnLocation  The position to spawn at.
+   * @return Area, the new area that the player is in.
+   */
+  public Area moveToSpawnPosition(Area currentArea, SpawnableArea spawnArea) {
+    Point spawnPos = spawnArea.getSpawnLocation();
+    return currentArea.moveAreas(this, spawnPos, (Area)spawnArea);
+  }
+
+  /**
    * [getInventorySize]
    * Retrieves this player's inventory's total capacity.
    * @author Candice Zhang
@@ -642,7 +655,7 @@ public class Player extends Moveable {
    * @param value The amount to be removed.
    */
   public void decreaseCurrentFunds(int value) {
-    this.currentFunds -= value;
+    this.currentFunds = Math.max(this.currentFunds-value, 0);
   }
 
   /**

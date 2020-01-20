@@ -45,6 +45,8 @@ public abstract class Area {
       return new WorldArea(name, width, height);
     } else if (category.equals("BuildingArea")) {
       return new BuildingArea(name, width, height);
+    } else if (category.equals("SpawnBuildingArea")) {
+      return new SpawnBuildingArea(name, width, height);
     } else if (category.equals("TownArea")) {
       return new TownArea(name, width, height);
     }
@@ -221,6 +223,14 @@ public abstract class Area {
     this.moveables.remove(m);
     g.getDestinationArea().moveables.add(m);
     return g.getDestinationArea();
+  }
+
+  public Area moveAreas(Moveable m, Point position, Area destination) {
+    m.setPos(position);
+    this.moveables.remove(m);
+    destination.moveables.add(m);
+
+    return destination;
   }
 
   public GatewayZone getNeighbourZone(int i) {

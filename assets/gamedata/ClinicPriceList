@@ -1,7 +1,7 @@
-HealthPotionItem 1000
-EnergyPotionItem 1500
-MasterPotionItem 2500
-PhenolphthaleinItem 15000
-Mangat'sBlessingItem 20000
+HealthPotionItem        500
+EnergyPotionItem        750
+MasterPotionItem        1250
+PhenolphthaleinItem     15000
+Mangat'sBlessingItem    20000
 
 price list format: String itemName, double price
