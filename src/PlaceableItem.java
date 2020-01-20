@@ -32,7 +32,6 @@ public class PlaceableItem extends Item implements Placeable {
    */
   @Override
   public TileComponent placeItem() {
-    //TODO: this is scuffed
     if (this.itemToPlace.equals("Chest")) {
       return new ExtrinsicChest();
     } else {

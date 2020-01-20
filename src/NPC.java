@@ -25,7 +25,7 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
     this.index = index;
     this.name = name;
   }
-
+  
   public String getDialogue(int index) {
     return this.dialogueRotation[index];
   }
