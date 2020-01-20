@@ -23,6 +23,7 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
     this.name = name;
     this.profileDescription = profileDescription;
     this.index = index;
+    this.name = name;
   }
 
   public String getDialogue(int index) {
@@ -48,6 +49,14 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
 
   public int getIndex() {
     return this.index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getName() {
+    return this.name;
   }
 
   @Override

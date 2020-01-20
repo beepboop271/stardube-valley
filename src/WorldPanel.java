@@ -61,6 +61,7 @@ public class WorldPanel extends JPanel {
   private int elevatorX, elevatorY;
   private int socialX, socialY, socialW, socialCellH;
   private int menuX, menuY, menuW, menuH;
+  private int dialogueX, dialogueY, dialogueW, dialogueH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
   private int chestMenuChestY;
@@ -84,6 +85,11 @@ public class WorldPanel extends JPanel {
     this.menuH = 8*(WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE);
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
+
+    this.dialogueW = menuW;
+    this.dialogueH = menuH/2;
+    this.dialogueX = (width-this.dialogueW)/2;
+    this.dialogueY = (height-this.dialogueH)/2;
 
     this.inventoryMenuInventoryY = this.menuY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
@@ -462,7 +468,7 @@ public class WorldPanel extends JPanel {
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
 
-        if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingMachine) {
+        if (worldPlayer.getCurrentInteractingObj() instanceof CraftingMachine) {
           CraftingMachine craftingMachine = worldPlayer.getCraftingMachine();
           String[] products = craftingMachine.getProducts();
           g.setFont(this.TITLE_FONT);
@@ -498,8 +504,8 @@ public class WorldPanel extends JPanel {
             }
           }
 
-        } else if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingStore) {        
-          CraftingStore craftingStore = (CraftingStore)(worldPlayer.getCurrentInteractingMenuObj());
+        } else if (worldPlayer.getCurrentInteractingObj() instanceof CraftingStore) {        
+          CraftingStore craftingStore = (CraftingStore)(worldPlayer.getCurrentInteractingObj());
           String[] storeItems = craftingStore.getItems();
           g.setColor(WorldPanel.MENU_BKGD_COLOR);
           g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
@@ -621,7 +627,7 @@ public class WorldPanel extends JPanel {
             
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
-        Shop shop = (Shop)(worldPlayer.getCurrentInteractingMenuObj());
+        Shop shop = (Shop)(worldPlayer.getCurrentInteractingObj());
         String[] shopItems = shop.getItems();
         g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
@@ -674,7 +680,7 @@ public class WorldPanel extends JPanel {
         }
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
-        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingMenuObj());
+        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingObj());
         g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
@@ -944,6 +950,16 @@ public class WorldPanel extends JPanel {
       g.setColor(Color.BLACK);
       descriptionGraphics.drawString(name, stringX, stringY);
       descriptionGraphics.drawString(description, stringX, stringY+stringH+5);
+    }
+
+    if (worldPlayer.getCurrentInteractingObj() instanceof NPC) {
+      Graphics2D dialogueGraphics = (Graphics2D)g;
+      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      g.fillRect(dialogueX, dialogueY, dialogueW, dialogueH);
+      g.setColor(Color.BLACK);
+      NPC currentNPC = ((NPC)worldPlayer.getCurrentInteractingObj());
+      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+10, dialogueY+20);
+      dialogueGraphics.drawString(currentNPC.getDialogue(currentNPC.getIndex()), dialogueX+10, dialogueY+60);
     }
   }
 

@@ -398,7 +398,7 @@ public class World { //TODO: JAVADOCS
               }
             }
           } else if (currentContent instanceof ExtrinsicChest) {
-            this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
+            this.player.setCurrentInteractingObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
             
           } else if (currentContent instanceof ExtrinsicMachine) {
@@ -437,9 +437,9 @@ public class World { //TODO: JAVADOCS
             }
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
-            this.player.setCurrentInteractingMenuObj((Shop)currentContent);
+            this.player.setCurrentInteractingObj((Shop)currentContent);
           } else if (currentContent instanceof CraftingStore) {
-            this.player.setCurrentInteractingMenuObj((CraftingStore)currentContent);
+            this.player.setCurrentInteractingObj((CraftingStore)currentContent);
             this.player.enterMenu(Player.CRAFTING_PAGE);
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
@@ -992,7 +992,7 @@ public class World { //TODO: JAVADOCS
   public void incrementPlayerAmountScrolled() {
     boolean shouldIncrese = false;
     if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE) &&
-        ((this.player.getAmountScrolled()+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)(this.player.getCurrentInteractingMenuObj())).getItems().length)) {
+        ((this.player.getAmountScrolled()+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)(this.player.getCurrentInteractingObj())).getItems().length)) {
       shouldIncrese = true;
     } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE) &&
               ((this.player.getAmountScrolled()+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.player.getCraftingMachine().getProducts().length)) {
