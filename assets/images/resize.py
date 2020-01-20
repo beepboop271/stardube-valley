@@ -9,11 +9,13 @@ image_folder = os.getcwd()+"\\"
 # print glob.glob(image_folder+"forageables\\*.png")
 # print glob.glob(image_folder+"ores\\*.png")
 # print glob.glob(image_folder+"ores\\*Item.png")
+#print glob.glob(image_folder+"player\\**\\*.png")
 
-image_paths_to_resize = glob.glob(image_folder+"holdables\\*.png")
+image_paths_to_resize = glob.glob(image_folder+"npcs\\UncleZhang\\**\\*.png")
+#image_paths_to_resize = glob.glob(image_folder+"npcs\\Allen\\allen standing.png")
 for path in image_paths_to_resize:
     img = Image.open(path)
     print path
-    print (img.width/4, img.height/4)
-    img.resize((img.width/4, img.height/4), Image.NEAREST) \
-       .save(path[:-4]+".Small.png")
+    print (img.width*4, img.height*4)
+    img.resize((img.width*4, img.height*4), Image.NEAREST) \
+       .save(path[:-4]+".png")

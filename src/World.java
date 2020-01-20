@@ -8,7 +8,6 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Random;
 
 /**
  * [World]
@@ -19,7 +18,6 @@ import java.util.Random;
  */
 
 public class World {
-  private Random random = new Random();
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -47,8 +45,6 @@ public class World {
   private Area playerArea;
   private Player player;
   private MineArea mines;
-  private NPC[] npcs = new NPC[3]; //TODO: change NPC numbers to match # of NPCs
-  private Area[] npcAreas = new Area[3];
   private long lastUpdateTime = System.nanoTime();
   private long inGameNanoTime;
   private long inGameDay;
@@ -148,9 +144,9 @@ public class World {
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         } else if (nextMoveable instanceof NPC) { 
-          this.npcAreas[((NPC)nextMoveable).getIndex()] = a.moveAreas(nextMoveable,
-                                                        nextMoveable.getIntersectingTiles(move).iterator());
-          this.emplaceFutureEvent(this.random.nextLong(), new AutoMovementEvent((NPC)nextMoveable));
+          // this.npcAreas[((NPC)nextMoveable).getIndex()] = a.moveAreas(nextMoveable,
+          //                                               nextMoveable.getIntersectingTiles(move).iterator());
+          a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
           nextMoveable.updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
@@ -177,24 +173,24 @@ public class World {
     if (collideDirection == World.EAST) {
       // subtract 0.0001 to prevent rounding from counting it as still colliding
       m.translatePos(
-          m.getPos().round().x + 0.5-Player.SIZE - m.getPos().x - 0.0001,
+          m.getPos().round().x + 0.5-m.getSize() - m.getPos().x - 0.0001,
           0
       );
     } else if (collideDirection == World.WEST) {
       m.translatePos(
-          m.getPos().round().x - 0.5+Player.SIZE - m.getPos().x,
+          m.getPos().round().x - 0.5+m.getSize() - m.getPos().x,
           0
       );
     } else if (collideDirection == World.NORTH) {
       m.translatePos(
           0,
-          m.getPos().round().y - 0.5+Player.SIZE - m.getPos().y
+          m.getPos().round().y - 0.5+m.getSize() - m.getPos().y
       );
     } else if (collideDirection == World.SOUTH) {
       // subtract 0.0001 to prevent rounding from counting it as still colliding
       m.translatePos(
           0,
-          m.getPos().round().y + 0.5-Player.SIZE - m.getPos().y - 0.0001
+          m.getPos().round().y + 0.5-m.getSize() - m.getPos().y - 0.0001
       );
     }
   }
@@ -556,21 +552,27 @@ public class World {
           }
         }
       } else if (event instanceof AutoMovementEvent) {
-        int randDir = random.nextInt(4);
-        NPC currentNPC = ((NPC)event.getSource());
-        if (randDir == 0 && currentNPC.getVerticalSpeed() != -1) {
-          currentNPC.setVerticalSpeed(-1);
-          currentNPC.setOrientation(World.NORTH);
-        } else if (randDir == 1 && currentNPC.getHorizontalSpeed() != 1) {
-          currentNPC.setHorizontalSpeed(1);
-          currentNPC.setOrientation(World.EAST);
-        } else if (randDir == 2 && currentNPC.getVerticalSpeed() != 1) {
-          currentNPC.setVerticalSpeed(1);
-          currentNPC.setOrientation(World.SOUTH);
-        } else if (currentNPC.getHorizontalSpeed() != -1) {
-          currentNPC.setHorizontalSpeed(-1);
-          currentNPC.setOrientation(World.WEST);
+        int nextDirection = (int)(Math.random()*4);
+        NPC npcToMove = ((NPC)event.getSource());
+        if (nextDirection == 0 && npcToMove.getVerticalSpeed() != -1) {
+          npcToMove.setHorizontalSpeed(0);
+          npcToMove.setVerticalSpeed(-1);
+          npcToMove.setOrientation(World.NORTH);
+        } else if (nextDirection == 1 && npcToMove.getHorizontalSpeed() != 1) {
+          npcToMove.setHorizontalSpeed(1);
+          npcToMove.setVerticalSpeed(0);
+          npcToMove.setOrientation(World.EAST);
+        } else if (nextDirection == 2 && npcToMove.getVerticalSpeed() != 1) {
+          npcToMove.setHorizontalSpeed(0);
+          npcToMove.setVerticalSpeed(1);
+          npcToMove.setOrientation(World.SOUTH);
+        } else if (npcToMove.getHorizontalSpeed() != -1) {
+          npcToMove.setHorizontalSpeed(-1);
+          npcToMove.setVerticalSpeed(0);
+          npcToMove.setOrientation(World.WEST);
         }
+        this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
+                                new AutoMovementEvent(npcToMove));
       }
     }
   }
@@ -899,16 +901,23 @@ public class World {
     String[] nextLineData = lineToRead.split("\\s+");
     String name;
     String[] dialogue = new String[5];
+    Area npcArea;
+    NPC newNPC;
     for (int i = 0; i < 3; i++) { // TODO: change number to match # of NPCs
       name = nextLineData[0];
-      this.npcAreas[i] = this.locations.get(nextLineData[1]);
+      npcArea = this.locations.get(nextLineData[1]);
       for (int j = 0; j < 5; j++) {
         lineToRead = input.readLine();
         dialogue[j] = lineToRead;
       }
-      this.npcs[i] = new NPC(new Point(3, 3), "assets/gamedata/NPCImages", "npcs/"+name, i, 
-                            dialogue);
-      this.npcAreas[i].addMoveable(this.npcs[i]);
+      newNPC = new NPC(new Point(3, 3),
+                       "assets/gamedata/NPCImages",
+                       "npcs/"+name,
+                       i, 
+                       dialogue);
+      npcArea.addMoveable(newNPC);
+      this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
+                              new AutoMovementEvent(newNPC));
       lineToRead = input.readLine();
       nextLineData = lineToRead.split("\\s+");
     }
@@ -980,9 +989,5 @@ public class World {
    */
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
-  }
-
-  public Area[] getNPCAreas() {
-    return this.npcAreas;
   }
 }

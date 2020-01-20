@@ -224,15 +224,21 @@ public class WorldPanel extends JPanel {
       }
     }
 
+    this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
+    this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
+
     Iterator<Moveable> moveables = playerArea.getMoveables();
+    double nextX, nextY;
     while (moveables.hasNext()) {
-      Moveable currentMoveable = moveables.next(); // TODO: rename playerScreenPos, also clarify use of NPC.SIZE?
-      this.playerScreenPos.x = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+0.5-(NPC.SIZE))+originX);
-      this.playerScreenPos.y = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+0.5-(NPC.SIZE))+originY);
-      g.setColor(Color.BLACK);
-      g.fillRect(this.getWidth()/2, this.getHeight()/2, 1, 1);
-      g.drawImage(currentMoveable.getImage(), (int)this.playerScreenPos.x, (int)(this.playerScreenPos.y-(64*NPC.SIZE)), null);
+      Moveable currentMoveable = moveables.next();
+      nextX = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX)+originX);
+      nextY = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY-1)+originY);
+      g.drawImage(currentMoveable.getImage(), (int)nextX, (int)nextY, null);
     }
+
+    g.setColor(Color.RED);
+    g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
+               (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
 
     // draw tile components
     screenTileX = 0;

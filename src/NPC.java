@@ -8,8 +8,8 @@ import java.io.IOException;
  */
 
 public class NPC extends Moveable{
-  private static final double MAX_SPEED = 6;
-  public static final double SIZE = 0.125;
+  private static final double MAX_SPEED = 3;
+  public static final double SIZE = 0.35;
   private int index;
   private String[] dialogueRotation = new String[5]; // possibly change size?
 
@@ -18,8 +18,6 @@ public class NPC extends Moveable{
     super(position, SIZE, filePath, name);
     this.dialogueRotation = dialogueRotation;
     this.index = index;
-    this.setVerticalSpeed(-1);
-    this.setHorizontalSpeed(0);
   }
 
   public String getDialogue(int index) {
