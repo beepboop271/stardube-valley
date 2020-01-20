@@ -282,16 +282,18 @@ public class StardubeEventListener implements KeyListener,
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
           if (selectedItem instanceof UtilityTool) {
-            this.stardubePlayer.setImmutable(true);
-            // TODO: play animation
-            // scuffed line
-            this.stardubeWorld.emplaceFutureEvent(
-                (long)(0.5*1_000_000_000),
-                new UtilityToolUsedEvent(
-                    (UtilityTool)selectedItem,
-                    ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
-                )
-            );
+            if (this.stardubePlayer.getEnergy() > 0) {
+              this.stardubePlayer.setImmutable(true);
+              // TODO: play animation
+              // scuffed line
+              this.stardubeWorld.emplaceFutureEvent(
+                  (long)(0.5*1_000_000_000),
+                  new UtilityToolUsedEvent(
+                      (UtilityTool)selectedItem,
+                      ((UtilityTool)selectedItem).getUseLocation(this.stardubePlayer.getSelectedTile())[0]
+                  )
+              );
+            }
           } else if (selectedItem instanceof Placeable) {
             //System.out.println("Trying to place!");
             this.stardubeWorld.emplaceFutureEvent(
@@ -310,11 +312,13 @@ public class StardubeEventListener implements KeyListener,
         if (this.stardubePlayer.getSelectedItem() != null) {
           Holdable selectedItem = this.stardubePlayer.getSelectedItem().getContainedHoldable();
           if (selectedItem instanceof FishingRod) { // is casting
-            // TODO: play animation
-            if (((FishingRod)selectedItem).getCurrentStatus() == FishingRod.CASTING_STATUS) {
-              this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
-                                new CastingEndedEvent((FishingRod)selectedItem));
-              ((FishingRod)selectedItem).setCurrentStatus(FishingRod.IDLING_STATUS);
+            if (this.stardubePlayer.getEnergy() > 0) {
+              // TODO: play animation
+              if (((FishingRod)selectedItem).getCurrentStatus() == FishingRod.CASTING_STATUS) {
+                this.stardubeWorld.emplaceFutureEvent((long)(0.5*1_000_000_000),
+                                  new CastingEndedEvent((FishingRod)selectedItem));
+                ((FishingRod)selectedItem).setCurrentStatus(FishingRod.IDLING_STATUS);
+              }
             }
           }
         }
