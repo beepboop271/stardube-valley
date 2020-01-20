@@ -692,7 +692,7 @@ public class WorldPanel extends JPanel {
     g.drawString("E", this.getWidth()-60, this.getHeight()-20);
     
     // - health
-    if ((worldToDisplay.getPlayerArea() instanceof MineArea) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
+    if ((worldToDisplay.getPlayerArea() instanceof MineLevel) || (worldPlayer.getHealth() < worldPlayer.getMaxHealth())) {
       int healthX = this.getWidth()-140;
       int healthH = Math.max(0, (int)Math.round(worldPlayer.getHealth()/1.0/worldPlayer.getMaxHealth()*200));
       int healthY = this.getHeight()-50-healthH;

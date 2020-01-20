@@ -136,6 +136,9 @@ public class MineLevel extends Area {
                                                                        this.level/MineLevel.LEVELS_PER_TIER)];
                     if (choices.length > 0) {
                       level.addHarvestableAt(realX, realY, choices[(int)(Math.random()*choices.length)]);
+                    } else {
+                      level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[Math.min(MineLevel.METAL_ORES.length,
+                                                                                         this.level/MineLevel.LEVELS_PER_TIER)]);
                     }
                   } else {                    //     90% to be an ore
                     level.addHarvestableAt(realX, realY, MineLevel.METAL_ORES[Math.min(MineLevel.METAL_ORES.length,
