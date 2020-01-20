@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MineLevel extends Area {
+public class MineLevel extends Area { //TODO: JAVADOCS
   private static MineLevelComponent[] levelComponents;
   private static int numLevelComponents;
   private static boolean componentsInitialized = false;
@@ -120,6 +120,7 @@ public class MineLevel extends Area {
       int realX, realY;
       int i = -1;
       int numLaddersCreated = 0;
+      boolean aaaaaaaaaaaaaaa = false;
       while (++i < this.components.length && this.components[i] != null) {
         offset = this.componentPoints[i];
         for (int y = 0; y < this.components[i].getHeight(); ++y) {
@@ -155,6 +156,11 @@ public class MineLevel extends Area {
                 if (Math.random() < 0.06 && this.level != MineArea.NUM_LEVELS-1) {
                   ++numLaddersCreated;
                   level.addGateway(new Gateway(realX, realY, Gateway.OMNIDIRECTIONAL, true));
+                }
+              } else {
+                if (Math.random() < 0.1 && !aaaaaaaaaaaaaaa) {
+                  level.addMoveable(new SlimeEnemy(new Point(realX, realY)));
+                  aaaaaaaaaaaaaaa = true;
                 }
               }
             }

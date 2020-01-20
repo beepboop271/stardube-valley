@@ -7,7 +7,7 @@ import javax.swing.JFrame;
  * @author Kevin Qiao
  */
 @SuppressWarnings("serial")
-public class StardubeFrame extends JFrame {
+public class StardubeFrame extends JFrame { //TODO: JAVADOCS
   public StardubeFrame(World stardubeWorld) {
     super("Stardube Valley");
     this.setContentPane(new WorldPanel(stardubeWorld, 1408, 768));

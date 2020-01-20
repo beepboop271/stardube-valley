@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class MineArea extends Area {
+public class MineArea extends Area { //TODO: JAVADOCS
   public static final int NUM_LEVELS = 60;
 
   private MineLevel[] levels;

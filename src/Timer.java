@@ -1,4 +1,4 @@
-public class Timer {
+public class Timer { //TODO: JAVADOCS
   private long startTime;
   private long duration;
 

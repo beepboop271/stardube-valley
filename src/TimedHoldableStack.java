@@ -6,7 +6,7 @@
  */
 
 
-public class TimedHoldableStack extends HoldableStack {
+public class TimedHoldableStack extends HoldableStack { //TODO: JAVADOCS
   private long timeNeeded;
   public TimedHoldableStack(int quantity, String holdableToDrop, long timeNeeded) {
     super(holdableToDrop, quantity);

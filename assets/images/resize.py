@@ -11,7 +11,7 @@ image_folder = os.getcwd()+"\\"
 # print glob.glob(image_folder+"ores\\*Item.png")
 #print glob.glob(image_folder+"player\\**\\*.png")
 
-image_paths_to_resize = glob.glob(image_folder+"npcs\\UncleZhang\\**\\*.png")
+image_paths_to_resize = glob.glob(image_folder+"npcs\\Candice\\**\\*.png")
 #image_paths_to_resize = glob.glob(image_folder+"npcs\\Allen\\allen standing.png")
 for path in image_paths_to_resize:
     img = Image.open(path)

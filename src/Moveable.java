@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
  * @version 0.2
  * @author Kevin Qiao, Candice Zhang, Paula Yuan
  */
-public abstract class Moveable implements Drawable {
+public abstract class Moveable implements Drawable { //TODO: JAVADOCS
   private Point position;
   private Vector2D velocity;
   private double size;

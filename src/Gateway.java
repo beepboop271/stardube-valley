@@ -1,4 +1,4 @@
-public class Gateway {
+public class Gateway { //TODO: JAVADOCS
   public static final int OMNIDIRECTIONAL = 5;
   public static final int ONE_WAY = 6;
 

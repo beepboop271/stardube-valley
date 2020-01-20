@@ -7,15 +7,15 @@ import java.io.IOException;
  * @author Paula Yuan
  */
 
-public class NPC extends LoopAnimatedMoveable {
+public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
   private static final double MAX_SPEED = 1;
   public static final double SIZE = 0.35;
   private int index;
   private String[] dialogueRotation = new String[5]; // possibly change size?
 
-  public NPC(Point position, String filePath, String name, int index,
+  public NPC(Point position, String name, int index,
             String[] dialogueRotation) throws IOException {
-    super(position, SIZE, filePath, name);
+    super(position, SIZE, "npcs/"+name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
     this.dialogueRotation = dialogueRotation;
     this.index = index;
   }

@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 class Button {
   private int x, y, w, h;
-  private BufferedImage image;
+  private BufferedImage image; //TODO: JAVADOCS
 
   Button(int x, int y, String imagePath) throws IOException {
     this.x = x;
