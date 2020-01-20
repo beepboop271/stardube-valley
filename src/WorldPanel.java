@@ -100,7 +100,7 @@ public class WorldPanel extends JPanel {
     this.elevatorX = this.menuX+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*4;
     this.elevatorY = this.menuY+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*3;
 
-    this.menuButtonImages = new BufferedImage[5];
+    this.menuButtonImages = new BufferedImage[4];
 
     try {
       BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Buttons"));

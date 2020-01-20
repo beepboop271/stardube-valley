@@ -70,9 +70,9 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     this.inventory[5] = new HoldableStack("ChestItem", 1);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
     this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("Kevin's-Ethics-Assignment", 99);
-    this.inventory[9] = new HoldableStack("Joseph's-Compsci-Mark", 99);
-    this.inventory[10] = new HoldableStack("Chair-NULL", 99);
+    this.inventory[8] = new HoldableStack("CopperBarItem", 10);
+    this.inventory[9] = new HoldableStack("IronBarItem", 10);
+    this.inventory[10] = new HoldableStack("GoldBarItem", 10);
   }
 
   @Override
@@ -170,11 +170,21 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     if (!(this.canPickUp(HoldableFactory.getHoldable(product)))) {
       return false;
     }
-    if (!(this.craftingMachine.hasProduct(product))) {
-      return false;
-    }
+    Recipe recipe;
 
-    Recipe recipe = this.craftingMachine.recipeOf(product);
+    if (this.currentInteractingMenuObj instanceof CraftingStore) {
+      if (!(((CraftingStore)this.getCurrentInteractingMenuObj()).hasItem(product))) {
+        return false;
+      }
+
+      recipe = ((CraftingStore)this.getCurrentInteractingMenuObj()).recipeOf(product);
+    } else {
+      if (!(this.craftingMachine.hasProduct(product))) {
+        return false;
+      }
+
+      recipe = this.craftingMachine.recipeOf(product);
+    }
 
     if (this.currentFunds < recipe.getPrice()) {
       return false;
@@ -202,6 +212,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     }
     if (recipe == null) {
       return;
+      
     }
 
     String[] ingredients = recipe.getIngredients();
@@ -407,7 +418,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
         if (this.inventory[i].getContainedHoldable() == item) {
-          if (this.inventory[i].getQuantity() <= 1) {
+          if (this.inventory[i].getQuantity() <= amount) {
             this.inventory[i] = null;
           } else {
             this.inventory[i].subtractHoldables(amount);

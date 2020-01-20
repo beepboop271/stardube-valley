@@ -152,10 +152,6 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_L:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(1, 0));
         break;
-      case KeyEvent.VK_Q:
-        this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("ToolStore"));
-        this.stardubePlayer.enterMenu(Player.CRAFTING_PAGE);
-        break;
     }
   }
 
@@ -351,8 +347,15 @@ public class StardubeEventListener implements KeyListener,
         
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         if (this.worldPanel.isPosInCraftButton((int)this.mousePos.x, (int)this.mousePos.y)) {
-          String product = this.stardubePlayer.getCraftingMachine().getProducts()[
+          String product;
+          if ((this.stardubePlayer.hasInteractingMenuObj()) && 
+              (this.stardubePlayer.getCurrentInteractingMenuObj() instanceof CraftingStore)) {
+            product = ((CraftingStore)this.stardubePlayer.getCurrentInteractingMenuObj()).getItems()[
+              this.worldPanel.craftingItemIdxAt((int)this.mousePos.y) + this.stardubePlayer.getAmountScrolled()];
+          } else {
+            product = this.stardubePlayer.getCraftingMachine().getProducts()[
                            this.worldPanel.craftingItemIdxAt((int)this.mousePos.y) + this.stardubePlayer.getAmountScrolled()];
+          }
           this.stardubePlayer.craft(product);
         }
 

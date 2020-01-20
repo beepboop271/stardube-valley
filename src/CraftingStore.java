@@ -35,7 +35,6 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
       String lineToRead = input.readLine();
       String[] nextLineData;
       while (!(lineToRead.equals("end"))) {
-
         nextLineData = lineToRead.split("\\s+");
         String productName = nextLineData[0];
         String[] ingredientData;

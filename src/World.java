@@ -250,7 +250,7 @@ public class World {
           String requiredTool = ic.getRequiredTool();
                   
           if (requiredTool.equals("Any")
-                || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
+                || requiredTool.equals(((Tool)toolEvent.getHoldableUsed()).getType())) {
             // TODO: play breaking animation?
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
@@ -282,25 +282,25 @@ public class World {
              //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
-          if (toolEvent.getHoldableUsed().getName().equals("WateringCan")
+          if (((Tool)toolEvent.getHoldableUsed()).getType().equals("WateringCan")
                 &&  (((GroundTile)selectedTile).getTilledStatus() == true)) {
             ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
             ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
 
           } else if ((this.playerArea instanceof FarmArea)
                      && (selectedTile.getContent() == null)) {
-            if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+            if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Hoe")) {
               if (this.playerArea instanceof FarmArea) {
                 ((GroundTile)selectedTile).setTilledStatus(true);
                 ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
               }
-            } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+            } else if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Pickaxe")) {
               if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) { 
                 ((GroundTile)selectedTile).setTilledStatus(false); 
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
             }
-          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+          } else if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Pickaxe")) {
               if ((this.playerArea instanceof FarmArea)
                     && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
@@ -429,7 +429,9 @@ public class World {
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
             this.player.setCurrentInteractingMenuObj((Shop)currentContent);
-            
+          } else if (currentContent instanceof CraftingStore) {
+            this.player.setCurrentInteractingMenuObj((CraftingStore)currentContent);
+            this.player.enterMenu(Player.CRAFTING_PAGE);
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
           } else if (currentContent instanceof Collectable) {
@@ -769,6 +771,17 @@ public class World {
       Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
       int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
       this.locations.get(splitLine[5]).getMapAt(x, y).setContent(shopToAdd);
+      nextLine = input.readLine();
+    }
+    input.close();
+
+    input = new BufferedReader(new FileReader("assets/gamedata/CraftingStores"));
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      CraftingStore storeToAdd = (CraftingStore)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
+      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      this.locations.get(splitLine[5]).getMapAt(x, y).setContent(storeToAdd);
       nextLine = input.readLine();
     }
     input.close();
