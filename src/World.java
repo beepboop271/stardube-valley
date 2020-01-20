@@ -245,7 +245,7 @@ public class World {
         this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
         Tile selectedTile = this.playerArea.getMapAt(toolEvent.getLocationUsed());
 
-        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1); 
+        Point treePos = toolEvent.getLocationUsed().translateNew(2, 1);
         Tile treeTile;
         if (this.playerArea.inMap(treePos)) {
           treeTile = this.playerArea.getMapAt(treePos);
@@ -281,7 +281,6 @@ public class World {
                   
           if (requiredTool.equals("Any")
                 || requiredTool.equals(((Tool)toolEvent.getHoldableUsed()).getType())) {
-    
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
               if (ec instanceof ExtrinsicTree) {
@@ -465,7 +464,7 @@ public class World {
             HoldableDrop[] currentProducts = ((Collectable)currentContent).getProducts();
             HoldableStack drop = (currentProducts[0].resolveDrop(this.luckOfTheDay));
             if (drop != null) {
-              new HoldableStackEntity(drop, null);
+              new HoldableStackEntity(drop, null); 
               if (this.player.canPickUp(drop.getContainedHoldable())) {
                 this.player.pickUp(drop);
                 currentTile.setContent(null);

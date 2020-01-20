@@ -596,7 +596,7 @@ public class WorldPanel extends JPanel {
         }
         // draw player
         g.setColor(Color.RED);
-        g.drawRect(playerMapX-playerMapSize/2, playerMapY-playerMapSize/2, playerMapSize, playerMapSize);
+        g.fillRect(playerMapX-playerMapSize/2, playerMapY-playerMapSize/2, playerMapSize, playerMapSize);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         int startIdx = worldPlayer.getAmountScrolled();
