@@ -397,7 +397,7 @@ public class World { //TODO: JAVADOCS
               }
             }
           } else if (currentContent instanceof ExtrinsicChest) {
-            this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
+            this.player.setCurrentInteractingObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
             
           } else if (currentContent instanceof ExtrinsicMachine) {
@@ -436,9 +436,9 @@ public class World { //TODO: JAVADOCS
             }
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
-            this.player.setCurrentInteractingMenuObj((Shop)currentContent);
+            this.player.setCurrentInteractingObj((Shop)currentContent);
           } else if (currentContent instanceof CraftingStore) {
-            this.player.setCurrentInteractingMenuObj((CraftingStore)currentContent);
+            this.player.setCurrentInteractingObj((CraftingStore)currentContent);
             this.player.enterMenu(Player.CRAFTING_PAGE);
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
@@ -911,7 +911,7 @@ public class World { //TODO: JAVADOCS
     String[] dialogue = new String[5];
     Area npcArea;
     NPC newNPC;
-    for (int i = 0; i < 3; i++) { // TODO: change number to match # of NPCs
+    for (int i = 0; i < 4; i++) { // TODO: change number to match # of NPCs
       name = nextLineData[0];
       npcArea = this.locations.get(nextLineData[1]);
       for (int j = 0; j < 5; j++) {
@@ -985,6 +985,16 @@ public class World { //TODO: JAVADOCS
 
   public MineArea getMines() {
     return this.mines;
+  }
+
+  /**
+   * [getArea]
+   * Retrieves the Area with the given name.
+   * @param name String that represents the area's name.
+   * @return     The Area with the given name.
+   */
+  public Area getArea(String name) {
+    return this.locations.get(name);
   }
 
   /**

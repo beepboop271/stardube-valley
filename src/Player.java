@@ -35,7 +35,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
   private int energy, maxEnergy;
   private int currentMenuPage;
   private int amountScrolled;
-  private Object currentInteractingMenuObj; // TOOD: rename, if possible :))
+  private Object currentInteractingObj; // TOOD: rename, if possible :))
   private CraftingMachine craftingMachine;
 
   /**
@@ -57,7 +57,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.energy = 270;
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
-    this.currentInteractingMenuObj = null;
+    this.currentInteractingObj = null;
     this.currentFunds = 5_000_000;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
@@ -172,12 +172,12 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
     Recipe recipe;
 
-    if (this.currentInteractingMenuObj instanceof CraftingStore) {
-      if (!(((CraftingStore)this.getCurrentInteractingMenuObj()).hasItem(product))) {
+    if (this.currentInteractingObj instanceof CraftingStore) {
+      if (!(((CraftingStore)this.getCurrentInteractingObj()).hasItem(product))) {
         return false;
       }
 
-      recipe = ((CraftingStore)this.getCurrentInteractingMenuObj()).recipeOf(product);
+      recipe = ((CraftingStore)this.getCurrentInteractingObj()).recipeOf(product);
     } else {
       if (!(this.craftingMachine.hasProduct(product))) {
         return false;
@@ -205,10 +205,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
 
     Recipe recipe = null;
-    if (this.currentInteractingMenuObj instanceof CraftingMachine) {
+    if (this.currentInteractingObj instanceof CraftingMachine) {
       recipe = this.craftingMachine.recipeOf(product);
-    } else if (this.currentInteractingMenuObj instanceof CraftingStore) {
-      recipe = ((CraftingStore)(this.currentInteractingMenuObj)).recipeOf(product);
+    } else if (this.currentInteractingObj instanceof CraftingStore) {
+      recipe = ((CraftingStore)(this.currentInteractingObj)).recipeOf(product);
     }
     if (recipe == null) {
       return;
@@ -357,7 +357,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.isImmutable = false;
     this.currentMenuPage = Player.NO_MENU;
     this.amountScrolled = 0;
-    this.currentInteractingMenuObj = null;
+    this.currentInteractingObj = null;
   }
 
   public int getCurrentMenuPage() {
@@ -370,7 +370,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
 
   public void incrementAmountScrolled() {
     if ((this.currentMenuPage == Player.SHOP_PAGE) &&
-        ((this.amountScrolled+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)this.currentInteractingMenuObj).getItems().length)) {
+        ((this.amountScrolled+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)this.currentInteractingObj).getItems().length)) {
       this.amountScrolled += 1;
     } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) &&
               ((this.amountScrolled+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.craftingMachine.getProducts().length)) {
@@ -663,16 +663,16 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.inventorySize = size;
   }
 
-  public Object getCurrentInteractingMenuObj() {
-    return this.currentInteractingMenuObj;
+  public Object getCurrentInteractingObj() {
+    return this.currentInteractingObj;
   }
 
-  public void setCurrentInteractingMenuObj(Object component) {
-    this.currentInteractingMenuObj = component;
+  public void setCurrentInteractingObj(Object component) {
+    this.currentInteractingObj = component;
   }
 
-  public boolean hasInteractingMenuObj() {
-    return !(this.currentInteractingMenuObj == null);
+  public boolean hasInteractingObj() {
+    return !(this.currentInteractingObj == null);
   }
 
   /**

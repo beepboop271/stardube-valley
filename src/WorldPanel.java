@@ -59,6 +59,7 @@ public class WorldPanel extends JPanel {
   private int craftX, craftY, craftW, craftItemH;
   private int elevatorX, elevatorY;
   private int menuX, menuY, menuW, menuH;
+  private int dialogueX, dialogueY, dialogueW, dialogueH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
   private int chestMenuChestY;
@@ -82,6 +83,11 @@ public class WorldPanel extends JPanel {
     this.menuH = 8*(WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE);
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
+
+    this.dialogueW = menuW;
+    this.dialogueH = menuH/2;
+    this.dialogueX = (width-this.dialogueW)/2;
+    this.dialogueY = (height-this.dialogueH)/2;
 
     this.inventoryMenuInventoryY = this.menuY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
@@ -239,9 +245,9 @@ public class WorldPanel extends JPanel {
       g.drawImage(currentMoveable.getImage(), (int)nextX, (int)nextY, null);
     }
 
-    g.setColor(Color.RED);
-    g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
-               (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
+    //g.setColor(Color.RED);
+    //g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
+    //           (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
 
     // draw tile components
     screenTileX = 0;
@@ -304,7 +310,7 @@ public class WorldPanel extends JPanel {
 
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
-    if (this.playerScreenPos.y > this.getHeight()/2){
+    if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2){
       this.hotbarY = WorldPanel.INVENTORY_CELLGAP*2;
     } else {
       this.hotbarY = this.getHeight()-WorldPanel.INVENTORY_CELLSIZE-WorldPanel.INVENTORY_CELLGAP*4;
@@ -383,7 +389,7 @@ public class WorldPanel extends JPanel {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       g.setColor(WorldPanel.MENU_BKGD_COLOR);
-      if ((worldPlayer.getCurrentMenuPage() >= 0 && worldPlayer.getCurrentMenuPage() <= 4)) {
+      if ((worldPlayer.getCurrentMenuPage() >= 0) && (worldPlayer.getCurrentMenuPage() <= this.menuButtonImages.length)) {
         g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
         for (int i = 0; i < this.menuButtonImages.length; i++) {
           g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
@@ -455,7 +461,7 @@ public class WorldPanel extends JPanel {
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
 
-        if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingMachine) {
+        if (worldPlayer.getCurrentInteractingObj() instanceof CraftingMachine) {
           CraftingMachine craftingMachine = worldPlayer.getCraftingMachine();
           String[] products = craftingMachine.getProducts();
           g.setFont(this.TITLE_FONT);
@@ -491,8 +497,8 @@ public class WorldPanel extends JPanel {
             }
           }
 
-        } else if (worldPlayer.getCurrentInteractingMenuObj() instanceof CraftingStore) {        
-          CraftingStore craftingStore = (CraftingStore)(worldPlayer.getCurrentInteractingMenuObj());
+        } else if (worldPlayer.getCurrentInteractingObj() instanceof CraftingStore) {        
+          CraftingStore craftingStore = (CraftingStore)(worldPlayer.getCurrentInteractingObj());
           String[] storeItems = craftingStore.getItems();
           g.setColor(WorldPanel.MENU_BKGD_COLOR);
           g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
@@ -537,7 +543,58 @@ public class WorldPanel extends JPanel {
         }
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
-        // TODO: insert gui code
+        String[][] worldMap = this.worldToDisplay.getWorldMap();
+        int mapTileSize = 4;
+        int startX = this.menuX + (WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE)*2;
+        int startY = this.menuY + WorldPanel.INVENTORY_CELLGAP*4 + WorldPanel.INVENTORY_CELLSIZE;
+        int drawX = startX, drawY = startY;
+        int maxHeight;
+
+        int playerMapSize = 10;
+        int playerMapX = -playerMapSize, playerMapY = -playerMapSize;
+
+        for(int y = 0; y < worldMap.length; y++) {
+          drawX = startX;
+          maxHeight = 0;
+
+          for(int x = 0; x < worldMap[y].length; x++) {
+            Area curArea = this.worldToDisplay.getArea(worldMap[y][x]);
+            if (curArea.getName() == this.worldToDisplay.getPlayerArea().getName()) {
+              playerMapX = drawX + (int)Math.round(playerPos.x)*mapTileSize;
+              playerMapY = drawY + (int)Math.round(playerPos.y)*mapTileSize;
+            }
+
+            Tile[][] areaMap = curArea.getMap();
+            if(areaMap.length > maxHeight) {
+              maxHeight = areaMap.length;
+            }
+            
+            for(int i = 0; i < maxHeight; i++) {
+              for(int j = 0; j < areaMap[0].length; j++) {
+                Color colorToDraw;
+                Color defaultColor = WorldPanel.PALE_YELLOW_COLOR;
+                if ((i < areaMap.length) && (j < areaMap[i].length)) {
+                  Tile curTile = areaMap[i][j];
+                  colorToDraw = this.colorOf(curTile);
+                  if (colorToDraw == null) {
+                    colorToDraw = defaultColor;
+                  }
+                } else {
+                  colorToDraw = defaultColor;
+                }
+                g.setColor(colorToDraw);
+                g.fillRect(drawX+j*mapTileSize, drawY+i*mapTileSize, mapTileSize, mapTileSize);
+                
+              }
+            }
+            drawX += areaMap[0].length*mapTileSize;
+            
+          }
+          drawY += maxHeight*mapTileSize;
+        }
+        // draw player
+        g.setColor(Color.RED);
+        g.drawRect(playerMapX-playerMapSize/2, playerMapY-playerMapSize/2, playerMapSize, playerMapSize);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
         // TODO: insert gui code
@@ -548,7 +605,7 @@ public class WorldPanel extends JPanel {
         dumbGraphics.drawString("Social Page - Coming Soon ;)", 350, 500);
 
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
-        Shop shop = (Shop)(worldPlayer.getCurrentInteractingMenuObj());
+        Shop shop = (Shop)(worldPlayer.getCurrentInteractingObj());
         String[] shopItems = shop.getItems();
         g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
@@ -600,7 +657,7 @@ public class WorldPanel extends JPanel {
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
-        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingMenuObj());
+        ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingObj());
         g.setColor(WorldPanel.MENU_BKGD_COLOR);
         g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
         // inventory display (y:this.menuY+1/2~5/2(cellgap+cellsize))
@@ -710,11 +767,10 @@ public class WorldPanel extends JPanel {
         FishingRod playerCurrentRod = (FishingRod)selectedItem;
         if (playerCurrentRod.getCurrentStatus() == FishingRod.CASTING_STATUS) {
           // if player is casting, draw casting meter
-          // TODO: make the display postion beside the player
           int meterW = this.getWidth()/10;
           int meterH = this.getHeight()/25;
           int meterX = (int)Math.round(playerScreenPos.x-meterW/2+Player.SIZE*Tile.getSize());
-          int meterY = (int)Math.round(playerScreenPos.y)-meterH-35;
+          int meterY = (int)Math.round(playerScreenPos.y)-worldPlayer.getImage().getHeight();
           g.setColor(new Color(0,0,0,175));
           g.fillRect(meterX, meterY, meterW, meterH);
           g.setColor(Color.GREEN);
@@ -723,17 +779,17 @@ public class WorldPanel extends JPanel {
           g.setColor(Color.WHITE);
           int lineX, lineY;
           if (worldPlayer.getOrientation() == World.NORTH) {
-            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
+            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize()/2);
             lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2-worldPlayer.getImage().getHeight());
           } else if (worldPlayer.getOrientation() == World.SOUTH) {
-            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize());
-            lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2);
+            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize()/2);
+            lineY = (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()*2)-worldPlayer.getImage().getHeight()/2;
           } else if (worldPlayer.getOrientation() == World.WEST) {
             lineX = (int)Math.round(playerScreenPos.x);
-            lineY = (int)Math.round(playerScreenPos.y)+5;
+            lineY = (int)Math.round(playerScreenPos.y);
           } else { // EAST
-            lineX = (int)Math.round(playerScreenPos.x+Player.SIZE*Tile.getSize()*2);
-            lineY = (int)Math.round(playerScreenPos.y)+5;
+            lineX = (int)Math.round(playerScreenPos.x);
+            lineY = (int)Math.round(playerScreenPos.y);
           }
           
           g.drawLine(lineX, lineY,
@@ -746,7 +802,8 @@ public class WorldPanel extends JPanel {
             letterGraphics.setColor(Color.RED);
             letterGraphics.setFont(this.BIG_BOLD_LETTER_FONT);
             letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x)+Tile.getSize()/4, (int)Math.round(playerScreenPos.y)-25);
+            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x)+Tile.getSize()/4,
+                            (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()-worldPlayer.getImage().getHeight()));
           }
         }
       }
@@ -871,6 +928,16 @@ public class WorldPanel extends JPanel {
       descriptionGraphics.drawString(name, stringX, stringY);
       descriptionGraphics.drawString(description, stringX, stringY+stringH+5);
     }
+
+    if (worldPlayer.getCurrentInteractingObj() instanceof NPC) {
+      Graphics2D dialogueGraphics = (Graphics2D)g;
+      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      g.fillRect(dialogueX, dialogueY, dialogueW, dialogueH);
+      g.setColor(Color.BLACK);
+      NPC currentNPC = ((NPC)worldPlayer.getCurrentInteractingObj());
+      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+10, dialogueY+20);
+      dialogueGraphics.drawString(currentNPC.getDialogue(currentNPC.getIndex()), dialogueX+10, dialogueY+60);
+    }
   }
 
   /**
@@ -898,6 +965,32 @@ public class WorldPanel extends JPanel {
       }  
     } else {
       this.hoveredItemIdx = -1;
+    }
+  }
+  
+  /**
+   * [colorOf]
+   * Retrieves the color that represents the given tile according to its type.
+   * @author      Candice Zhang
+   * @param tile  The Tile thats is used to determine the color.
+   * @return      Color, the color that represents the given tile.
+   */
+  public Color colorOf(Tile tile) {
+    if (tile == null) {
+      return new Color(51, 51, 51);
+    } else if (tile instanceof GroundTile) {
+      return new Color(245, 177, 38);
+    } else if ((tile instanceof GrassTile) ||
+               ((tile.getContent() != null) && (tile.getContent() instanceof ExtrinsicTree))) {
+      return new Color(33, 214, 82);
+    } else if (tile instanceof WaterTile) {
+      return new Color(25, 155, 210);
+    } else if (tile instanceof MineGatewayTile) {
+      return new Color(117, 100, 87);
+    } else if (tile instanceof DecorationTile) {
+      return new Color(236, 198, 135);
+    } else {
+      return null;
     }
   }
 

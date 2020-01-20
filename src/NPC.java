@@ -11,6 +11,7 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
   private static final double MAX_SPEED = 1;
   public static final double SIZE = 0.35;
   private int index;
+  private String name;
   private String[] dialogueRotation = new String[5]; // possibly change size?
 
   public NPC(Point position, String name, int index,
@@ -18,6 +19,7 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
     super(position, SIZE, "npcs/"+name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
     this.dialogueRotation = dialogueRotation;
     this.index = index;
+    this.name = name;
   }
 
   public String getDialogue(int index) {
@@ -35,6 +37,14 @@ public class NPC extends LoopAnimatedMoveable { //TODO: JAVADOCS
 
   public int getIndex() {
     return this.index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getName() {
+    return this.name;
   }
 
   @Override
