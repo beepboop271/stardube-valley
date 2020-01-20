@@ -47,7 +47,7 @@ public class Vector2D implements Cloneable {
 
   @Override
   public String toString() {
-    return String.format("V(%.2f, %.2f), %.2f", this.x, this.y, Math.toDegrees(this.angle));
+    return String.format("V(%.2f, %.2f), %.2f, %.2f", this.x, this.y, Math.toDegrees(this.angle), this.length);
   }
 
   
@@ -71,6 +71,7 @@ public class Vector2D implements Cloneable {
     if ((flags&Vector2D.X) > 0) {
       if (Double.isNaN(this.angle)) {
         this.x = 0;
+        this.length = 0;
       } else {
         this.x = Math.cos(this.angle)*this.length;
       }
@@ -78,8 +79,34 @@ public class Vector2D implements Cloneable {
     if ((flags&Vector2D.Y) > 0) {
       if (Double.isNaN(this.angle)) {
         this.y = 0;
+        this.length = 0;
       } else {
         this.y = Math.sin(this.angle)*this.length;
+      }
+    }
+  }
+
+
+  /** 
+   * [asMoveInteger]
+   * Returns the cardinal direction closest to this
+   * Vector's direction.
+   * @return int, the direction constant closest to this
+   *         Vector's direction.
+   */
+  public int asMoveInteger() {
+    if (this.getLength() == 0) {
+      return -1;
+    } else {
+      int angle = (int)(Math.toDegrees(this.getAngle()));
+      if ((angle >= -45) && (angle < 45)) {
+        return World.EAST;
+      } else if ((angle >= 45) && (angle < 180-45)) {
+        return World.SOUTH;
+      } else if ((angle >= -180+45) && (angle < -45)) {
+        return World.NORTH;
+      } else {
+        return World.WEST;
       }
     }
   }

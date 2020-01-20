@@ -15,7 +15,7 @@ public class NPC extends LoopAnimatedMoveable {
 
   public NPC(Point position, String name, int index,
             String[] dialogueRotation) throws IOException {
-    super(position, SIZE, "npcs/"+name);
+    super(position, SIZE, "npcs/"+name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
     this.dialogueRotation = dialogueRotation;
     this.index = index;
   }
