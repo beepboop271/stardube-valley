@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,7 +24,6 @@ public class World { //TODO: JAVADOCS
   public static final int SOUTH = 2;
   public static final int WEST = 3;
   public static final int getOppositeDirection(int direction) {
-    // can be moved wherever idc just needed to quickly write
     if (direction == World.NORTH) {
       return World.SOUTH;
     } else if (direction == World.EAST) {
@@ -134,6 +134,13 @@ public class World { //TODO: JAVADOCS
     this.lastUpdateTime = currentUpdateTime;
   }
 
+  /**
+   * [moveMoveablesInArea]
+   * Moves all the moveables in an area.
+   * @author Author Unknown
+   * @param a, the area the moving is happening in.
+   * @param updateTime, the long time the update will be happening
+   */
   public void moveMoveablesInArea(Area a, long updateTime) {
     Iterator<Moveable> moveables = a.getMoveables();
     Moveable nextMoveable;
@@ -167,6 +174,15 @@ public class World { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [doCollision]
+   * Process an individual collision.
+   * @author Author Unknown
+   * @param a, the area the collision is happening in
+   * @param m, the moveable that is being collided
+   * @param move, the vector move being made
+   * @param isHorizontal, whether the collision is horizontal
+   */
   public static void doCollision(Area a, Moveable m, Vector2D move, boolean isHorizontal) {
     LinkedHashSet<Point> intersectingTiles;
     int collideDirection;
@@ -181,6 +197,13 @@ public class World { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [fixCollision]
+   * Fix collisions of a moveable entity, given the direction it is colliding in
+   * @author Author Unknown
+   * @param m, the moveable that is colliding
+   * @param collideDirection, the direction of the collision, with ints 0-1 representing cardinal directions
+   */
   public static void fixCollision(Moveable m, int collideDirection) {
     if (collideDirection == World.EAST) {
       // subtract 0.0001 to prevent rounding from counting it as still colliding
@@ -213,7 +236,6 @@ public class World { //TODO: JAVADOCS
    * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
    */
   public void processEvents() {
-    // pygame_irl
     EventObject event;
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
@@ -904,6 +926,11 @@ public class World { //TODO: JAVADOCS
     return null;
   }
 
+  /**
+   * [loadNPCS]
+   * Loads in all the NPC data, and creates and stores NPCs accordingly
+   * @author Paula Yuan
+   */
   public void loadNPCS() throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/NPCdata"));
     String lineToRead = input.readLine();
@@ -913,7 +940,7 @@ public class World { //TODO: JAVADOCS
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 3; // TODO: change number to match # of NPCs
+    int totalNPCs = 8; // TODO: change number to match # of NPCs
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
@@ -925,10 +952,19 @@ public class World { //TODO: JAVADOCS
       profileDescription = input.readLine();
       input.readLine(); // consume blank line
 
-      newNPC = new NPC(new Point(3, 3),
+      Point spawnPoint;
+      if (nextLineData[1].equals("GeneralStore")) {
+        spawnPoint = new Point(2, 5);
+      } else if (nextLineData[1].equals("Blacksmith")) {
+        spawnPoint = new Point(6, 2);
+      } else {
+        spawnPoint = new Point(5, 3);
+      }
+
+      newNPC = new NPC(spawnPoint,
                        name,
                        i, 
-                       dialogue,
+                       dialogue.clone(),
                        profileDescription);
       npcArea.addMoveable(newNPC);      
       this.npcs[i] = newNPC;
@@ -937,6 +973,7 @@ public class World { //TODO: JAVADOCS
       lineToRead = input.readLine();
       nextLineData = lineToRead.split("\\s+");
     }
+
     input.close();
   }
 
@@ -1035,6 +1072,11 @@ public class World { //TODO: JAVADOCS
     return this.playerArea;
   }
 
+  /**
+   * [getMines]
+   * Retrieves the mine areas.
+   * @return MineArea, the mines
+   */
   public MineArea getMines() {
     return this.mines;
   }

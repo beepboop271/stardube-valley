@@ -261,9 +261,7 @@ public class StardubeEventListener implements KeyListener,
               && this.stardubePlayer.getCurrentInteractingObj() instanceof NPC) {
       this.stardubePlayer.setImmutable(false);
       NPC currentNPC = ((NPC)this.stardubePlayer.getCurrentInteractingObj());
-      if (currentNPC.getIndex() < 4) {
-        currentNPC.setIndex(currentNPC.getIndex()+1);
-      }
+      currentNPC.setIndex((currentNPC.getIndex()+1) % 5);
       this.stardubePlayer.setCurrentInteractingObj(null);
     }
   }
