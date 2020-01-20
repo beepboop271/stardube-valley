@@ -38,6 +38,7 @@ public class WorldPanel extends JPanel {
   public static final Color DARK_BROWN_COLOR = new Color(92, 55, 13);
   public static final Color PALE_GREEN_COLOR = new Color(130, 230, 0);
   public static final Color DIM_RED_COLOR = new Color(237, 69, 48);
+  public static final Color LOCKED_SLOT_COLOR = new Color(230, 165, 100);
 
   private final Font TIME_FONT =  new Font("Comic Sans MS", Font.BOLD, 40);
   private final Font QUANTITY_FONT = new Font("Comic Sans MS", Font.BOLD, 15);
@@ -55,6 +56,7 @@ public class WorldPanel extends JPanel {
   private int hotbarX, hotbarY;
   private int shopX, shopY, shopW, shopItemH;
   private int craftX, craftY, craftW, craftItemH;
+  private int elevatorX, elevatorY;
   private int menuX, menuY, menuW, menuH;
   private int inventoryMenuInventoryY;
   private int chestMenuInventoryY;
@@ -74,22 +76,31 @@ public class WorldPanel extends JPanel {
     super();
     this.worldToDisplay = worldToDisplay;
     this.playerScreenPos = new Point(0, 0);
+
     this.menuW = 13*WorldPanel.INVENTORY_CELLGAP+12*WorldPanel.INVENTORY_CELLSIZE;
     this.menuH = 8*(WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE);
     this.menuX = (width-this.menuW)/2;
     this.menuY = (height-this.menuH)/2;
+
     this.inventoryMenuInventoryY = this.menuY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     this.chestMenuInventoryY = (int)Math.round(this.menuY + 0.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
     this.chestMenuChestY = (int)Math.round(this.menuY + 4.5*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP));
+
     this.shopX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
+
     this.craftX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.craftY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
     this.craftW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
     this.craftItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
+
+    this.elevatorX = this.menuX+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*4;
+    this.elevatorY = this.menuY+(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*3;
+
     this.menuButtonImages = new BufferedImage[5];
+
     try {
       BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/Buttons"));
       String imagePath;
@@ -357,11 +368,15 @@ public class WorldPanel extends JPanel {
       g.setColor(new Color(0, 0, 0, 100));
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       g.setColor(WorldPanel.MENU_BKGD_COLOR);
-      g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
-      for (int i = 0; i < this.menuButtonImages.length; i++) {
-        g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+      if ((worldPlayer.getCurrentMenuPage() >= 0 && worldPlayer.getCurrentMenuPage() <= 4)) {
+        g.fillRect(this.menuX, this.menuY+WorldPanel.INVENTORY_CELLSIZE, this.menuW, this.menuH);
+        for (int i = 0; i < this.menuButtonImages.length; i++) {
+          g.drawImage(this.menuButtonImages[i], this.menuX + i*WorldPanel.INVENTORY_CELLSIZE, this.menuY, null);
+        }
+      } else {
+        g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
       }
-
+      
       if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
         // inventory display (y:this.menuY+1~3(cellgap+cellsize))
         for (int i = 0; i < 3; i++) {
@@ -389,7 +404,7 @@ public class WorldPanel extends JPanel {
                 }
               }
             } else { // display locked slots in a different color
-              g.setColor(new Color(230, 165, 100));
+              g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
@@ -534,7 +549,7 @@ public class WorldPanel extends JPanel {
                 }
               }
             } else { // display locked slots in a different color
-              g.setColor(new Color(230, 165, 100));
+              g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
@@ -578,7 +593,34 @@ public class WorldPanel extends JPanel {
           }
         }
       } else if (worldPlayer.getCurrentMenuPage() == Player.ELEVATOR_PAGE) {
-        // hi candy
+        int floorNumber = 0;
+        String stringToDisplay = "Mine Elevator: Select Floor Number";
+        g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
+        g.fillRect(this.menuX+15, this.menuY+15, this.menuW-30, this.menuH-30);
+        g.setColor(WorldPanel.DARK_BROWN_COLOR);
+        g.fillRect(this.elevatorX-20, this.elevatorY-20,
+                   4*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+40,
+                   3*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+40);
+        g.setFont(this.BIG_LETTER_FONT);
+        g.drawString(stringToDisplay,
+                     this.menuX+(this.menuW-g.getFontMetrics().stringWidth(stringToDisplay))/2, this.elevatorY-50);
+
+        g.setFont(this.BIG_BOLD_LETTER_FONT);
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 4; j++) {
+            floorNumber += 5;
+            int drawX = this.elevatorX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP;
+            int drawY = this.elevatorY + (int)Math.round(i*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP));
+            if (this.worldToDisplay.getMines().hasElevatorFloorUnlocked(floorNumber)) {
+              g.setColor(WorldPanel.PALE_GREEN_COLOR);
+            } else {
+              g.setColor(WorldPanel.DIM_RED_COLOR);
+            }
+            g.fillRect(drawX, drawY, WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+            g.setColor(WorldPanel.DARK_BROWN_COLOR);
+            g.drawString(Integer.toString(floorNumber), drawX + 5, drawY + g.getFontMetrics().getHeight());
+          }
+        }
       }
     }
     
@@ -898,6 +940,20 @@ public class WorldPanel extends JPanel {
   }
 
   /**
+   * [elevatorButtonIdxAt]
+   * Retrieves the index of the elevator button at the given y position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the elevator button at the given y position.
+   */
+  public int elevatorButtonIdxAt(int x, int y) {
+    return Math.min((int)(Math.floor(x-this.elevatorX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 3)
+           + 4*Math.min((int)(Math.floor((y-this.elevatorY)/
+                                         (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
+  }
+
+  /**
    * [inventoryItemIdxAt]
    * Asks for the x and y location of the inventory and
    * the x and y location of the targeted point, and
@@ -1002,6 +1058,22 @@ public class WorldPanel extends JPanel {
       }
     }
     return false;
+  }
+
+  /**
+   * [isPosInElevatorButtons]
+   * Checks if the given position is inside any elevator button.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in an elevator button,
+   *            false otherwise.
+   */
+  public boolean isPosInElevatorButtons(int x, int y) {
+    return ((x >= this.elevatorX) &&
+            (x <= this.elevatorX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*4) &&
+            (y > this.elevatorY) &&
+            (y <= this.elevatorY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)*3));
   }
 
   /**
