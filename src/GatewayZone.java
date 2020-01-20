@@ -2,13 +2,23 @@
  * [GatewayZone]
  * 2019-12-19
  * @version 0.1
- * @author Kevin Qiao, Joseph Wang
+ * @author Kevin Qiao
  */
 public class GatewayZone extends Gateway {
+  /**
+   * [GatewayZone]
+   * Constructor for a new GatewayZone.
+   * @param originX       The x-position of this gateway.
+   * @param originY       The y-position of this gateway.
+   * @param orientation   The orientation of this gateway 
+   */
   public GatewayZone(int originX, int originY, int orientation) {
     super(originX, originY, orientation, false);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Point toDestinationPoint(Point p, double size) {
     if ((this.getOrientation() == World.NORTH) || (this.getOrientation() == World.SOUTH)) {
@@ -24,6 +34,9 @@ public class GatewayZone extends Gateway {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setDestinationArea(Area destinationArea) {
     super.setDestinationArea(destinationArea);
