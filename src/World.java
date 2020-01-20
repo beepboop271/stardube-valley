@@ -940,7 +940,7 @@ public class World { //TODO: JAVADOCS
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 4; // TODO: change number to match # of NPCs
+    int totalNPCs = 8; // TODO: change number to match # of NPCs
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
@@ -952,7 +952,16 @@ public class World { //TODO: JAVADOCS
       profileDescription = input.readLine();
       input.readLine(); // consume blank line
 
-      newNPC = new NPC(new Point(5, 3),
+      Point spawnPoint;
+      if (nextLineData[1].equals("GeneralStore")) {
+        spawnPoint = new Point(2, 5);
+      } else if (nextLineData[1].equals("Blacksmith")) {
+        spawnPoint = new Point(6, 2);
+      } else {
+        spawnPoint = new Point(5, 3);
+      }
+
+      newNPC = new NPC(spawnPoint,
                        name,
                        i, 
                        dialogue.clone(),
