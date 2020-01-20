@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Iterator;
 
 /**
  * [StardubeEventListener]
@@ -127,7 +128,7 @@ public class StardubeEventListener implements KeyListener,
         break;
         case KeyEvent.VK_B:
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
-        this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
+        this.stardubePlayer.setCurrentInteractingObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
         break;
       case KeyEvent.VK_M:
         for (int y = 1; y < this.stardubeWorld.getPlayerArea().getHeight()-1; ++y) {
@@ -153,7 +154,7 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(1, 0));
         break;
       case KeyEvent.VK_Q:
-        this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("ToolStore"));
+        this.stardubePlayer.setCurrentInteractingObj(IntrinsicTileComponentFactory.getComponent("ToolStore"));
         this.stardubePlayer.enterMenu(Player.CRAFTING_PAGE);
         break;
     }
@@ -188,7 +189,7 @@ public class StardubeEventListener implements KeyListener,
     // Chest interation:
     // double click to move the item into the other inventory (1 instance at a time); triple click to move the maximum quantity
     if (player.getCurrentMenuPage() == Player.CHEST_PAGE) {
-      ExtrinsicChest chest = (ExtrinsicChest)(this.stardubePlayer.getCurrentInteractingMenuObj());
+      ExtrinsicChest chest = (ExtrinsicChest)(this.stardubePlayer.getCurrentInteractingObj());
       if (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(), mouseX, mouseY)) {
         // if click is in player inventory, place item into chest
         int itemIdx = this.worldPanel.inventoryItemIdxAt(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(), mouseX, mouseY);
@@ -220,7 +221,7 @@ public class StardubeEventListener implements KeyListener,
     } else if ((player.getCurrentMenuPage() == Player.SHOP_PAGE) &&
                (e.getButton() == MouseEvent.BUTTON1) && (clickCount >= 2)) {
       if (worldPanel.isPosInShopItemList(mouseX, mouseY)) {
-        Shop shop = (Shop)(this.stardubePlayer.getCurrentInteractingMenuObj());
+        Shop shop = (Shop)(this.stardubePlayer.getCurrentInteractingObj());
         int itemIdx = this.stardubePlayer.getAmountScrolled() + worldPanel.shopItemIdxAt(mouseY);
         if (itemIdx < shop.getItems().length) {
           player.purchase(shop, shop.getItems()[itemIdx]);
@@ -251,6 +252,27 @@ public class StardubeEventListener implements KeyListener,
           }
         }
       }
+    } else if (e.getButton() == MouseEvent.BUTTON3 
+              && !(this.stardubePlayer.getCurrentInteractingObj() instanceof NPC)) {
+      Iterator<Moveable> allMoveables = this.stardubeWorld.getPlayerArea().getMoveables();
+      while (allMoveables.hasNext()) {
+        Moveable currentMoveable = allMoveables.next();
+        if (currentMoveable instanceof NPC && this.mousePos.x/Tile.getSize() >= currentMoveable.getPos().x 
+          && this.mousePos.x/Tile.getSize() <= currentMoveable.getPos().x+1 
+          && this.mousePos.y/Tile.getSize() >= currentMoveable.getPos().y
+          && this.mousePos.y/Tile.getSize() <= currentMoveable.getPos().y+2) {
+            this.stardubePlayer.setImmutable(true);
+            this.stardubePlayer.setCurrentInteractingObj((NPC)currentMoveable);
+        }
+      }
+    } else if (e.getButton() == MouseEvent.BUTTON3 
+              && this.stardubePlayer.getCurrentInteractingObj() instanceof NPC) {
+      this.stardubePlayer.setImmutable(false);
+      NPC currentNPC = ((NPC)this.stardubePlayer.getCurrentInteractingObj());
+      if (currentNPC.getIndex() < 4) {
+        currentNPC.setIndex(currentNPC.getIndex()+1);
+      }
+      this.stardubePlayer.setCurrentInteractingObj(null);
     }
   }
 
@@ -335,7 +357,7 @@ public class StardubeEventListener implements KeyListener,
         this.stardubePlayer.enterMenu(this.worldPanel.menuTabButtonAt((int)this.mousePos.x));
 
         if((this.worldPanel.menuTabButtonAt((int)this.mousePos.x)) == Player.CRAFTING_PAGE) {
-          this.stardubePlayer.setCurrentInteractingMenuObj(this.stardubePlayer.getCraftingMachine());
+          this.stardubePlayer.setCurrentInteractingObj(this.stardubePlayer.getCraftingMachine());
         }
 
       } else if ((menuPage == Player.INVENTORY_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&

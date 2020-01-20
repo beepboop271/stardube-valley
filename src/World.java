@@ -389,7 +389,7 @@ public class World {
               }
             }
           } else if (currentContent instanceof ExtrinsicChest) {
-            this.player.setCurrentInteractingMenuObj((ExtrinsicChest)currentContent);
+            this.player.setCurrentInteractingObj((ExtrinsicChest)currentContent);
             this.player.enterMenu(Player.CHEST_PAGE);
             
           } else if (currentContent instanceof ExtrinsicMachine) {
@@ -428,7 +428,7 @@ public class World {
             }
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
-            this.player.setCurrentInteractingMenuObj((Shop)currentContent);
+            this.player.setCurrentInteractingObj((Shop)currentContent);
             
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
@@ -890,7 +890,7 @@ public class World {
     String[] dialogue = new String[5];
     Area npcArea;
     NPC newNPC;
-    for (int i = 0; i < 3; i++) { // TODO: change number to match # of NPCs
+    for (int i = 0; i < 4; i++) { // TODO: change number to match # of NPCs
       name = nextLineData[0];
       npcArea = this.locations.get(nextLineData[1]);
       for (int j = 0; j < 5; j++) {
