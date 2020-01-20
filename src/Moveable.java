@@ -1,5 +1,5 @@
 import java.util.LinkedHashSet;
-                                                            /**
+/**
  * [Moveable]
  * All the objects that are able to move around in the world.
  * 2019-12-19
@@ -143,7 +143,6 @@ public abstract class Moveable implements Drawable {
   public double getSize() {
     return this.size;
   }
-  
   /**
    * [getMove]
    * @param elapsedNanoTime

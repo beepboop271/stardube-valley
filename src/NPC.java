@@ -3,7 +3,7 @@ import java.io.IOException;
 /**
  * [NPC]
  * 2020-01-19
- * 
+ * A LoopAnimatedMoveable to represent an NPC in the game.
  * @version 0.1
  * @author Paula Yuan, Candice Zhang
  */
@@ -13,9 +13,12 @@ public class NPC extends LoopAnimatedMoveable {
   public static final double SIZE = 0.35;
   private int index;
   private String name;
-  private String[] dialogueRotation = new String[5]; // possibly change size?
+  private String[] dialogueRotation = new String[5];
   private String profileDescription;
 
+  /**
+   * [NPC]
+   */
   public NPC(Point position, String name, int index,
             String[] dialogueRotation, String profileDescription) throws IOException {
     super(position, SIZE, "npcs/"+name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
@@ -25,7 +28,7 @@ public class NPC extends LoopAnimatedMoveable {
     this.index = index;
     this.name = name;
   }
-
+  
   public String getDialogue(int index) {
     return this.dialogueRotation[index];
   }
