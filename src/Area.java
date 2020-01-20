@@ -267,7 +267,7 @@ public abstract class Area {
 
   /**
    * [moveAreas]
-   * @author unknown
+   * @author Joseph Wang
    */
   public Area moveAreas(Moveable m, Point position, Area destination) {
     m.setPos(position);
