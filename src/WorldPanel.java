@@ -493,6 +493,7 @@ public class WorldPanel extends JPanel {
           String[] storeItems = craftingStore.getItems();
           g.setColor(WorldPanel.MENU_BKGD_COLOR);
           g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
+          g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
           g.setFont(this.BIG_LETTER_FONT);
           g.drawString("Welcome to "+craftingStore.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
           
