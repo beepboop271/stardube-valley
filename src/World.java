@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -913,7 +914,7 @@ public class World { //TODO: JAVADOCS
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 3; // TODO: change number to match # of NPCs
+    int totalNPCs = 4; // TODO: change number to match # of NPCs
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
@@ -925,10 +926,10 @@ public class World { //TODO: JAVADOCS
       profileDescription = input.readLine();
       input.readLine(); // consume blank line
 
-      newNPC = new NPC(new Point(3, 3),
+      newNPC = new NPC(new Point(5, 3),
                        name,
                        i, 
-                       dialogue,
+                       dialogue.clone(),
                        profileDescription);
       npcArea.addMoveable(newNPC);      
       this.npcs[i] = newNPC;
@@ -937,6 +938,7 @@ public class World { //TODO: JAVADOCS
       lineToRead = input.readLine();
       nextLineData = lineToRead.split("\\s+");
     }
+
     input.close();
   }
 
