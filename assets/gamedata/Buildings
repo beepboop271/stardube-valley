@@ -4,6 +4,7 @@ House2      /buildings/House2      -1 -5
 McDonlads   /buildings/McDonlads   -2 -4
 Store       /buildings/Store       -2 -5
 Clinic      /buildings/Clinic      -2 -5
+Blacksmith  /buildings/Blacksmith  -2 -5
 
 name        imagepath             offsets
 

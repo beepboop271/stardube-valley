@@ -267,7 +267,14 @@ public abstract class Area {
 
   /**
    * [moveAreas]
+   * Takes the specified moveable and removes it from this area's list
+   * of moveables, then adds it to the destination area's list of
+   * moveables. Sets position in the other area to the specific position.
    * @author Joseph Wang
+   * @param m           the moveable to be moved to a specific point.
+   * @param position    the position of spawn inside the destination.
+   * @param destination the area to go to.a
+   * @return Area, the destination area.
    */
   public Area moveAreas(Moveable m, Point position, Area destination) {
     m.setPos(position);
