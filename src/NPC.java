@@ -13,9 +13,9 @@ public class NPC extends LoopAnimatedMoveable {
   private int index;
   private String[] dialogueRotation = new String[5]; // possibly change size?
 
-  public NPC(Point position, String filePath, String name, int index,
+  public NPC(Point position, String name, int index,
             String[] dialogueRotation) throws IOException {
-    super(position, SIZE, filePath, name);
+    super(position, SIZE, "npcs/"+name);
     this.dialogueRotation = dialogueRotation;
     this.index = index;
   }

@@ -46,8 +46,8 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
    * @param name     String, the name of the player.
    * @throws         IOException
    */
-  public Player(Point position, String filePath, String name) throws IOException {
-    super(position, Player.SIZE, filePath, name);
+  public Player(Point position, String name) throws IOException {
+    super(position, Player.SIZE, name);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;

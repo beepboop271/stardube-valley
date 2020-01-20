@@ -10,13 +10,15 @@ public abstract class LoopAnimatedMoveable extends Moveable {
   public final static int WALKSTEP_FRAMES = 8;
   public final static int RUNSTEP_FRAMES = 12;
 
+  private static final String[] DIRECTIONS = {"/north", "/east", "/south", "/west"};
+
   private int orientation;
   private BufferedImage[][] images;
   private int framesPerSecond;
   private long lastImgUpdateTime;
   private int[] curImgIdx;
 
-  public LoopAnimatedMoveable(Point position, double size, String filePath, String name) {
+  public LoopAnimatedMoveable(Point position, double size, String name) {
     super(position, size);
     this.setVelocity(0, 0, 0);
     this.orientation = World.SOUTH;
@@ -26,17 +28,17 @@ public abstract class LoopAnimatedMoveable extends Moveable {
     this.lastImgUpdateTime = System.nanoTime();
     this.curImgIdx = new int[]{2,0};
     try {
-      BufferedReader input = new BufferedReader(new FileReader(filePath));
+      String[] directionImages;
+      String folderPath;
       for (int i = 0; i < 4; i++) {
-        String folderPath = name + input.readLine();
-        String[] folderFiles = new File("assets/images/"+folderPath).list();
-        BufferedImage[] folderimgs = new BufferedImage[folderFiles.length];
-        for (int j = 0; j < folderFiles.length; j++) {
-          folderimgs[j] = ImageIO.read(new File("assets/images/"+folderPath+"/"+folderFiles[j]));
+        folderPath = "assets/images/"+name+LoopAnimatedMoveable.DIRECTIONS[i];
+        directionImages = new File(folderPath).list();
+
+        this.images[i] = new BufferedImage[directionImages.length];
+        for (int j = 0; j < directionImages.length; j++) {
+          this.images[i][j] = ImageIO.read(new File(folderPath+"/"+directionImages[j]));
         }
-        this.images[i] = folderimgs;
       }
-      input.close();
     } catch (IOException e) {
       e.printStackTrace();
     }

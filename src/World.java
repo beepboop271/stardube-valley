@@ -66,7 +66,7 @@ public class World {
     }
     this.eventQueue = new PriorityBlockingQueue<TimedEvent>();
     
-    this.player = new Player(new Point(13, 13), "assets/gamedata/NPCImages", "player");
+    this.player = new Player(new Point(13, 13), "player");
     this.playerArea = this.locations.get("Farm");
     this.playerArea.addMoveable(this.player);
 
@@ -898,8 +898,7 @@ public class World {
         dialogue[j] = lineToRead;
       }
       newNPC = new NPC(new Point(3, 3),
-                       "assets/gamedata/NPCImages",
-                       "npcs/"+name,
+                       name,
                        i, 
                        dialogue);
       npcArea.addMoveable(newNPC);
