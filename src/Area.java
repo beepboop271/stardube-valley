@@ -1,5 +1,3 @@
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -160,7 +158,7 @@ public abstract class Area {
    */
   public boolean walkableAt(Point pos) {
     if (this.inMap(pos)) {
-      int treeX = (int)pos.x+2;     // TODO: make this less... sketchy, I guess
+      int treeX = (int)pos.x+2;
       int treeY = (int)pos.y+1;
       
       Tile bushTile = null;

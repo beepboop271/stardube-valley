@@ -96,6 +96,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return this.inventory;
   }
 
+  /**
+   * [pickUp]
+   * Pick up a stack of items.
+   * @return true or false based on your ability to pick the items up.
+   */
   public boolean pickUp(HoldableStack items) {
     // could replace with set, just need to test out
     // hashing holdablestacks later
@@ -121,6 +126,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return false;
   }
 
+  /**
+   * [canPickUp]
+   * determines whether or not an item can be picked up.
+   * @return boolean, true or false.
+   */
   public boolean canPickUp(Holdable item) {
     if (item == null) {
       return false;
@@ -140,6 +150,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return false;
   }
 
+  /**
+   * [consume]
+   * Eat an item and incease health or energy accordingly.
+   * @author Joseph Wang, Candice Zhang
+   */
   public void consume() {
     if (this.inventory[this.selectedItemIdx] == null) {
       return;
@@ -149,7 +164,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
     Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
-    if (thingConsumed instanceof SpecialConsumable) { //TODO: maybe make this better
+    if (thingConsumed instanceof SpecialConsumable) {
       this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
       this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
     }
@@ -158,6 +173,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.increaseHealth(thingConsumed.getHealthGain());
   }
 
+  /**
+   * [getInventory]
+   * Buy an object from a store, exchange money accordingly.
+   * @author Joseph Wang
+   */
   public void purchase(Shop shop, String itemName) {
     if ((this.currentFunds < shop.getPriceOf(itemName)) || !(this.canPickUp(HoldableFactory.getHoldable(itemName)))) {
       return;
@@ -166,6 +186,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(itemName), 1));
   }
 
+  /**
+   * [canCraft]
+   * Determines whether or not you can craft an item.
+   * @return boolean true or false.
+   */
   public boolean canCraft(String product) {
     if (!(this.canPickUp(HoldableFactory.getHoldable(product)))) {
       return false;
@@ -199,6 +224,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return true;
   }
 
+  /**
+   * [craft]
+   * Create a product using a recipe and ingredients.
+   * @author Candice Zhang
+   */
   public void craft(String product) {
     if (!(this.canCraft(product))) {
       return;
@@ -317,18 +347,40 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return false;
   }
 
+  /**
+   * [setCurrentFishingGame]
+   * Sets the current fishing game.
+   * @author Candice Zhang
+   * @param fishingGame, the fishing game to set
+   */
   public void setCurrentFishingGame(FishingGame fishingGame){
     this.currentFishingGame = fishingGame;
   }
 
+  /**
+   * [endCurrentFishingGame]
+   * Ends the current fishing game.
+   * @author Candice Zhang
+   */
   public void endCurrentFishingGame() {
     this.currentFishingGame = null;
   }
 
+  /**
+   * [getCurrentFishingGame]
+   * Retrieves the current fishing game.
+   * @author Candice Zhang
+   * @return FishingGame, the fishing game.
+   */
   public FishingGame getCurrentFishingGame(){
     return this.currentFishingGame;
   }
 
+  /**
+   * [getSelectedTile]
+   * Retrieves the selected tile
+   * @return Point the selectedTile
+   */
   public Point getSelectedTile() {
     if (this.selectedTile == null) {
       return null;
@@ -336,6 +388,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return (Point)this.selectedTile.clone();
   }
 
+  /**
+   * [setSelectedTile]
+   * sets the selectedTile
+   * @param selectedTile, the Point selected tile to set
+   */
   public void setSelectedTile(Point selectedTile) {
     if (this.isImmutable()) {
       return;
@@ -343,16 +400,33 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.selectedTile = selectedTile;
   }
 
+  /**
+   * [isInMenu]
+   * determines whether the menu is being accessed.
+   * @author Candice Zhang
+   * @return boolean true or false
+   */
   public boolean isInMenu() {
     return !(this.currentMenuPage == Player.NO_MENU);
   }
 
+  /**
+   * [enterMenu]
+   * enters the menu at a specific menu page.
+   * @author Candice Zhang
+   * @param menuPage, int page to enter at
+   */
   public void enterMenu(int menuPage) {
     this.isImmutable = true;
     this.currentMenuPage = menuPage;
     this.amountScrolled = 0;
   }
 
+  /**
+   * [exitMenu]
+   * Exits the menu.
+   * @author Candice Zhang
+   */
   public void exitMenu() {
     this.isImmutable = false;
     this.currentMenuPage = Player.NO_MENU;
@@ -360,18 +434,40 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.currentInteractingObj = null;
   }
 
+  /**
+   * [getCurrentMenuPage]
+   * Retrieves the current menu page.
+   * @return Candice Zhang
+   * @return an int current menu page
+   */
   public int getCurrentMenuPage() {
     return this.currentMenuPage;
   }
 
+  /**
+   * [getAmountScrolled]
+   * Retrieves how much one has scrolled.
+   * @author Candice Zhang
+   * @return an int amount scrolled
+   */
   public int getAmountScrolled() {
     return this.amountScrolled;
   }
 
+  /**
+   * [incrementAmountScrolled]
+   * Increments how much one has scrolled.
+   * @author Candice Zhang
+   */
   public void incrementAmountScrolled() {
     this.amountScrolled += 1;
   }
 
+  /**
+   * [decrementAmountScrolled]
+   * Decrements the amount scrolled.
+   * @author Candice Zhang
+   */
   public void decrementAmountScrolled() {
     this.amountScrolled -= 1;
   }
