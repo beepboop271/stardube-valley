@@ -20,10 +20,10 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   /**
    * [IntrinsicTileComponent]
    * Constructor for a new IntrinsicTileComponent.
-   * @author Joseph Wang, Kevin Qiao
-   * @param name The name of this IntrinsicTileComponent.
-   * @param imagesPath The path for the images of this IntrinsicTileComponent.
-   * @param offsets The offsets (in tiles) that should be considered during drawing.
+   * @author            Joseph Wang, Kevin Qiao
+   * @param name        String, the name of this IntrinsicTileComponent.
+   * @param imagesPath  String, the path for the images of this IntrinsicTileComponent.
+   * @param offsets     double[], the offsets (in tiles) that should be considered during drawing.
    * @throws IOException
    */
   public IntrinsicTileComponent(String name,

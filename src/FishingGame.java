@@ -1,7 +1,8 @@
 /**
  * [FishingGame]
+ * A fishing game for the player to play that stores essential data and components.
  * 2019-12-24
- * @version 0.1
+ * @version 0.2
  * @author Candice Zhang
  */
 
@@ -25,6 +26,11 @@ public class FishingGame {
   private FishingGameBar playerBar;
   private FishingGameBar targetBar;
 
+  /**
+   * [FishingGame]
+   * Constructor for a new FishingGame.
+   * @param tileToFish  WaterTile, the water tile that is casted for fishing.
+   */
   public FishingGame(WaterTile tileToFish) {
     this.currentProgress = FishingGame.INIT_PROGRESS;
     this.tileToFish = tileToFish;
@@ -35,9 +41,13 @@ public class FishingGame {
     this.generateBiteNanoTime();
   }
 
-
+  /**
+   * [update]
+   * Updates the components and status of the game according to the newest mouse events.
+   * @param mouseDown   boolean, true if the mouse is held down, false otherwise.
+   * @param mouseTimer  Stopwatch, the Stopwatch for the mouse.
+   */
   public void update(boolean mouseDown, Stopwatch mouseTimer) {
-    // hold: go up
     if(!this.hasStarted) {
       return;
     }
@@ -77,6 +87,12 @@ public class FishingGame {
     }
   }
 
+  /**
+   * [getFishReturned]
+   * Randomly selects and retrieves one of the fish products
+   * of the water tile used to fish.
+   * @return Holdable, a fish product of the water tile.
+   */
   public Holdable getFishReturned() {
     String[] fishableFish = this.tileToFish.getFishableFish();
     if(fishableFish.length == 0) {
@@ -85,6 +101,11 @@ public class FishingGame {
     return HoldableFactory.getHoldable(fishableFish[(int)(Math.random()*fishableFish.length)]);
   }
 
+  /**
+   * [getTrashReturned]
+   * Randomly selects and retrieves one of the trash products of a water tile.
+   * @return Holdable, a trash product of the water tile.
+   */
   public Holdable getTrashReturned() {
     String[] fishableTrash = WaterTile.getFishableTrash();
     if(fishableTrash.length == 0) {
@@ -93,42 +114,91 @@ public class FishingGame {
     return HoldableFactory.getHoldable(fishableTrash[(int)(Math.random()*fishableTrash.length)]);
   }
 
+  /**
+   * [getCurrentStatus]
+   * Retrieves the current status of the fishing game.
+   * @return int, the current status of the fishing game.
+   */
   public int getCurrentStatus() {
     return this.currentStatus;
   }
 
+  /**
+   * [getCurrentProgress]
+   * Retrieves the current progress of the fishing game.
+   * @return int, the current status of the fishing game.
+   */
   public int getCurrentProgress() {
     return this.currentProgress;
   }
 
+  /**
+   * [getProgressPercentage]
+   * Retrieves the current progress of the fishing game, in percentage.
+   * @return int, the current status of the fishing game, in percentage.
+   */
   public int getProgressPercentage() {
     return this.currentProgress*100/FishingGame.MAX_PROGRESS;
   }
 
+  /**
+   * [getPlayerBar]
+   * Retrieves the FishingGameBar that represents the player.
+   * @return FishingGameBar, the FishingGameBar that represents the player.
+   */
   public FishingGameBar getPlayerBar() {
     return this.playerBar;
   }
 
+  /**
+   * [getTargetBar]
+   * Retrieves the FishingGameBar that represents the target of the game.
+   * @return FishingGameBar, the FishingGameBar that represents the target of the game.
+   */
   public FishingGameBar getTargetBar() {
     return this.targetBar;
   }
 
+  /**
+   * [setHasStarted]
+   * Sets the hasStarted status of this fishing game.
+   * @param hasStarted  boolean, true if the game has started, false otherwise.
+   */
   public void setHasStarted(boolean hasStarted) {
     this.hasStarted = hasStarted;
   }
 
+  /**
+   * [hasStarted]
+   * Checks if this fishing game has started.
+   * @return boolean, true if the game has started, false otherwise.
+   */
   public boolean hasStarted() {
     return this.hasStarted;
   }
 
+  /**
+   * [getBiteNanoTime]
+   * Retrieves the nanotime of the fish bite in this game.
+   * @return long, the nanotime of the fish bite.
+   */
   public long getBiteNanoTime() {
     return this.biteNanoTime;
   }
 
+  /**
+   * [generateBiteNanoTime]
+   * Generates/Regenerates a future fish bite in this game, in nanotime.
+   */
   public void generateBiteNanoTime() {
     this.biteNanoTime = (long)Math.round(System.nanoTime()+(3+Math.random()*5)*1_000_000_000);
   }
 
+  /**
+   * [isBiting]
+   * Checks if a fishable product is biting the bait.
+   * @return boolean, true if a fishable product is biting, false otherwise.
+   */
   public boolean isBiting() {
     return ((System.nanoTime()>=this.biteNanoTime) && (System.nanoTime()<=this.biteNanoTime+FishingGame.BITE_ELAPSE_NANOTIME));
   }

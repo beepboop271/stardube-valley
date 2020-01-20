@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,6 +11,7 @@ import java.util.LinkedHashSet;
 
 /**
  * [World]
+ * Contains essential components and methods for a world to function.
  * 2019-12-19
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
@@ -50,6 +50,11 @@ public class World {
   private int inGameSeason;
   private double luckOfTheDay;
 
+  /**
+   * [World]
+   * Constructor for a new World.
+   * @throws IOException;
+   */
   public World() throws IOException {
     this.locations = new LinkedHashMap<String, Area>();
     try {
@@ -70,6 +75,11 @@ public class World {
     this.doDayEndActions();
   }
 
+  /**
+   * [update]
+   * Updates the world, including all its components and events.
+   * @author unknown
+   */
   public void update() {
     long currentUpdateTime = System.nanoTime();
     this.processEvents();
@@ -170,18 +180,18 @@ public class World {
     this.lastUpdateTime = currentUpdateTime;
   }
 
+  /**
+   * [processEvents]
+   * Process all events with the time that is lower than or equal to the current game time.
+   * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
+   */
   public void processEvents() {
     // pygame_irl
     EventObject event;
-    // if (!this.eventQueue.isEmpty()) {
-    //   System.out.print(this.eventQueue.size()+" ");
-    //   System.out.println(this.eventQueue.peek());
-    // }
     while (!this.eventQueue.isEmpty()
            && (this.eventQueue.peek().getTime() <= this.inGameNanoTime)) {
       event = this.eventQueue.poll().getEvent();
       if (event instanceof UtilityToolUsedEvent) {
-        // design i think is solid, just need to clean up the code a bit?
         this.player.setImmutable(false);
         UtilityToolUsedEvent toolEvent = (UtilityToolUsedEvent)event;
         this.player.decreaseEnergy(((Tool)toolEvent.getHoldableUsed()).getEnergyCost());
@@ -509,6 +519,11 @@ public class World {
     }
   }
 
+  /**
+   * [doDayEndActions]
+   * @author unknown
+   * Does actions that need to be performed at the end of day.
+   */
   public void doDayEndActions() {
     this.player.recover(this.inGameNanoTime);
     // day starts at 6 am
@@ -530,22 +545,43 @@ public class World {
     this.player.increaseCurrentFunds(this.player.getFutureFunds()); //TODO: make this a cool menu screen
   }
 
+  /**
+   * [queueEvent]
+   * @author unknown
+   */
   public void queueEvent(TimedEvent te) {
     this.eventQueue.offer(te);
   }
 
+  /**
+   * [emplaceEvent]
+   * Emplaces an event to this world's event queue.
+   * @author Kevin Qiao
+   * @param time   long, the nanotime of the event.
+   * @param event  EventObject, the event to emplace.
+   */
   public void emplaceEvent(long time, EventObject event) {
     this.eventQueue.offer(new TimedEvent(time, event));
   }
 
+  /**
+   * [emplaceFutureEvent]
+   * Emplaces an event that will happen at a future time to this world's event queue.
+   * @author Kevin Qiao
+   * @param nanoTimeIntoFuture   long that represents the time the event
+   *                             will be processed, in nanotime into future.
+   * @param event                EventObject, the event to emplace.
+   */
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
-    // long time = this.inGameNanoTime+nanoTimeIntoFuture;
-    // System.out.printf("enqueue t=%02d:%02d:%d\n", time/60, time%60, (this.inGameNanoTime+nanoTimeIntoFuture)%1_000_000_000);
-    // long start = System.nanoTime();
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));
-    // System.out.printf("enq took %d ms\n", (System.nanoTime()-start)/1_000_000);
   }
 
+  /**
+   * [loadAreas]
+   * Loads all areas this world contains.
+   * @author Kevin Qiao, Candice Zhang
+   * @throws IOException;
+   */
   public void loadAreas() throws IOException {
     String[] splitLine;
     String nextLine;
@@ -640,20 +676,21 @@ public class World {
     input.close();
   }
 
+  /**
+   * [loadAreaMap]
+   * Loads the map of the given area.
+   * @author    Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
+   * @param a   Area, the area used to load map.
+   * @throws IOException;
+   */
   public void loadAreaMap(Area a) throws IOException {
-    //System.out.println(a.getName());
     BufferedReader input = new BufferedReader(new FileReader("assets/maps/"
                                                              + a.getName()));
     String nextLine;
-
     
-    System.out.println("Initializing " + a.getName());
     for (int y = 0; y < a.getHeight(); ++y) {
-      //System.out.println("on row " + y);
       nextLine = input.readLine();
-      for (int x = 0; x < a.getWidth(); ++x) {
-        //System.out.println("on col " + x);
-        
+      for (int x = 0; x < a.getWidth(); ++x) {        
         switch (nextLine.charAt(x)) {
           case '.':
             a.setMapAt(new GroundTile(x, y));
@@ -708,7 +745,11 @@ public class World {
 
     input.close();
   }
-  
+
+  /**
+   * [findNeighbourZone]
+   * @author unknown  (i know its you kevin i just dont want to write this)
+   */
   public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,
                                               int orientation) {
@@ -730,10 +771,20 @@ public class World {
     return null;
   }
 
+  /**
+   * [getPlayer]
+   * Retrieves the player in this world.
+   * @return Player, the player in this world.
+   */
   public Player getPlayer() {
     return this.player;
   }
 
+  /**
+   * [getPlayerArea]
+   * Retrieves the area that the player is currently in.
+   * @return Area, the area that the player is currently in.
+   */
   public Area getPlayerArea() {
     return this.playerArea;
   }
@@ -744,22 +795,47 @@ public class World {
     // TODO: die
   }
 
+  /**
+   * [getInGameNanoTime]
+   * Retrieves the number of nanoseconds passed since last midnight.
+   * @return long, the number of nanoseconds passed since last midnight.
+   */
   public long getInGameNanoTime() {
     return this.inGameNanoTime;
   }
 
+  /**
+   * [getInGameDay]
+   * Retrieves the current day of a season.
+   * @return long, the current day of the season.
+   */
   public long getInGameDay() {
     return this.inGameDay;
   }
 
+  /**
+   * [getInGameSeason]
+   * Retrieves the current season in this world.
+   * @return an integer that represents the current season.
+   */
   public int getInGameSeason() {
     return this.inGameSeason;
   }
 
+  /**
+   * [getSeasons]
+   * Retrieves all seasons this world can have.
+   * @return String[], a string array containing all seasons.
+   */
   public static String[] getSeasons() {
     return World.SEASONS;
   }
 
+  /**
+   * [getDaysPerSeason]
+   * Retrieves the number of days per season in this world.
+   * @return int, number of days per season in this world.
+   */
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
   }

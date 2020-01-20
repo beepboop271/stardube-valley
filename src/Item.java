@@ -13,9 +13,9 @@ public class Item extends Holdable {
   /**
    * [Item]
    * Constructor for a new Item.
-   * @param name The name of the item.
-   * @param description A description of the item.
-   * @param imagePath The path to the image of the item.
+   * @param name          String, the name of the item.
+   * @param description   String, a description of the item.
+   * @param imagePath     String, the path to the image of the item.
    * @throws IOException
    */
   public Item(String name, String description, String imagePath) throws IOException {

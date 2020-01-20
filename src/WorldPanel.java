@@ -18,6 +18,7 @@ import java.awt.GradientPaint;
 
 /**
  * [WorldPanel]
+ * A JPanel for graphic display of a World.
  * 2019-12-19
  * @version 0.4
  * @author Kevin Qiao, Candice Zhang, Paula Yuan
@@ -62,6 +63,13 @@ public class WorldPanel extends JPanel {
   private BufferedImage[] menuButtonImages;
   private BufferedImage craftButtonImage;
 
+  /**
+   * [WorldPanel]
+   * Constructor for a new WorldPanel.
+   * @param worldToDisplay World, the World used to display.
+   * @param width          int, width of the panel.
+   * @param height         int, height of the panel.
+   */
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
     this.worldToDisplay = worldToDisplay;
@@ -114,10 +122,22 @@ public class WorldPanel extends JPanel {
     this.setOpaque(true);
   }
 
+  /**
+   * [clamp]
+   * Restricts a value to a given range and retrieves the result.
+   * @author unknown
+   * @param val int, value to clamp.
+   * @param min int, the minimum allowed value.
+   * @param max int, the maximum allowed value.
+   * @return int, the clamped value.
+   */
   public static int clamp(int val, int min, int max) {
     return Math.max(min, Math.min(val, max));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void paintComponent(Graphics g) {
     g.setColor(Color.BLACK);
@@ -715,83 +735,179 @@ public class WorldPanel extends JPanel {
     }
   }
 
-  public void updateHoveredItemIdx(int x, int y) {
+  /**
+   * [updateHoveredItemIdx]
+   * Updates the index of inventory item that the mouse is currently hovering.
+   * @author Candice Zhang
+   * @param mouseX int, the x value of the mouse position
+   * @param mouseY int, the x value of the mouse position
+   */
+  public void updateHoveredItemIdx(int mouseX, int mouseY) {
     Player worldPlayer = this.worldToDisplay.getPlayer();
-    if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(x, y)) {
-      this.hoveredItemIdx = this.hotbarItemIdxAt(x);
+    if ((!worldPlayer.isInMenu()) && this.isPosInHotbar(mouseX, mouseY)) {
+      this.hoveredItemIdx = this.hotbarItemIdxAt(mouseX);
     } else if ((worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE)
-               && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, x, y)) {
-      if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) < worldPlayer.getInventorySize())
-          && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y) >= 0)) {
-        this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, x, y);
+               && this.isPosInInventory(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY) >= 0)) {
+        this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.inventoryMenuInventoryY, mouseX, mouseY);
       }
     } else if ((worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE)
-               && this.isPosInInventory(this.menuX, this.chestMenuInventoryY, x, y)) {
-      if ((this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) < worldPlayer.getInventorySize())
-          && (this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y) >= 0)) {
-      this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, x, y);
+               && this.isPosInInventory(this.menuX, this.chestMenuInventoryY, mouseX, mouseY)) {
+      if ((this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY) < worldPlayer.getInventorySize())
+          && (this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY) >= 0)) {
+      this.hoveredItemIdx = this.inventoryItemIdxAt(this.menuX, this.chestMenuInventoryY, mouseX, mouseY);
       }  
     } else {
       this.hoveredItemIdx = -1;
     }
   }
-  
+
+  /**
+   * [getHotbarX]
+   * Retrieves the x position of the hotbar.
+   * @return int, the x position of the hotbar.
+   */
   public int getHotbarX() {
     return this.hotbarX;
   }
 
+  /**
+   * [getHotbarY]
+   * Retrieves the y position of the hotbar.
+   * @return int, the y position of the hotbar.
+   */
   public int getHotbarY() {
     return this.hotbarY;
   }
 
+  /**
+   * [getMenuX]
+   * Retrieves the x position of the menu.
+   * @return int, the x position of the menu.
+   */
   public int getMenuX() {
     return this.menuX;
   }
 
+  /**
+   * [getMenuY]
+   * Retrieves the y position of the menu.
+   * @return int, the y position of the menu.
+   */
   public int getMenuY() {
     return this.menuY;
   }
 
+  /**
+   * [getMenuW]
+   * Retrieves the width of the menu.
+   * @return int, the width of the menu.
+   */
   public int getMenuW() {
     return this.menuW;
   }
 
+  /**
+   * [getMenuH]
+   * Retrieves the height of the menu.
+   * @return int, the height of the menu.
+   */
   public int getMenuH() {
     return this.menuH;
   }
 
+  /**
+   * [getPlayerScreenPos]
+   * Retrieves the player position in the panel window.
+   * @return Point, the player position in the panel window.
+   */
   public Point getPlayerScreenPos() {
     return ((Point)this.playerScreenPos.clone());
   }
 
+  /**
+   * [getListener]
+   * Retrieves the StardubeEventListener of this panel.
+   * @return StardubeEventListener, the StardubeEventListener of this panel.
+   */
   public StardubeEventListener getListener() {
     return this.listener;
   } 
 
+  /**
+   * [hotbarItemIdxAt]
+   * Retrieves the index of the hotbar item at the given x position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @return    int, the index of the hotbar item at the given x position.
+   */
   public int hotbarItemIdxAt(int x) {
     return Math.min((int)(Math.floor((x-this.hotbarX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 11);
   }
 
+  /**
+   * [menuTabButtonAt]
+   * Retrieves the index of the menu tab button at the given x position.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to calculate index.
+   * @return    int, the index of the menu tab button at the given x position.
+   */
   public int menuTabButtonAt(int x) {
     return Math.min((int)(Math.floor((x-this.menuX)/
            (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.menuButtonImages.length-1);
   }
 
+  /**
+   * [shopItemIdxAt]
+   * Retrieves the index of the shop item at the given y position.
+   * @author    Candice Zhang
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the shop item at the given y position.
+   */
   public int shopItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.SHOP_ITEMS_PER_PAGE-1);
   }
 
+  /**
+   * [craftingItemIdxAt]
+   * Retrieves the index of the crafting item at the given y position.
+   * @author    Candice Zhang
+   * @param y   int, the y position used to calculate index.
+   * @return    int, the index of the crafting item at the given y position.
+   */
   public int craftingItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.craftY) / (this.craftItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.CRAFTING_ITEMS_PER_PAGE-1);
   }
 
+  /**
+   * [inventoryItemIdxAt]
+   * Asks for the x and y location of the inventory and
+   * the x and y location of the targeted point, and
+   * retrieves the index of the inventory item at the targeted point.
+   * @author    Candice Zhang
+   * @param inventoryX   int, the x position of the inventory.
+   * @param inventoryY   int, the y position of the inventory.
+   * @param targetX      int, the x position of the targeted point.
+   * @param targetY      int, the y position of the targeted point.
+   * @return             int, the index of the inventory item at the targeted point.
+   */
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
     return Math.min((int)(Math.floor(targetX-inventoryX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 11)
            + 12*Math.min((int)(Math.floor((targetY-inventoryY)/
                                           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
   }
   
+  /**
+   * [isPosInHotbar]
+   * Checks if the given position is inside the hotbar.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is inside the hotbar,
+   *            false otherwise.
+   */
   public boolean isPosInHotbar(int x, int y) {
     return ((x >= this.hotbarX) &&
             (x <= this.hotbarX+12*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)) &&
@@ -799,6 +915,15 @@ public class WorldPanel extends JPanel {
             (y <= this.hotbarY + WorldPanel.INVENTORY_CELLSIZE));
   }
 
+  /**
+   * [isPosInHotbar]
+   * Checks if the given position is inside the menu tab.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in the menu tab,
+   *            false otherwise.
+   */
   public boolean isPosInMenuTab(int x, int y) {
     return ((x >= this.menuX) &&
             (x <= this.menuX + this.menuW) &&
@@ -806,6 +931,19 @@ public class WorldPanel extends JPanel {
             (y <= this.inventoryMenuInventoryY));
   }
 
+  /**
+   * [isPosInInventory]
+   * Asks for the x and y location of the inventory and
+   * the x and y location of the targeted point, and
+   * checks if the targeted point is inside the inventory.
+   * @author    Candice Zhang
+   * @param inventoryX   int, the x position of the inventory.
+   * @param inventoryY   int, the y position of the inventory.
+   * @param targetX      int, the x position of the targeted point.
+   * @param targetY      int, the y position of the targeted point.
+   * @return             boolean, true if the given position is the inventory,
+   *                     false otherwise.
+   */
   public boolean isPosInInventory(int inventoryX, int inventoryY, int targetX, int targetY) {
     return ((targetX >= inventoryX) &&
             (targetX <= inventoryX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*12) &&
@@ -813,6 +951,15 @@ public class WorldPanel extends JPanel {
             (targetY <= inventoryY + 3*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)));
   }
 
+  /**
+   * [isPosInShopItemList]
+   * Checks if the given position is inside the shop item list display.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is in the shop item list display,
+   *            false otherwise.
+   */
   public boolean isPosInShopItemList(int x, int y) {
     return ((x >= this.shopX) &&
             (x <= this.shopX + this.shopW) &&
@@ -820,6 +967,15 @@ public class WorldPanel extends JPanel {
             (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
   }
 
+  /**
+   * [isPosInCraftButton]
+   * Checks if the given position is inside any craft button location on the screen.
+   * @author    Candice Zhang
+   * @param x   int, the x position used to check.
+   * @param y   int, the y position used to check.
+   * @return    boolean, true if the given position is inside a craft button,
+   *            false otherwise.
+   */
   public boolean isPosInCraftButton(int x, int y) {
     for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
       if ((x >= this.craftX+this.craftW-this.craftButtonImage.getWidth()) &&
@@ -832,14 +988,29 @@ public class WorldPanel extends JPanel {
     return false;
   }
 
+  /**
+   * [getInventoryMenuInventoryY]
+   * Retrieves the y position of the player's inventory in the inventory menu.
+   * @return int, the y position of the player's inventory in the inventory menu.
+   */
   public int getInventoryMenuInventoryY() {
     return this.inventoryMenuInventoryY;
   }
 
+  /**
+   * [getChestMenuInventoryY]
+   * Retrieves the y position of the player's inventory in the chest menu.
+   * @return int, the y position of the player's inventory in the chest menu.
+   */
   public int getChestMenuInventoryY() {
     return this.chestMenuInventoryY;
   }
 
+  /**
+   * [getChestMenuChestY]
+   * Retrieves the y position of the chest's inventory in the chest menu.
+   * @return int, the y position of the chest's inventory in the chest menu.
+   */
   public int getChestMenuChestY() {
     return this.chestMenuChestY;
   }

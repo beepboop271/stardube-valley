@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.io.BufferedReader;
 import java.io.FileReader;
+
 /**
  * [Moveable]
  * 2019-12-19
@@ -21,14 +22,8 @@ public abstract class Moveable {
   private int orientation;
   private BufferedImage[][] images;
   private int framesPerSecond;
-  //the vars below are a bit sketchy, i'll see if i can get rid of them - candice
   private long lastImgUpdateTime;
   private int[] curImgIdx;
-
-  // should probably have made new abstract subclass
-  // for moveables that follow certain velocity bc
-  // not all moveables will be like this but thats
-  // for another time
 
   public Moveable(Point position, double size) {
     this.position = position;

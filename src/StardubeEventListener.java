@@ -6,6 +6,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+/**
+ * [StardubeEventListener]
+ * Event listener that processes all key and mouse events in a world.
+ * 2019-12-19
+ * @version 0.4
+ * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
+ */
+
 public class StardubeEventListener implements KeyListener,
                                               MouseListener,
                                               MouseMotionListener,
@@ -19,6 +27,12 @@ public class StardubeEventListener implements KeyListener,
   private Stopwatch[] mouseStopwatches;
   private Point mousePos;
 
+  /**
+   * [StardubeEventListener]
+   * Constructor for a new StardubeEventListener.
+   * @param stardubeWorld  The World that is used to process events.
+   * @param worldPanel     The corresponding WorldPanel of the World.
+   */
   public StardubeEventListener(World stardubeWorld, WorldPanel worldPanel) {
     this.stardubeWorld = stardubeWorld;
     this.stardubePlayer = stardubeWorld.getPlayer();
@@ -33,6 +47,11 @@ public class StardubeEventListener implements KeyListener,
     this.mousePos = new Point(0, 0);
   }
 
+  /**
+   * [update]
+   * Updates and processes events, including player movement and mini game updates.
+   * @author Kevin Qiao, Candice Zhang
+   */
   public void update() {
     this.updateSelectedTile();
 
@@ -80,7 +99,10 @@ public class StardubeEventListener implements KeyListener,
       }
     }
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyPressed(KeyEvent e) {
     if (e.getKeyCode() < this.keyStates.length) {
@@ -122,10 +144,16 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyReleased(KeyEvent e) {
     if (e.getKeyCode() < this.keyStates.length) {
@@ -133,6 +161,9 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseClicked(MouseEvent e) {
     int mouseX = e.getX(), mouseY = e.getY();
@@ -183,6 +214,9 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mousePressed(MouseEvent e) {
     this.mouseStates[e.getButton()] = true;
@@ -205,6 +239,9 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseReleased(MouseEvent e) {
     this.mouseStates[e.getButton()] = false;
@@ -321,6 +358,9 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseEntered(MouseEvent e) {
     this.mousePos.x = e.getX();
@@ -328,15 +368,23 @@ public class StardubeEventListener implements KeyListener,
     this.updateSelectedTile();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseDragged(MouseEvent e) {
-    //System.out.println("mouse drag detected");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseMoved(MouseEvent e) {
     this.mousePos.x = e.getX();
@@ -345,6 +393,9 @@ public class StardubeEventListener implements KeyListener,
     this.worldPanel.updateHoveredItemIdx((int)this.mousePos.x, (int)this.mousePos.y);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
     int rotation = e.getWheelRotation();
@@ -364,6 +415,11 @@ public class StardubeEventListener implements KeyListener,
     }
   }
 
+  /**
+   * [updateSelectedTile]
+   * Updates the selected tile of the player according to current mouse position.
+   * @author unknown (probly kiwi)
+   */
   private void updateSelectedTile() {
     Vector2D mouseOffset = new Vector2D(this.mousePos.x-this.worldPanel.getPlayerScreenPos().x,
                                         this.mousePos.y-this.worldPanel.getPlayerScreenPos().y)
