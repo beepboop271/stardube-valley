@@ -7,9 +7,9 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends Moveable {
+public class Player extends LoopAnimatedMoveable implements Animatable {
   public static final double SIZE = 0.35;
-  private static final double MAX_SPEED = 6;
+  private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;
@@ -27,6 +27,7 @@ public class Player extends Moveable {
   private int selectedItemIdx;
   private Point selectedTile;
   private boolean isImmutable;
+  private boolean isAnimating;
   private boolean isExhausted;
   private FishingGame currentFishingGame;
   private int currentFunds, futureFunds, totalEarnings;
@@ -73,7 +74,7 @@ public class Player extends Moveable {
     }
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = this.getVelocity();
-    positionChange.setLength(Player.MAX_SPEED*elapsedSeconds);
+    positionChange.setLength(Player.SPEED*elapsedSeconds);
     // this.translatePos(positionChange);
     return positionChange;
   }
@@ -87,11 +88,11 @@ public class Player extends Moveable {
     return this.inventory;
   }
 
-  public void pickUp(HoldableStack items) {
+  public boolean pickUp(HoldableStack items) {
     // could replace with set, just need to test out
     // hashing holdablestacks later
     if (!this.canPickUp(items.getContainedHoldable())) {
-      return;
+      return false;
     }
     // if the items of the same type exists, add on to the quantity of the type
     for (int i = 0; i < this.inventorySize; ++i) {
@@ -99,16 +100,17 @@ public class Player extends Moveable {
       if ((this.inventory[i] != null)
             && (this.inventory[i].getContainedHoldable() == items.getContainedHoldable())) {
         this.inventory[i].addHoldables(items.getQuantity());
-        return;
+        return true;
       }
     }
     // otherwise, store it in a new slot if there is space
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] == null) {
         this.inventory[i] = items;
-        return;
+        return true;
       }
     }
+    return false;
   }
 
   public boolean canPickUp(Holdable item) {
@@ -448,6 +450,15 @@ public class Player extends Moveable {
     this.isImmutable = isImmutable;
   }
 
+  public boolean isAnimating() {
+    return this.isAnimating;
+  }
+
+  public void setAnimating(boolean isAnimating) {
+    this.isAnimating = isAnimating;
+    this.isImmutable = isAnimating;
+  }
+
   public static double getItemAttractionDistance() {
     return Player.ITEM_ATTRACTION_DISTANCE;
   }
@@ -723,5 +734,15 @@ public class Player extends Moveable {
    */
   public CraftingMachine getCraftingMachine () {
     return this.craftingMachine;
+  }
+
+  @Override
+  public double getXOffset() {
+    return 0;
+  }
+
+  @Override
+  public double getYOffset() {
+    return -1;
   }
 }

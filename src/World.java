@@ -83,7 +83,7 @@ public class World {
   /**
    * [update]
    * Updates the world, including all its components and events.
-   * @author unknown
+   * @author Kevin Qiao
    */
   public void update() {
     long currentUpdateTime = System.nanoTime();
@@ -101,6 +101,8 @@ public class World {
       this.doDayEndActions();
     }
 
+    // move holdable entities on the ground
+    // towards the player in the current area
     synchronized (this.playerArea.getItemsOnGroundList()) {
       Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
       HoldableStackEntity nextItemEntity;
@@ -108,13 +110,14 @@ public class World {
       while (itemsNearPlayer.hasNext()) {
         nextItemEntity = itemsNearPlayer.next();
         itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
-        if (itemDistance < Player.SIZE) {
-          this.player.pickUp(nextItemEntity.getStack());
+        if ((itemDistance < Player.SIZE)
+              && (this.player.pickUp(nextItemEntity.getStack()))) {
           itemsNearPlayer.remove();
         } else if (itemDistance < Player.getItemAttractionDistance()) {
-          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x,
-                                    this.player.getPos().y-nextItemEntity.getPos().y, 
-                                    (double)Player.getItemAttractionDistance()/itemDistance);
+          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x+ (Math.random()-0.5),
+                                     this.player.getPos().y-nextItemEntity.getPos().y+ (Math.random()-0.5), 
+                                     Math.min((double)Player.getItemAttractionDistance()/itemDistance,
+                                              HoldableStackEntity.MAX_SPEED));
           nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime));
         }
       }
@@ -145,11 +148,9 @@ public class World {
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-        } else if (nextMoveable instanceof NPC) { 
-          // this.npcAreas[((NPC)nextMoveable).getIndex()] = a.moveAreas(nextMoveable,
-          //                                               nextMoveable.getIntersectingTiles(move).iterator());
+        } else if (nextMoveable instanceof NPC) {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-          nextMoveable.updateImage();
+          ((LoopAnimatedMoveable)nextMoveable).updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         }
@@ -621,31 +622,13 @@ public class World {
   }
 
   /**
-   * [queueEvent]
-   * @author unknown
-   */
-  public void queueEvent(TimedEvent te) {
-    this.eventQueue.offer(te);
-  }
-
-  /**
-   * [emplaceEvent]
-   * Emplaces an event to this world's event queue.
-   * @author Kevin Qiao
-   * @param time   long, the nanotime of the event.
-   * @param event  EventObject, the event to emplace.
-   */
-  public void emplaceEvent(long time, EventObject event) {
-    this.eventQueue.offer(new TimedEvent(time, event));
-  }
-
-  /**
    * [emplaceFutureEvent]
-   * Emplaces an event that will happen at a future time to this world's event queue.
+   * Constructs and adds a TimedEvent that will happen at
+   * a future time to this world's event queue.
    * @author Kevin Qiao
-   * @param nanoTimeIntoFuture   long that represents the time the event
-   *                             will be processed, in nanotime into future.
-   * @param event                EventObject, the event to emplace.
+   * @param nanoTimeIntoFuture long that represents the time the event
+   *                           will be processed, in nanotime into future.
+   * @param event              EventObject, the event to emplace.
    */
   public void emplaceFutureEvent(long nanoTimeIntoFuture, EventObject event) {
     this.eventQueue.offer(new TimedEvent(this.inGameNanoTime+nanoTimeIntoFuture, event));

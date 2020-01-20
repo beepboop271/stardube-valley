@@ -241,7 +241,7 @@ public abstract class Area {
       nextPoint = intersectingPoints.next();
       if (!this.inMap(nextPoint)) {
         g = this.getNeighbourZone(this.getExitDirection(nextPoint));
-        if (!g.requiresInteractToMove()) {
+        if ((g != null) && !g.requiresInteractToMove()) {
           return this.moveAreas(m, g);
         }
       }
