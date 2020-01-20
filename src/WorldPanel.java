@@ -136,9 +136,9 @@ public class WorldPanel extends JPanel {
 
   /**
    * [clamp]
-   * Restricts a value to a given range and retrieves the result.
-   * @author unknown
-   * @param val int, value to clamp.
+   * Restricts a value to a given range and returns the result.
+   * @author Kevin Qiao
+   * @param val int, the value to clamp.
    * @param min int, the minimum allowed value.
    * @param max int, the maximum allowed value.
    * @return int, the clamped value.
@@ -234,8 +234,8 @@ public class WorldPanel extends JPanel {
     double nextX, nextY;
     while (moveables.hasNext()) {
       Moveable currentMoveable = moveables.next();
-      nextX = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX)+originX);
-      nextY = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY-1)+originY);
+      nextX = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+currentMoveable.getXOffset())+originX);
+      nextY = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+currentMoveable.getYOffset())+originY);
       g.drawImage(currentMoveable.getImage(), (int)nextX, (int)nextY, null);
     }
 

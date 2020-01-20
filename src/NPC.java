@@ -7,8 +7,8 @@ import java.io.IOException;
  * @author Paula Yuan
  */
 
-public class NPC extends Moveable{
-  private static final double MAX_SPEED = 3;
+public class NPC extends LoopAnimatedMoveable {
+  private static final double MAX_SPEED = 1;
   public static final double SIZE = 0.35;
   private int index;
   private String[] dialogueRotation = new String[5]; // possibly change size?
@@ -35,5 +35,15 @@ public class NPC extends Moveable{
 
   public int getIndex() {
     return this.index;
+  }
+
+  @Override
+  public double getXOffset() {
+    return 0;
+  }
+
+  @Override
+  public double getYOffset() {
+    return -1;
   }
 }

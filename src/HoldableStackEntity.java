@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
 
 public class HoldableStackEntity extends Moveable implements Drawable {
+  public static final double MAX_SPEED = 3;
   private HoldableStack stackObject;
 
   public HoldableStackEntity(HoldableStack stackObject, Point position) {
