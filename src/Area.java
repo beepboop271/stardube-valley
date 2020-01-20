@@ -210,12 +210,13 @@ public abstract class Area {
     }
     Point p1 = e.getPos();
     Point p2 = p.getPos();
-    Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.5);
+    Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.3);
     double dist = p1.distanceTo(p2);
-    for (int i = 0; i < dist/0.5; ++i) {
+    for (int i = 0; i < dist/0.3; ++i) {
       p1.translate(step.getX(), step.getY());
       switch (e.getHeight()) {
         case 1:
+          System.out.println(p1);
           if (!this.walkableAt(p1.round())) {
             return false;
           }

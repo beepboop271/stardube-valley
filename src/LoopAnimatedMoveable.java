@@ -16,17 +16,18 @@ public abstract class LoopAnimatedMoveable extends Moveable {
   private BufferedImage[][] images;
   private int framesPerSecond;
   private long lastImgUpdateTime;
-  private int[] curImgIdx;
+  private int currentImgIdx;
 
-  public LoopAnimatedMoveable(Point position, double size, String name) {
+  public LoopAnimatedMoveable(Point position, double size, String name,
+                              int framesPerSecond) {
     super(position, size);
     this.setVelocity(0, 0, 0);
     this.orientation = World.SOUTH;
     
     this.images = new BufferedImage[4][];
-    this.framesPerSecond = LoopAnimatedMoveable.WALKSTEP_FRAMES;
+    this.framesPerSecond = framesPerSecond;
     this.lastImgUpdateTime = System.nanoTime();
-    this.curImgIdx = new int[]{2,0};
+    this.currentImgIdx = 0;
     try {
       String[] directionImages;
       String folderPath;
@@ -45,12 +46,12 @@ public abstract class LoopAnimatedMoveable extends Moveable {
   }
 
   public BufferedImage getImage() {
-    return this.images[this.curImgIdx[0]][this.curImgIdx[1]];
+    return this.images[this.orientation][this.currentImgIdx];
   }
 
   public void updateImage() {
     if ((System.nanoTime()-this.lastImgUpdateTime) >= (1_000_000_000/this.framesPerSecond)) {
-      this.curImgIdx[1] = (this.curImgIdx[1]+1) % this.images[this.curImgIdx[0]].length;
+      this.currentImgIdx = (this.currentImgIdx+1) % this.images[this.orientation].length;
       this.lastImgUpdateTime = System.nanoTime();
     }
   }
@@ -61,12 +62,6 @@ public abstract class LoopAnimatedMoveable extends Moveable {
 
   public void setOrientation(int orientation) {
     this.orientation = orientation;
-
-    for (int i = 0; i < 4; i++) {
-      if ((this.orientation == i) && (this.curImgIdx[0] != i)) {
-        this.curImgIdx[0] = i;
-      }
-    }
   }
 
   public int getFramesPerSecond() {

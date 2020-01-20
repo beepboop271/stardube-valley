@@ -11,11 +11,18 @@ public class HoldableStackEntity extends Moveable implements Drawable {
 
   @Override
   public Vector2D getMove(long elapsedNanoTime) {
-    double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
-    Vector2D positionChange = this.getVelocity();
-    positionChange.scale(elapsedSeconds);
-    // this.translatePos(positionChange);
-    return positionChange;
+    // does not know how to move without player pos
+    return new Vector2D(0, 0);
+  }
+
+  public Vector2D getMove(long elapsedNanoTime, Point playerPos) {
+    this.setVelocity(
+        playerPos.x-this.getPos().x+(Math.random()-0.5),
+        playerPos.y-this.getPos().y+(Math.random()-0.5),
+        Math.min((double)Player.getItemAttractionDistance()/this.getPos().distanceTo(playerPos),
+                 HoldableStackEntity.MAX_SPEED)
+    );
+    return this.getVelocity().scale(elapsedNanoTime/1_000_000_000.0);
   }
 
   public HoldableStack getStack() {

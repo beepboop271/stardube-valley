@@ -114,11 +114,8 @@ public class World {
               && (this.player.pickUp(nextItemEntity.getStack()))) {
           itemsNearPlayer.remove();
         } else if (itemDistance < Player.getItemAttractionDistance()) {
-          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x+ (Math.random()-0.5),
-                                     this.player.getPos().y-nextItemEntity.getPos().y+ (Math.random()-0.5), 
-                                     Math.min((double)Player.getItemAttractionDistance()/itemDistance,
-                                              HoldableStackEntity.MAX_SPEED));
-          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime));
+          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
+                                                             this.player.getPos()));
         }
       }
     }
@@ -142,15 +139,26 @@ public class World {
     Vector2D move;
     while (moveables.hasNext()) {
       nextMoveable = moveables.next();
-      move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
-      if (move != null) {
+      if (nextMoveable instanceof Enemy) {
+        Enemy nextEnemy = ((Enemy)nextMoveable);
+        if (a.hasLineOfSight(nextEnemy, this.player)) {
+          move = nextEnemy.getMove(updateTime-this.lastUpdateTime, this.player.getPos());
+        } else {
+          move = nextEnemy.getMove(updateTime-this.lastUpdateTime);
+        }
+      } else {
+        move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
+      }
+      if ((move != null) && (move.getLength() > 0)) {
+        if (nextMoveable instanceof LoopAnimatedMoveable) {
+          ((LoopAnimatedMoveable)nextMoveable).updateImage();
+        }
         World.doCollision(a, nextMoveable, move.getXVector(), true);
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         } else if (nextMoveable instanceof NPC) {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-          ((LoopAnimatedMoveable)nextMoveable).updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         }
