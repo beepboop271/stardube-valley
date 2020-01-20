@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 
-public class World { //TODO: JAVADOCS
+public class World {
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -136,7 +136,7 @@ public class World { //TODO: JAVADOCS
   /**
    * [moveMoveablesInArea]
    * Moves all the moveables in an area.
-   * @author Author Unknown
+   * @author Kevin Qiao
    * @param a, the area the moving is happening in.
    * @param updateTime, the long time the update will be happening
    */
@@ -176,7 +176,7 @@ public class World { //TODO: JAVADOCS
   /**
    * [doCollision]
    * Process an individual collision.
-   * @author Author Unknown
+   * @author Kevin Qiao
    * @param a, the area the collision is happening in
    * @param m, the moveable that is being collided
    * @param move, the vector move being made
@@ -199,7 +199,7 @@ public class World { //TODO: JAVADOCS
   /**
    * [fixCollision]
    * Fix collisions of a moveable entity, given the direction it is colliding in
-   * @author Author Unknown
+   * @author Kevin Qiao
    * @param m, the moveable that is colliding
    * @param collideDirection, the direction of the collision, with ints 0-1 representing cardinal directions
    */
@@ -613,7 +613,7 @@ public class World { //TODO: JAVADOCS
   /**
    * [doDayEndActions]
    * Does actions that need to be performed at the end of day.
-   * @author unknown
+   * @author Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
    * 
    */
   public void doDayEndActions() {
@@ -898,7 +898,12 @@ public class World { //TODO: JAVADOCS
 
   /**
    * [findNeighbourZone]
-   * @author unknown  (i know its you kevin i just dont want to write this)
+   * Finds and retrieves the neighbour zone of the area.
+   * @author            Kevin Qiao
+   * @param a           The Area used to find neighbour zone.
+   * @param x           The int that represents the x posistion of the point.
+   * @param y           The int that represents the y posistion of the point.
+   * @param orientation The int that represents the orientation for searching.
    */
   public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,

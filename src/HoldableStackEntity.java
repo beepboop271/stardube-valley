@@ -22,7 +22,6 @@ public class HoldableStackEntity extends Moveable implements Drawable {
     this.stackObject = stackObject;
   }
 
-  //TODO: double check these to make sure these are right.
   /**
    * [getMove]
    * Uses the elapsed time to figure out movement. However, this object

@@ -5,8 +5,18 @@
  * @version 0.1
  * @author Kevin Qiao
  */
-public interface Animatable { //TODO: JAVADOCS
+public interface Animatable {
+  /**
+   * [isAnimating]
+   * Checks if the object is animating.
+   * @return boolean, true if the object is animating, false otherwise.
+   */
   public boolean isAnimating();
   
+  /**
+   * [setAnimating]
+   * Sets whether the object is animating.
+   * @param isAnimating boolean, true if the object is animating, false otherwise.
+   */
   public void setAnimating(boolean isAnimating);
 }
