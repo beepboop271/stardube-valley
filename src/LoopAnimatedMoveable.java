@@ -3,8 +3,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.util.Arrays;
 import javax.imageio.ImageIO;
+
+/**
+ * [LoopAnimatedMoveable]
+ * 2020-01-19
+ * 
+ * @version 0.2
+ * @author Paula Yuan, Candcie Zhang
+ */
 
 public abstract class LoopAnimatedMoveable extends Moveable { //TODO: JAVADOCS
   public final static int WALKSTEP_FRAMES = 8;
@@ -70,5 +78,9 @@ public abstract class LoopAnimatedMoveable extends Moveable { //TODO: JAVADOCS
 
   public void setFramesPerSecond(int fps) {
     this.framesPerSecond = fps;
+  }
+
+  public BufferedImage getProfileImage() { // image to display in places like social page
+    return this.images[Arrays.asList(DIRECTIONS).indexOf("/south")][0];
   }
 }

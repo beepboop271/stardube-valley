@@ -51,6 +51,7 @@ public class World { //TODO: JAVADOCS
   private int inGameSeason;
   private double luckOfTheDay;
   private String[][] worldMap;
+  private NPC[] npcs;
 
   /**
    * [World]
@@ -909,20 +910,28 @@ public class World { //TODO: JAVADOCS
     String[] nextLineData = lineToRead.split("\\s+");
     String name;
     String[] dialogue = new String[5];
+    String profileDescription;
     Area npcArea;
     NPC newNPC;
-    for (int i = 0; i < 4; i++) { // TODO: change number to match # of NPCs
+    int totalNPCs = 3; // TODO: change number to match # of NPCs
+    this.npcs = new NPC[totalNPCs];
+    for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
       npcArea = this.locations.get(nextLineData[1]);
       for (int j = 0; j < 5; j++) {
         lineToRead = input.readLine();
         dialogue[j] = lineToRead;
       }
+      profileDescription = input.readLine();
+      input.readLine(); // consume blank line
+
       newNPC = new NPC(new Point(3, 3),
                        name,
                        i, 
-                       dialogue);
-      npcArea.addMoveable(newNPC);
+                       dialogue,
+                       profileDescription);
+      npcArea.addMoveable(newNPC);      
+      this.npcs[i] = newNPC;
       this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
                               new AutoMovementEvent(newNPC));
       lineToRead = input.readLine();
@@ -972,6 +981,49 @@ public class World { //TODO: JAVADOCS
    */
   public Player getPlayer() {
     return this.player;
+  }
+
+  /**
+   * [incrementPlayerAmountScrolled]
+   * Checks if the player should increase the amount scrolled,
+   * and increase its amount scrolled if should increase.
+   * @author Candice Zhang
+   */
+  public void incrementPlayerAmountScrolled() {
+    boolean shouldIncrese = false;
+    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE) &&
+        ((this.player.getAmountScrolled()+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)(this.player.getCurrentInteractingObj())).getItems().length)) {
+      shouldIncrese = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE) &&
+              ((this.player.getAmountScrolled()+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.player.getCraftingMachine().getProducts().length)) {
+      shouldIncrese = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE) &&
+              ((this.player.getAmountScrolled()+WorldPanel.NPCS_PER_PAGE < this.npcs.length))) {
+      shouldIncrese = true;
+    }
+    if (shouldIncrese) {
+      this.player.incrementAmountScrolled();
+    }
+  }
+
+  /**
+   * [decrementPlayerAmountScrolled]
+   * Checks if the player should decrease the amount scrolled,
+   * and decrease its amount scrolled if should decrease.
+   * @author Candice Zhang
+   */
+  public void decrementPlayerAmountScrolled() {
+    boolean shouldDecrese = false;
+    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE) && (this.player.getAmountScrolled() > 0)) {
+      shouldDecrese = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE) && (this.player.getAmountScrolled() > 0)) {
+      shouldDecrese = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE) && (this.player.getAmountScrolled() > 0)) {
+      shouldDecrese = true;
+    }
+    if (shouldDecrese) {
+      this.player.decrementAmountScrolled();
+    }
   }
 
   /**
@@ -1025,6 +1077,15 @@ public class World { //TODO: JAVADOCS
   }
 
   /**
+   * [getNPCs]
+   * Retrieves all the NPCs in this world.
+   * @return NPC[], the NPCs in this world in a String array.
+   */
+  public NPC[] getNPCs() {
+    return this.npcs;
+  }
+
+  /**
    * [getSeasons]
    * Retrieves all seasons this world can have.
    * @return String[], a string array containing all seasons.
@@ -1041,4 +1102,6 @@ public class World { //TODO: JAVADOCS
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
   }
+
+ 
 }

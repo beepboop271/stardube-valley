@@ -35,7 +35,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
   private int energy, maxEnergy;
   private int currentMenuPage;
   private int amountScrolled;
-  private Object currentInteractingObj; // TOOD: rename, if possible :))
+  private Object currentInteractingObj;
   private CraftingMachine craftingMachine;
 
   /**
@@ -369,21 +369,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
   }
 
   public void incrementAmountScrolled() {
-    if ((this.currentMenuPage == Player.SHOP_PAGE) &&
-        ((this.amountScrolled+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)this.currentInteractingObj).getItems().length)) {
-      this.amountScrolled += 1;
-    } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) &&
-              ((this.amountScrolled+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.craftingMachine.getProducts().length)) {
-      this.amountScrolled += 1;
-    }
+    this.amountScrolled += 1;
   }
 
   public void decrementAmountScrolled() {
-    if ((this.currentMenuPage == Player.SHOP_PAGE) && (this.amountScrolled > 0)) {
-      this.amountScrolled -= 1;
-    } else if ((this.currentMenuPage == Player.CRAFTING_PAGE) && (this.amountScrolled > 0)) {
-      this.amountScrolled -= 1;
-    }
+    this.amountScrolled -= 1;
   }
 
   /**

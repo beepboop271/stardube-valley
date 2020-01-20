@@ -446,11 +446,12 @@ public class StardubeEventListener implements KeyListener,
   public void mouseWheelMoved(MouseWheelEvent e) {
     int rotation = e.getWheelRotation();
     if ((this.stardubePlayer.getCurrentMenuPage() == Player.SHOP_PAGE) ||
-        (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE)) {
+        (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) ||
+        (this.stardubePlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE)) {
       if (rotation < 0) {
-        this.stardubePlayer.decrementAmountScrolled();
+        this.stardubeWorld.decrementPlayerAmountScrolled();
       } else if (rotation > 0) {
-        this.stardubePlayer.incrementAmountScrolled();
+        this.stardubeWorld.incrementPlayerAmountScrolled();
       }
     } else {
       if (rotation < 0) {
