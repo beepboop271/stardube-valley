@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 /**
  * [WorldArea] 
+ * The area which manages all the world sections, where foragables can
+ * spawn freely.
  * 2019-12-17
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan
  */
-public class WorldArea extends Area { //TODO: JAVADOCS
+public class WorldArea extends Area {
   private Random random = new Random();
   private int numForageableTiles = 0;
   private ArrayList<Tile> treeTiles = new ArrayList<>();
@@ -19,6 +21,13 @@ public class WorldArea extends Area { //TODO: JAVADOCS
                                   "Javacake", "Mushroom", "Winterroot"};
   private String[] trees = {"OakTree", "SpruceTree"};
 
+  /**
+   * [WorldArea]
+   * Constructor for a new WorldArea.
+   * @param name   The name of this WorldArea.
+   * @param width  The tile width of this WorldArea.
+   * @param height the tile heiht of this WorldArea.
+   */
   public WorldArea(String name,
                    int width, int height) {
     super(name, width, height);
@@ -141,6 +150,12 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     this.numForageableTiles = num;
   }
 
+  /**
+   * [doDayEndActions]
+   * Does everything that needs to be done at the end of the day, like
+   * spawning forageables or trees.
+   * @author Paula Yuan
+   */
   @Override
   public void doDayEndActions() {
     if (this.getCurrentDay()%10 == 1) {
@@ -183,6 +198,10 @@ public class WorldArea extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * {@inheritDoc}
+   * @author Paula Yuan
+   */
   @Override
   public void setMapAt(Tile t) {
     super.setMapAt(t);
