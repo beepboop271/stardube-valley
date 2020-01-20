@@ -1,5 +1,26 @@
-ChestItem 1 10.00
-WoodItem 50
+CopperPickaxe 2 5000.00
+CopperBarItem 5
+Pickaxe 1
+
+SteelPickaxe 2 10000.00
+IronBarItem 5
+CopperPickaxe 1
+
+GoldPickaxe 2 20000.00
+GoldBarItem 5
+IronPickaxe 1
+
+CopperAxe 2 5000.00
+CopperBarItem 5
+Axe 1
+
+SteelAxe 2 10000.00
+IronBarItem 5
+CopperAxe 1
+
+GoldAxe 2 20000.00
+GoldBarItem 5
+SteelAxe 1
 
 end
 
