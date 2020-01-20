@@ -268,7 +268,7 @@ public class StardubeEventListener implements KeyListener,
       // general player interactions (AKA doors and foraging)
       if (e.getButton() == MouseEvent.BUTTON3) {
         this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*5_000_000),
+              (long)(25_000_000),
               new PlayerInteractEvent(this.stardubePlayer.getSelectedTile(),
                                       this.stardubePlayer.getSelectedItemIdx()));
       }
@@ -295,7 +295,7 @@ public class StardubeEventListener implements KeyListener,
           } else if (selectedItem instanceof Placeable) {
             //System.out.println("Trying to place!");
             this.stardubeWorld.emplaceFutureEvent(
-              (long)(0.5*1_000_000_000),
+              (long)(25_000_000),
               new ComponentPlacedEvent(
                 ((Placeable)selectedItem).placeItem(), this.stardubePlayer.getSelectedItemIdx(),
                 this.stardubePlayer.getSelectedTile()

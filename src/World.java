@@ -349,7 +349,11 @@ public class World {
 
           //TODO: play foraging animation?
           TileComponent currentContent = currentTile.getContent();
-          
+          // if (currentContent == null) {
+          //   System.out.println("This tile is null");
+          // } else {
+          //   System.out.println("on component is " + currentContent);
+          // }
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -372,22 +376,6 @@ public class World {
               if (this.player.canPickUp(product.getContainedHoldable())) {
                 this.player.pickUp(product);
                 ((ExtrinsicGrowableCollectable)currentContent).resetRegrowCooldown();
-              }
-            }
-          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
-            for (int i = 0; i < bushContents.length; i++) {
-              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
-                continue;
-              } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
-                HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
-                HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-                if (product != null) {
-                  new HoldableStackEntity(product, null);
-                  if (this.player.canPickUp(product.getContainedHoldable())) {
-                      this.player.pickUp(product);
-                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
-                  } 
-                }
               }
             }
           } else if (currentContent instanceof Collectable) {
@@ -446,7 +434,23 @@ public class World {
             
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
-          }
+          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
+            for (int i = 0; i < bushContents.length; i++) {
+              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
+                continue;
+              } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
+                HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
+                HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
+                if (product != null) {
+                  new HoldableStackEntity(product, null);
+                  if (this.player.canPickUp(product.getContainedHoldable())) {
+                      this.player.pickUp(product);
+                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+                  } 
+                }
+              }
+            }
+          } 
         }
 
       } else if (event instanceof MachineProductionFinishedEvent) {
@@ -546,8 +550,9 @@ public class World {
 
   /**
    * [doDayEndActions]
-   * @author unknown
    * Does actions that need to be performed at the end of day.
+   * @author unknown
+   * 
    */
   public void doDayEndActions() {
     //- handle the player position, whether they passed out or went to bed and
