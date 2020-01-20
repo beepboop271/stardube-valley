@@ -2,7 +2,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MineLevel extends Area { //TODO: JAVADOCS
+/**
+ * [MineLevel]
+ * A layer of the mine
+ * 2019-12-18
+ * @version 0.1
+ * @author Kevin Qiao
+ */
+public class MineLevel extends Area {
   private static MineLevelComponent[] levelComponents;
   private static int numLevelComponents;
   private static boolean componentsInitialized = false;
@@ -20,6 +27,13 @@ public class MineLevel extends Area { //TODO: JAVADOCS
   private final int level;
   private Gateway entranceGateway;
 
+  /**
+ * [Builder]
+ * A builder for the mine level
+ * 2019-12-18
+ * @version 0.1
+ * @author Kevin Qiao
+ */
   public static class Builder {
     private String name;
     private int level;
@@ -29,6 +43,11 @@ public class MineLevel extends Area { //TODO: JAVADOCS
     private MineLevelComponent[] components;
     private Point[] componentPoints;
 
+    /**
+    * [Builder]
+    * Constructor for a new Builder.
+    * @param level, int level
+    */
     public Builder(int level) {
       if (!MineLevel.componentsInitialized) {
         throw new RuntimeException("MineLevelComponents not initialized");
@@ -44,6 +63,11 @@ public class MineLevel extends Area { //TODO: JAVADOCS
       this.components = new MineLevelComponent[size];
     }
 
+    /**
+    * [buildLevel]
+    * Builds a level.
+    * @param containingArea, MineArea area
+    */
     public MineLevel buildLevel(MineArea containingArea) {
       this.components[0] = MineLevel.levelComponents[(int)(Math.random()*MineLevel.numLevelComponents)];
       this.componentPoints[0] = new Point(0, 0);
@@ -69,6 +93,10 @@ public class MineLevel extends Area { //TODO: JAVADOCS
       return level;
     }
 
+    /**
+    * [chooseRandomComponents]
+    * Choses random components for the mine level to have.
+    */
     private void chooseRandomComponents() {
       int numComponents = 1;
       int nextDirection;
@@ -94,6 +122,9 @@ public class MineLevel extends Area { //TODO: JAVADOCS
       }
     }
 
+    /**
+    * [translateToPositive]
+    */
     private void translateToPositive() {
       Point translation = new Point(0, 0);
       int i = -1;
@@ -115,6 +146,11 @@ public class MineLevel extends Area { //TODO: JAVADOCS
       }
     }
 
+    /**
+    * [assembleAreah]
+    * assembles the area
+    * @param level, Minelevel level
+    */
     private void assembleArea(MineLevel level) {
       Point offset;
       int realX, realY;
@@ -186,6 +222,12 @@ public class MineLevel extends Area { //TODO: JAVADOCS
       }
     }
 
+    /**
+    * [setExitGateway]
+    * sets the exit gateway for the level
+    * @param level MineLevel
+    * @param pos containingArea 
+    */
     private void setExitGateway(MineLevel level, MineArea containingArea) {
       for (int y = 1; y < this.height; ++y) {
         for (int x = 1; x < this.width; ++x) {
@@ -204,16 +246,29 @@ public class MineLevel extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [MineLevel]
+   * Constructor for a new MineLevel.
+   * @param b the builder
+   */
   private MineLevel(Builder b) {
     super(b.name, b.width, b.height);
     this.level = b.level;
   }
 
+  /**
+   * [getLevel]
+   * Retrieves the integer level of the level.
+   * @return the int level
+   */
   public int getLevel() {
     return this.level;
   }
 
   @Override
+  /**
+   * {@InheritDocs}
+   */
   public void removeComponentAt(Point pos) {
     super.removeComponentAt(pos);
     if (this.getGateway(pos) != null) {
@@ -221,10 +276,19 @@ public class MineLevel extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [getEntranceGateway]
+   * Retrieves the entrance gateway.
+   * @return the Gateway entrance gateway
+   */
   public Gateway getEntranceGateway() {
     return this.entranceGateway;
   }
 
+  /**
+   * [loadComponents]
+   * Loads the components of the mine level.
+   */
   public static void loadComponents() {
     try {
       BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/MineLevelComponents"));

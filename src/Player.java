@@ -102,8 +102,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
    * @return true or false based on your ability to pick the items up.
    */
   public boolean pickUp(HoldableStack items) {
-    // could replace with set, just need to test out
-    // hashing holdablestacks later
     if (!this.canPickUp(items.getContainedHoldable())) {
       return false;
     }

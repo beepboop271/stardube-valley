@@ -1,6 +1,13 @@
 import java.util.Iterator;
 
-public class MineArea extends Area { //TODO: JAVADOCS
+/**
+ * [MineArea]
+ * A mine area
+ * 2019-12-17
+ * @version 0.1
+ * @author Kevin Qiao
+ */
+public class MineArea extends Area {
   public static final int NUM_LEVELS = 60;
 
   private MineLevel[] levels;
@@ -9,6 +16,16 @@ public class MineArea extends Area { //TODO: JAVADOCS
   private ElevatorGateway elevator;
   private int elevatorLevelsUnlocked;
 
+  /**
+   * [MineArea]
+   * Constructor for a new MineArea.
+   * @param name, the String name of the area
+   * @param width, the int width of the area
+   * @param height, the int height of the area
+   * @param startingGateway, the Point representing where the starting gateway should be
+   * @param levelExitGateway, the Point representing where the exit gateway for a level should be
+   * @param elevatorGateway, the Point representing where the elevator should be
+   */
   public MineArea(String name,
                   int width, int height,
                   Point startingGateway,
@@ -32,6 +49,11 @@ public class MineArea extends Area { //TODO: JAVADOCS
     this.addGateway(elevator);
   }
 
+  /**
+   * [loadLevel]
+   * Loads a certain level of the mine.
+   * @param level, an int representing the level you want to load.
+   */
   public void loadLevel(int level) {
     if (level == 0) {
       return;
@@ -55,6 +77,9 @@ public class MineArea extends Area { //TODO: JAVADOCS
   }
 
   @Override
+  /**
+   * {@inheritDoc}
+   */
   public void doDayEndActions() {
     this.levels[0] = new MineLevel.Builder(0).buildLevel(this);
     this.startingGateway.setDestinationArea(this.levels[0]);
@@ -65,14 +90,29 @@ public class MineArea extends Area { //TODO: JAVADOCS
     }
   }
 
+  /**
+   * [getLevelExitGateway]
+   * returns the Gateway representing the exit gateway of the level
+   * @return Gateway the level exit gateway
+   */
   public Gateway getLevelExitGateway() {
     return this.levelExitGateway;
   }
 
+  /**
+   * [getElevatorPosition]
+   * Gets the position of the elevator
+   * @return the Point origin of the elevator
+   */
   public Point getElevatorPosition() {
     return this.elevator.getOrigin();
   }
 
+  /**
+   * [setElevatorDestination]
+   * Sets the level that the elevator is going to
+   * @param level, the level you want to go to
+   */ 
   public void setElevatorDestination(int level) {
     if (this.levels[level] == null) {
       this.levels[level] = new MineLevel.Builder(level).buildLevel(this);
@@ -81,6 +121,11 @@ public class MineArea extends Area { //TODO: JAVADOCS
     this.elevator.setDestinationGateway(this.levels[level].getEntranceGateway());
   }
 
+  /**
+   * [hasElevatorFloorUnlocked]
+   * Gets whether a certain floor is accessible by the elevator
+   * @return boolean true or false depending on the floor's elevator accessibility
+   */
   public boolean hasElevatorFloorUnlocked(int floor) {
     return ((floor/5) <= this.elevatorLevelsUnlocked);
   }

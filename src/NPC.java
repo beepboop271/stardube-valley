@@ -28,20 +28,41 @@ public class NPC extends LoopAnimatedMoveable {
     this.index = index;
     this.name = name;
   }
-  
+
+  /**
+   * [getDialogue]
+   * Retrieves a string dialogue.
+   * @author Paula Yuan
+   * @param index, int index
+   * @return String the dialogue
+   */
   public String getDialogue(int index) {
     return this.dialogueRotation[index];
   }
   
+  /**
+   * [getName]
+   * Retrieves the NPC's name
+   * @author Paula Yuan
+   * @return the string name of the NPC.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * [getProfileDescription]
+   * Retrieves the NPC's profile description
+   * @return String, the profile description
+   */
   public String getProfileDescription() {
     return this.profileDescription;
   }
   
   @Override
+  /**
+   * {@inheritDocs}
+   */
   public Vector2D getMove(long elapsedNanoTime) {
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = this.getVelocity();
@@ -50,20 +71,38 @@ public class NPC extends LoopAnimatedMoveable {
     return positionChange;
   }
 
+  /**
+   * [getIndex]
+   * Retrieves the index of this NPC
+   * @author Paula Yuan
+   * @return int index
+   */
   public int getIndex() {
     return this.index;
   }
 
+  /**
+   * [setIndex]
+   * Sets the index of this NPC
+   * @author Paula Yuan
+   * @param int index
+   */
   public void setIndex(int index) {
     this.index = index;
   }
   
   @Override
+  /**
+   * {@inheritDocs}
+   */
   public double getXOffset() {
     return 0;
   }
 
   @Override
+  /**
+   * {@inheritDocs}.
+   */
   public double getYOffset() {
     return -1;
   }
