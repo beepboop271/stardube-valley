@@ -60,10 +60,7 @@ public class Player extends Moveable {
     this.inventory[4] = new HoldableStack("BambooRod", 1);
     this.inventory[5] = new HoldableStack("ChestItem", 5);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[7] = new HoldableStack("IronItem", 10);
-    this.inventory[8] = new HoldableStack("CoalItem", 2);
-    this.inventory[9] = new HoldableStack("PumpkinSeeds", 5);
-    this.inventory[10] = new HoldableStack("WoodItem", 99);
+    this.inventory[7] = new HoldableStack("WoodItem", 99);
   }
 
   @Override
