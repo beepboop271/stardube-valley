@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends LoopAnimatedMoveable implements Animatable {
+public class Player extends LoopAnimatedMoveable implements Animatable { //TODO: JAVADOCS
   public static final double SIZE = 0.35;
   private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;

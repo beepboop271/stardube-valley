@@ -7,7 +7,7 @@ import java.io.IOException;
  * @author Paula Yuan
  */
 
-public class IntrinsicTree extends IntrinsicHarvestableComponent {
+public class IntrinsicTree extends IntrinsicHarvestableComponent { //TODO: JAVADOCS
   private int[] stageToDisplay;
   private int maxGrowthStage;
 

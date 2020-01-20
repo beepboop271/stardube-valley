@@ -24,7 +24,7 @@ public class HoldableFactory {
 
   /**
    * [initializeItems]
-   * Reads gamedata files and initialze the holdables.
+   * Reads gamedata files and initialzes the holdables.
    */
   public static void initializeItems() {
     if (HoldableFactory.isInitialized) {

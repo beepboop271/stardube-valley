@@ -8,9 +8,7 @@ import java.util.ArrayList;
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan
  */
-public class WorldArea extends Area {
-  // private TownBuilding[] houses;
-
+public class WorldArea extends Area { //TODO: JAVADOCS
   private Random random = new Random();
   private int numForageableTiles = 0;
   private ArrayList<Tile> treeTiles = new ArrayList<>();

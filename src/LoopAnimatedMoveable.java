@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public abstract class LoopAnimatedMoveable extends Moveable {
+public abstract class LoopAnimatedMoveable extends Moveable { //TODO: JAVADOCS
   public final static int WALKSTEP_FRAMES = 8;
   public final static int RUNSTEP_FRAMES = 12;
 

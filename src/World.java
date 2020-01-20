@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 
-public class World {
+public class World { //TODO: JAVADOCS
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -647,7 +647,7 @@ public class World {
   /**
    * [loadAreas]
    * Loads all areas this world contains.
-   * @author Kevin Qiao, Candice Zhang
+   * @author Kevin Qiao, Candice Zhang, Joseph Wang
    * @throws IOException
    */
   public void loadAreas() throws IOException {

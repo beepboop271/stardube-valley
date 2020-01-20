@@ -5,7 +5,7 @@
  * @author Kevin Qiao
  */
 
-public class ElevatorGateway extends Gateway {
+public class ElevatorGateway extends Gateway { //TODO: JAVADOCS
   public ElevatorGateway(int originX, int originY) {
     super(originX, originY, Gateway.OMNIDIRECTIONAL, true);
   }

@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MineLevel extends Area {
+public class MineLevel extends Area { //TODO: JAVADOCS
   private static MineLevelComponent[] levelComponents;
   private static int numLevelComponents;
   private static boolean componentsInitialized = false;

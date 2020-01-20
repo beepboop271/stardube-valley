@@ -15,10 +15,19 @@ public class IntrinsicTileComponentFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, IntrinsicTileComponent> componentPool;
   
+  /**
+   * [IntrinsicTileComponentFactory]
+   * Constructor for a new IntrinsicTileComponentFactory. It is private
+   * so that an object of this class cannot be made.
+   */
   private IntrinsicTileComponentFactory() {
     // do not allow anyone to create an object of this class
   }
 
+  /**
+   * [initializeComponents]
+   * Reads gamedata files and initialzes the intrinsic tile components.
+   */
   public static void initializeComponents() {
     if (IntrinsicTileComponentFactory.isInitialized) {
       return;

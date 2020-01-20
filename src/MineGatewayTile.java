@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class MineGatewayTile extends Tile implements NotWalkable {
+public class MineGatewayTile extends Tile implements NotWalkable { //TODO: JAVADOCS
   public static final int DOWNWARDS_LADDER = 1;
   private static BufferedImage downwardsLadderImage;
   public static final int UPWARDS_LADDER = 2;

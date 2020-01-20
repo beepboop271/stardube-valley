@@ -1,7 +1,7 @@
 import java.util.EventObject;
 
 @SuppressWarnings("serial")
-public class UseableUsedEvent extends EventObject {
+public class UseableUsedEvent extends EventObject { //TODO: JAVADOCS
   public UseableUsedEvent(Useable source) {
     super(source);
   }

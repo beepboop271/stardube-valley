@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class MineLevelComponent {
+public class MineLevelComponent { //TODO: JAVADOCS
   private final int WIDTH, HEIGHT;
   private boolean[][] map;
   private int possiblePaths;
