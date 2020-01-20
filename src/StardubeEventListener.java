@@ -125,7 +125,7 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
         break;
-        case KeyEvent.VK_B:
+      case KeyEvent.VK_B:
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         this.stardubePlayer.setCurrentInteractingMenuObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
         break;
@@ -356,19 +356,10 @@ public class StardubeEventListener implements KeyListener,
           this.stardubePlayer.craft(product);
         }
 
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
-        // TODO: insert code
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
-        // TODO: insert code
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
-        // TODO: insert code
-
       } else if ((this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
-        // TODO: complete code
+
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
                 this.worldPanel.getMenuX(), this.worldPanel.getMenuY() + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP),
                 (int)this.mousePos.x, (int)this.mousePos.y);

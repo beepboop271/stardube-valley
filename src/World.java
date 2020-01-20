@@ -968,6 +968,16 @@ public class World {
   }
 
   /**
+   * [getArea]
+   * Retrieves the Area with the given name.
+   * @param name String that represents the area's name.
+   * @return     The Area with the given name.
+   */
+  public Area getArea(String name) {
+    return this.locations.get(name);
+  }
+
+  /**
    * [getInGameNanoTime]
    * Retrieves the number of nanoseconds passed since last midnight.
    * @return long, the number of nanoseconds passed since last midnight.
