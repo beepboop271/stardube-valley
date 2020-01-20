@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends LoopAnimatedMoveable implements Animatable {
+public class Player extends LoopAnimatedMoveable implements Animatable { //TODO: JAVADOCS
   public static final double SIZE = 0.35;
   private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
@@ -47,7 +47,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
    * @throws         IOException
    */
   public Player(Point position, String name) throws IOException {
-    super(position, Player.SIZE, name);
+    super(position, Player.SIZE, name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
     this.inventory = new HoldableStack[this.inventorySize];
     this.selectedItemIdx = 0;
     this.isImmutable = false;
@@ -70,9 +70,9 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     this.inventory[5] = new HoldableStack("ChestItem", 1);
     this.inventory[6] = new HoldableStack("FurnaceItem", 1);
     this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("Kevin's-Ethics-Assignment", 99);
-    this.inventory[9] = new HoldableStack("Joseph's-Compsci-Mark", 99);
-    this.inventory[10] = new HoldableStack("Chair-NULL", 99);
+    this.inventory[8] = new HoldableStack("CornSeeds", 10);
+    this.inventory[9] = new HoldableStack("PotatoSeeds", 10);
+    this.inventory[10] = new HoldableStack("TulipSeeds", 10);
   }
 
   @Override
@@ -170,11 +170,21 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     if (!(this.canPickUp(HoldableFactory.getHoldable(product)))) {
       return false;
     }
-    if (!(this.craftingMachine.hasProduct(product))) {
-      return false;
-    }
+    Recipe recipe;
 
-    Recipe recipe = this.craftingMachine.recipeOf(product);
+    if (this.currentInteractingMenuObj instanceof CraftingStore) {
+      if (!(((CraftingStore)this.getCurrentInteractingMenuObj()).hasItem(product))) {
+        return false;
+      }
+
+      recipe = ((CraftingStore)this.getCurrentInteractingMenuObj()).recipeOf(product);
+    } else {
+      if (!(this.craftingMachine.hasProduct(product))) {
+        return false;
+      }
+
+      recipe = this.craftingMachine.recipeOf(product);
+    }
 
     if (this.currentFunds < recipe.getPrice()) {
       return false;
@@ -202,6 +212,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     }
     if (recipe == null) {
       return;
+      
     }
 
     String[] ingredients = recipe.getIngredients();
@@ -407,7 +418,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
         if (this.inventory[i].getContainedHoldable() == item) {
-          if (this.inventory[i].getQuantity() <= 1) {
+          if (this.inventory[i].getQuantity() <= amount) {
             this.inventory[i] = null;
           } else {
             this.inventory[i].subtractHoldables(amount);

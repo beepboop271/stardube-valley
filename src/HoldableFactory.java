@@ -24,7 +24,7 @@ public class HoldableFactory {
 
   /**
    * [initializeItems]
-   * Reads gamedata files and initialze the holdables.
+   * Reads gamedata files and initialzes the holdables.
    */
   public static void initializeItems() {
     if (HoldableFactory.isInitialized) {
@@ -46,7 +46,8 @@ public class HoldableFactory {
         UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], 
                                           "assets/images/"+nextLineData[1]+".png",
                                           Integer.parseInt(nextLineData[3]),
-                                          Integer.parseInt(nextLineData[4]));
+                                          Integer.parseInt(nextLineData[4]),
+                                          nextLineData[5]);
         HoldableFactory.holdablePool.put(tool.getName(), tool);
         lineToRead = input.readLine();
       }

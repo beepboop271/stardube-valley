@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 
-public class World {
+public class World { //TODO: JAVADOCS
   public static final int NORTH = 0;
   public static final int EAST = 1;
   public static final int SOUTH = 2;
@@ -114,11 +114,8 @@ public class World {
               && (this.player.pickUp(nextItemEntity.getStack()))) {
           itemsNearPlayer.remove();
         } else if (itemDistance < Player.getItemAttractionDistance()) {
-          nextItemEntity.setVelocity(this.player.getPos().x-nextItemEntity.getPos().x+ (Math.random()-0.5),
-                                     this.player.getPos().y-nextItemEntity.getPos().y+ (Math.random()-0.5), 
-                                     Math.min((double)Player.getItemAttractionDistance()/itemDistance,
-                                              HoldableStackEntity.MAX_SPEED));
-          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime));
+          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
+                                                             this.player.getPos()));
         }
       }
     }
@@ -142,15 +139,26 @@ public class World {
     Vector2D move;
     while (moveables.hasNext()) {
       nextMoveable = moveables.next();
-      move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
-      if (move != null) {
+      if (nextMoveable instanceof Enemy) {
+        Enemy nextEnemy = ((Enemy)nextMoveable);
+        if (a.hasLineOfSight(nextEnemy, this.player)) {
+          move = nextEnemy.getMove(updateTime-this.lastUpdateTime, this.player.getPos());
+        } else {
+          move = nextEnemy.getMove(updateTime-this.lastUpdateTime);
+        }
+      } else {
+        move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
+      }
+      if ((move != null) && (move.getLength() > 0)) {
+        if (nextMoveable instanceof LoopAnimatedMoveable) {
+          ((LoopAnimatedMoveable)nextMoveable).updateImage();
+        }
         World.doCollision(a, nextMoveable, move.getXVector(), true);
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         if (nextMoveable instanceof Player) {
           this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         } else if (nextMoveable instanceof NPC) {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-          ((LoopAnimatedMoveable)nextMoveable).updateImage();
         } else {
           a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
         }
@@ -250,7 +258,7 @@ public class World {
           String requiredTool = ic.getRequiredTool();
                   
           if (requiredTool.equals("Any")
-                || requiredTool.equals(toolEvent.getHoldableUsed().getName())) {
+                || requiredTool.equals(((Tool)toolEvent.getHoldableUsed()).getType())) {
             // TODO: play breaking animation?
             ExtrinsicHarvestableComponent ec = ((ExtrinsicHarvestableComponent)componentToHarvest);
             if (ec.damageComponent(((UtilityTool)toolEvent.getHoldableUsed()).getEffectiveness())) {
@@ -282,25 +290,25 @@ public class World {
              //TODO: make these tools not dependant on world
           }
         } else if (selectedTile instanceof GroundTile) {
-          if (toolEvent.getHoldableUsed().getName().equals("WateringCan")
+          if (((Tool)toolEvent.getHoldableUsed()).getType().equals("WateringCan")
                 &&  (((GroundTile)selectedTile).getTilledStatus() == true)) {
             ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
             ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
 
           } else if ((this.playerArea instanceof FarmArea)
                      && (selectedTile.getContent() == null)) {
-            if (toolEvent.getHoldableUsed().getName().equals("Hoe")) {
+            if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Hoe")) {
               if (this.playerArea instanceof FarmArea) {
                 ((GroundTile)selectedTile).setTilledStatus(true);
                 ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
               }
-            } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+            } else if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Pickaxe")) {
               if (((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) { 
                 ((GroundTile)selectedTile).setTilledStatus(false); 
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
               }
             }
-          } else if (toolEvent.getHoldableUsed().getName().equals("Pickaxe")) {
+          } else if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Pickaxe")) {
               if ((this.playerArea instanceof FarmArea)
                     && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
                 ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
@@ -429,7 +437,9 @@ public class World {
           } else if (currentContent instanceof Shop) {
             this.player.enterMenu(Player.SHOP_PAGE);
             this.player.setCurrentInteractingObj((Shop)currentContent);
-            
+          } else if (currentContent instanceof CraftingStore) {
+            this.player.setCurrentInteractingObj((CraftingStore)currentContent);
+            this.player.enterMenu(Player.CRAFTING_PAGE);
           } else if (currentContent instanceof Bed) {
             this.doDayEndActions();
           } else if (currentContent instanceof Collectable) {
@@ -637,7 +647,7 @@ public class World {
   /**
    * [loadAreas]
    * Loads all areas this world contains.
-   * @author Kevin Qiao, Candice Zhang
+   * @author Kevin Qiao, Candice Zhang, Joseph Wang
    * @throws IOException
    */
   public void loadAreas() throws IOException {
@@ -769,6 +779,17 @@ public class World {
       Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
       int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
       this.locations.get(splitLine[5]).getMapAt(x, y).setContent(shopToAdd);
+      nextLine = input.readLine();
+    }
+    input.close();
+
+    input = new BufferedReader(new FileReader("assets/gamedata/CraftingStores"));
+    nextLine = input.readLine();
+    while (nextLine.length() > 0) {
+      splitLine = nextLine.split("\\s+");
+      CraftingStore storeToAdd = (CraftingStore)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
+      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      this.locations.get(splitLine[5]).getMapAt(x, y).setContent(storeToAdd);
       nextLine = input.readLine();
     }
     input.close();
@@ -964,6 +985,16 @@ public class World {
 
   public MineArea getMines() {
     return this.mines;
+  }
+
+  /**
+   * [getArea]
+   * Retrieves the Area with the given name.
+   * @param name String that represents the area's name.
+   * @return     The Area with the given name.
+   */
+  public Area getArea(String name) {
+    return this.locations.get(name);
   }
 
   /**

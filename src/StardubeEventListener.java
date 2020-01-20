@@ -72,28 +72,24 @@ public class StardubeEventListener implements KeyListener,
     
     this.stardubePlayer.setVelocity(0, 0, 0);
     if (this.keyStates[KeyEvent.VK_W]) {
-      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != -1) {
         this.stardubePlayer.setVerticalSpeed(-1);
         this.stardubePlayer.setOrientation(World.NORTH);
       }
     }
     if (this.keyStates[KeyEvent.VK_A]) {
-      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getHorizontalSpeed() != -1) {
         this.stardubePlayer.setHorizontalSpeed(-1);
         this.stardubePlayer.setOrientation(World.WEST);
       }
     }
     if (this.keyStates[KeyEvent.VK_S]) {
-      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getVerticalSpeed() != 1) {
         this.stardubePlayer.setVerticalSpeed(1);
         this.stardubePlayer.setOrientation(World.SOUTH);
       }
     }
     if (this.keyStates[KeyEvent.VK_D]) {
-      this.stardubePlayer.updateImage();
       if (this.stardubePlayer.getHorizontalSpeed() != 1) {
         this.stardubePlayer.setHorizontalSpeed(1);
         this.stardubePlayer.setOrientation(World.EAST);
@@ -126,7 +122,7 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
         break;
-        case KeyEvent.VK_B:
+      case KeyEvent.VK_B:
         this.stardubePlayer.enterMenu(Player.SHOP_PAGE);
         this.stardubePlayer.setCurrentInteractingObj(IntrinsicTileComponentFactory.getComponent("GeneralStoreShop"));
         break;
@@ -152,10 +148,6 @@ public class StardubeEventListener implements KeyListener,
         break;
       case KeyEvent.VK_L:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(1, 0));
-        break;
-      case KeyEvent.VK_Q:
-        this.stardubePlayer.setCurrentInteractingObj(IntrinsicTileComponentFactory.getComponent("ToolStore"));
-        this.stardubePlayer.enterMenu(Player.CRAFTING_PAGE);
         break;
     }
   }
@@ -373,24 +365,22 @@ public class StardubeEventListener implements KeyListener,
         
       } else if (this.stardubePlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
         if (this.worldPanel.isPosInCraftButton((int)this.mousePos.x, (int)this.mousePos.y)) {
-          String product = this.stardubePlayer.getCraftingMachine().getProducts()[
+          String product;
+          if ((this.stardubePlayer.hasInteractingObj()) && 
+              (this.stardubePlayer.getCurrentInteractingObj() instanceof CraftingStore)) {
+            product = ((CraftingStore)this.stardubePlayer.getCurrentInteractingObj()).getItems()[
+              this.worldPanel.craftingItemIdxAt((int)this.mousePos.y) + this.stardubePlayer.getAmountScrolled()];
+          } else {
+            product = this.stardubePlayer.getCraftingMachine().getProducts()[
                            this.worldPanel.craftingItemIdxAt((int)this.mousePos.y) + this.stardubePlayer.getAmountScrolled()];
+          }
           this.stardubePlayer.craft(product);
         }
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.MAP_PAGE) {
-        // TODO: insert code
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SOCIAL_PAGE) {
-        // TODO: insert code
-
-      } else if (this.stardubePlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
-        // TODO: insert code
 
       } else if ((this.stardubePlayer.getCurrentMenuPage() == Player.CHEST_PAGE) && (e.getButton() == MouseEvent.BUTTON1) &&
                  (this.worldPanel.isPosInInventory(this.worldPanel.getMenuX(), this.worldPanel.getChestMenuInventoryY(),
                                               (int)this.mousePos.x, (int)this.mousePos.y))) {
-        // TODO: complete code
+
         int selectedItemIdx = this.worldPanel.inventoryItemIdxAt(
                 this.worldPanel.getMenuX(), this.worldPanel.getMenuY() + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP),
                 (int)this.mousePos.x, (int)this.mousePos.y);

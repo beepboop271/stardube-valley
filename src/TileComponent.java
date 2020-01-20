@@ -1,4 +1,4 @@
-public abstract class TileComponent {
+public abstract class TileComponent { //TODO: JAVADOCS
   public TileComponent() {
   }
 }

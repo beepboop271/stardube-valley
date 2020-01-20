@@ -5,32 +5,59 @@ import java.util.Random;
 
 /**
  * [FarmArea]
+ * An area dedicated to growing and harvesting crops.
  * 2019-12-17
  * @version 0.1
  * @author Kevin Qiao, Joseph Wang, Paula Yuan
  */
 
 public class FarmArea extends Area {
-  //private FarmBuilding[] buildings;
   private HashSet<GroundTile> editedTiles;
   private String[] trees = {"OakTree", "SpruceTree"};
   private ArrayList<Tile> treeTiles = new ArrayList<>();
   private Random random = new Random();
 
+  /**
+   * [FarmArea]
+   * Constructor for a new FarmArea.
+   * @author        Kevin Qiao, Joseph Wang
+   * @param name    the name of this farm area.
+   * @param width   the tile width of this farm area.
+   * @param height  the tile height of this farm area.
+   */
   public FarmArea(String name,
                   int width, int height) {
     super(name, width, height);
     this.editedTiles = new HashSet<GroundTile>();
   }
 
+  /**
+   * [addEditedTile]
+   * Adds a tile to this area's collection of edited tiles.
+   * @author Joseph Wang
+   * @param tile  The tile to be added.
+   */
   public void addEditedTile(GroundTile tile) {
     this.editedTiles.add(tile);
   }
 
+  /**
+   * [removeEditedTile]
+   * Removes a tile from this area's collection of edited tiles.
+   * @author Joseph Wang
+   * @param tile  The tile to be removed.
+   */
   public void removeEditedTile(GroundTile tile) {
     this.editedTiles.remove(tile);
   }
 
+  /**
+   * [hasTile]
+   * Checks if a tile exists in thsi area's collection of edited
+   * tiles.
+   * @param tile  The tile to check for.
+   * @return      boolean, true if the tile exists, false otherwise.
+   */
   public boolean hasTile(GroundTile tile) {
     if (this.editedTiles.contains(tile)) {
       return true;
@@ -39,6 +66,12 @@ public class FarmArea extends Area {
     return false;
   }
 
+  /**
+   * [spawnTrees]
+   * Spawns a certain quantity of trees at random locations throughout
+   * the farm area.
+   * @author Paula Yuan
+   */
   private void spawnTrees() {
     int spawnNum = this.random.nextInt(10) + 20;
     if (this.treeTiles.size() >= 30) { // max 30 trees
@@ -64,6 +97,12 @@ public class FarmArea extends Area {
     }
   }
 
+  /**
+   * [doDayEndActions]
+   * Performs this area's day end actions, like growing crops,
+   * spawning trees, or removing tiles from this edited tiles list.
+   * @author Joseph Wang, Paula Yuan
+   */
   @Override
   public void doDayEndActions() {
     if (this.getCurrentDay() == 1) {
@@ -88,11 +127,12 @@ public class FarmArea extends Area {
         TileComponent content = currentTile.getContent();
         if (content instanceof ExtrinsicCrop) {
           if (this.getSeason() != ((IntrinsicCrop)((ExtrinsicCrop)content).getIntrinsicSelf())
-            .getPlantingSeason()) { //for now the crop just disappears
-            currentTile.setContent(null); //TODO: make a dead plant appear here lol
+            .getPlantingSeason()) { //- for now the crop just disappears if it's not in the right season
+            currentTile.setContent(null); 
           } else {
             if (currentTile.getLastWatered() == this.getCurrentDay() - 1) {
               ((ExtrinsicCrop)currentTile.getContent()).grow();
+            //- Kill the crop if it wasn't watered for some time
             } else if (currentTile.getLastWatered() == this.getCurrentDay() - 3) {
               currentTile.setContent(null);
             }

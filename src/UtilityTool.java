@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class UtilityTool extends Tool {
   private int effectiveness;
-
   /**
    * [UtilityTool]
    * Constructor for a new UtilityTool
@@ -25,8 +24,8 @@ public class UtilityTool extends Tool {
    */
   public UtilityTool(String name, String description, 
                      String imagePath, int energyCost,
-                     int effectiveness) throws IOException {
-    super(name, description, imagePath, energyCost);
+                     int effectiveness, String type) throws IOException {
+    super(name, description, imagePath, energyCost, type);
     this.effectiveness = effectiveness;
   }
 

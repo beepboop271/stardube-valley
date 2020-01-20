@@ -31,7 +31,7 @@ public class FishingRod extends Tool {
    */
   public FishingRod(String name, String description, 
                     String imagePath, int energyCost) throws IOException {
-    super(name, description, imagePath, energyCost);
+    super(name, description, imagePath, energyCost, "FishingRod");
     this.currentStatus = FishingRod.IDLING_STATUS;
   }
 

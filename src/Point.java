@@ -4,7 +4,7 @@
  * @version 0.1
  * @author Kevin Qiao
  */
-public class Point implements Cloneable {
+public class Point implements Cloneable { //TODO: JAVADOCS
   double x;
   double y;
 

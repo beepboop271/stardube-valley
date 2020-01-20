@@ -28,7 +28,7 @@ public abstract class Area {
   /**
    * [Area]
    * Constructor for a new Area.
-   * @author         unknown
+   * @author         Kevin Qiao, Paula Yuan, Joseph Wang
    * @param name     String, The name of the area.
    * @param width    int, The width of the area, in tiles.
    * @param height   int, The height of the area, in tiles.
@@ -49,7 +49,7 @@ public abstract class Area {
   /**
    * [constructArea]
    * Constructs and retrieves a new area.
-   * @author          unknown
+   * @author          Kevin Qiao, Joseph Wang
    * @param category  String, the category of the area.
    * @param name      String, the name of the area.
    * @param width     Int, the width of the area.
@@ -77,7 +77,7 @@ public abstract class Area {
   /**
    * [getDirection]
    * Retrieves the direction from a point to another point.
-   * @author        unknown
+   * @author        Kevin Qiao
    * @param p1      Point, the first point.
    * @param p2      Point, the second point.
    * @return        int, the direction from point 1 to point 2.
@@ -98,7 +98,10 @@ public abstract class Area {
 
   /**
    * [collides]
-   * @author unknown
+   * @author Kevin Qiao
+   * @param intersectingPoints
+   * @param pos
+   * @param horizontalOnly
    */
   public int collides(LinkedHashSet<Point> intersectingPoints, Point pos,
                       boolean horizontalOnly) {
@@ -150,7 +153,10 @@ public abstract class Area {
 
   /**
    * [walkableAt]
-   * @author unknown
+   * Given a point, calculates whether a movable can walk on it or not
+   * @author    Kevin Qiao, Paula Yuam, Joseph Wang
+   * @param pos The point to be considered.
+   * @return    boolean, true if the point can be walked on, false otherwise.
    */
   public boolean walkableAt(Point pos) {
     if (this.inMap(pos)) {
@@ -210,12 +216,13 @@ public abstract class Area {
     }
     Point p1 = e.getPos();
     Point p2 = p.getPos();
-    Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.5);
+    Vector2D step = new Vector2D(p2.x-p1.x, p2.y-p1.y).setLength(0.3);
     double dist = p1.distanceTo(p2);
-    for (int i = 0; i < dist/0.5; ++i) {
+    for (int i = 0; i < dist/0.3; ++i) {
       p1.translate(step.getX(), step.getY());
       switch (e.getHeight()) {
         case 1:
+          System.out.println(p1);
           if (!this.walkableAt(p1.round())) {
             return false;
           }
@@ -232,7 +239,13 @@ public abstract class Area {
 
   /**
    * [moveAreas]
-   * @author unknown
+   * Takes the specified moveable and removes it from this area's list of
+   * moveables. Adds the moveable to the area associated to the provided
+   * set of intersections and sets position accordingly to the gateway zone.
+   * @author                    Kevin Qiao
+   * @param m                   The moveable to be moved.
+   * @param intersectingPoints  The destination gateway.
+   * @return                    Area, the destination area.
    */
   public Area moveAreas(Moveable m, Iterator<Point> intersectingPoints) {
     Point nextPoint;
@@ -255,7 +268,13 @@ public abstract class Area {
 
   /**
    * [moveAreas]
-   * @author unknown
+   * Takes the specified moveable and removes it from this area's list of
+   * moveables. Adds the moveable to the area associated to the provided
+   * gateway and sets position accordingly to the gateway.
+   * @author     Kevin Qiao
+   * @param m    The moveable to be moved.
+   * @param g    The destination gateway.
+   * @return Area, the destination area.
    */
   public Area moveAreas(Moveable m, Gateway g) {
     if (g == null) {
@@ -288,7 +307,10 @@ public abstract class Area {
 
   /**
    * [getNeighbourZone]
-   * @author unknown
+   * Retrieves the neighbor zone of this area using the specified index.
+   * @author Kevin Qiao
+   * @param i  The index of which to get the neighbor zone with.
+   * @return   GatewayZone, the neighbor zone of this area.
    */
   public GatewayZone getNeighbourZone(int i) {
     return this.neighbourZones[i];
@@ -296,7 +318,10 @@ public abstract class Area {
 
   /**
    * [setNeighbourZone]
-   * @author unknown
+   * Sets one of this area's neighbor zone to a specified GatewayZone
+   * @author Kevin Qiao
+   * @param i  The index to set.
+   * @param g  The GatwayZone to set to.
    */
   public void setNeighbourZone(int i, GatewayZone g) {
     this.neighbourZones[i] = g;
@@ -304,7 +329,10 @@ public abstract class Area {
 
   /**
    * [addGateway]
-   * @author unknown
+   * Adds a gateway to this area's collection of gateways. Used for
+   * buildings.
+   * @author Kevin Qiao
+   * @param g  The gateway to be added
    */
   public void addGateway(Gateway g) {
     this.gateways.put(g.getOrigin(), g);
@@ -312,7 +340,10 @@ public abstract class Area {
 
   /**
    * [getGateway]
-   * @author unknown
+   * Gets a gateway based on a given point.
+   * @author Kevin Qiao
+   * @param pos  The point which to get a gateway with.
+   * @return     Gateway, the gateway at the point
    */
   public Gateway getGateway(Point pos) {
     return this.gateways.get(pos);
@@ -320,7 +351,7 @@ public abstract class Area {
 
   /**
    * [getGateways]
-   * Retrieves the iteartor of the gateways in this area.
+   * Retrieves the iterator of the gateways in this area.
    * @return    Iterator<Gateway>, the iterator of the gateways.
    */
   public Iterator<Gateway> getGateways() {
@@ -339,6 +370,7 @@ public abstract class Area {
   /**
    * [addMoveable]
    * Adds the moveable to this area.
+   * @author Kevin Qiao
    * @param m   The Moveable to add.
    */
   public void addMoveable(Moveable m) {
@@ -348,6 +380,7 @@ public abstract class Area {
   /**
    * [addHarvestableAt]
    * Adds a harvestable at the given location in this area.
+   * @author Kevin Qiao
    * @param x             int, the x position of the destinated location.
    * @param y             int, the y position of the destinated location.
    * @param harvestable   String, the name of the harvestable to add.
@@ -359,6 +392,7 @@ public abstract class Area {
   /**
    * [removeComponentAt]
    * Removes the component at the given location in this area.
+   * @author Kevin Qiao
    * @param pos     Point, the destinated tile location.
    */
   public void removeComponentAt(Point pos) {
@@ -368,6 +402,7 @@ public abstract class Area {
   /**
    * [getItemsOnGroundList]
    * Retrieves the linked list of the items on ground in this area.
+   * @author Kevin Qiao
    * @return  LinkedList<HoldableStackEntity>, a linked list of the items on ground in this area.
    */
   public LinkedList<HoldableStackEntity> getItemsOnGroundList() {
@@ -404,6 +439,7 @@ public abstract class Area {
   /**
    * [inMap]
    * Checks if the given location is within the map of the area.
+   * @author    Kevin Qiao
    * @param x   int, the x position to check.
    * @param y   int, the y position to check.
    * @return    boolean, true if the position is within the area map,
@@ -416,6 +452,7 @@ public abstract class Area {
   /**
    * [inMap]
    * Checks if the given location is within the map of the area.
+   * @author      Kevin Qiao
    * @param pos   Point, the point to check.
    * @return      boolean, true if the position is within the area map,
    *              false otherwise.
@@ -426,7 +463,10 @@ public abstract class Area {
 
   /**
    * [getExitDirection]
-   * @author unknown
+   * Retrieves the exit direction based on a point.
+   * @author     Kevin Qiao
+   * @param pos  The point to be used during direction calculation
+   * @return     int, with the exit direction (as an int)
    */
   public int getExitDirection(Point pos) {
     int x = (int)(pos.x);

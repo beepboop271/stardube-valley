@@ -1,4 +1,4 @@
-public class Stopwatch {
+public class Stopwatch { //TODO: JAVADOCS
   private long startNanoTime;
 
   public Stopwatch() {
