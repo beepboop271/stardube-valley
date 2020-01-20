@@ -58,7 +58,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingObj = null;
-    this.currentFunds = 5_000_000;
+    this.currentFunds = 500;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
@@ -67,12 +67,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("BambooRod", 1);
-    this.inventory[5] = new HoldableStack("ChestItem", 1);
-    this.inventory[6] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("CornSeeds", 10);
-    this.inventory[9] = new HoldableStack("PotatoSeeds", 10);
-    this.inventory[10] = new HoldableStack("TulipSeeds", 10);
+    this.inventory[5] = new HoldableStack("ParsnipSeeds", 15);
   }
 
   @Override
@@ -245,7 +240,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
 
     String[] ingredients = recipe.getIngredients();
     this.currentFunds -= recipe.getPrice();
-    System.out.println(recipe.getPrice());
     for (int i = 0; i < ingredients.length; i++) {
       this.decrementHoldable(recipe.quantityOf(ingredients[i]), HoldableFactory.getHoldable(ingredients[i]));
     }

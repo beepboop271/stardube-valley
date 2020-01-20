@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.awt.GradientPaint;
+import java.util.ArrayList;
 
 /**
  * [WorldPanel]
@@ -952,9 +953,18 @@ public class WorldPanel extends JPanel {
       g.setColor(WorldPanel.PALE_YELLOW_COLOR);
       g.fillRect(dialogueX, dialogueY, dialogueW, dialogueH);
       g.setColor(Color.BLACK);
+      
       NPC currentNPC = ((NPC)worldPlayer.getCurrentInteractingObj());
-      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+10, dialogueY+20);
-      dialogueGraphics.drawString(currentNPC.getDialogue(currentNPC.getIndex()), dialogueX+10, dialogueY+60);
+
+      g.setFont(this.LETTER_FONT);
+      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+20, dialogueY+10+g.getFontMetrics().getHeight());
+
+      g.setFont(this.STRING_FONT);
+      String[] dialogueStrings = this.splitParagraph(40, currentNPC.getDialogue(currentNPC.getIndex()));
+      for (int i = 0; i < dialogueStrings.length; i++) {
+        dialogueGraphics.drawString(dialogueStrings[i],
+                                    dialogueX+20, dialogueY+50+(i+1)*(g.getFontMetrics().getHeight()+10));
+      }
     }
   }
 
@@ -1292,6 +1302,34 @@ public class WorldPanel extends JPanel {
    */
   public int getChestMenuChestY() {
     return this.chestMenuChestY;
+  }
+
+  /**
+   * [splitParagraph]
+   * Split a very long string into lines of at most maxLineWidth characters,
+   * and retrieves the splited text in a String array.
+   * @author             Kevin Qiao, Candice Zhang
+   * @param paragraph    String that represents the string to split.
+   * @param maxLineWidth int that represents the width limit.
+   * @return             String[], splited text in a String array.
+   */
+  public String[] splitParagraph(int maxLineWidth, String paragraph) {
+    // searching for a space " " to end the line
+    int endOffset = -1;
+    ArrayList<String> lines = new ArrayList<String>();
+    String nextLine = "";
+    while(paragraph.length() >= maxLineWidth) {
+      nextLine = paragraph.substring(0, maxLineWidth);
+      if (nextLine.charAt(nextLine.length()+endOffset) == ' ') {
+        lines.add(nextLine.substring(0, nextLine.length()+endOffset));
+        paragraph = paragraph.substring(maxLineWidth+endOffset+1);
+        endOffset = -1;
+      } else {
+        --endOffset;
+      }
+    }
+    lines.add(paragraph);
+    return lines.toArray(new String[0]);
   }
 
 }

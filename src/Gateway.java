@@ -1,4 +1,4 @@
-public class Gateway { //TODO: JAVADOCS
+public class Gateway {
   public static final int OMNIDIRECTIONAL = 5;
   public static final int ONE_WAY = 6;
 
@@ -32,7 +32,6 @@ public class Gateway { //TODO: JAVADOCS
     Point pos = m.getPos();
     if ((Math.round(pos.x) == this.origin.x)
           && (Math.round(pos.y) == this.origin.y)) {
-      //System.out.println(pos);
       if (this.orientation == World.NORTH) {
         return (pos.y <= this.origin.y-0.5+Player.SIZE);
       } else if (this.orientation == World.SOUTH) {

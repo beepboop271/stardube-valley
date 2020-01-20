@@ -69,7 +69,6 @@ public class MineArea extends Area {
     while (gateways.hasNext()) {
       nextGateway = gateways.next();
       if (nextGateway.getDestinationGateway() == null) {
-        System.out.println(nextGateway.getOrigin());
         nextGateway.setDestinationArea(this.levels[level]);
         nextGateway.setDestinationGateway(this.levels[level].getEntranceGateway());
       }

@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
  * @author Paula Yuan, Candcie Zhang
  */
 
-public abstract class LoopAnimatedMoveable extends Moveable { //TODO: JAVADOCS
+public abstract class LoopAnimatedMoveable extends Moveable { 
   public final static int WALKSTEP_FRAMES = 8;
   public final static int RUNSTEP_FRAMES = 12;
 

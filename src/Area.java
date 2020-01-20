@@ -220,7 +220,6 @@ public abstract class Area {
       p1.translate(step.getX(), step.getY());
       switch (e.getHeight()) {
         case 1:
-          System.out.println(p1);
           if (!this.walkableAt(p1.round())) {
             return false;
           }

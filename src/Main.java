@@ -2,7 +2,6 @@ import java.io.IOException;
 
 public class Main {
   public static void main(String[] args) throws IOException {
-    // TODO: make this less sketchy
     GroundTile.setGroundTileImages();
     GrassTile.setGrassTileImage();
     DecorationTile.initializeTileImages();
@@ -22,6 +21,7 @@ public class Main {
     World stardube = new World();
     StardubeFrame display = new StardubeFrame(stardube);
     StardubeEventListener listener = ((WorldPanel)display.getContentPane()).getListener();
+    System.out.println("Welcome to Stardube Valley!");
     while (true) {
       listener.update();
       stardube.update();

@@ -35,7 +35,7 @@ public class HoldableDrop {
    * @return      HoldableStack, a new stack of items with the random
    *              quantity calculated.
    */
-  public HoldableStack resolveDrop(double luck) { //TODO: use luck
+  public HoldableStack resolveDrop(double luck) { 
     int quantity = (int)((Math.random()*(this.maxDropQuantity-this.minDropQuantity+1))
                          + this.minDropQuantity);
     if (quantity <= 0) {

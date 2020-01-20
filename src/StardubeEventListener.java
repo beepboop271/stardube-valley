@@ -309,7 +309,6 @@ public class StardubeEventListener implements KeyListener,
               );
             }
           } else if (selectedItem instanceof Placeable) {
-            //System.out.println("Trying to place!");
             this.stardubeWorld.emplaceFutureEvent(
               (long)(25_000_000),
               new ComponentPlacedEvent(
@@ -386,7 +385,6 @@ public class StardubeEventListener implements KeyListener,
         if (this.worldPanel.isPosInElevatorButtons((int)this.mousePos.x, (int)this.mousePos.y)) {
           // get the button# clicked (button 1 -> floor 5, button 2 -> floor 10)
           int buttonSelected = this.worldPanel.elevatorButtonIdxAt((int)this.mousePos.x, (int)this.mousePos.y)+1;
-          System.out.println(buttonSelected*5);
           this.stardubeWorld.getMines().setElevatorDestination(buttonSelected*5);
           this.stardubePlayer.exitMenu();
           this.stardubeWorld.emplaceFutureEvent(
