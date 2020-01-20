@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends LoopAnimatedMoveable implements Animatable { //TODO: JAVADOCS
+public class Player extends LoopAnimatedMoveable implements Animatable {
   public static final double SIZE = 0.35;
   private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
@@ -58,7 +58,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.maxEnergy = 270;
     this.currentMenuPage = Player.NO_MENU;
     this.currentInteractingObj = null;
-    this.currentFunds = 5_000_000;
+    this.currentFunds = 500;
     this.totalEarnings = this.currentFunds;
     this.craftingMachine = new CraftingMachine("CraftingRecipes");
 
@@ -67,12 +67,7 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.inventory[2] = new HoldableStack("Hoe", 1);
     this.inventory[3] = new HoldableStack("WateringCan", 1);
     this.inventory[4] = new HoldableStack("BambooRod", 1);
-    this.inventory[5] = new HoldableStack("ChestItem", 1);
-    this.inventory[6] = new HoldableStack("FurnaceItem", 1);
-    this.inventory[7] = new HoldableStack("WoodItem", 99);
-    this.inventory[8] = new HoldableStack("CornSeeds", 10);
-    this.inventory[9] = new HoldableStack("PotatoSeeds", 10);
-    this.inventory[10] = new HoldableStack("TulipSeeds", 10);
+    this.inventory[5] = new HoldableStack("ParsnipSeeds", 15);
   }
 
   @Override
@@ -247,7 +242,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
 
     String[] ingredients = recipe.getIngredients();
     this.currentFunds -= recipe.getPrice();
-    System.out.println(recipe.getPrice());
     for (int i = 0; i < ingredients.length; i++) {
       this.decrementHoldable(recipe.quantityOf(ingredients[i]), HoldableFactory.getHoldable(ingredients[i]));
     }
@@ -492,6 +486,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     return this.inventory[this.selectedItemIdx];
   }
 
+  /**
+   * [decrementSelectedItem]
+   * decrements the amount of an item that you have.
+   */
   public void decrementSelectedItem(int amount) {
     this.inventory[this.selectedItemIdx].subtractHoldables(amount);
 
@@ -500,6 +498,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
   }
 
+  /**
+   * [decrementHoldable]
+   * decrements a holdable
+   */
   public void decrementHoldable(int amount, Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
@@ -514,6 +516,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     }
   }
 
+  /**
+   * [incrementSelectedItemIdx]
+   * increments the selected item's index
+   */
   public void incrementSelectedItemIdx() {
     if (this.isImmutable() && !(this.isInMenu())) {
       return;
@@ -521,6 +527,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.selectedItemIdx = (this.selectedItemIdx+1)%12;
   }
 
+  /**
+   * [decrementSelectedItemIdx]
+   * Decrements the selected item index.
+   */
   public void decrementSelectedItemIdx() {
     if (this.isImmutable() && !(this.isInMenu())) {
       return;
@@ -528,6 +538,11 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.selectedItemIdx = Math.floorMod(this.selectedItemIdx-1, 12);
   }
 
+  /**
+   * [setSelectedItemIdx]
+   * Sets the selected item index
+   * @param selectedItemIdx, int index
+   */
   public void setSelectedItemIdx(int selectedItemIdx) {
     if (this.isImmutable() && !(this.isInMenu())) {
       return;
@@ -555,19 +570,38 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.isImmutable = isImmutable;
   }
 
+  /**
+   * [isAnimating]
+   * determines whether or not you are animating
+   * @return boolean true or false
+   */
   public boolean isAnimating() {
     return this.isAnimating;
   }
 
+  /**
+   * [setAnimating]
+   * sets the state of animating
+   */
   public void setAnimating(boolean isAnimating) {
     this.isAnimating = isAnimating;
     this.isImmutable = isAnimating;
   }
 
+  /**
+   * [getItemAttractionDistance]
+   * Retrieves the item's attraction distance.
+   * @return constant attraction distance
+   */
   public static double getItemAttractionDistance() {
     return Player.ITEM_ATTRACTION_DISTANCE;
   }
 
+  /**
+   * [isInFishingGame]
+   * Retrieves whether you're in a fishing game.
+   * @return boolean true or false
+   */
   public boolean isInFishingGame() {
     return (this.currentFishingGame != null);
   }
@@ -749,14 +783,29 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
     this.inventorySize = size;
   }
 
+  /**
+   * [getCurrentInteractingObj]
+   * Retrieves the current object you're interacting with
+   * @return the Object current object being interacted with
+   */
   public Object getCurrentInteractingObj() {
     return this.currentInteractingObj;
   }
 
+  /**
+   * [setCurrentInteractingObj]
+   * sets the current object being interacted with
+   * @param component, an Object component
+   */
   public void setCurrentInteractingObj(Object component) {
     this.currentInteractingObj = component;
   }
 
+  /**
+   * [hasInteractingObj]
+   * Retrieves whether the player has an interacting object
+   * @return boolean true or false
+   */
   public boolean hasInteractingObj() {
     return !(this.currentInteractingObj == null);
   }
@@ -842,11 +891,17 @@ public class Player extends LoopAnimatedMoveable implements Animatable { //TODO:
   }
 
   @Override
+  /**
+   *{@inheritDoc}
+   */
   public double getXOffset() {
     return 0;
   }
 
   @Override
+  /**
+   *{@inheritDoc}
+   */
   public double getYOffset() {
     return -1;
   }

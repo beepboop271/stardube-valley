@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class AnimationFactory { //TODO: JAVADOCS
+public class AnimationFactory {
   private static boolean isInitialized = false;
   private static HashMap<String, Animation> animationPool;
 

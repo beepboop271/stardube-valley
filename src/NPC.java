@@ -28,7 +28,7 @@ public class NPC extends LoopAnimatedMoveable {
     this.index = index;
     this.name = name;
   }
-
+  
   public String getDialogue(int index) {
     return this.dialogueRotation[index];
   }

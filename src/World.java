@@ -386,11 +386,7 @@ public class World {
           }
 
           TileComponent currentContent = currentTile.getContent();
-          // if (currentContent == null) {
-          //   System.out.println("This tile is null");
-          // } else {
-          //   System.out.println("on component is " + currentContent);
-          // }
+
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -963,7 +959,7 @@ public class World {
 
       newNPC = new NPC(spawnPoint,
                        name,
-                       i, 
+                       1, 
                        dialogue.clone(),
                        profileDescription);
       npcArea.addMoveable(newNPC);      
@@ -993,7 +989,6 @@ public class World {
     for (int i = 0; i < cols; i++) {
       String[] rowData = input.readLine().split("\\s+");
       for (int j = 0; j < rows; j++) {
-        System.out.println(rowData[j]);
         worldMap[i][j] = rowData[j];
       }
     }

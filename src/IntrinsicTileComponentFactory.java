@@ -41,7 +41,7 @@ public class IntrinsicTileComponentFactory {
 
     IntrinsicTileComponent componentToAdd;
     
-    try { //TODO: try to shrink this whoever idk im tired
+    try {
       input = new BufferedReader(new FileReader("assets/gamedata/HarvestableComponents"));
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
