@@ -146,8 +146,8 @@ public class WorldPanel extends JPanel {
     Player worldPlayer = this.worldToDisplay.getPlayer();
     Point playerPos = worldPlayer.getPos();
     Area playerArea = this.worldToDisplay.getPlayerArea();
-    int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2);
-    int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2);
+    int unboundedTileStartX = (int)Math.floor(playerPos.x-this.tileWidth/2+0.5);
+    int unboundedTileStartY = (int)Math.floor(playerPos.y-this.tileHeight/2+0.5);
 
     int tileStartX = WorldPanel.clamp(unboundedTileStartX, 0, playerArea.getWidth()-this.tileWidth);
     int tileStartY = WorldPanel.clamp(unboundedTileStartY, 0, playerArea.getHeight()-this.tileHeight);
@@ -155,20 +155,17 @@ public class WorldPanel extends JPanel {
     int originX;
     int originY;
     
-    if ((playerPos.x < this.tileWidth/2) || (playerPos.x > playerArea.getWidth()-this.tileWidth/2)) {
+    if ((playerPos.x < this.tileWidth/2-0.5) || (playerPos.x > playerArea.getWidth()-this.tileWidth/2-0.5)) {
       originX = 0;
     } else {
-      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX)));
+      originX = (int)((this.getWidth()/2)-(Tile.getSize()*(playerPos.x-tileStartX+0.5)));
     }
 
-    if ((playerPos.y < this.tileHeight/2) || (playerPos.y > playerArea.getHeight()-this.tileHeight/2)) {
+    if ((playerPos.y < this.tileHeight/2-0.5) || (playerPos.y > playerArea.getHeight()-this.tileHeight/2-0.5)) {
       originY = 0;
     } else {
-      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY)));
+      originY = (int)((this.getHeight()/2)-(Tile.getSize()*(playerPos.y-tileStartY+0.5)));
     }
-
-    // System.out.printf("%d %d, %d %d, %d %d, %.2f %.2f\n",
-    //    unboundedTileStartX, unboundedTileStartY, tileStartX, tileStartY, originX, originY, playerPos.x, playerPos.y);
       
     int screenTileX = 0;
     int screenTileY = 0;
@@ -241,6 +238,13 @@ public class WorldPanel extends JPanel {
             double drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
             double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
+            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
+              Graphics2D g2 = (Graphics2D)g;
+              g2.setStroke(new BasicStroke(4));
+              g2.setColor(Color.RED);
+              g2.drawRect((int)Math.round(drawX+2), (int)Math.round(drawY+2), Tile.getSize()-4, Tile.getSize()-6);
+            }
+
             if (tileContent != null) {
               if (tileContent instanceof Drawable) {
                 drawX += ((Drawable)tileContent).getXOffset() * Tile.getSize();
@@ -271,13 +275,6 @@ public class WorldPanel extends JPanel {
                   imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
                 }     
               }
-            }
-
-            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
-              Graphics2D g2 = (Graphics2D)g;
-              g2.setStroke(new BasicStroke(4));
-              g2.setColor(Color.RED);
-              g2.drawRect((int)Math.round(drawX+2), (int)Math.round(drawY+2), Tile.getSize()-4, Tile.getSize()-6);
             }
           }
         }
