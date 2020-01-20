@@ -27,7 +27,7 @@ public class FishingRod extends Tool {
    * @param description  String, description of the fishing rod.
    * @param imagePath    String, image path of the fishing rod.
    * @param energyCost   int, energy cost for using this rod.
-   * @throws IOException;
+   * @throws IOException
    */
   public FishingRod(String name, String description, 
                     String imagePath, int energyCost) throws IOException {

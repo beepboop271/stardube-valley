@@ -4,14 +4,15 @@ import java.util.ArrayList;
 /**
  * [Recipe]
  * A recipe for a specified products that stores the product name,
- * required ingredients and their quantities.
+ * money required, required ingredients and their quantities.
  * 2020-01-18
  * @version 0.2
  * @author Candice Zhang
  */
 
-class Recipe {
+public class Recipe {
   private String productName;
+  private double price;
   private LinkedHashMap<String, Integer> ingredientQuantities;
 
   /**
@@ -22,6 +23,25 @@ class Recipe {
   Recipe(String productName) {
     this.ingredientQuantities = new LinkedHashMap<String, Integer>();
     this.productName = productName;
+    this.price = 0;
+  }
+
+  /**
+   * [getPrice]
+   * Retrieves the money needed to craft the product.
+   * @return double, money needed to craft the product.
+   */
+  public double getPrice() {
+    return this.price;
+  }
+
+  /**
+   * [getPrice]
+   * Sets the money needed to craft the product.
+   * @param price double, money needed to craft the product.
+   */
+  public void setPrice(double price) {
+    this.price = price;
   }
 
   /**
