@@ -53,10 +53,10 @@ public class DecorationTile extends Tile {
   }
 
   /**
-   * [initializeTileImages]
+   * [setTileImages]
    * Attempts to load in all the images needed for decorative tiles.
    */
-  public static void initializeTileImages() {
+  public static void setTileImages() {
     try {
       DecorationTile.pathTileImage = ImageIO.read(new File("assets/images/tiles/RockPath.png"));
       DecorationTile.floorTileImage = ImageIO.read(new File("assets/images/tiles/FloorTile.png"));

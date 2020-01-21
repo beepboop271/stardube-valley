@@ -19,12 +19,12 @@ public class MineArea extends Area {
   /**
    * [MineArea]
    * Constructor for a new MineArea.
-   * @param name, the String name of the area
-   * @param width, the int width of the area
-   * @param height, the int height of the area
-   * @param startingGateway, the Point representing where the starting gateway should be
-   * @param levelExitGateway, the Point representing where the exit gateway for a level should be
-   * @param elevatorGateway, the Point representing where the elevator should be
+   * @param name             The name of the area
+   * @param width            The width of the area
+   * @param height           The height of the area
+   * @param startingGateway  The position of the starting gateway (floor 0 entrance)
+   * @param levelExitGateway The position of the exit gateway (exit of all floors)
+   * @param elevatorGateway  The position of the elevator
    */
   public MineArea(String name,
                   int width, int height,
@@ -51,8 +51,9 @@ public class MineArea extends Area {
 
   /**
    * [loadLevel]
-   * Loads a certain level of the mine.
-   * @param level, an int representing the level you want to load.
+   * Loads a certain level of the mine, and sets up the connection
+   * between the previous level and the new level.
+   * @param level The floor number to be loaded.
    */
   public void loadLevel(int level) {
     if (level == 0) {
@@ -75,11 +76,12 @@ public class MineArea extends Area {
     }
   }
 
-  @Override
   /**
    * {@inheritDoc}
    */
+  @Override
   public void doDayEndActions() {
+    // reset all levels
     this.levels[0] = new MineLevel.Builder(0).buildLevel(this);
     this.startingGateway.setDestinationArea(this.levels[0]);
     this.startingGateway.setDestinationGateway(this.levels[0].getEntranceGateway());
@@ -92,7 +94,7 @@ public class MineArea extends Area {
   /**
    * [getLevelExitGateway]
    * returns the Gateway representing the exit gateway of the level
-   * @return Gateway the level exit gateway
+   * @return Gateway, the level exit gateway
    */
   public Gateway getLevelExitGateway() {
     return this.levelExitGateway;
@@ -101,7 +103,7 @@ public class MineArea extends Area {
   /**
    * [getElevatorPosition]
    * Gets the position of the elevator
-   * @return the Point origin of the elevator
+   * @return Point, the position of the elevator
    */
   public Point getElevatorPosition() {
     return this.elevator.getOrigin();
@@ -109,8 +111,8 @@ public class MineArea extends Area {
 
   /**
    * [setElevatorDestination]
-   * Sets the level that the elevator is going to
-   * @param level, the level you want to go to
+   * Sets the level that the elevator is going to.
+   * @param level the destination floor number
    */ 
   public void setElevatorDestination(int level) {
     if (this.levels[level] == null) {
@@ -123,7 +125,8 @@ public class MineArea extends Area {
   /**
    * [hasElevatorFloorUnlocked]
    * Gets whether a certain floor is accessible by the elevator
-   * @return boolean true or false depending on the floor's elevator accessibility
+   * @return boolean, true if the player has unlocked the elevator at
+   *         that floor, false otherwise
    */
   public boolean hasElevatorFloorUnlocked(int floor) {
     return ((floor/5) <= this.elevatorLevelsUnlocked);

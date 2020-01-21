@@ -2,16 +2,17 @@ import java.io.IOException;
 
 public class Main {
   public static void main(String[] args) throws IOException {
-    GroundTile.setGroundTileImages();
-    GrassTile.setGrassTileImage();
-    DecorationTile.initializeTileImages();
     WaterTile.setWaterTileImage();
+    GrassTile.setGrassTileImage();
+    GroundTile.setGroundTileImages();
+    DecorationTile.setTileImages();
+    MineGatewayTile.setLadderImages();
+
     WaterTile.setFishableTrash();
     PondTile.setFishableFish();
     RiverTile.setFishableFish();
     LakeTile.setFishableFish();
     OceanTile.setFishableFish();
-    MineGatewayTile.setLadderImage();
 
     HoldableFactory.initializeItems();
     IntrinsicTileComponentFactory.initializeComponents();

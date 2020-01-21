@@ -14,11 +14,11 @@ public class IntrinsicCrop extends IntrinsicGrowableCollectable implements Harve
   /**
    * [IntrinsicCrop]
    * Constructor for a new IntrinsicCrop.
-   * @param name The name of this crop.
-   * @param imagesPath The path to the images of this crop.
-   * @param requiredTool The tool required to harvest this crop.
-   * @param growthData The growing data that is needed by this crop to initialize it.
-   * @param offsets The image offsets (in tiles) that should be considered during drawing.
+   * @param name           The name of this crop.
+   * @param imagesPath     The path to the images of this crop.
+   * @param requiredTool   The tool required to harvest this crop.
+   * @param growthData     The growing data that is needed by this crop to initialize it.
+   * @param offsets        The image offsets (in tiles) that should be considered during drawing.
    * @param plantingSeason The season that this crop can grow in.
    * @throws IOException
    */

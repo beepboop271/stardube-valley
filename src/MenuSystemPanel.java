@@ -16,17 +16,17 @@ import java.util.ArrayList;
  * A JPanel for graphic display of a menu system.
  * 2019-1-20
  * @version 0.1
- * @author Candice Zhang
+ * @author Candice Zhang, Kevin Qiao
  */
 @SuppressWarnings("serial")
 public class MenuSystemPanel extends JPanel {
   private final Button backToMenuButton = new ButtonWithText(625, 600, 150, 75,
                                                              "Back", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button startButton = new ButtonWithText(300, 600, 150, 75,
+  private final Button startButton      = new ButtonWithText(300, 600, 150, 75,
                                                              "Start", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button loreButton = new ButtonWithText(600, 600, 150, 75,
+  private final Button loreButton       = new ButtonWithText(600, 600, 150, 75,
                                                              "Lore", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button creditsButton = new ButtonWithText(900, 600, 150, 75,
+  private final Button creditsButton    = new ButtonWithText(900, 600, 150, 75,
                                                              "Credits", new Font("Comic Sans MS", Font.BOLD, 30));
   
   private String currentPage;
@@ -38,8 +38,8 @@ public class MenuSystemPanel extends JPanel {
   /**
    * [MenuSystemPanel]
    * Constructor for a new MenuSystemPanel.
-   * @param width   int, width of the panel.
-   * @param height  int, height of the panel.
+   * @param width  int, width of the panel.
+   * @param height int, height of the panel.
    * @throws        IOException
    */
   public MenuSystemPanel(int width, int height) throws IOException {
@@ -58,13 +58,9 @@ public class MenuSystemPanel extends JPanel {
         textToSplit += lineToRead;
         lineToRead = input.readLine();
       }
-      this.loreText = this.splitParagraph(70, textToSplit);
+      this.loreText = MenuSystemPanel.splitParagraph(70, textToSplit);
       input.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
-    try {
       this.mainPageImage = ImageIO.read(new File("assets/images/menuSystem/mainPage.png"));
     } catch (IOException e) {
       e.printStackTrace();
@@ -127,12 +123,12 @@ public class MenuSystemPanel extends JPanel {
    * [splitParagraph]
    * Split a very long string into lines of at most maxLineWidth characters,
    * and retrieves the splited text in a String array.
-   * @author             Kevin Qiao, Candice Zhang
+   * @author Kevin Qiao, Candice Zhang
    * @param paragraph    String that represents the string to split.
    * @param maxLineWidth int that represents the width limit.
    * @return             String[], splited text in a String array.
    */
-  public String[] splitParagraph(int maxLineWidth, String paragraph) {
+  public static String[] splitParagraph(int maxLineWidth, String paragraph) {
     // searching for a space " " to end the line
     int endOffset = -1;
     ArrayList<String> lines = new ArrayList<String>();

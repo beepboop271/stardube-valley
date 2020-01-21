@@ -21,12 +21,11 @@ public class IntrinsicTileComponentFactory {
    * so that an object of this class cannot be made.
    */
   private IntrinsicTileComponentFactory() {
-    // do not allow anyone to create an object of this class
   }
 
   /**
    * [initializeComponents]
-   * Reads gamedata files and initialzes the intrinsic tile components.
+   * Reads gamedata files and initializes the intrinsic tile components.
    */
   public static void initializeComponents() {
     if (IntrinsicTileComponentFactory.isInitialized) {
@@ -47,19 +46,23 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[2]), Double.parseDouble(nextLineData[3])};
-        componentToAdd = new IntrinsicHarvestableComponent(nextLineData[0],
-                                                           "assets/images"+nextLineData[1]+nextLineData[0]+".png",
-                                                           nextLineData[4],
-                                                           Integer.parseInt(nextLineData[5]),
-                                                           Integer.parseInt(nextLineData[6]),
-                                                           offsets);
+        componentToAdd = new IntrinsicHarvestableComponent(
+            nextLineData[0],
+            "assets/images"+nextLineData[1]+nextLineData[0]+".png",
+            nextLineData[4],
+            Integer.parseInt(nextLineData[5]),
+            Integer.parseInt(nextLineData[6]),
+            offsets
+        );
 
         componentPool.put(componentToAdd.getName(), componentToAdd);
         for (int j = 0; j < Integer.parseInt(nextLineData[6]); ++j) {
-          ((CollectableComponent)componentToAdd).setProduct(j, 
-                                          new HoldableDrop(Integer.parseInt(nextLineData[8+(j*3)]),
-                                          Integer.parseInt(nextLineData[9+(j*3)]),
-                                          nextLineData[7+(j*3)]));
+          ((CollectableComponent)componentToAdd).setProduct(
+              j, 
+              new HoldableDrop(Integer.parseInt(nextLineData[8+(j*3)]),
+                               Integer.parseInt(nextLineData[9+(j*3)]),
+                               nextLineData[7+(j*3)])
+          );
         }
         lineToRead = input.readLine();  
       }
@@ -72,7 +75,8 @@ public class IntrinsicTileComponentFactory {
         double[] offsets = {Double.parseDouble(nextLineData[4]), Double.parseDouble(nextLineData[5])};
         componentToAdd = new CollectableComponent(nextLineData[0],
                                                   "assets/images"+nextLineData[1]+nextLineData[0]+".png",
-                                                  1, offsets);
+                                                  1,
+                                                  offsets);
         ((CollectableComponent)componentToAdd).setProduct(0, new HoldableDrop(1, 1, nextLineData[2]));
         componentPool.put(componentToAdd.getName(), componentToAdd);
 
@@ -86,14 +90,17 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[5]), Double.parseDouble(nextLineData[6])};
-        componentToAdd = new IntrinsicGrowableCollectable(nextLineData[0], 
-                                                          "assets/images" + nextLineData[1],
-                                                          nextLineData[3],
-                                                          Arrays.copyOfRange(nextLineData, 7, 
-                                                          nextLineData.length),
-                                                          offsets);
-        ((CollectableComponent)componentToAdd).setProduct(0,
-                                  new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2]));
+        componentToAdd = new IntrinsicGrowableCollectable(
+            nextLineData[0], 
+            "assets/images" + nextLineData[1],
+            nextLineData[3],
+            Arrays.copyOfRange(nextLineData, 7, nextLineData.length),
+            offsets
+        );
+        ((CollectableComponent)componentToAdd).setProduct(
+            0,
+            new HoldableDrop(1, Integer.parseInt(nextLineData[4]), nextLineData[2])
+        );
         componentPool.put(componentToAdd.getName(), componentToAdd);
 
         lineToRead = input.readLine();
@@ -107,14 +114,17 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[6]), Double.parseDouble(nextLineData[7])};
         componentToAdd = new IntrinsicCrop(nextLineData[0], 
-                                          "assets/images" + nextLineData[1], 
-                                          nextLineData[3], 
-                                          Arrays.copyOfRange(nextLineData, 9, nextLineData.length),
-                                          offsets, Integer.parseInt(nextLineData[8]));
-        ((CollectableComponent)componentToAdd).setProduct(0, 
-                                  new HoldableDrop(Integer.parseInt(nextLineData[4]), 
-                                                    Integer.parseInt(nextLineData[5]), 
-                                                    nextLineData[2]));
+                                           "assets/images"+nextLineData[1], 
+                                           nextLineData[3], 
+                                           Arrays.copyOfRange(nextLineData, 9, nextLineData.length),
+                                           offsets,
+                                           Integer.parseInt(nextLineData[8]));
+        ((CollectableComponent)componentToAdd).setProduct(
+            0, 
+            new HoldableDrop(Integer.parseInt(nextLineData[4]), 
+                             Integer.parseInt(nextLineData[5]), 
+                             nextLineData[2])
+        );
         
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();
@@ -127,17 +137,22 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[11]), Double.parseDouble(nextLineData[12])};
-        componentToAdd = new IntrinsicTree(nextLineData[0], 
-                                          "assets/images"+nextLineData[1],
-                                          nextLineData[2], Integer.parseInt(nextLineData[3]),
-                                          Integer.parseInt(nextLineData[4]),
-                                          Arrays.copyOfRange(nextLineData, 13, nextLineData.length),
-                                          offsets);
+        componentToAdd = new IntrinsicTree(
+            nextLineData[0], 
+            "assets/images"+nextLineData[1],
+            nextLineData[2],
+            Integer.parseInt(nextLineData[3]),
+            Integer.parseInt(nextLineData[4]),
+            Arrays.copyOfRange(nextLineData, 13, nextLineData.length),
+            offsets
+        );
         for (int j = 0; j < Integer.parseInt(nextLineData[4]); ++j) {
-          ((CollectableComponent)componentToAdd).setProduct(j, 
-                                    new HoldableDrop(Integer.parseInt(nextLineData[6+(j*3)]),
-                                    Integer.parseInt(nextLineData[7+(j*3)]),
-                                    nextLineData[5+(j*3)]));
+          ((CollectableComponent)componentToAdd).setProduct(
+              j, 
+              new HoldableDrop(Integer.parseInt(nextLineData[6+(j*3)]),
+                               Integer.parseInt(nextLineData[7+(j*3)]),
+                               nextLineData[5+(j*3)])
+          );
         }
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
@@ -150,15 +165,19 @@ public class IntrinsicTileComponentFactory {
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[2]), Double.parseDouble(nextLineData[3])};
-        componentToAdd = new IntrinsicMachine(nextLineData[0], 
-                                            "assets/images"+nextLineData[1],
-                                            offsets, 
-                                            Arrays.copyOfRange(nextLineData, 6, nextLineData.length - 1),
-                                            Integer.parseInt(nextLineData[5]),
-                                            Integer.parseInt(nextLineData[4]),
-                                            nextLineData[nextLineData.length - 1]);
-        ((CollectableComponent)componentToAdd).setProduct(0, 
-                          new HoldableDrop(1, 1, nextLineData[0] + "Item"));                                    
+        componentToAdd = new IntrinsicMachine(
+            nextLineData[0], 
+            "assets/images"+nextLineData[1],
+            offsets, 
+            Arrays.copyOfRange(nextLineData, 6, nextLineData.length - 1),
+            Integer.parseInt(nextLineData[5]),
+            Integer.parseInt(nextLineData[4]),
+            nextLineData[nextLineData.length - 1]
+        );
+        ((CollectableComponent)componentToAdd).setProduct(
+            0, 
+            new HoldableDrop(1, 1, nextLineData[0] + "Item")
+        );
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
       }
@@ -171,10 +190,12 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[2]), Double.parseDouble(nextLineData[3])};
         componentToAdd = new Furniture(nextLineData[0], 
-                                      "assets/images"+nextLineData[1] +".png",
-                                      offsets);
-        ((CollectableComponent)componentToAdd).setProduct(0, 
-                          new HoldableDrop(1, 1, nextLineData[0] + "Item"));                                    
+                                       "assets/images"+nextLineData[1] +".png",
+                                       offsets);
+        ((CollectableComponent)componentToAdd).setProduct(
+            0,
+            new HoldableDrop(1, 1, nextLineData[0] + "Item")
+        );
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
       }
@@ -187,8 +208,8 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[2]), Double.parseDouble(nextLineData[3])};
         componentToAdd = new Building(nextLineData[0], 
-                                            "assets/images"+nextLineData[1]+".png",
-                                            offsets);                              
+                                      "assets/images"+nextLineData[1]+".png",
+                                      offsets);
         componentPool.put(componentToAdd.getName(), componentToAdd);
         lineToRead = input.readLine();  
       }
@@ -213,7 +234,9 @@ public class IntrinsicTileComponentFactory {
         nextLineData = lineToRead.split("\\s+");
         double[] offsets = {Double.parseDouble(nextLineData[1]), Double.parseDouble(nextLineData[2])};
         CraftingStore craftingStore = new CraftingStore(nextLineData[0],
-                                      "assets/images"+nextLineData[3]+".png", offsets, nextLineData[4]);
+                                                        "assets/images"+nextLineData[3]+".png",
+                                                        offsets,
+                                                        nextLineData[4]);
         componentPool.put(craftingStore.getName(), craftingStore);
         lineToRead = input.readLine();
       }
@@ -225,13 +248,19 @@ public class IntrinsicTileComponentFactory {
       double[] offsets = {Double.parseDouble(nextLineData[3]), Double.parseDouble(nextLineData[4])};
       componentToAdd = new ShippingContainer("assets/images"+nextLineData[1],
                                             nextLineData[2], offsets);
-      componentPool.put(componentToAdd.getName(), componentToAdd);                                      
+      componentPool.put(componentToAdd.getName(), componentToAdd);
       input.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
+  /**
+   * [getComponent]
+   * Retrieves the corresponding TileComponent for the given name.
+   * @param component The name of the tile component.
+   * @return IntrinsicTileComponent, the component with the given name.
+   */
   public static IntrinsicTileComponent getComponent(String component) {
     if (!IntrinsicTileComponentFactory.isInitialized) {
       throw new RuntimeException("IntrinsicTileComponentFactory not initialized");
