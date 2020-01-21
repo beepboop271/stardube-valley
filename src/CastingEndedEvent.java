@@ -15,7 +15,7 @@ public class CastingEndedEvent extends EventObject {
   /**
    * [CastingEndedEvent]
    * Constructor for a new CastingEndedEvent.
-   * @param rodUsed  FishingRod, the rod that has been used to cast.
+   * @param rodUsed FishingRod, the rod that has been used to cast.
    */
   public CastingEndedEvent(FishingRod rodUsed) {
     super(rodUsed);
@@ -39,5 +39,4 @@ public class CastingEndedEvent extends EventObject {
   public int getMeterPercentage() {
     return this.meterPercentage;
   }
-  
 }

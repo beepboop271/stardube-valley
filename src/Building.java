@@ -13,9 +13,9 @@ import java.io.IOException;
   /**
    * [Building]
    * Constructor for a new Building.
-   * @param name The name of the building.
+   * @param name      The name of the building.
    * @param imagePath The path to the building's image.
-   * @param offsets The offsets (in tiles) that are considered when drawing the building.
+   * @param offsets   The offsets (in tiles) that are considered when drawing the building.
    * @throws IOException
    */
   public Building(String name, String imagePath, double[] offsets) throws IOException {

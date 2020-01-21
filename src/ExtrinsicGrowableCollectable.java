@@ -10,14 +10,14 @@ import java.awt.image.BufferedImage;
  */
 
 public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent implements Growable, Collectable {
-  private int stage, regrowCooldown;
+  private int stage;
+  private int regrowCooldown;
 
   /**
    * [ExtrinsicGrowableCollectable]
    * Constructor for a new ExtrinsicGrowableCollectable that takes 
    * in a predetermined IntrinsicGrowableCollectable and sets that 
    * as this object's IntrinsicGrowableCollectable.
-   * @author Joseph Wang
    * @param item A predetermined IntrinsicGrowableCollectable.
    */
   public ExtrinsicGrowableCollectable(IntrinsicGrowableCollectable item) {
@@ -31,7 +31,6 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    * Contructor for a new ExtrinsicGrowableCollectable that takes
    * in a string and finds the IntrinsicGrowableCollectable related
    * to that string.
-   * @author Joseph Wang
    * @param item The string with the item's name.
    */
   public ExtrinsicGrowableCollectable(String item) {
@@ -47,7 +46,7 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
    * @return boolean, true if this growable is harvestable, false otherwise.
    */
   public boolean canHarvest() {
-    if (this.stage == ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getMaxGrowthStage() - 1) {
+    if (this.stage == ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getMaxGrowthStage()-1) {
       return true;
     }
     return false;
@@ -78,7 +77,6 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   /**
    * [getProduct]
    * Retrieves the associated product that this growable can produce.
-   * @author Joseph Wang
    * @return HoldableDrop, the product that this growable produces.
    */
   public HoldableDrop getProduct() {
@@ -95,12 +93,13 @@ public class ExtrinsicGrowableCollectable extends ExtrinsicTileComponent impleme
   @Override
   public BufferedImage getImage() {
     if (regrowCooldown == 0) {
-      return this.getIntrinsicSelf().getImages()[
-              ((IntrinsicGrowableCollectable)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
+      return this.getIntrinsicSelf()
+                 .getImages()[((IntrinsicGrowableCollectable)this.getIntrinsicSelf())
+                                                                 .getStageToDisplay(this.stage)];
     }
 
-    return this.getIntrinsicSelf().getImages()[
-              this.getIntrinsicSelf().getImages().length - 2]; 
+    return this.getIntrinsicSelf()
+               .getImages()[this.getIntrinsicSelf().getImages().length-2]; 
               //- .length - 1 gives the full harvested image. We want .length - 2
   }
 

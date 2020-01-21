@@ -13,7 +13,7 @@ public class ExtrinsicCrop extends ExtrinsicGrowableCollectable {
    * [ExtrinsicCrop]
    * Constructor for an ExtrinsicCrop that takes in an IntrinsicCrop 
    * that it sets as the related IntrinsicCrop.
-   * @param crop  An IntrinsicCrop which is the IntrinsicCrop of this crop.
+   * @param crop An IntrinsicCrop which is the IntrinsicCrop of this crop.
    */
   public ExtrinsicCrop(IntrinsicCrop crop) {
     super(crop);
@@ -23,7 +23,7 @@ public class ExtrinsicCrop extends ExtrinsicGrowableCollectable {
    * [ExtrinsicCrop]
    * Constructor for an ExtrinsicCrop that takes in a string and finds 
    * the IntrinsicCrop related to that string.
-   * @param crop  A string with the crop's name.
+   * @param crop A string with the crop's name.
    */
   public ExtrinsicCrop(String crop) {
     super(crop);

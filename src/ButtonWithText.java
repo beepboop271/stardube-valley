@@ -25,7 +25,7 @@ public class ButtonWithText extends Button {
    * @param textOnButton The String the button has.
    * @param textFont     The Font of the text on button.
    */
-  ButtonWithText(int x, int y, int w, int h, String textOnButton, Font textFont) {
+  public ButtonWithText(int x, int y, int w, int h, String textOnButton, Font textFont) {
     super(x, y, w, h);
     this.textOnButton = textOnButton;
     this.textFont = textFont;

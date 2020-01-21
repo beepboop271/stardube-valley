@@ -1,7 +1,7 @@
 import java.util.EventObject;
 
 /**
- * [autoMovementEvent]
+ * [AutoMovementEvent]
  * An event to handle automated NPC movements. 
  * 2020-01-19
  * @version 0.1
@@ -14,7 +14,7 @@ public class AutoMovementEvent extends EventObject {
   /**
    * [AutoMovementEvent]
    * Constructor for a new AutoMovementEvent.
-   * @param npc   The NPC to be moving
+   * @param npc The NPC to be moving
    */
   public AutoMovementEvent(NPC npc) {
     super(npc);

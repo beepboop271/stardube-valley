@@ -10,8 +10,8 @@ public class ElevatorGateway extends Gateway {
   /**
    * [ElevatorGateway]
    * Constructor for a new ElevatorGateway.
-   * @param originX  The x-position of this gateway.
-   * @param originY  The y-position of this gateway
+   * @param originX The x position of this gateway.
+   * @param originY The y position of this gateway
    */
   public ElevatorGateway(int originX, int originY) {
     super(originX, originY, Gateway.OMNIDIRECTIONAL, true);

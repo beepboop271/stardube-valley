@@ -20,7 +20,7 @@ public class CraftingMachine {
   /**
    * [CraftingMachine]
    * Constructor for a new CraftingMachine.
-   * @param recipesPath  String, the path to the recipes of this crafting machine
+   * @param recipesPath The path to the recipes of this crafting machine
    * @throws IOException
    */
   CraftingMachine(String recipesPath) throws IOException {
@@ -54,9 +54,9 @@ public class CraftingMachine {
   /**
    * [hasProduct]
    * Checks if this machine has a recipe to make the given product.
-   * @param product  String, the name of the product.
-   * @return         boolean, true if the machine has a recipe for the product,
-   *                 false otherwise.
+   * @param product The name of the product.
+   * @return boolean, true if the machine has a recipe for the product,
+   *         false otherwise.
    */
   public boolean hasProduct(String product) {
     return this.recipes.containsKey(product);
@@ -65,8 +65,8 @@ public class CraftingMachine {
   /**
    * [ingredientsOf]
    * Retrieves the ingredient(s) needed to make the given product.
-   * @param product  String, the name of the product.
-   * @return         String[], the ingredient(s) of the product.
+   * @param product The name of the product.
+   * @return String[], the ingredient(s) of the product.
    */
   public String[] ingredientsOf(String product) {
     if (this.hasProduct(product)) {
@@ -87,8 +87,8 @@ public class CraftingMachine {
   /**
    * [recipeOf]
    * Retrieves the recipe of the given product.
-   * @param product  String, the name of the product.
-   * @return         Recipe, the recipe of the product.
+   * @param product The name of the product.
+   * @return Recipe, the recipe of the product.
    */
   public Recipe recipeOf(String product) {
     return this.recipes.get(product);

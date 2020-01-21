@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 /**
  * [BuildingArea]
  * A class for any buildings that are created in Stardube Valley.
- * 2020-1-6
+ * 2020-01-06
  * @version 0.2
  * @author Joseph Wang
  */
@@ -20,8 +20,8 @@ public class BuildingArea extends Area implements Drawable {
   /**
    * [BuildingArea]
    * Constructor for a new BuildingArea.
-   * @param name The name of this area.
-   * @param width The tile width of this area.
+   * @param name   The name of this area.
+   * @param width  The tile width of this area.
    * @param height The tile height of this area.
    */
   public BuildingArea(String name, int width, int height) {
@@ -33,7 +33,7 @@ public class BuildingArea extends Area implements Drawable {
    * [hasInteriorImage]
    * Checks if this building area has a loaded interior image
    * to display.
-   * @return true if an interior image exists, false otherwise.
+   * @return boolean, true if an interior image exists, false otherwise.
    */
   public boolean hasInteriorImage() {
     return (!(interiorImage == null));
@@ -42,7 +42,7 @@ public class BuildingArea extends Area implements Drawable {
   /**
    * [loadImage]
    * Attempts to load the interior image given the image path.
-   * @param imagePath    The path to the interior building image.
+   * @param imagePath The path to the interior building image.
    * @throws IOException
    */
   public void loadImage(String imagePath) throws IOException {
@@ -76,8 +76,8 @@ public class BuildingArea extends Area implements Drawable {
    * [setDrawLocation]
    * Takes in a new x and y and sets draw location
    * to a new point using those x and y.
-   * @param x  The new x of the draw location.
-   * @param y  The new y of the draw location.
+   * @param x The new x of the draw location.
+   * @param y The new y of the draw location.
    */
   public void setDrawLocation(int x, int y) {
     this.drawLocation = new Point(x, y);
@@ -87,7 +87,7 @@ public class BuildingArea extends Area implements Drawable {
    * [setDrawLocation]
    * Takes in a point and sets a clone of that point
    * as this building's new interior image draw location.
-   * @param point  The new point of where to draw at.
+   * @param point The new point of where to draw at.
    */
   public void setDrawLocation(Point point) {
     this.drawLocation = (Point)point.clone();

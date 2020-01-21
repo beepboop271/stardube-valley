@@ -216,12 +216,9 @@ public class WorldPanel extends JPanel {
 
     ArrayList<HoldableStackEntity> items = playerArea.getItemsOnGroundList();
     Collections.sort(items);
-    // HoldableStackEntity[] items;
-    HoldableStackEntity nextItem;
     ArrayList<Moveable> moveables = playerArea.getMoveableList();
     Collections.sort(moveables);
-    // Moveable[] moveables;
-    // Moveable nextMoveable;
+
     int moveableIdx = 0;
     while ((moveableIdx < moveables.size())
            && (Math.floor(moveables.get(moveableIdx).getPos().y) < tileStartY-1)) {
@@ -244,16 +241,6 @@ public class WorldPanel extends JPanel {
               int drawX = originX+(screenTileX*Tile.getSize());
               int drawY = originY+(screenTileY*Tile.getSize());
               g.drawImage(currentTile.getImage(), drawX, drawY, null);
-              // if (playerArea.walkableAt(new Point(x, y))){
-              //   g.setColor(Color.GREEN);
-              //   g.fillRect(drawX, drawY, 30, 30);
-              // } else {
-              //   g.setColor(Color.RED);
-              //   g.fillRect(drawX, drawY, 30, 30);
-              // }
-              g.setColor(Color.BLACK);
-              g.setFont(this.QUANTITY_FONT);
-              g.drawString(String.format("%d %d", (int)x, (int)y), drawX+8, drawY+40);
             }
           }
           ++screenTileX;

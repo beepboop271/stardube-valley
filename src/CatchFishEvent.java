@@ -15,7 +15,7 @@ public class CatchFishEvent extends EventObject {
   /**
    * [CatchFishEvent]
    * Constructor for a new CatchFishEvent.
-   * @param rodUsed  FishingRod, the rod that has been used to cast.
+   * @param rodUsed FishingRod, the rod that has been used to cast.
    */
   public CatchFishEvent(FishingRod rodUsed) {
     super(rodUsed);
@@ -39,5 +39,4 @@ public class CatchFishEvent extends EventObject {
   public long getCatchNanoTime() {
     return this.catchNanoTime;
   }
-  
 }

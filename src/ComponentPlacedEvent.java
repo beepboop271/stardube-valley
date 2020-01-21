@@ -17,10 +17,9 @@ public class ComponentPlacedEvent extends EventObject {
   /**
    * [ComponentPlacedEvent]
    * Constructor for a new ComponentPlacedEvent.
-   * @author Candice Zhang, Joseph Wang
-   * @param component       The TileComponent to be placed on the tile.
-   * @param componentIndex  The index of an inventory where the component is located.
-   * @param locationUsed    The point where the component is to be placed.
+   * @param component      The TileComponent to be placed on the tile.
+   * @param componentIndex The index of an inventory where the component is located.
+   * @param locationUsed   The point where the component is to be placed.
    */
   public ComponentPlacedEvent(TileComponent component, int componentIndex, Point locationUsed) {
     super(component);
@@ -32,7 +31,6 @@ public class ComponentPlacedEvent extends EventObject {
   /**
    * [getLocationUsed]
    * Retrieves the location that the component is to be placed at.
-   * @author Joseph Wang
    * @return Point, a clone of the point where this component is to be placed at.
    */
   public Point getLocationUsed() {
@@ -42,7 +40,6 @@ public class ComponentPlacedEvent extends EventObject {
   /**
    * [getComponentToPlace]
    * Retrieves the TileComponent to be placed.
-   * @author Joseph Wang
    * @return TileComponent, the TileComponent to be placed.
    */
   public TileComponent getComponentToPlace() {
@@ -52,7 +49,6 @@ public class ComponentPlacedEvent extends EventObject {
   /**
    * [getComponentIndex]
    * Retrieves the index of the inventory where this component is.
-   * @author Candice Zhang
    * @return int, the index of the inventory.
    */
   public int getComponentIndex() {

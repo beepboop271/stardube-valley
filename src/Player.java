@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Kevin Qiao, Candice Zhang, Joseph Wang, Paula Yuan
  */
 
-public class Player extends LoopAnimatedMoveable implements Animatable {
+public class Player extends LoopAnimatedMoveable {
   public static final double SIZE = 0.35;
   private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
@@ -27,7 +27,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
   private int selectedItemIdx;
   private Point selectedTile;
   private boolean isImmutable;
-  private boolean isAnimating;
   private boolean isExhausted;
   private FishingGame currentFishingGame;
   private int currentFunds, futureFunds, totalEarnings;
@@ -570,24 +569,6 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
    */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
-  }
-
-  /**
-   * [isAnimating]
-   * determines whether or not you are animating
-   * @return boolean true or false
-   */
-  public boolean isAnimating() {
-    return this.isAnimating;
-  }
-
-  /**
-   * [setAnimating]
-   * sets the state of animating
-   */
-  public void setAnimating(boolean isAnimating) {
-    this.isAnimating = isAnimating;
-    this.isImmutable = isAnimating;
   }
 
   /**

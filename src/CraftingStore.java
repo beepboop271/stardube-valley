@@ -21,10 +21,10 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   /**
    * [CraftingStore]
    * Constructor for a new CraftingStore.
-   * @param name           String, name of the CraftingStore.
-   * @param imagePath      String, image path of the CraftingStore.
-   * @param offsets        double[], the offsets (in tiles) that should be considered during drawing.
-   * @param recipesPath    String, the path for the recipes of this CraftingStore.
+   * @param name        Name of the CraftingStore.
+   * @param imagePath   Image path of the CraftingStore.
+   * @param offsets     The offsets (in tiles) that should be considered during drawing.
+   * @param recipesPath The path for the recipes of this CraftingStore.
    * @throws IOException
    */
   public CraftingStore(String name, String imagesPath, double[] offsets, String recipesPath) throws IOException {
@@ -64,9 +64,9 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   /**
    * [hasItem]
    * Checks if the crafting store can craft the given item.
-   * @param item  String, name of the item.
-   * @return      boolean, true if the crafting store can craft the given item,
-   *              false otherwise.
+   * @param item Name of the item.
+   * @return boolean, true if the crafting store can craft the given item,
+   *         false otherwise.
    */
   public boolean hasItem(String item) {
     return this.craftingRecipes.containsKey(item);
@@ -75,7 +75,7 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   /**
    * [getItems]
    * Retrieves all items this crafting store can craft.
-   * @return  String[], a String array containing all items this crafting store craft.
+   * @return String[], a String array containing all items this crafting store craft.
    */
   public String[] getItems() {
     return this.items;
@@ -84,8 +84,8 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   /**
    * [recipeOf]
    * Retrieves the recipe of the given item.
-   * @param item  String, the name of the item.
-   * @return      Recipe, the recipe of the item.
+   * @param item The name of the item.
+   * @return Recipe, the recipe of the item.
    */
   public Recipe recipeOf(String item) {
     return this.craftingRecipes.get(item);
@@ -98,5 +98,4 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   public BufferedImage getImage() {
     return this.getImages()[0];
   }
-
 }
