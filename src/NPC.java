@@ -2,10 +2,10 @@ import java.io.IOException;
 
 /**
  * [NPC]
- * 2020-01-19
  * A LoopAnimatedMoveable to represent an NPC in the game.
- * @version 0.1
- * @author Paula Yuan, Candice Zhang
+ * 2020-01-19
+ * @version 0.11
+ * @author Paula Yuan, Candice Zhang, Kevin Qiao
  */
 
 public class NPC extends LoopAnimatedMoveable {
@@ -19,6 +19,7 @@ public class NPC extends LoopAnimatedMoveable {
   /**
    * [NPC]
    * Constructor for a new NPC.
+   * @author Paula Yuan, Kevin Qiao, Candice Zhang
    * @param position            A Point that represents the position of the NPC.
    * @param name                A Srting that represents the name of the NPC.
    * @param index               An int that represents the index of this NPC.
@@ -38,10 +39,10 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [getDialogue]
-   * Retrieves a string dialogue.
+   * Retrieves a string dialogue based on specified index.
    * @author Paula Yuan
-   * @param index, int index
-   * @return String the dialogue
+   * @param index  The index to retrieve dialogue with.
+   * @return       String, the dialogue.
    */
   public String getDialogue(int index) {
     return this.dialogueRotation[index];
@@ -49,9 +50,9 @@ public class NPC extends LoopAnimatedMoveable {
   
   /**
    * [getName]
-   * Retrieves the NPC's name
+   * Retrieves this NPC's name.
    * @author Paula Yuan
-   * @return the string name of the NPC.
+   * @return String, the name of this NPC.
    */
   public String getName() {
     return this.name;
@@ -59,8 +60,8 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [getProfileDescription]
-   * Retrieves the NPC's profile description
-   * @return String, the profile description
+   * Retrieves this NPC's profile description.
+   * @return String, the profile description of this NPC.
    */
   public String getProfileDescription() {
     return this.profileDescription;
@@ -68,7 +69,12 @@ public class NPC extends LoopAnimatedMoveable {
   
   @Override
   /**
-   * {@inheritDocs}
+   * [getMove]
+   * Calculates this NPC's movement based on its current velocity
+   * and the elapsed time.
+   * @author Paula Yuan
+   * @param elapsedNanoTime  The elapsed time.
+   * @return                 Vector2D, this NPC's movement.
    */
   public Vector2D getMove(long elapsedNanoTime) {
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
@@ -79,9 +85,9 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [getIndex]
-   * Retrieves the index of this NPC.
+   * Retrieves the index of this NPC, used for finding dialogue.
    * @author Paula Yuan
-   * @return int index
+   * @return int, the current dialogue index.
    */
   public int getIndex() {
     return this.index;
@@ -89,9 +95,9 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [setIndex]
-   * Sets the index of this NPC.
+   * Sets the dialogue index of this NPC.
    * @author Paula Yuan
-   * @param int index
+   * @param index  The new dialogue index.
    */
   public void setIndex(int index) {
     this.index = index;

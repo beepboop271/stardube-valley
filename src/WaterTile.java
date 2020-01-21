@@ -18,8 +18,8 @@ public abstract class WaterTile extends Tile implements NotWalkable {
   /**
    * [WaterTile]
    * Constructor for a new WaterTile.
-   * @param x  int, the x position of the WaterTile.
-   * @param y  int, the y position of the WaterTile.
+   * @param x  the x position of the WaterTile.
+   * @param y  the y position of the WaterTile.
    */
   public WaterTile(int x, int y) {
     super(x, y);

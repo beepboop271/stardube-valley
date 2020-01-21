@@ -22,7 +22,7 @@ import java.util.Collections;
  * [WorldPanel]
  * A JPanel for graphic display of a World.
  * 2020-01-20
- * @version 1.48
+ * @version 1.56
  * @author Kevin Qiao, Candice Zhang, Paula Yuan, Joseph Wang
  */
 @SuppressWarnings("serial")

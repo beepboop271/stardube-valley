@@ -13,7 +13,7 @@ import java.util.LinkedHashSet;
  * [World]
  * Contains essential components and methods for a world to function.
  * 2020-01-20
- * @version 0.1
+ * @version 2.33
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 

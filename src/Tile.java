@@ -3,8 +3,8 @@ import java.awt.image.BufferedImage;
 /**
  * [Tile]
  * A class for all tiles that form the maps.
- * 2019-12-17
- * @version 0.1
+ * 2019-12-22
+ * @version 0.3
  * @author Kevin Qiao, Paula Yuan
  */
 public abstract class Tile {

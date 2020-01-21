@@ -5,8 +5,8 @@ import java.util.ArrayList;
  * [Recipe]
  * A recipe for a specified products that stores the product name,
  * money required, required ingredients and their quantities.
- * 2020-01-18
- * @version 0.2
+ * 2020-01-20
+ * @version 0.3
  * @author Candice Zhang
  */
 
@@ -18,7 +18,7 @@ public class Recipe {
   /**
    * [Recipe]
    * Constructor for a new Recipe.
-   * @param productName String, the name of the product.
+   * @param productName the name of the product.
    */
   Recipe(String productName) {
     this.ingredientQuantities = new LinkedHashMap<String, Integer>();
@@ -38,7 +38,7 @@ public class Recipe {
   /**
    * [getPrice]
    * Sets the money needed to craft the product.
-   * @param price double, money needed to craft the product.
+   * @param price  money needed to craft the product.
    */
   public void setPrice(double price) {
     this.price = price;
@@ -56,8 +56,8 @@ public class Recipe {
   /**
    * [addIngredient]
    * Adds an ingredient and its quantity to this recipe.
-   * @param name     String, the name of the ingredient.
-   * @param quantity int, the quantity of the ingredient.
+   * @param name      the name of the ingredient.
+   * @param quantity  the quantity of the ingredient.
    */
   public void addIngredient(String name, int quantity) {
     this.ingredientQuantities.put(name, quantity);
@@ -66,7 +66,7 @@ public class Recipe {
   /**
    * [quantityOf]
    * Retrieves the quantity needed of an ingredient.
-   * @param name  String, the name of the ingredient.
+   * @param name  the name of the ingredient.
    * @return      int, the required quantity of the ingredient.
    */
   public int quantityOf(String name) {

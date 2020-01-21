@@ -1,7 +1,7 @@
 /**
  * [Stopwatch]
  * A class that keeps track of elapsed time since creation.
- * 2020-01-12
+ * 2020-01-08
  * @version 0.2
  * @author Candice Zhang, Kevin Qiao
  */

@@ -3,7 +3,7 @@ import java.io.IOException;
 /**
  * [PlaceableItem]
  * A class for items that are able to place a TileComponent onto a tile.
- * 2020-01-09
+ * 2020-01-13
  * @version 0.2
  * @author Joseph Wang
  */
@@ -14,11 +14,11 @@ public class PlaceableItem extends Item implements Placeable {
   /**
    * [PlaceableItem]
    * Constructor for the PlaceableItem class.
-   * @param name The name of the item.
-   * @param description A description of the item.
-   * @param imagePath The path to the image.
-   * @param itemToPlace The TileComponent to place on the map.
-   * @throws IOException
+   * @param name         The name of the item.
+   * @param description  A description of the item.
+   * @param imagePath    The path to the image.
+   * @param itemToPlace  The TileComponent to place on the map.
+   * @throws             IOException
    */
   public PlaceableItem(String name, String description, 
                       String imagePath, String itemToPlace) throws IOException {

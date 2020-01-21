@@ -1,8 +1,8 @@
 /**
  * [Point]
  * A class for keeping track of locations in the world.
- * 2019-12-19
- * @version 0.1
+ * 2020-01-19
+ * @version 0.6
  * @author Kevin Qiao
  */
 public class Point implements Cloneable {
@@ -52,7 +52,7 @@ public class Point implements Cloneable {
    * Shifts this point to another location using the specified dx and dy.
    * @param dx  The change in x.
    * @param dy  The change in y.
-   * @return Point, this Point object.
+   * @return    Point, this Point object.
    */
   public Point translate(double dx, double dy) {
     this.x += dx;
@@ -64,7 +64,7 @@ public class Point implements Cloneable {
    * [translate]
    * Shifts this point to another location using the specified point.
    * @param p  The new point with the dx and dy.
-   * @return Point, this Point object.
+   * @return   Point, this Point object.
    */
   public Point translate(Point p) {
     return this.translate(p.x, p.y);

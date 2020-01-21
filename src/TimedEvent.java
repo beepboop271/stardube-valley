@@ -3,8 +3,8 @@ import java.util.EventObject;
 /**
  * [TimedEvent]
  * An event that is timed for the priority queue.
- * 2019-12-19
- * @version 0.1
+ * 2020-01-20
+ * @version 0.5
  * @author Kevin Qiao
  */
 public class TimedEvent implements Comparable<TimedEvent> {

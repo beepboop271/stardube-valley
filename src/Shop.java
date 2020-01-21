@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
  * [Shop]
  * An IntrinsicTileComponent that stores essential data for shop interations,
  * including items it sells and a price list.
- * 2020-01-14
- * @version 0.2
+ * 2020-01-20
+ * @version 0.4
  * @author Candice Zhang
  */
 

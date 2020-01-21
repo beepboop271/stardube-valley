@@ -1,8 +1,8 @@
 /**
  * [RiverTile]
  * A water tile that is part of a river.
- * 2019-12-27
- * @version 0.2
+ * 2019-12-29
+ * @version 0.3
  * @author Candice Zhang
  */
 

@@ -3,8 +3,8 @@ import java.io.IOException;
 /**
  * [Seeds]
  * A class for any seeds that need to be made.
- * 2019-12-24
- * @version 0.1
+ * 2020-01-17
+ * @version 0.4
  * @author Joseph Wang
  */
 

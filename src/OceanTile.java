@@ -1,7 +1,7 @@
 /**
  * [OceanTile]
  * A water tile that is part of an ocean.
- * 2019-12-27
+ * 2019-12-29
  * @version 0.2
  * @author Candice Zhang
  */
@@ -12,8 +12,8 @@ public class OceanTile extends WaterTile {
   /**
    * [OceanTile]
    * Constructor for a new OceanTile.
-   * @param x  int, the x position of the OceanTile.
-   * @param y  int, the y position of the OceanTile.
+   * @param x  the x position of the OceanTile.
+   * @param y  the y position of the OceanTile.
    */
   public OceanTile(int x, int y) {
     super(x, y);

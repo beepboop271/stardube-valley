@@ -3,8 +3,8 @@ import java.io.IOException;
 /**
  * [Tool]
  * A class for any kind of tool that can be used.
- * 2019-12-23
- * @version 0.2
+ * 2020-01-20
+ * @version 0.5
  * @author Kevin Qiao, Joseph Wang
  */
 

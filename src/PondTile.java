@@ -1,7 +1,7 @@
 /**
  * [PondTile]
  * A water tile that is part of a pond.
- * 2019-12-27
+ * 2019-12-29
  * @version 0.2
  * @author Candice Zhang
  */
@@ -12,8 +12,8 @@ public class PondTile extends WaterTile {
   /**
    * [PondTile]
    * Constructor for a new PondTile.
-   * @param x  int, the x position of the PondTile.
-   * @param y  int, the y position of the PondTile.
+   * @param x  the x position of the PondTile.
+   * @param y  the y position of the PondTile.
    */
   public PondTile(int x, int y) {
     super(x, y);

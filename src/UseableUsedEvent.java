@@ -3,7 +3,7 @@ import java.util.EventObject;
 /**
  * [UseableUsedEvent]
  * An event that signals when a useable has been used.
- * 2019-12-19
+ * 2019-12-23
  * @version 0.1
  * @author Kevin Qiao
  */
