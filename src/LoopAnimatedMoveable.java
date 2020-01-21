@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 /**
  * [LoopAnimatedMoveable]
  * 2020-01-19
- * 
+ * A Moveable that has images for looped animation.
  * @version 0.2
  * @author Paula Yuan, Candcie Zhang
  */
@@ -24,6 +24,14 @@ public abstract class LoopAnimatedMoveable extends Moveable {
   private long lastImgUpdateTime;
   private int currentImgIdx;
 
+  /**
+   * [LoopAnimatedMoveable]
+   * Constructor for a new LoopAnimatedMoveable.
+   * @param position        A Point representing the moveable's position.
+   * @param size            A double representing the moveable's size.
+   * @param name            A String representing the moveable's name.
+   * @param framesPerSecond An int representing the moveable's number of frames per second.
+   */
   public LoopAnimatedMoveable(Point position, double size, String name,
                               int framesPerSecond) {
     super(position, size);
@@ -51,10 +59,20 @@ public abstract class LoopAnimatedMoveable extends Moveable {
     }
   }
 
+  /**
+   * [getImage]
+   * Retrieves the current image of this moveale.
+   * @return BufferedImage, the current image of this moveale.
+   */
   public BufferedImage getImage() {
     return this.images[this.orientation][this.currentImgIdx];
   }
 
+  /**
+   * [updateImage]
+   * Orients the current image according to the fps of this moveable.
+   * @author Candice Zhang
+   */
   public void updateImage() {
     if ((System.nanoTime()-this.lastImgUpdateTime) >= (1_000_000_000/this.framesPerSecond)) {
       this.currentImgIdx = (this.currentImgIdx+1) % this.images[this.orientation].length;
@@ -62,23 +80,48 @@ public abstract class LoopAnimatedMoveable extends Moveable {
     }
   }
   
+  /**
+   * [getOrientation]
+   * Retrieves the current orientation of this moveable.
+   * @return int, the current orientation of this moveable.
+   */
   public int getOrientation() {
     return this.orientation;
   }
 
+  /**
+   * [setOrientation]
+   * Sets the current orientation of this moveale.
+   * @param orientation The orientation of this moveale.
+   */
   public void setOrientation(int orientation) {
     this.orientation = orientation;
   }
 
+  /**
+   * [getFramesPerSecond]
+   * Retrieves the number of frames per second of this moveable.
+   * @return int, the number of frames per second of this moveable.
+   */
   public int getFramesPerSecond() {
     return this.framesPerSecond;
   }
 
+  /**
+   * [setFramesPerSecond]
+   * Sets the number of frames per second of this moveale.
+   * @param fps The number of frames per second of this moveale.
+   */
   public void setFramesPerSecond(int fps) {
     this.framesPerSecond = fps;
   }
 
-  public BufferedImage getProfileImage() { // image to display in places like social page
+  /**
+   * [getProfileImage]
+   * Retrieves the image of this moveable to display in profiles.
+   * @return BufferedImage, the profile image of this moveable.
+   */
+  public BufferedImage getProfileImage() { // 
     return this.images[Arrays.asList(DIRECTIONS).indexOf("/south")][0];
   }
 }
