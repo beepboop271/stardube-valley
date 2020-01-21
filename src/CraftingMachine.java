@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class CraftingMachine {
   private LinkedHashMap<String, Recipe> recipes;
-  private final String[] products;
+  private final String[] PRODUCTS;
   
   /**
    * [CraftingMachine]
@@ -48,7 +48,7 @@ public class CraftingMachine {
     }
     
     ArrayList<String> keys = new ArrayList<String>(this.recipes.keySet());
-    this.products = keys.toArray(new String[keys.size()]);
+    this.PRODUCTS = keys.toArray(new String[keys.size()]);
   }
 
   /**
@@ -81,7 +81,7 @@ public class CraftingMachine {
    * @return String[], the products this machine can make.
    */
   public String[] getProducts() {
-    return this.products;
+    return this.PRODUCTS;
   }
 
   /**

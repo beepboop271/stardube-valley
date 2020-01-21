@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 
 public class CraftingStore extends IntrinsicTileComponent implements Drawable {
   private LinkedHashMap<String, Recipe> craftingRecipes;
-  private final String[] items;
+  private final String[] ITEMS;
   
   /**
    * [CraftingStore]
@@ -57,7 +57,7 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
     }
     
     ArrayList<String> keys = new ArrayList<String>(this.craftingRecipes.keySet());
-    this.items = keys.toArray(new String[keys.size()]);
+    this.ITEMS = keys.toArray(new String[keys.size()]);
     
   }
 
@@ -78,7 +78,7 @@ public class CraftingStore extends IntrinsicTileComponent implements Drawable {
    * @return String[], a String array containing all items this crafting store craft.
    */
   public String[] getItems() {
-    return this.items;
+    return this.ITEMS;
   }
 
   /**

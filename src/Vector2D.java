@@ -17,7 +17,6 @@ public class Vector2D implements Cloneable {
   private static final int Y      = 0b1000;
   private static final int POS    = 0b1100;
 
-  
   /** 
    * [Vector2D]
    * Constructor for a Vector2D with the given position.
@@ -30,7 +29,6 @@ public class Vector2D implements Cloneable {
     this.update(Vector2D.LENGTH|Vector2D.ANGLE);
   }
 
-  
   /** 
    * [clone]
    * Creates a shallow copy of the Vector2D.
@@ -45,12 +43,6 @@ public class Vector2D implements Cloneable {
     }
   }
 
-  @Override
-  public String toString() {
-    return String.format("V(%.2f, %.2f), %.2f, %.2f", this.x, this.y, Math.toDegrees(this.angle), this.length);
-  }
-
-  
   /** 
    * [update]
    * Recalculates the specified properties, given by
@@ -86,7 +78,6 @@ public class Vector2D implements Cloneable {
     }
   }
 
-
   /** 
    * [asMoveInteger]
    * Returns the cardinal direction closest to this
@@ -110,8 +101,7 @@ public class Vector2D implements Cloneable {
       }
     }
   }
-  
-  
+
   /** 
    * [flip]
    * Negates this Vector2D.
@@ -122,7 +112,6 @@ public class Vector2D implements Cloneable {
     this.update(Vector2D.ANGLE);
   }
 
-  
   /** 
    * [add]
    * Adds the given Vector2D to this Vector2D.
@@ -133,7 +122,6 @@ public class Vector2D implements Cloneable {
     return this;
   }
 
-  
   /** 
    * [getX]
    * Returns the x component of this Vector2D.
@@ -143,6 +131,12 @@ public class Vector2D implements Cloneable {
     return this.x;
   }
 
+  /** 
+   * [getXVector]
+   * Returns the x component of this Vector2D as a
+   * new Vector2D.
+   * @return Vector2D, the x component of this Vector2D.
+   */
   public Vector2D getXVector() {
     return new Vector2D(this.x, 0);
   }
@@ -156,11 +150,16 @@ public class Vector2D implements Cloneable {
     return this.y;
   }
 
+  /** 
+   * [getYVector]
+   * Returns the y component of this Vector2D as a
+   * new Vector2D.
+   * @return Vector2D, the y component of this Vector2D.
+   */
   public Vector2D getYVector() {
     return new Vector2D(0, this.y);
   }
 
-  
   /** 
    * [setPos]
    * Sets the x and y components of this Vector2D.
@@ -173,7 +172,6 @@ public class Vector2D implements Cloneable {
     this.update(Vector2D.LENGTH|Vector2D.ANGLE);
   }
 
-  
   /** 
    * [getLength]
    * Returns the length of this Vector2D.
@@ -183,7 +181,6 @@ public class Vector2D implements Cloneable {
     return this.length;
   }
 
-  
   /** 
    * [setLength]
    * Scales this Vector2D to the given length.
@@ -203,8 +200,8 @@ public class Vector2D implements Cloneable {
 
   /** 
    * [scale]
-   * Scales this Vector2D according to a multiplier.
-   * @param multiplier The multiplier to which we are scaling this vector.
+   * Vector-scalar multiplication.
+   * @param multiplier The scalar factor.
    */
   public Vector2D scale(double multiplier) {
     if (length < 0) {
@@ -218,7 +215,6 @@ public class Vector2D implements Cloneable {
     return this;
   }
 
-  
   /** 
    * [getAngle]
    * Returns the angle in radians of this Vector2D.

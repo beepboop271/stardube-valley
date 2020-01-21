@@ -13,8 +13,8 @@ public class UtilityToolUsedEvent extends UseableUsedEvent {
   /**
    * [UtilityToolUsedEvent]
    * Constructor for a new UtilityToolUsedEvent
-   * @param toolUsed      The tool that created this event.
-   * @param locationUsed  The location where this event was used at.
+   * @param toolUsed     The tool that created this event.
+   * @param locationUsed The location where this event was used at.
    */
   public UtilityToolUsedEvent(UtilityTool toolUsed, Point locationUsed) {
     super(toolUsed);

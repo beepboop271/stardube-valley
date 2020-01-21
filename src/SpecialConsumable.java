@@ -14,13 +14,13 @@ public class SpecialConsumable extends Consumable {
   /**
    * [SpecialConsumable]
    * Constructor for a new SpecialConsumable;
-   * @param name          The name of this consumable
-   * @param description   The description of this consumable
-   * @param imagePath     The path to this consumable's images
-   * @param healthGain    The amount of health to gain
-   * @param energyGain    The amount of energy to gain
-   * @param maxHealthGain The amount of max health to gain
-   * @param maxEnergyGain The amount of max energy to gain
+   * @param name          The name of this consumable.
+   * @param description   The description of this consumable.
+   * @param imagePath     The path to this consumable's images.
+   * @param healthGain    The amount of health to gain.
+   * @param energyGain    The amount of energy to gain.
+   * @param maxHealthGain The amount of max health to gain.
+   * @param maxEnergyGain The amount of max energy to gain.
    * @throws IOException
    */
   public SpecialConsumable(String name, String description, String imagePath,

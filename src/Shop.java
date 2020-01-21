@@ -16,16 +16,16 @@ import java.awt.image.BufferedImage;
 
 public class Shop extends IntrinsicTileComponent implements Drawable {
   private LinkedHashMap<String, Double> priceList;
-  private final String[] items;
+  private final String[] ITEMS;
   
   /**
    * [Shop]
    * Constructor for a new Shop.
-   * @param name           String, name of the shop.
-   * @param description    String, description of the shop.
-   * @param imagePath      String, image path of the shop.
-   * @param offsets        double[], the offsets (in tiles) that should be considered during drawing.
-   * @param priceListPath  String, the path for the price list of this shop.
+   * @param name          Name of the shop.
+   * @param description   Description of the shop.
+   * @param imagePath     Image path of the shop.
+   * @param offsets       The offsets (in tiles) that should be considered during drawing.
+   * @param priceListPath The path for the price list of this shop.
    * @throws IOException
    */
   public Shop(String name, String imagesPath, double[] offsets, String priceListPath) throws IOException {
@@ -46,15 +46,14 @@ public class Shop extends IntrinsicTileComponent implements Drawable {
     }
     
     ArrayList<String> keys = new ArrayList<String>(this.priceList.keySet());
-    this.items = keys.toArray(new String[keys.size()]);
-    
+    this.ITEMS = keys.toArray(new String[keys.size()]);
   }
 
   /**
    * [hasItem]
    * Checks if the shop sells the given item.
-   * @param item  String, name of the item.
-   * @return      boolean, true if the shop has the given item, false otherwise.
+   * @param item String, name of the item.
+   * @return boolean, true if the shop has the given item, false otherwise.
    */
   public boolean hasItem(String item) {
     return this.priceList.containsKey(item);
@@ -63,8 +62,8 @@ public class Shop extends IntrinsicTileComponent implements Drawable {
   /**
    * [getPriceOf]
    * Retrieves the price of the given item.
-   * @param item  String, name of the item.
-   * @return      double, price of the given item (-1 if the shop does not sell this item).
+   * @param item String, name of the item.
+   * @return double, price of the given item (-1 if the shop does not sell this item).
    */
   public double getPriceOf(String item) {
     if (this.hasItem(item)) {
@@ -76,10 +75,10 @@ public class Shop extends IntrinsicTileComponent implements Drawable {
   /**
    * [getItems]
    * Retrieves all items this shop sells.
-   * @return  String[], a String array containing all items this shop sells.
+   * @return String[], a String array containing all items this shop sells.
    */
   public String[] getItems() {
-    return this.items;
+    return this.ITEMS;
   }
 
   /**
@@ -89,5 +88,4 @@ public class Shop extends IntrinsicTileComponent implements Drawable {
   public BufferedImage getImage() {
     return this.getImages()[0];
   }
-
 }

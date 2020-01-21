@@ -40,7 +40,7 @@ public class WorldArea extends Area {
    */
   private void spawnBushes() {
     int spawnNum = this.random.nextInt(5) + 10;
-    if (this.bushTiles.size() >=20) {
+    if (this.bushTiles.size() >= 20) {
       return;
     }
     for (int i = 0; i < spawnNum; i++) {
@@ -53,13 +53,13 @@ public class WorldArea extends Area {
       } else {
         bush = IntrinsicTileComponentFactory.getComponent(bushes[this.random.nextInt(2)+3]);
       }
-      ExtrinsicGrowableCollectable newBush = new ExtrinsicGrowableCollectable(
-                                                 (IntrinsicGrowableCollectable)bush);
+      ExtrinsicGrowableCollectable newBush = new ExtrinsicGrowableCollectable((IntrinsicGrowableCollectable)bush);
       Tile spawnTile = this.grassTiles.get(this.random.nextInt(grassTiles.size()));
-      if (spawnTile.getContent() == null && this.inMap(spawnTile.getX()-1, spawnTile.getY())
-          && this.inMap(spawnTile.getX()-1, spawnTile.getY()-1) 
-          && this.inMap(spawnTile.getX(), spawnTile.getY()-1)
-          && this.getMapAt(spawnTile.getX()-1, spawnTile.getY()) instanceof GrassTile) {
+      if ((spawnTile.getContent() == null)
+            && this.inMap(spawnTile.getX()-1, spawnTile.getY())
+            && this.inMap(spawnTile.getX()-1, spawnTile.getY()-1) 
+            && this.inMap(spawnTile.getX(), spawnTile.getY()-1)
+            && (this.getMapAt(spawnTile.getX()-1, spawnTile.getY()) instanceof GrassTile)) {
         spawnTile.setContent(newBush);
         bushTiles.add(spawnTile);
       }
@@ -79,14 +79,11 @@ public class WorldArea extends Area {
       TileComponent forageable;
       // decides what forageables to spawn based on the season
       if (((double)this.getCurrentDay()%112)/28.0 < 1) {
-        forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[this.random.nextInt(3)]);
+        forageable = IntrinsicTileComponentFactory.getComponent(forageables[this.random.nextInt(3)]);
       } else if (((double)this.getCurrentDay()%112)/28.0 < 2.0) {
-        forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[this.random.nextInt(2)+3]);
+        forageable = IntrinsicTileComponentFactory.getComponent(forageables[this.random.nextInt(2)+3]);
       } else if (((double)this.getCurrentDay()%112)/28.0 < 3) {
-        forageable = IntrinsicTileComponentFactory.getComponent(
-                                forageables[this.random.nextInt(2)+5]);
+        forageable = IntrinsicTileComponentFactory.getComponent(forageables[this.random.nextInt(2)+5]);
       } else {
         forageable = IntrinsicTileComponentFactory.getComponent(forageables[7]);
       }
@@ -118,8 +115,11 @@ public class WorldArea extends Area {
       } else {
         centerTile = null;
       }
-      if (spawnTile != null && centerTile != null && spawnTile instanceof GrassTile 
-          && centerTile instanceof GrassTile && spawnTile.getContent() == null) {
+      if ((spawnTile != null)
+            && (centerTile != null)
+            && (spawnTile instanceof GrassTile)
+            && (centerTile instanceof GrassTile)
+            && (spawnTile.getContent() == null)) {
         ExtrinsicTree newTree = new ExtrinsicTree(tree);
         if (((int)this.getCurrentDay()) == 1) {
           newTree.setStage(17);
@@ -133,7 +133,6 @@ public class WorldArea extends Area {
   /**
    * [getNumForageableTiles]
    * Gets this area's number of tiles with forageables on them.
-   * @author Paula Yuan
    * @return int, the number of forageable tiles in the area
    */
   public int getNumForageableTiles() {
@@ -143,7 +142,6 @@ public class WorldArea extends Area {
   /**
    * [setNumForageableTiles]
    * Sets the number of tiles with forageables in the area to a specified quantity.
-   * @author Paula Yuan
    * @param num The new number of forageable tiles.
    */
   public void setNumForageableTiles(int num) {
@@ -163,10 +161,10 @@ public class WorldArea extends Area {
     }
     this.spawnForageables();
 
-    if (this.getCurrentDay()%28 < 26 && this.getCurrentDay()%28 > 18) {
+    if ((this.getCurrentDay()%28 < 26) && (this.getCurrentDay()%28 > 18)) {
       for (int i = 0; i < this.bushTiles.size(); i++) {
         int num = this.random.nextInt(4);
-        if (num == 1 && this.bushTiles.get(i).getContent() != null) {
+        if ((num == 1) && (this.bushTiles.get(i).getContent() != null)) {
           ((ExtrinsicGrowableCollectable)this.bushTiles.get(i).getContent()).grow();
         }
       }
@@ -192,7 +190,7 @@ public class WorldArea extends Area {
     while (allTreeTiles.hasNext()) {
       Tile currentTile = allTreeTiles.next();
       TileComponent currentContent = currentTile.getContent();
-      if (currentContent != null && currentContent instanceof ExtrinsicTree) {
+      if ((currentContent != null) && (currentContent instanceof ExtrinsicTree)) {
         ((ExtrinsicTree)currentTile.getContent()).grow();
       }
     }
@@ -209,5 +207,4 @@ public class WorldArea extends Area {
       this.grassTiles.add(t);
     }
   }
-
 }

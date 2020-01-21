@@ -9,7 +9,7 @@
 public abstract class TileComponent { 
   /**
    * [TileComponent]
-   * Constructor for a new TileComponent. Used as a marker.
+   * Constructor for a new TileComponent.
    */
   public TileComponent() {
   }

@@ -14,7 +14,7 @@ public class StardubeFrame extends JFrame {
    * [StardubeFrame]
    * Constructor for a new StardubeFrame.
    * @author Kevin Qiao, Candice Zhang
-   * @param stardubeWorld  The world of stardube.
+   * @param stardubeWorld The world of stardube.
    */
   public StardubeFrame(World stardubeWorld) {
     super("Stardube Valley");

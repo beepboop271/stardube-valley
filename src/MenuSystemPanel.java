@@ -20,14 +20,14 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("serial")
 public class MenuSystemPanel extends JPanel {
-  private final Button backToMenuButton = new ButtonWithText(625, 600, 150, 75,
-                                                             "Back", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button startButton      = new ButtonWithText(300, 600, 150, 75,
-                                                             "Start", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button loreButton       = new ButtonWithText(600, 600, 150, 75,
-                                                             "Lore", new Font("Comic Sans MS", Font.BOLD, 30));
-  private final Button creditsButton    = new ButtonWithText(900, 600, 150, 75,
-                                                             "Credits", new Font("Comic Sans MS", Font.BOLD, 30));
+  private Button backToMenuButton = new ButtonWithText(625, 600, 150, 75,
+                                                       "Back", new Font("Comic Sans MS", Font.BOLD, 30));
+  private Button startButton      = new ButtonWithText(300, 600, 150, 75,
+                                                       "Start", new Font("Comic Sans MS", Font.BOLD, 30));
+  private Button loreButton       = new ButtonWithText(600, 600, 150, 75,
+                                                       "Lore", new Font("Comic Sans MS", Font.BOLD, 30));
+  private Button creditsButton    = new ButtonWithText(900, 600, 150, 75,
+                                                       "Credits", new Font("Comic Sans MS", Font.BOLD, 30));
   
   private String currentPage;
   private String[] loreText;

@@ -7,7 +7,7 @@
  */
 
 class FishingGameBar {
-  private final int height;
+  private final int HEIGHT;
   private double y;
   private double velocity;
 
@@ -19,7 +19,7 @@ class FishingGameBar {
    */
   public FishingGameBar(int y, int height) {
     this.y = y;
-    this.height = height;
+    this.HEIGHT = height;
     this.velocity = 0;
   }
   
@@ -32,7 +32,7 @@ class FishingGameBar {
    */
   public FishingGameBar(int y, int height, double velocity) {
     this.y = y;
-    this.height = height;
+    this.HEIGHT = height;
     this.velocity = velocity;
   }
 
@@ -43,7 +43,7 @@ class FishingGameBar {
    */
   public boolean isInside(FishingGameBar otherBar) {
     return ((this.y >= otherBar.getY())
-            && ((this.y+this.height) <= (otherBar.getY()+otherBar.getHeight())));
+            && ((this.y+this.HEIGHT) <= (otherBar.getY()+otherBar.getHeight())));
   }
 
   /**
@@ -70,7 +70,7 @@ class FishingGameBar {
    * @return int, the height of this FishingGameBar.
    */
   public int getHeight() {
-    return this.height;
+    return this.HEIGHT;
   }
 
   /**

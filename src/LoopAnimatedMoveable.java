@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
  * 2020-01-19
  * A Moveable that has images for looped animation.
  * @version 0.2
- * @author Paula Yuan, Candcie Zhang
+ * @author Candice Zhang, Kevin Qiao, Paula Yuan
  */
 
 public abstract class LoopAnimatedMoveable extends Moveable { 

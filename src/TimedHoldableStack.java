@@ -12,9 +12,9 @@ public class TimedHoldableStack extends HoldableStack {
   /**
    * [TimedHoldableStack]
    * Constructor for a new TimedHoldableStack.
-   * @param quantity        The quantity of the HoldableStack.
-   * @param holdableToDrop  The holdable to drop.
-   * @param timeNeeded      The time needed for this production.
+   * @param quantity       The quantity of the HoldableStack.
+   * @param holdableToDrop The holdable to drop.
+   * @param timeNeeded     The time needed for this production.
    */
   public TimedHoldableStack(int quantity, String holdableToDrop, long timeNeeded) {
     super(holdableToDrop, quantity);

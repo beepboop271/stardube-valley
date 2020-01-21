@@ -22,19 +22,6 @@ public class World {
   public static final int EAST = 1;
   public static final int SOUTH = 2;
   public static final int WEST = 3;
-  public static final int getOppositeDirection(int direction) {
-    if (direction == World.NORTH) {
-      return World.SOUTH;
-    } else if (direction == World.EAST) {
-      return World.WEST;
-    } else if (direction == World.SOUTH) {
-      return World.NORTH;
-    } else if (direction == World.WEST) {
-      return World.EAST;
-    } else {
-      throw new IllegalArgumentException("not a valid direction");
-    }
-  }
 
   private static final String[] SEASONS = {"Spring", "Summer", "Fall", "Winter"};
   private static final int DAYS_PER_SEASON = 28;
@@ -96,7 +83,8 @@ public class World {
     this.inGameNanoTime %= 24*60*1_000_000_000L;
 
     // check for end of day
-    if (this.inGameNanoTime >= 2*60*1_000_000_000L && this.inGameNanoTime <= 6*60*1_000_000_000L) {
+    if ((this.inGameNanoTime >= 2*60*1_000_000_000L)
+          && (this.inGameNanoTime <= 6*60*1_000_000_000L)) {
       this.doDayEndActions();
     }
 
@@ -134,10 +122,10 @@ public class World {
    * [moveMoveablesInArea]
    * Moves all the moveables in an area.
    * @author Kevin Qiao
-   * @param a, the area the moving is happening in.
-   * @param updateTime, the long time the update will be happening
+   * @param a          The area the moving is happening in.
+   * @param updateTime The time the update is happening at.
    */
-  public void moveMoveablesInArea(Area a, long updateTime) {
+  private void moveMoveablesInArea(Area a, long updateTime) {
     Iterator<Moveable> moveables = a.getMoveables();
     Moveable nextMoveable;
     Vector2D move;
@@ -148,6 +136,7 @@ public class World {
         if (nextMoveable instanceof LoopAnimatedMoveable) {
           ((LoopAnimatedMoveable)nextMoveable).updateImage();
         }
+        // move x then y to make collision fixing easy
         World.doCollision(a, nextMoveable, move.getXVector(), true);
         World.doCollision(a, nextMoveable, move.getYVector(), false);
         
@@ -166,38 +155,36 @@ public class World {
 
   /**
    * [doCollision]
-   * Process an individual collision.
+   * Moves, checks, and corrects Moveable moves.
    * @author Kevin Qiao
-   * @param a, the area the collision is happening in
-   * @param m, the moveable that is being collided
-   * @param move, the vector move being made
-   * @param isHorizontal, whether the collision is horizontal
+   * @param a            The Area which contains the Moveable.
+   * @param m            The moveable being processed.
+   * @param move         The distance the Moveable chooses to move.
+   * @param isHorizontal Whether the movement is horizontal or not (or vertical).
    */
-  public static void doCollision(Area a, Moveable m, Vector2D move, boolean isHorizontal) {
+  private static void doCollision(Area a, Moveable m, Vector2D move, boolean isHorizontal) {
     LinkedHashSet<Point> intersectingTiles;
     int collideDirection;
     intersectingTiles = m.getIntersectingTiles(move);
     collideDirection = a.collides(intersectingTiles,
                                   m.getPos().translateNew(move.getX(), move.getY()),
                                   isHorizontal);
-    // System.out.println(collideDirection);
+
     if (collideDirection == -1) {
-      // System.out.printf("translated by %s\n", move.toString());
       m.translatePos(move);
     } else {
-      // System.out.printf("fixing from %s\n", move.toString());
       World.fixCollision(m, collideDirection);
     }
   }
 
   /**
    * [fixCollision]
-   * Fix collisions of a moveable entity, given the direction it is colliding in
+   * Adjusts a Moveable's position to resolve collision in a given direction.
    * @author Kevin Qiao
-   * @param m                  the moveable that is colliding
-   * @param collideDirection   the direction of the collision, with ints 0-1 representing cardinal directions
+   * @param m                The Moveable to correct.
+   * @param collideDirection The direction the Moveable headed in to collide.
    */
-  public static void fixCollision(Moveable m, int collideDirection) {
+  private static void fixCollision(Moveable m, int collideDirection) {
     if (collideDirection == World.EAST) {
       // subtract 0.0001 to prevent rounding from counting it as still colliding
       m.translatePos(
@@ -220,6 +207,27 @@ public class World {
           0,
           m.getPos().round().y + 0.5-m.getSize() - m.getPos().y - 0.0001
       );
+    }
+  }
+
+  /**
+   * [getOppositeDirection]
+   * Returns the cardinal direction opposite to the one given.
+   * @author Kevin Qiao
+   * @param direction The direction to get the opposite of.
+   * @return int, the direction opposite to the given one.
+   */
+  public static int getOppositeDirection(int direction) {
+    if (direction == World.NORTH) {
+      return World.SOUTH;
+    } else if (direction == World.EAST) {
+      return World.WEST;
+    } else if (direction == World.SOUTH) {
+      return World.NORTH;
+    } else if (direction == World.WEST) {
+      return World.EAST;
+    } else {
+      throw new IllegalArgumentException("not a valid direction");
     }
   }
 
@@ -305,7 +313,7 @@ public class World {
           }
         } else if (selectedTile instanceof GroundTile) {
           if (((Tool)toolEvent.getHoldableUsed()).getType().equals("WateringCan")
-                &&  (((GroundTile)selectedTile).getTilledStatus() == true)) {
+                && ((GroundTile)selectedTile).getTilledStatus()) {
             ((GroundTile)selectedTile).setLastWatered(this.inGameDay);
             ((FarmArea)this.playerArea).addEditedTile((GroundTile)selectedTile);
 
@@ -323,33 +331,36 @@ public class World {
               }
             }
           } else if (((Tool)toolEvent.getHoldableUsed()).getType().equals("Pickaxe")) {
-              if ((this.playerArea instanceof FarmArea)
-                    && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
-                ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
-                ((GroundTile)selectedTile).setTilledStatus(false); 
-                selectedTile.setContent(null);
-              }
+            if ((this.playerArea instanceof FarmArea)
+                  && ((FarmArea)this.playerArea).hasTile((GroundTile)selectedTile)) {
+              ((FarmArea)this.playerArea).removeEditedTile((GroundTile)selectedTile);
+              ((GroundTile)selectedTile).setTilledStatus(false); 
+              selectedTile.setContent(null);
             }
-            ((GroundTile)selectedTile).determineImage(this.inGameDay);
-          } //- Ground tile changes image based on what happened
+          }
+          ((GroundTile)selectedTile).determineImage(this.inGameDay);
+        } //- Ground tile changes image based on what happened
       } else if (event instanceof PlayerInteractEvent) {
         int itemIndex = ((PlayerInteractEvent)event).getSelectedItemIndex();
         Point useLocation = ((PlayerInteractEvent)event).getLocationUsed();
         Gateway interactedGateway = this.playerArea.getGateway(useLocation);
         Tile currentTile = this.playerArea.getMapAt(useLocation);
         TileComponent[] bushContents = new TileComponent[3];
-        if (currentTile != null &&
-            this.playerArea.inMap(currentTile.getX()+1, currentTile.getY()) &&
-            this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1) &&
-            this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()) != null &&
-            this.playerArea.getMapAt(currentTile.getX(), currentTile.getY()+1) != null &&
-            this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()+1) != null) {
-          bushContents[0] = this.playerArea.getMapAt(
-                            currentTile.getX()+1, currentTile.getY()).getContent();
-          bushContents[1] = this.playerArea.getMapAt(
-                            currentTile.getX()+1, currentTile.getY()+1).getContent();
-          bushContents[2] = this.playerArea.getMapAt(
-                            currentTile.getX(), currentTile.getY()+1).getContent();
+        if ((currentTile != null)
+              && this.playerArea.inMap(currentTile.getX()+1, currentTile.getY())
+              && this.playerArea.inMap(currentTile.getX(), currentTile.getY()+1)
+              && (this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()) != null)
+              && (this.playerArea.getMapAt(currentTile.getX(), currentTile.getY()+1) != null)
+              && (this.playerArea.getMapAt(currentTile.getX()+1, currentTile.getY()+1) != null)) {
+          bushContents[0] = this.playerArea
+                                .getMapAt(currentTile.getX()+1, currentTile.getY())
+                                .getContent();
+          bushContents[1] = this.playerArea
+                                .getMapAt(currentTile.getX()+1, currentTile.getY()+1)
+                                .getContent();
+          bushContents[2] = this.playerArea
+                                .getMapAt(currentTile.getX(), currentTile.getY()+1)
+                                .getContent();
         }
         if ((interactedGateway != null)
               && interactedGateway.requiresInteractToMove()
@@ -370,17 +381,15 @@ public class World {
             }
           }
         } else if (currentTile != null) {
-
           if (currentTile.getContent() == null) {
-            if ((this.player.hasAtIndex(itemIndex)) &&
-                (this.player.getAtIndex(itemIndex)
-                                        .getContainedHoldable() instanceof Consumable)) {
+            if (this.player.hasAtIndex(itemIndex)
+                  && (this.player.getAtIndex(itemIndex)
+                                 .getContainedHoldable() instanceof Consumable)) {
               this.player.consume();
             } 
           }
-
+          
           TileComponent currentContent = currentTile.getContent();
-
           if (currentContent instanceof ExtrinsicCrop) {
             if (((ExtrinsicCrop)currentContent).canHarvest()) {
               HoldableDrop productDrop = ((ExtrinsicCrop)currentContent).getProduct();
@@ -398,7 +407,7 @@ public class World {
           } else if (currentContent instanceof ExtrinsicGrowableCollectable) {
             HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)currentContent).getProduct();
             HoldableStack product = productDrop.resolveDrop(this.luckOfTheDay);
-            if (product !=null) {
+            if (product != null) {
               new HoldableStackEntity(product, null);
               if (this.player.canPickUp(product.getContainedHoldable())) {
                 this.player.pickUp(product);
@@ -416,25 +425,26 @@ public class World {
                 this.player.pickUp(machine.getProduct());
                 machine.resetProduct();
               }
-            } else if ((machine.getProduct() == null) && (machine.getItemToProcess() == null)){
+            } else if ((machine.getProduct() == null) && (machine.getItemToProcess() == null)) {
               if (this.player.hasAtIndex(itemIndex)) {
-                HoldableStack selectedItem = this.player.getAtIndex(itemIndex); //okay honestly this can be deleted this is just to make the next statement short
+                HoldableStack selectedItem = this.player.getAtIndex(itemIndex);
                 if (machine.canProcess(selectedItem.getContainedHoldable().getName()) 
-                    && selectedItem.getQuantity() >= machine.getRequiredQuantity()) {
-                  if ((machine.getCatalyst() == null)  
-                      || (this.player.hasHoldable(machine.getCatalyst()))) {
+                      && (selectedItem.getQuantity() >= machine.getRequiredQuantity())) {
+                  if ((machine.getCatalyst() == null)
+                        || (this.player.hasHoldable(machine.getCatalyst()))) {
                     machine.setItemToProcess(selectedItem.getContainedHoldable().getName());
-                    machine.increasePhase();   
+                    machine.increasePhase();
                     player.decrementAtIndex(itemIndex, machine.getRequiredQuantity());
                     player.decrementHoldable(1, machine.getCatalyst());
-                    this.emplaceFutureEvent(machine.getProcessingTime(selectedItem
-                                                                      .getContainedHoldable()
-                                                                      .getName()), 
-                                            new MachineProductionFinishedEvent(machine));   
-                  }                                   
+                    this.emplaceFutureEvent(
+                        machine.getProcessingTime(selectedItem.getContainedHoldable()
+                                                              .getName()), 
+                        new MachineProductionFinishedEvent(machine)
+                    );
+                  }
                 }
-              } 
-            } 
+              }
+            }
           } else if (currentContent instanceof ShippingContainer) {
             if (this.player.hasAtIndex(itemIndex)) {
               if (!(this.player.getAtIndex(itemIndex).getContainedHoldable() instanceof Tool)) {
@@ -464,9 +474,9 @@ public class World {
                 currentTile.setContent(null);
               }
             }
-          } else if (bushContents[0] != null || bushContents[1] != null || bushContents[2] != null) {
+          } else if ((bushContents[0] != null) || (bushContents[1] != null) || (bushContents[2] != null)) {
             for (int i = 0; i < bushContents.length; i++) {
-              if (bushContents[i] == null || bushContents[i] instanceof ExtrinsicCrop) {
+              if ((bushContents[i] == null) || (bushContents[i] instanceof ExtrinsicCrop)) {
                 continue;
               } else if (bushContents[i] instanceof ExtrinsicGrowableCollectable) {
                 HoldableDrop productDrop = ((ExtrinsicGrowableCollectable)bushContents[i]).getProduct();
@@ -474,15 +484,14 @@ public class World {
                 if (product != null) {
                   new HoldableStackEntity(product, null);
                   if (this.player.canPickUp(product.getContainedHoldable())) {
-                      this.player.pickUp(product);
-                  ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
+                    this.player.pickUp(product);
+                    ((ExtrinsicGrowableCollectable)bushContents[i]).resetRegrowCooldown();
                   } 
                 }
               }
             }
-          } 
+          }
         }
-
       } else if (event instanceof MachineProductionFinishedEvent) {
         ((ExtrinsicMachine)event.getSource()).processItem();
 
@@ -518,13 +527,15 @@ public class World {
       } else if (event instanceof CatchFishEvent) {
         FishingRod rodUsed = ((CatchFishEvent)event).getRodUsed();
         long catchNanoTime = ((CatchFishEvent)event).getCatchNanoTime();
-        if ((catchNanoTime >= this.player.getCurrentFishingGame().getBiteNanoTime()) &&
-            (catchNanoTime <= this.player.getCurrentFishingGame().getBiteNanoTime()+FishingGame.BITE_ELAPSE_NANOTIME)) {
+        if ((catchNanoTime >= this.player.getCurrentFishingGame().getBiteNanoTime())
+              && (catchNanoTime <= this.player.getCurrentFishingGame().getBiteNanoTime()+FishingGame.BITE_ELAPSE_NANOTIME)) {
           // as luck increases, chance to get trash decreases (minimum chance to get a fish is 25%)
-          if ((rodUsed.getTileToFish().getFishableFish().length==0)
-              || (Math.random() >= (this.luckOfTheDay+0.25))) {
+          if ((rodUsed.getTileToFish().getFishableFish().length == 0)
+                || (Math.random() >= (this.luckOfTheDay+0.25))) {
             Holdable trashEarned = HoldableFactory.getHoldable(
-                                   WaterTile.getFishableTrash()[(int)(Math.round(Math.random()*(WaterTile.getFishableTrash().length-1)))]);
+                WaterTile.getFishableTrash()[(int)(Math.round(Math.random()
+                                                              * (WaterTile.getFishableTrash().length-1)))]
+            );
             if (this.player.canPickUp(trashEarned)) {
               this.player.pickUp(new HoldableStack(trashEarned, 1));
             }
@@ -551,8 +562,7 @@ public class World {
       } else if (event instanceof ComponentPlacedEvent) {
         //- Make sure the player literally has the object
         if (this.player.hasAtIndex(((ComponentPlacedEvent)event).getComponentIndex())) {
-          Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event)
-                                                      .getLocationUsed());
+          Tile currentTile = this.playerArea.getMapAt(((ComponentPlacedEvent)event).getLocationUsed());
           TileComponent currentContent = currentTile.getContent();
           //- Anything that you can place must not be placed over something and not over something you can't walk over.
           if ((currentContent == null) && (!(currentTile instanceof NotWalkable))) { 
@@ -577,15 +587,15 @@ public class World {
       } else if (event instanceof AutoMovementEvent) {
         int nextDirection = (int)(Math.random()*4);
         NPC npcToMove = ((NPC)event.getSource());
-        if (nextDirection == 0 && npcToMove.getVerticalSpeed() != -1) {
+        if ((nextDirection == 0) && (npcToMove.getVerticalSpeed() != -1)) {
           npcToMove.setHorizontalSpeed(0);
           npcToMove.setVerticalSpeed(-1);
           npcToMove.setOrientation(World.NORTH);
-        } else if (nextDirection == 1 && npcToMove.getHorizontalSpeed() != 1) {
+        } else if ((nextDirection == 1) && (npcToMove.getHorizontalSpeed() != 1)) {
           npcToMove.setHorizontalSpeed(1);
           npcToMove.setVerticalSpeed(0);
           npcToMove.setOrientation(World.EAST);
-        } else if (nextDirection == 2 && npcToMove.getVerticalSpeed() != 1) {
+        } else if ((nextDirection == 2) && (npcToMove.getVerticalSpeed() != 1)) {
           npcToMove.setHorizontalSpeed(0);
           npcToMove.setVerticalSpeed(1);
           npcToMove.setOrientation(World.SOUTH);
@@ -722,11 +732,13 @@ public class World {
       gateway2.setDestinationGateway(gateway1);
 
       if (gatewayMatch.group(9) != null) {
-        this.locations.get(gatewayMatch.group(1)).getMapAt(gateway1.getOrigin())
-                                                 .setContent(IntrinsicTileComponentFactory
-                                                            .getComponent(gatewayMatch.group(9)));
-        ((BuildingArea)this.locations.get(gatewayMatch.group(6)))
-                                     .setDrawLocation(gateway2.getOrigin()); //-prep for layout design. (if its in a building, it has a layout)
+        this.locations
+            .get(gatewayMatch.group(1))
+            .getMapAt(gateway1.getOrigin())
+            .setContent(IntrinsicTileComponentFactory.getComponent(gatewayMatch.group(9)));
+        ((BuildingArea)this.locations
+                           .get(gatewayMatch.group(6)))
+                           .setDrawLocation(gateway2.getOrigin()); //-prep for layout design. (if its in a building, it has a layout)
       }
 
       this.locations.get(gatewayMatch.group(1)).addGateway(gateway1);
@@ -753,15 +765,14 @@ public class World {
     nextLine = input.readLine();
     while (nextLine.length() > 0) {
       splitLine = nextLine.split("\\s+");
-      ((SpawnBuildingArea)this.locations.get(splitLine[0]))
-                                        .setSpawnLocation(new Point(Double.parseDouble(splitLine[1]),
-                                                                    Double.parseDouble(splitLine[2])));
-
+      ((SpawnBuildingArea)this.locations
+                              .get(splitLine[0]))
+                              .setSpawnLocation(new Point(Double.parseDouble(splitLine[1]),
+                                                          Double.parseDouble(splitLine[2])));
       nextLine = input.readLine();
     }
     input.close();
 
-    input.close();
     // add gateway zones
     input = new BufferedReader(new FileReader("assets/gamedata/map/Connections"));
     nextLine = input.readLine();
@@ -769,7 +780,8 @@ public class World {
       splitLine = input.readLine().split(" ");
       for (int i = 0; i < 4; ++i) {
         if (!splitLine[i].equals("null")) {
-          this.locations.get(nextLine)
+          this.locations
+              .get(nextLine)
               .getNeighbourZone(i)
               .setDestinationArea(this.locations.get(splitLine[i]));
         }
@@ -784,7 +796,8 @@ public class World {
     while (nextLine.length() > 0) {
       splitLine = nextLine.split("\\s+");
       Shop shopToAdd = (Shop)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
-      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      int x = Integer.parseInt(splitLine[6]);
+      int y = Integer.parseInt(splitLine[7]);
       this.locations.get(splitLine[5]).getMapAt(x, y).setContent(shopToAdd);
       nextLine = input.readLine();
     }
@@ -796,7 +809,8 @@ public class World {
     while (nextLine.length() > 0) {
       splitLine = nextLine.split("\\s+");
       CraftingStore storeToAdd = (CraftingStore)(IntrinsicTileComponentFactory.getComponent(splitLine[0]));
-      int x = Integer.parseInt(splitLine[6]), y = Integer.parseInt(splitLine[7]);
+      int x = Integer.parseInt(splitLine[6]);
+      int y = Integer.parseInt(splitLine[7]);
       this.locations.get(splitLine[5]).getMapAt(x, y).setContent(storeToAdd);
       nextLine = input.readLine();
     }
@@ -806,8 +820,8 @@ public class World {
   /**
    * [loadAreaMap]
    * Loads the map of the given area.
-   * @author    Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
-   * @param a   Area, the area used to load map.
+   * @author Kevin Qiao, Paula Yuan, Joseph Wang, Candice Zhang
+   * @param a The area to load.
    * @throws IOException
    */
   public void loadAreaMap(Area a) throws IOException {
@@ -842,13 +856,13 @@ public class World {
             a.setMapAt(new OceanTile(x, y));
             break;
           case '-':
-            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            a.setMapAt(new DecorationTile(x, y, nextLine.charAt(x)));
             break;
           case 'b':
-            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            a.setMapAt(new DecorationTile(x, y, nextLine.charAt(x)));
             break;
           case 'f':
-            a.setMapAt(new DecorationTile(x, y,nextLine.charAt(x)));
+            a.setMapAt(new DecorationTile(x, y, nextLine.charAt(x)));
             break;
           case 'g':
             a.setMapAt(new GroundTile(x, y));
@@ -888,11 +902,12 @@ public class World {
   /**
    * [findNeighbourZone]
    * Finds and retrieves the neighbour zone of the area.
-   * @author            Kevin Qiao
+   * @author Kevin Qiao
    * @param a           The Area used to find neighbour zone.
-   * @param x           The int that represents the x posistion of the point.
-   * @param y           The int that represents the y posistion of the point.
-   * @param orientation The int that represents the orientation for searching.
+   * @param x           The starting x position to search from.
+   * @param y           The starting y position to search from.
+   * @param orientation The orientation to search in.
+   * @return GatewayZone, a new GatewayZone for connecting neighbouring Areas.
    */
   public static GatewayZone findNeighbourZone(Area a,
                                               int x, int y,
@@ -918,7 +933,7 @@ public class World {
   /**
    * [loadNPCS]
    * Loads in all the NPC data, and creates and stores NPCs accordingly
-   * @author Paula Yuan
+   * @author Paula Yuan, Kevin Qiao
    */
   public void loadNPCS() throws IOException {
     BufferedReader input = new BufferedReader(new FileReader("assets/gamedata/NPCdata"));
@@ -959,7 +974,7 @@ public class World {
                        1, 
                        dialogue.clone(),
                        profileDescription);
-      npcArea.addMoveable(newNPC);      
+      npcArea.addMoveable(newNPC);
       this.npcs[i] = newNPC;
       this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
                               new AutoMovementEvent(newNPC));
@@ -973,14 +988,15 @@ public class World {
   /**
    * [loadWorldMap]
    * Loads the areas of the world into a 2D array.
-   * @author           Candice Zhang
-   * @param filePath   String, the file path of the world map
+   * @author Candice Zhang
+   * @param filePath The file path of the world map
    * @throws IOException
    */
   private void loadWorldMap(String filePath) throws IOException {
     BufferedReader input = new BufferedReader(new FileReader(filePath));
     String[] nextLineData = input.readLine().split("\\s+");
-    int rows = Integer.parseInt(nextLineData[0]), cols = Integer.parseInt(nextLineData[1]);
+    int rows = Integer.parseInt(nextLineData[0]);
+    int cols = Integer.parseInt(nextLineData[1]);
 
     String[][] worldMap = new String[cols][rows];
     for (int i = 0; i < cols; i++) {
@@ -1019,18 +1035,18 @@ public class World {
    * @author Candice Zhang
    */
   public void incrementPlayerAmountScrolled() {
-    boolean shouldIncrese = false;
-    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE) &&
-        ((this.player.getAmountScrolled()+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)(this.player.getCurrentInteractingObj())).getItems().length)) {
-      shouldIncrese = true;
-    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE) &&
-              ((this.player.getAmountScrolled()+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.player.getCraftingMachine().getProducts().length)) {
-      shouldIncrese = true;
-    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE) &&
-              ((this.player.getAmountScrolled()+WorldPanel.NPCS_PER_PAGE < this.npcs.length))) {
-      shouldIncrese = true;
+    boolean shouldIncrease = false;
+    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE)
+          && ((this.player.getAmountScrolled()+WorldPanel.SHOP_ITEMS_PER_PAGE) < ((Shop)(this.player.getCurrentInteractingObj())).getItems().length)) {
+      shouldIncrease = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE)
+               && ((this.player.getAmountScrolled()+WorldPanel.CRAFTING_ITEMS_PER_PAGE) < this.player.getCraftingMachine().getProducts().length)) {
+      shouldIncrease = true;
+    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE)
+               && ((this.player.getAmountScrolled()+WorldPanel.NPCS_PER_PAGE < this.npcs.length))) {
+      shouldIncrease = true;
     }
-    if (shouldIncrese) {
+    if (shouldIncrease) {
       this.player.incrementAmountScrolled();
     }
   }
@@ -1043,11 +1059,14 @@ public class World {
    */
   public void decrementPlayerAmountScrolled() {
     boolean shouldDecrese = false;
-    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE) && (this.player.getAmountScrolled() > 0)) {
+    if ((this.player.getCurrentMenuPage() == Player.SHOP_PAGE)
+          && (this.player.getAmountScrolled() > 0)) {
       shouldDecrese = true;
-    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE) && (this.player.getAmountScrolled() > 0)) {
+    } else if ((this.player.getCurrentMenuPage() == Player.CRAFTING_PAGE)
+               && (this.player.getAmountScrolled() > 0)) {
       shouldDecrese = true;
-    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE) && (this.player.getAmountScrolled() > 0)) {
+    } else if ((this.player.getCurrentMenuPage() == Player.SOCIAL_PAGE)
+               && (this.player.getAmountScrolled() > 0)) {
       shouldDecrese = true;
     }
     if (shouldDecrese) {
@@ -1077,7 +1096,7 @@ public class World {
    * [getArea]
    * Retrieves the Area with the given name.
    * @param name String that represents the area's name.
-   * @return     The Area with the given name.
+   * @return The Area with the given name.
    */
   public Area getArea(String name) {
     return this.locations.get(name);
@@ -1113,7 +1132,7 @@ public class World {
   /**
    * [getNPCs]
    * Retrieves all the NPCs in this world.
-   * @return NPC[], the NPCs in this world in a String array.
+   * @return NPC[], the NPCs in this world.
    */
   public NPC[] getNPCs() {
     return this.npcs;

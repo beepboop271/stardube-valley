@@ -12,10 +12,10 @@ import javax.imageio.ImageIO;
  * @author Kevin Qiao, Joseph Wang, Candice Zhang
  */
 public abstract class Holdable {
-  private final String name;
-  private final String description;
-  private final BufferedImage image;
-  private final BufferedImage smallImage;
+  private final String NAME;
+  private final String DESCRIPTION;
+  private final BufferedImage IMAGE;
+  private final BufferedImage SMALL_IMAGE;
 
   /**
    * [Holdable]
@@ -26,10 +26,10 @@ public abstract class Holdable {
    * @throws IOException
    */
   public Holdable(String name, String description, String imagePath) throws IOException {
-    this.name = name;
-    this.description = description.replace("-", " "); 
-    this.image = ImageIO.read(new File(imagePath));
-    this.smallImage = ImageIO.read(new File(imagePath.substring(0, imagePath.length()-3)+"Small.png"));
+    this.NAME = name;
+    this.DESCRIPTION = description.replace("-", " "); 
+    this.IMAGE = ImageIO.read(new File(imagePath));
+    this.SMALL_IMAGE = ImageIO.read(new File(imagePath.substring(0, imagePath.length()-3)+"Small.png"));
   }
 
   /**
@@ -38,7 +38,7 @@ public abstract class Holdable {
    * @return String, the name of this holdable.
    */
   public String getName() {
-    return this.name;
+    return this.NAME;
   }
 
   /**
@@ -47,7 +47,7 @@ public abstract class Holdable {
    * @return String, the description of this holdable.
    */
   public String getDescription() {
-    return this.description;
+    return this.DESCRIPTION;
   }
 
   /**
@@ -56,7 +56,7 @@ public abstract class Holdable {
    * @return BufferedImage, the image that should be drawn.
    */
   public BufferedImage getImage() {
-    return this.image;
+    return this.IMAGE;
   }
 
   /**
@@ -65,6 +65,6 @@ public abstract class Holdable {
    * @return BufferedImage, the small image that should be drawn.
    */
   public BufferedImage getSmallImage() {
-    return this.smallImage;
+    return this.SMALL_IMAGE;
   }
 }

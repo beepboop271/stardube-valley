@@ -73,9 +73,9 @@ public class WorldPanel extends JPanel {
   /**
    * [WorldPanel]
    * Constructor for a new WorldPanel.
-   * @param worldToDisplay World, the World used to display.
-   * @param width          int, width of the panel.
-   * @param height         int, height of the panel.
+   * @param worldToDisplay The World used to display.
+   * @param width          Width of the panel.
+   * @param height         Height of the panel.
    */
   public WorldPanel(World worldToDisplay, int width, int height) {
     super();
@@ -152,9 +152,9 @@ public class WorldPanel extends JPanel {
    * [clamp]
    * Restricts a value to a given range and returns the result.
    * @author Kevin Qiao
-   * @param val int, the value to clamp.
-   * @param min int, the minimum allowed value.
-   * @param max int, the maximum allowed value.
+   * @param val The value to clamp.
+   * @param min The minimum allowed value.
+   * @param max The maximum allowed value.
    * @return int, the clamped value.
    */
   public static int clamp(int val, int min, int max) {
@@ -228,7 +228,7 @@ public class WorldPanel extends JPanel {
     }
     double nextX, nextY;
 
-    // draw tiles
+    // draw everything one row at a time
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       if (!(playerArea instanceof BuildingArea)) {
         for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
@@ -253,7 +253,8 @@ public class WorldPanel extends JPanel {
             double drawX = originX+(screenTileX*Tile.getSize()); //- consider offsets when you draw the image
             double drawY = originY+(screenTileY*Tile.getSize());
             TileComponent tileContent = currentTile.getContent();
-            if (selectedTile != null && (int)selectedTile.x == x && (int)selectedTile.y == y) {
+            if ((selectedTile != null)
+                  && ((int)selectedTile.x == x) && ((int)selectedTile.y == y)) {
               Graphics2D g2 = (Graphics2D)g;
               g2.setStroke(new BasicStroke(4));
               g2.setColor(Color.RED);
@@ -270,19 +271,19 @@ public class WorldPanel extends JPanel {
                 int componentW = ((Drawable)tileContent).getImage().getWidth();
                 int componentH = ((Drawable)tileContent).getImage().getHeight();
                 // if the player is overlapping with the tree or building, set a transparency for it
-                if ((tileContent instanceof ExtrinsicTree) &&
-                    (playerScreenPos.x < drawX + componentW) &&
-                    (playerScreenPos.x + playerW > drawX) &&
-                    (playerScreenPos.y < drawY + componentH*2/3) && // only include the top 6 tiles of the tree for overlapping detection
-                    (playerScreenPos.y + playerH > drawY)) {
+                if ((tileContent instanceof ExtrinsicTree)
+                      && (playerScreenPos.x < drawX + componentW)
+                      && (playerScreenPos.x + playerW > drawX)
+                      && (playerScreenPos.y < drawY + componentH*2/3) // only include the top 6 tiles of the tree for overlapping detection
+                      && (playerScreenPos.y + playerH > drawY)) {
                   imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
                   imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
                   imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
-                } else if ((tileContent instanceof Building) &&
-                          (playerScreenPos.x < drawX + componentW) &&
-                          (playerScreenPos.x + playerW > drawX) &&
-                          (playerScreenPos.y < drawY + componentH) &&
-                          (playerScreenPos.y + playerH > drawY)) {
+                } else if ((tileContent instanceof Building)
+                           && (playerScreenPos.x < drawX + componentW)
+                           && (playerScreenPos.x + playerW > drawX)
+                           && (playerScreenPos.y < drawY + componentH)
+                           && (playerScreenPos.y + playerH > drawY)) {
                   imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.5));
                   imgGraphics.drawImage(((Drawable)tileContent).getImage(), (int)Math.round(drawX), (int)Math.round(drawY), null);
                   imgGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1)); // reset opacity
@@ -297,24 +298,24 @@ public class WorldPanel extends JPanel {
       }
       screenTileX = 0;
 
-        // draw moveables
-        while ((moveableIdx < moveables.size())
-               && (Math.floor(moveables.get(moveableIdx).getPos().y) == y-1)) {
-          nextX = (Tile.getSize()*(moveables.get(moveableIdx).getPos().x-tileStartX+moveables.get(moveableIdx).getXOffset())+originX);
-          nextY = (Tile.getSize()*(moveables.get(moveableIdx).getPos().y-tileStartY+moveables.get(moveableIdx).getYOffset())+originY);
-          g.drawImage(moveables.get(moveableIdx).getImage(), (int)nextX, (int)nextY, null);
-          ++moveableIdx;
-        }
+      // draw moveables
+      while ((moveableIdx < moveables.size())
+             && (Math.floor(moveables.get(moveableIdx).getPos().y) == y-1)) {
+        nextX = (Tile.getSize()*(moveables.get(moveableIdx).getPos().x-tileStartX+moveables.get(moveableIdx).getXOffset())+originX);
+        nextY = (Tile.getSize()*(moveables.get(moveableIdx).getPos().y-tileStartY+moveables.get(moveableIdx).getYOffset())+originY);
+        g.drawImage(moveables.get(moveableIdx).getImage(), (int)nextX, (int)nextY, null);
+        ++moveableIdx;
+      }
 
-        // draw items
-        while ((itemIdx < items.size())
-               && (Math.floor(items.get(itemIdx).getPos().y) == y-1)) {
-          g.drawImage(items.get(itemIdx).getImage(),
-                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().x-tileStartX+0.5)-8+originX),
-                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().y-tileStartY+0.5)-8+originY),
-                      null);
-          ++itemIdx;
-        }
+      // draw items
+      while ((itemIdx < items.size())
+             && (Math.floor(items.get(itemIdx).getPos().y) == y-1)) {
+        g.drawImage(items.get(itemIdx).getImage(),
+                    (int)(Tile.getSize()*(items.get(itemIdx).getPos().x-tileStartX+0.5)-8+originX),
+                    (int)(Tile.getSize()*(items.get(itemIdx).getPos().y-tileStartY+0.5)-8+originY),
+                    null);
+        ++itemIdx;
+      }
 
       ++screenTileY;
     }
@@ -322,14 +323,9 @@ public class WorldPanel extends JPanel {
     this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
     this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
 
-    g.setColor(Color.RED);
-    g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
-               (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
-   
-
     // hotbar stuff 
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
-    if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2){
+    if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2) {
       this.hotbarY = WorldPanel.INVENTORY_CELLGAP*2;
     } else {
       this.hotbarY = this.getHeight()-WorldPanel.INVENTORY_CELLSIZE-WorldPanel.INVENTORY_CELLGAP*4;
@@ -364,7 +360,7 @@ public class WorldPanel extends JPanel {
       }
 
       // outlines selected item
-      if (i == worldPlayer.getSelectedItemIdx()){
+      if (i == worldPlayer.getSelectedItemIdx()) {
         g.setColor(Color.RED);
         g.drawRect(hotbarX+i*WorldPanel.INVENTORY_CELLSIZE+(i+1)*WorldPanel.INVENTORY_CELLGAP,
                    hotbarY+WorldPanel.INVENTORY_CELLGAP/2, WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
@@ -422,11 +418,11 @@ public class WorldPanel extends JPanel {
         for (int i = 0; i < 3; i++) {
           for (int j = 0; j < 12; j++) {
             // draw inventory item correspondingly
-            if ((i*12+j)<worldPlayer.getInventory().length){
+            if ((i*12+j) < worldPlayer.getInventory().length){
               g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
               if (worldPlayer.getInventory()[i*12+j] != null) {
                 g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
                             this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
@@ -437,24 +433,26 @@ public class WorldPanel extends JPanel {
                   quantityGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
                   quantityGraphics.setFont(this.QUANTITY_FONT);
                   quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                  quantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
-                                this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
-                                this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+WorldPanel.INVENTORY_CELLSIZE);
+                                                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  quantityGraphics.drawString(
+                      Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                      this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
+                      this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+WorldPanel.INVENTORY_CELLSIZE
+                  );
                 }
               }
             } else { // display locked slots in a different color
               g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
             // outline selected item
             if ((i*12+j) == worldPlayer.getSelectedItemIdx()){
               g.setColor(Color.RED);
               g.drawRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(i+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
           }
         }
@@ -474,12 +472,21 @@ public class WorldPanel extends JPanel {
         profileGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
         profileGraphics.setFont(this.PROFILE_FONT);
         profileGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        profileGraphics.drawString(farmString,
-                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(farmString)*1.75), (int)Math.round(profileY+profileH*0.25));
-        profileGraphics.drawString(fundString,
-                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(fundString)*1.3), (int)Math.round(profileY+profileH*0.5));
-        profileGraphics.drawString(earningString,
-                  (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(earningString)*1.3), (int)Math.round(profileY+profileH*0.75));
+        profileGraphics.drawString(
+            farmString,
+            (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(farmString)*1.75),
+            (int)Math.round(profileY+profileH*0.25)
+        );
+        profileGraphics.drawString(
+            fundString,
+            (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(fundString)*1.3),
+            (int)Math.round(profileY+profileH*0.5)
+        );
+        profileGraphics.drawString(
+            earningString,
+            (int)Math.round(profileX+profileW-g.getFontMetrics().stringWidth(earningString)*1.3),
+            (int)Math.round(profileY+profileH*0.75)
+        );
         
       } else if (worldPlayer.getCurrentMenuPage() == Player.CRAFTING_PAGE) {
 
@@ -505,14 +512,17 @@ public class WorldPanel extends JPanel {
               textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
               textGraphics.setFont(this.STRING_FONT);
               textGraphics.drawString(product.getName() + " - " + product.getDescription(),
-                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3,
+                                      curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
               int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
               for ( int j = 0; j < ingredients.length; j++) {
                 Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
-                g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
-                                                  curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
+                g.drawImage(ingredient.getImage(),
+                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
+                            curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
                 g.drawString("x "+Integer.toString(craftingMachine.recipeOf(products[startIdx+i]).quantityOf(ingredients[j])),
-                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+                             this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10,
+                             (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
               }
               g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
                           curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
@@ -526,7 +536,8 @@ public class WorldPanel extends JPanel {
           g.fillRect(this.menuX, this.menuY, this.menuW, this.menuH);
           g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
           g.setFont(this.BIG_LETTER_FONT);
-          g.drawString("Welcome to "+craftingStore.getName()+" !", this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
+          g.drawString("Welcome to "+craftingStore.getName()+" !",
+                       this.shopX, this.menuY+g.getFontMetrics().getHeight()+25);
           
           int startIdx = worldPlayer.getAmountScrolled();
           for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
@@ -542,23 +553,27 @@ public class WorldPanel extends JPanel {
               textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
               textGraphics.setFont(this.STRING_FONT);
               textGraphics.drawString(product.getName() + " - " + product.getDescription(),
-                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+                                      this.craftX + WorldPanel.INVENTORY_CELLSIZE*4/3,
+                                      curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
               int ingredientWidth = (this.craftW-WorldPanel.INVENTORY_CELLSIZE-this.craftButtonImage.getWidth()) / ingredients.length;
               for ( int j = 0; j < ingredients.length; j++) {
                 Holdable ingredient = HoldableFactory.getHoldable(ingredients[j]);
                 g.drawImage(ingredient.getImage(), this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE,
                                                   curDrawY + WorldPanel.INVENTORY_CELLSIZE/2, null);
                 g.drawString("x "+Integer.toString(craftingStore.recipeOf(storeItems[startIdx+i]).quantityOf(ingredients[j])),
-                            this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
+                             this.craftX+j*ingredientWidth+WorldPanel.INVENTORY_CELLSIZE+10,
+                             (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.8));
               }
               if (recipe.getPrice() > 0) {
                 String priceString = "Cost: "+Double.toString(recipe.getPrice())+" $D";
                 g.setColor(WorldPanel.DARK_BROWN_COLOR);
                 g.setFont(this.STRING_FONT);
-                g.drawString(priceString, this.craftX+this.craftW-g.getFontMetrics().stringWidth(priceString)-10,
+                g.drawString(priceString,
+                             this.craftX+this.craftW-g.getFontMetrics().stringWidth(priceString)-10,
                              curDrawY+this.craftItemH-this.craftButtonImage.getHeight()-10);
               }
-              g.drawImage(this.craftButtonImage, this.craftX+this.craftW-this.craftButtonImage.getWidth(),
+              g.drawImage(this.craftButtonImage,
+                          this.craftX+this.craftW-this.craftButtonImage.getWidth(),
                           curDrawY+this.craftItemH-this.craftButtonImage.getHeight(), null);
             }
           }
@@ -569,17 +584,19 @@ public class WorldPanel extends JPanel {
         int mapTileSize = 4;
         int startX = this.menuX + (WorldPanel.INVENTORY_CELLGAP+WorldPanel.INVENTORY_CELLSIZE)*2;
         int startY = this.menuY + WorldPanel.INVENTORY_CELLGAP*4 + WorldPanel.INVENTORY_CELLSIZE;
-        int drawX = startX, drawY = startY;
+        int drawX = startX;
+        int drawY = startY;
         int maxHeight;
 
         int playerMapSize = 15;
-        int playerMapX = -playerMapSize, playerMapY = -playerMapSize;
+        int playerMapX = -playerMapSize;
+        int playerMapY = -playerMapSize;
 
-        for(int y = 0; y < worldMap.length; y++) {
+        for (int y = 0; y < worldMap.length; y++) {
           drawX = startX;
           maxHeight = 0;
 
-          for(int x = 0; x < worldMap[y].length; x++) {
+          for (int x = 0; x < worldMap[y].length; x++) {
             Area curArea = this.worldToDisplay.getArea(worldMap[y][x]);
             if (curArea.getName() == this.worldToDisplay.getPlayerArea().getName()) {
               playerMapX = drawX + (int)Math.round(playerPos.x)*mapTileSize;
@@ -587,12 +604,12 @@ public class WorldPanel extends JPanel {
             }
 
             Tile[][] areaMap = curArea.getMap();
-            if(areaMap.length > maxHeight) {
+            if (areaMap.length > maxHeight) {
               maxHeight = areaMap.length;
             }
             
-            for(int i = 0; i < maxHeight; i++) {
-              for(int j = 0; j < areaMap[0].length; j++) {
+            for (int i = 0; i < maxHeight; i++) {
+              for (int j = 0; j < areaMap[0].length; j++) {
                 Color colorToDraw;
                 Color defaultColor = WorldPanel.PALE_YELLOW_COLOR;
                 if ((i < areaMap.length) && (j < areaMap[i].length)) {
@@ -606,11 +623,9 @@ public class WorldPanel extends JPanel {
                 }
                 g.setColor(colorToDraw);
                 g.fillRect(drawX+j*mapTileSize, drawY+i*mapTileSize, mapTileSize, mapTileSize);
-                
               }
             }
             drawX += areaMap[0].length*mapTileSize;
-            
           }
           drawY += maxHeight*mapTileSize;
         }
@@ -628,23 +643,23 @@ public class WorldPanel extends JPanel {
             NPC npcToDraw = worldToDisplay.getNPCs()[i+startIdx];
             String[] descriptionStrings = this.splitParagraph(70, npcToDraw.getProfileDescription());
             // draw image
-            g.drawImage(npcToDraw.getProfileImage(), this.socialX+WorldPanel.INVENTORY_CELLSIZE/2, curDrawY, null);
+            g.drawImage(npcToDraw.getProfileImage(),
+                        this.socialX+WorldPanel.INVENTORY_CELLSIZE/2, curDrawY, null);
             // draw name
             g.setColor(WorldPanel.DARK_BROWN_COLOR);
             g.setFont(this.STRING_FONT);
-            g.drawString(npcToDraw.getName(), this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
+            g.drawString(npcToDraw.getName(),
+                         this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
                          curDrawY+WorldPanel.INVENTORY_CELLSIZE/4+g.getFontMetrics().getHeight());
             // draw description
             g.setFont(this.DESCRIPTION_BOLD_FONT);
             for (int idx = 0; idx < descriptionStrings.length; idx++) {
-              g.drawString(descriptionStrings[idx], this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
-                curDrawY+WorldPanel.INVENTORY_CELLSIZE+g.getFontMetrics().getHeight()+idx*(g.getFontMetrics().getHeight()+5));
+              g.drawString(descriptionStrings[idx],
+                           this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
+                           curDrawY+WorldPanel.INVENTORY_CELLSIZE+g.getFontMetrics().getHeight()+idx*(g.getFontMetrics().getHeight()+5));
             }
-            
           }
         }
-            
-
       } else if (worldPlayer.getCurrentMenuPage() == Player.SHOP_PAGE) {
         Shop shop = (Shop)(worldPlayer.getCurrentInteractingObj());
         String[] shopItems = shop.getItems();
@@ -666,16 +681,17 @@ public class WorldPanel extends JPanel {
             textGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
             textGraphics.setFont(this.STRING_FONT);
             textGraphics.drawString(itemToDraw.getName().replace("Item", "") + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
-                                    this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
+                                    this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3,
+                                    curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
 
             int yShift = 0;
             if (itemToDraw instanceof Consumable) {
               textGraphics.setFont(this.DESCRIPTION_FONT);
               String consumableText = "";
-              if (((Consumable)itemToDraw).getEnergyGain()>0) {
+              if (((Consumable)itemToDraw).getEnergyGain() > 0) {
                 consumableText += "Energy Gain: " + ((Consumable)itemToDraw).getEnergyGain() + ", ";
               }
-              if (((Consumable)itemToDraw).getHealthGain()>0) {
+              if (((Consumable)itemToDraw).getHealthGain() > 0) {
                 consumableText += "Health Gain: " + ((Consumable)itemToDraw).getHealthGain() + ", ";
               }
               if (itemToDraw instanceof SpecialConsumable) {
@@ -697,13 +713,14 @@ public class WorldPanel extends JPanel {
             textGraphics.setFont(this.DESCRIPTION_BOLD_FONT);
             String[] discriptionStrings = this.splitParagraph(75, "- " + itemToDraw.getDescription());
             for (int idx = 0; idx < discriptionStrings.length; idx++) {
-              textGraphics.drawString(discriptionStrings[idx],
+              textGraphics.drawString(
+                  discriptionStrings[idx],
                   this.shopX + WorldPanel.INVENTORY_CELLSIZE + 15,
-                  (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*0.85) + idx*20 + yShift);
+                  (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*0.85) + idx*20 + yShift
+              );
             }
           }
         }
-
       } else if (worldPlayer.getCurrentMenuPage() == Player.CHEST_PAGE) {
         ExtrinsicChest chest = (ExtrinsicChest)(worldPlayer.getCurrentInteractingObj());
         g.setColor(WorldPanel.MENU_BKGD_COLOR);
@@ -712,11 +729,11 @@ public class WorldPanel extends JPanel {
         for (int i = 0; i < 3; i++) {
           for (int j = 0; j < 12; j++) {
             // draw inventory item correspondingly
-            if ((i*12+j)<worldPlayer.getInventory().length){
+            if ((i*12+j) < worldPlayer.getInventory().length){
               g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
               if (worldPlayer.getInventory()[i*12+j] != null) {
                 g.drawImage(worldPlayer.getInventory()[i*12+j].getContainedHoldable().getImage(),
                             this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
@@ -727,24 +744,26 @@ public class WorldPanel extends JPanel {
                   quantityGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
                   quantityGraphics.setFont(this.QUANTITY_FONT);
                   quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                  quantityGraphics.drawString(Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
-                                this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
-                                this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))+WorldPanel.INVENTORY_CELLSIZE);
+                                                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  quantityGraphics.drawString(
+                      Integer.toString(worldPlayer.getInventory()[i*12+j].getQuantity()),
+                      this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
+                      this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))+WorldPanel.INVENTORY_CELLSIZE
+                  );
                 }
               }
             } else { // display locked slots in a different color
               g.setColor(WorldPanel.LOCKED_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
             // outline selected item
             if ((i*12+j) == worldPlayer.getSelectedItemIdx()){
               g.setColor(Color.RED);
               g.drawRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(int)Math.round((i+0.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
             }
           }
         }
@@ -756,8 +775,8 @@ public class WorldPanel extends JPanel {
             if ((i*12+j) < ExtrinsicChest.CHEST_SIZE){ // the other case wont happen, just to make sure it does not go out of bound
               g.setColor(WorldPanel.INVENTORY_SLOT_COLOR);
               g.fillRect(this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
-                        this.menuY+(int)Math.round((i+4.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
-                        WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
+                         this.menuY+(int)Math.round((i+4.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                         WorldPanel.INVENTORY_CELLSIZE, WorldPanel.INVENTORY_CELLSIZE);
               if (chest.getInventory()[i*12+j] != null) {
                 g.drawImage(chest.getInventory()[i*12+j].getContainedHoldable().getImage(),
                             this.menuX+j*WorldPanel.INVENTORY_CELLSIZE+(j+1)*WorldPanel.INVENTORY_CELLGAP,
@@ -768,10 +787,12 @@ public class WorldPanel extends JPanel {
                   quantityGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
                   quantityGraphics.setFont(this.QUANTITY_FONT);
                   quantityGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                                      quantityGraphics.drawString(Integer.toString(chest.getInventory()[i*12+j].getQuantity()),
-                                this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
-                                this.menuY+(int)Math.round((i+4.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))+WorldPanel.INVENTORY_CELLSIZE);
+                                                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                  quantityGraphics.drawString(
+                      Integer.toString(chest.getInventory()[i*12+j].getQuantity()),
+                      this.menuX+(j+1)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)-WorldPanel.INVENTORY_CELLSIZE/4,
+                      this.menuY+(int)Math.round((i+4.5)*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))+WorldPanel.INVENTORY_CELLSIZE
+                  );
                 }
               }
             }
@@ -788,7 +809,8 @@ public class WorldPanel extends JPanel {
                    3*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)+40);
         g.setFont(this.BIG_LETTER_FONT);
         g.drawString(stringToDisplay,
-                     this.menuX+(this.menuW-g.getFontMetrics().stringWidth(stringToDisplay))/2, this.elevatorY-50);
+                     this.menuX+(this.menuW-g.getFontMetrics().stringWidth(stringToDisplay))/2,
+                     this.elevatorY-50);
 
         g.setFont(this.BIG_BOLD_LETTER_FONT);
         for (int i = 0; i < 3; i++) {
@@ -808,7 +830,6 @@ public class WorldPanel extends JPanel {
         }
       }
     }
-    
     if (worldPlayer.getSelectedItem() != null) {
       Holdable selectedItem = worldPlayer.getSelectedItem().getContainedHoldable();
       if (selectedItem instanceof FishingRod) {
@@ -819,7 +840,7 @@ public class WorldPanel extends JPanel {
           int meterH = this.getHeight()/25;
           int meterX = (int)Math.round(playerScreenPos.x-meterW/2+Player.SIZE*Tile.getSize());
           int meterY = (int)Math.round(playerScreenPos.y)-worldPlayer.getImage().getHeight();
-          g.setColor(new Color(0,0,0,175));
+          g.setColor(new Color(0, 0, 0, 175));
           g.fillRect(meterX, meterY, meterW, meterH);
           g.setColor(Color.GREEN);
           g.fillRect(meterX, meterY, (int)Math.round(meterW*playerCurrentRod.getCastingProgressPercentage()/100.0), meterH);
@@ -850,8 +871,11 @@ public class WorldPanel extends JPanel {
             letterGraphics.setColor(Color.RED);
             letterGraphics.setFont(this.BIG_BOLD_LETTER_FONT);
             letterGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            letterGraphics.drawString("!", (int)Math.round(playerScreenPos.x)+Tile.getSize()/4,
-                            (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()-worldPlayer.getImage().getHeight()));
+            letterGraphics.drawString(
+                "!", 
+                (int)Math.round(playerScreenPos.x)+Tile.getSize()/4,
+                (int)Math.round(playerScreenPos.y+Player.SIZE*Tile.getSize()-worldPlayer.getImage().getHeight())
+            );
           }
         }
       }
@@ -915,10 +939,12 @@ public class WorldPanel extends JPanel {
       Graphics2D gameGraphics = (Graphics2D)g;
       gameGraphics.setStroke(new BasicStroke(frameWidth));
       gameGraphics.setColor(WorldPanel.DARK_BROWN_COLOR);
-      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2, gameW+frameWidth, gameH+frameWidth);
+      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2,
+                            gameW+frameWidth, gameH+frameWidth);
       gameGraphics.setStroke(new BasicStroke(frameWidth/2));
       gameGraphics.setColor(WorldPanel.PALE_YELLOW_COLOR);
-      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2, gameW+frameWidth, gameH+frameWidth);
+      gameGraphics.drawRect(gameX-frameWidth/2, gameY-frameWidth/2,
+                            gameW+frameWidth, gameH+frameWidth);
 
       // draw game and game bars
       g.setColor(new Color(255, 255, 255, 150));
@@ -929,38 +955,44 @@ public class WorldPanel extends JPanel {
       // player fishing bar
       FishingGameBar playerBar = worldPlayer.getCurrentFishingGame().getPlayerBar();
       g.setColor(Color.BLUE);
-      g.fillRect(gameX, gameY+(int)(playerBar.getY()*barScale), gameW/2, (int)(playerBar.getHeight()*barScale));
+      g.fillRect(gameX, gameY+(int)(playerBar.getY()*barScale),
+                 gameW/2, (int)(playerBar.getHeight()*barScale));
 
       // target fishing bar
       FishingGameBar targeBar = worldPlayer.getCurrentFishingGame().getTargetBar();
       g.setColor(WorldPanel.PALE_GREEN_COLOR);
-      g.fillRect(gameX+this.getWidth()/160, gameY+(int)(targeBar.getY()*barScale), gameW/4, (int)(targeBar.getHeight()*barScale));
+      g.fillRect(gameX+this.getWidth()/160, gameY+(int)(targeBar.getY()*barScale),
+                 gameW/4, (int)(targeBar.getHeight()*barScale));
 
       // draw progress bar
       gameGraphics.setPaint(new GradientPaint(gameX+this.getWidth()/40, gameY, WorldPanel.PALE_GREEN_COLOR, gameX+this.getWidth()/40, gameY+gameH, WorldPanel.DIM_RED_COLOR));
-      gameGraphics.fillRect(gameX+this.getWidth()/40, (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
-                 gameW/2, (int)Math.round(gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0));
+      gameGraphics.fillRect(
+          gameX+this.getWidth()/40,
+          (int)Math.round(gameY+gameH-gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0),
+          gameW/2,
+          (int)Math.round(gameH*worldPlayer.getCurrentFishingGame().getProgressPercentage()/100.0)
+      );
     }
 
     // display description of hovered item
-    if ((hoveredItemIdx != -1) && (worldPlayer.getInventory()[hoveredItemIdx]!=null)) {
+    if ((hoveredItemIdx != -1) && (worldPlayer.getInventory()[hoveredItemIdx] != null)) {
       String name = worldPlayer.getInventory()[hoveredItemIdx].getContainedHoldable().getName();
       String description = worldPlayer.getInventory()[hoveredItemIdx].getContainedHoldable().getDescription();
       Graphics2D descriptionGraphics = (Graphics2D)g;
       descriptionGraphics.setColor(Color.BLACK);
       descriptionGraphics.setFont(this.STRING_FONT);
       descriptionGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       
       int stringW = Math.max(descriptionGraphics.getFontMetrics().stringWidth(name),
-                              descriptionGraphics.getFontMetrics().stringWidth(description));
+                             descriptionGraphics.getFontMetrics().stringWidth(description));
       int stringH = descriptionGraphics.getFontMetrics().getHeight();
       int stringX = Math.min(this.hotbarX + this.hoveredItemIdx*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP),
                              this.getWidth()-(stringW+30));
       int stringY = 0;
-      if ((!worldPlayer.isInMenu()) && this.hotbarY < this.getHeight()/2) {
+      if ((!worldPlayer.isInMenu()) && (this.hotbarY < this.getHeight()/2)) {
         stringY = this.hotbarY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2 + stringH + 10);
-      } else if ((!worldPlayer.isInMenu()) && this.hotbarY >= this.getHeight()/2) {
+      } else if ((!worldPlayer.isInMenu()) && (this.hotbarY >= this.getHeight()/2)) {
         stringY = this.hotbarY - (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2);
       } else if (worldPlayer.getCurrentMenuPage() == Player.INVENTORY_PAGE) {
         stringY = this.inventoryMenuInventoryY + (int)Math.round((hoveredItemIdx/12+1.5)*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP*2));
@@ -1007,8 +1039,8 @@ public class WorldPanel extends JPanel {
    * [updateHoveredItemIdx]
    * Updates the index of inventory item that the mouse is currently hovering.
    * @author Candice Zhang
-   * @param mouseX int, the x value of the mouse position
-   * @param mouseY int, the x value of the mouse position
+   * @param mouseX The x value of the mouse position
+   * @param mouseY The y value of the mouse position
    */
   public void updateHoveredItemIdx(int mouseX, int mouseY) {
     Player worldPlayer = this.worldToDisplay.getPlayer();
@@ -1034,17 +1066,18 @@ public class WorldPanel extends JPanel {
   /**
    * [colorOf]
    * Retrieves the color that represents the given tile according to its type.
-   * @author      Candice Zhang
-   * @param tile  The Tile thats is used to determine the color.
-   * @return      Color, the color that represents the given tile.
+   * @author Candice Zhang
+   * @param tile The Tile thats is used to determine the color.
+   * @return Color, the color that represents the given tile.
    */
   public Color colorOf(Tile tile) {
     if (tile == null) {
       return new Color(51, 51, 51);
     } else if (tile instanceof GroundTile) {
       return new Color(245, 177, 38);
-    } else if ((tile instanceof GrassTile) ||
-               ((tile.getContent() != null) && (tile.getContent() instanceof ExtrinsicTree))) {
+    } else if ((tile instanceof GrassTile)
+               || ((tile.getContent() != null)
+                   && (tile.getContent() instanceof ExtrinsicTree))) {
       return new Color(33, 214, 82);
     } else if (tile instanceof WaterTile) {
       return new Color(25, 155, 210);
@@ -1132,33 +1165,35 @@ public class WorldPanel extends JPanel {
   /**
    * [hotbarItemIdxAt]
    * Retrieves the index of the hotbar item at the given x position.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to calculate index.
-   * @return    int, the index of the hotbar item at the given x position.
+   * @author Candice Zhang
+   * @param x The x position used to calculate index.
+   * @return int, the index of the hotbar item at the given x position.
    */
   public int hotbarItemIdxAt(int x) {
-    return Math.min((int)(Math.floor((x-this.hotbarX)/
-           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 11);
+    return (int)Math.min((Math.floor((x-this.hotbarX)
+                                     / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))),
+                         11);
   }
 
   /**
    * [menuTabButtonAt]
    * Retrieves the index of the menu tab button at the given x position.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to calculate index.
-   * @return    int, the index of the menu tab button at the given x position.
+   * @author Candice Zhang
+   * @param x The x position used to calculate index.
+   * @return int, the index of the menu tab button at the given x position.
    */
   public int menuTabButtonAt(int x) {
-    return Math.min((int)(Math.floor((x-this.menuX)/
-           (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), this.menuButtonImages.length-1);
+    return (int)Math.min(Math.floor((x-this.menuX)
+                                    / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                         this.menuButtonImages.length-1);
   }
 
   /**
    * [shopItemIdxAt]
    * Retrieves the index of the shop item at the given y position.
-   * @author    Candice Zhang
-   * @param y   int, the y position used to calculate index.
-   * @return    int, the index of the shop item at the given y position.
+   * @author Candice Zhang
+   * @param y The y position used to calculate index.
+   * @return int, the index of the shop item at the given y position.
    */
   public int shopItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.shopY) / (this.shopItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.SHOP_ITEMS_PER_PAGE-1);
@@ -1167,9 +1202,9 @@ public class WorldPanel extends JPanel {
   /**
    * [craftingItemIdxAt]
    * Retrieves the index of the crafting item at the given y position.
-   * @author    Candice Zhang
-   * @param y   int, the y position used to calculate index.
-   * @return    int, the index of the crafting item at the given y position.
+   * @author Candice Zhang
+   * @param y The y position used to calculate index.
+   * @return int, the index of the crafting item at the given y position.
    */
   public int craftingItemIdxAt(int y) {
     return Math.min((int)(Math.floor((y-this.craftY) / (this.craftItemH+WorldPanel.INVENTORY_CELLGAP))), WorldPanel.CRAFTING_ITEMS_PER_PAGE-1);
@@ -1178,15 +1213,18 @@ public class WorldPanel extends JPanel {
   /**
    * [elevatorButtonIdxAt]
    * Retrieves the index of the elevator button at the given y position.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to calculate index.
-   * @param y   int, the y position used to calculate index.
-   * @return    int, the index of the elevator button at the given y position.
+   * @author Candice Zhang
+   * @param x The x position used to calculate index.
+   * @param y The y position used to calculate index.
+   * @return int, the index of the elevator button at the given y position.
    */
   public int elevatorButtonIdxAt(int x, int y) {
-    return Math.min((int)(Math.floor(x-this.elevatorX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 3)
-           + 4*Math.min((int)(Math.floor((y-this.elevatorY)/
-                                         (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
+    return Math.min((int)(Math.floor(x-this.elevatorX)
+                          / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                    3)
+           + 4*Math.min((int)(Math.floor((y-this.elevatorY)
+                                         / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))),
+                        2);
   }
 
   /**
@@ -1194,49 +1232,52 @@ public class WorldPanel extends JPanel {
    * Asks for the x and y location of the inventory and
    * the x and y location of the targeted point, and
    * retrieves the index of the inventory item at the targeted point.
-   * @author    Candice Zhang
-   * @param inventoryX   int, the x position of the inventory.
-   * @param inventoryY   int, the y position of the inventory.
-   * @param targetX      int, the x position of the targeted point.
-   * @param targetY      int, the y position of the targeted point.
-   * @return             int, the index of the inventory item at the targeted point.
+   * @author Candice Zhang
+   * @param inventoryX The x position of the inventory.
+   * @param inventoryY The y position of the inventory.
+   * @param targetX    The x position of the targeted point.
+   * @param targetY    The y position of the targeted point.
+   * @return int, the index of the inventory item at the targeted point.
    */
   public int inventoryItemIdxAt(int inventoryX, int inventoryY, int targetX, int targetY) {
-    return Math.min((int)(Math.floor(targetX-inventoryX)/ (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)), 11)
-           + 12*Math.min((int)(Math.floor((targetY-inventoryY)/
-                                          (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))), 2);
+    return Math.min((int)(Math.floor(targetX-inventoryX)
+                          / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)),
+                    11)
+           + 12*Math.min((int)(Math.floor((targetY-inventoryY)
+                                          / (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))),
+                         2);
   }
   
   /**
    * [isPosInHotbar]
    * Checks if the given position is inside the hotbar.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to check.
-   * @param y   int, the y position used to check.
-   * @return    boolean, true if the given position is inside the hotbar,
-   *            false otherwise.
+   * @author Candice Zhang
+   * @param x The x position used to check.
+   * @param y The y position used to check.
+   * @return boolean, true if the given position is inside the hotbar,
+   *         false otherwise.
    */
   public boolean isPosInHotbar(int x, int y) {
-    return ((x >= this.hotbarX) &&
-            (x <= this.hotbarX+12*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)) &&
-            (y >= this.hotbarY) &&
-            (y <= this.hotbarY + WorldPanel.INVENTORY_CELLSIZE));
+    return ((x >= this.hotbarX)
+            && (x <= this.hotbarX+12*(WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP))
+            && (y >= this.hotbarY)
+            && (y <= this.hotbarY + WorldPanel.INVENTORY_CELLSIZE));
   }
 
   /**
    * [isPosInHotbar]
    * Checks if the given position is inside the menu tab.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to check.
-   * @param y   int, the y position used to check.
-   * @return    boolean, true if the given position is in the menu tab,
-   *            false otherwise.
+   * @author Candice Zhang
+   * @param x The x position used to check.
+   * @param y The y position used to check.
+   * @return boolean, true if the given position is in the menu tab,
+   *         false otherwise.
    */
   public boolean isPosInMenuTab(int x, int y) {
-    return ((x >= this.menuX) &&
-            (x <= this.menuX + this.menuW) &&
-            (y >= this.menuY) &&
-            (y <= this.inventoryMenuInventoryY));
+    return ((x >= this.menuX)
+            && (x <= this.menuX + this.menuW)
+            && (y >= this.menuY)
+            && (y <= this.inventoryMenuInventoryY));
   }
 
   /**
@@ -1244,52 +1285,52 @@ public class WorldPanel extends JPanel {
    * Asks for the x and y location of the inventory and
    * the x and y location of the targeted point, and
    * checks if the targeted point is inside the inventory.
-   * @author    Candice Zhang
-   * @param inventoryX   int, the x position of the inventory.
-   * @param inventoryY   int, the y position of the inventory.
-   * @param targetX      int, the x position of the targeted point.
-   * @param targetY      int, the y position of the targeted point.
-   * @return             boolean, true if the given position is the inventory,
-   *                     false otherwise.
+   * @author Candice Zhang
+   * @param inventoryX The x position of the inventory.
+   * @param inventoryY The y position of the inventory.
+   * @param targetX    The x position of the targeted point.
+   * @param targetY    The y position of the targeted point.
+   * @return boolean, true if the given position is the inventory,
+   *         false otherwise.
    */
   public boolean isPosInInventory(int inventoryX, int inventoryY, int targetX, int targetY) {
-    return ((targetX >= inventoryX) &&
-            (targetX <= inventoryX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*12) &&
-            (targetY > inventoryY) &&
-            (targetY <= inventoryY + 3*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)));
+    return ((targetX >= inventoryX)
+            && (targetX <= inventoryX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*12)
+            && (targetY > inventoryY)
+            && (targetY <= inventoryY + 3*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)));
   }
 
   /**
    * [isPosInShopItemList]
    * Checks if the given position is inside the shop item list display.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to check.
-   * @param y   int, the y position used to check.
-   * @return    boolean, true if the given position is in the shop item list display,
-   *            false otherwise.
+   * @author Candice Zhang
+   * @param x The x position used to check.
+   * @param y The y position used to check.
+   * @return boolean, true if the given position is in the shop item list display,
+   *         false otherwise.
    */
   public boolean isPosInShopItemList(int x, int y) {
-    return ((x >= this.shopX) &&
-            (x <= this.shopX + this.shopW) &&
-            (y >= this.shopY) &&
-            (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
+    return ((x >= this.shopX)
+            && (x <= this.shopX + this.shopW)
+            && (y >= this.shopY)
+            && (y <= this.shopY + this.shopItemH * WorldPanel.SHOP_ITEMS_PER_PAGE));
   }
 
   /**
    * [isPosInCraftButton]
    * Checks if the given position is inside any craft button location on the screen.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to check.
-   * @param y   int, the y position used to check.
-   * @return    boolean, true if the given position is inside a craft button,
-   *            false otherwise.
+   * @author Candice Zhang
+   * @param x The x position used to check.
+   * @param y The y position used to check.
+   * @return boolean, true if the given position is inside a craft button,
+   *         false otherwise.
    */
   public boolean isPosInCraftButton(int x, int y) {
     for (int i = 0; i < WorldPanel.CRAFTING_ITEMS_PER_PAGE; i++) {
-      if ((x >= this.craftX+this.craftW-this.craftButtonImage.getWidth()) &&
-          (x <= this.craftX+this.craftW) &&
-          (y >= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH-this.craftButtonImage.getHeight()) &&
-          (y <= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH)) {
+      if ((x >= this.craftX+this.craftW-this.craftButtonImage.getWidth())
+            && (x <= this.craftX+this.craftW)
+            && (y >= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH-this.craftButtonImage.getHeight())
+            && (y <= this.craftY + i*(this.craftItemH+WorldPanel.INVENTORY_CELLGAP) + this.craftItemH)) {
         return true;
       }
     }
@@ -1299,17 +1340,17 @@ public class WorldPanel extends JPanel {
   /**
    * [isPosInElevatorButtons]
    * Checks if the given position is inside any elevator button.
-   * @author    Candice Zhang
-   * @param x   int, the x position used to check.
-   * @param y   int, the y position used to check.
-   * @return    boolean, true if the given position is in an elevator button,
-   *            false otherwise.
+   * @author Candice Zhang
+   * @param x The x position used to check.
+   * @param y The y position used to check.
+   * @return boolean, true if the given position is in an elevator button,
+   *         false otherwise.
    */
   public boolean isPosInElevatorButtons(int x, int y) {
-    return ((x >= this.elevatorX) &&
-            (x <= this.elevatorX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*4) &&
-            (y > this.elevatorY) &&
-            (y <= this.elevatorY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)*3));
+    return ((x >= this.elevatorX)
+            && (x <= this.elevatorX + (WorldPanel.INVENTORY_CELLSIZE+WorldPanel.INVENTORY_CELLGAP)*4)
+            && (y > this.elevatorY)
+            && (y <= this.elevatorY + (WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP)*3));
   }
 
   /**
@@ -1343,10 +1384,10 @@ public class WorldPanel extends JPanel {
    * [splitParagraph]
    * Split a very long string into lines of at most maxLineWidth characters,
    * and retrieves the splited text in a String array.
-   * @author             Kevin Qiao, Candice Zhang
+   * @author Kevin Qiao, Candice Zhang
    * @param paragraph    String that represents the string to split.
    * @param maxLineWidth int that represents the width limit.
-   * @return             String[], splited text in a String array.
+   * @return String[], splited text in a String array.
    */
   public String[] splitParagraph(int maxLineWidth, String paragraph) {
     // searching for a space " " to end the line
@@ -1366,5 +1407,4 @@ public class WorldPanel extends JPanel {
     lines.add(paragraph);
     return lines.toArray(new String[0]);
   }
-
 }

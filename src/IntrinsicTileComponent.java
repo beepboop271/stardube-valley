@@ -13,9 +13,9 @@ import javax.imageio.ImageIO;
  */
 
 public abstract class IntrinsicTileComponent extends TileComponent {
-  private final String name;
-  private final BufferedImage[] images;
-  private final double[] offsets;
+  private final String NAME;
+  private final BufferedImage[] IMAGES;
+  private final double[] OFFSETS;
 
   /**
    * [IntrinsicTileComponent]
@@ -29,22 +29,22 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   public IntrinsicTileComponent(String name,
                                 String imagesPath,
                                 double[] offsets) throws IOException {
-    this.name = name;
-    this.offsets = offsets;
+    this.NAME = name;
+    this.OFFSETS = offsets;
 
     //- Load images for this component 
     File fileSystem = new File(imagesPath);
     if (fileSystem.isFile()) { //- Loads a single image
-      this.images = new BufferedImage[1];
-      this.images[0] = ImageIO.read(fileSystem);
+      this.IMAGES = new BufferedImage[1];
+      this.IMAGES[0] = ImageIO.read(fileSystem);
     } else { //- Loads a group of images
       String[] allFiles = fileSystem.list();
-      this.images = new BufferedImage[allFiles.length];
+      this.IMAGES = new BufferedImage[allFiles.length];
       try {
         for (int i = 0, j = 0; i < allFiles.length; i++) {
           String extension = allFiles[i].substring(allFiles[i].lastIndexOf("."));
           if (extension.equals(".png")) {
-            this.images[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
+            this.IMAGES[j] = ImageIO.read(new File(imagesPath + allFiles[i]));
             j++;
           }
         }
@@ -60,7 +60,7 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * @return String, the name of this TileComponent.
    */
   public String getName() {
-    return this.name;
+    return this.NAME;
   }
 
   /**
@@ -69,7 +69,7 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * @return double, the x offset (in tiles) of which to consider during drawing.
    */
   public double getXOffset() {
-    return this.offsets[0];
+    return this.OFFSETS[0];
   }
 
   /**
@@ -78,7 +78,7 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * @return double, the y offset (in tiles) of which to consider during drawing.
    */
   public double getYOffset() {
-    return this.offsets[1];
+    return this.OFFSETS[1];
   }
 
   /**
@@ -87,6 +87,6 @@ public abstract class IntrinsicTileComponent extends TileComponent {
    * @return BufferedImage[], all the images for this IntrinsicTileComponent.
    */
   public BufferedImage[] getImages() {
-    return this.images;
+    return this.IMAGES;
   }
 }

@@ -13,13 +13,12 @@ public class UtilityTool extends Tool {
   private int effectiveness;
   /**
    * [UtilityTool]
-   * Constructor for a new UtilityTool
-   * @author Kevin Qiao, Joseph Wang
-   * @param name            The name of this tool.
-   * @param description     The description of this tool.
-   * @param imagePath       The path to this tool's image.
-   * @param energyCost      How much energy it takes to use this tool.
-   * @param effectiveness   How good this tool is at breaking.
+   * Constructor for a new UtilityTool.
+   * @param name          The name of this tool.
+   * @param description   The description of this tool.
+   * @param imagePath     The path to this tool's image.
+   * @param energyCost    How much energy it takes to use this tool.
+   * @param effectiveness How good this tool is at breaking things.
    * @throws IOException
    */
   public UtilityTool(String name, String description, 
@@ -31,7 +30,6 @@ public class UtilityTool extends Tool {
 
   /**
    * {@inheritDoc}
-   * @author Kevin Qiao
    */
   @Override
   public Point[] getUseLocation(Point selectedTile) {

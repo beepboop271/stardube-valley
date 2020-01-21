@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public abstract class ExtrinsicTileComponent extends TileComponent 
                                              implements Drawable {
-  private final IntrinsicTileComponent intrinsicSelf;
+  private final IntrinsicTileComponent INTRINSIC_SELF;
 
   /**
    * [ExtrinsicTileComponent]
@@ -20,7 +20,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    */
   public ExtrinsicTileComponent(IntrinsicTileComponent intrinsicSelf) {
     super();
-    this.intrinsicSelf = intrinsicSelf;
+    this.INTRINSIC_SELF = intrinsicSelf;
   }
 
   /**
@@ -30,7 +30,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    */
   public ExtrinsicTileComponent(String intrinsicSelf) {
     super();
-    this.intrinsicSelf = IntrinsicTileComponentFactory.getComponent(intrinsicSelf);
+    this.INTRINSIC_SELF = IntrinsicTileComponentFactory.getComponent(intrinsicSelf);
   }
 
   /**
@@ -39,7 +39,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    * @return IntrinsicTileComponent, the shared version of this object.
    */
   public IntrinsicTileComponent getIntrinsicSelf() {
-    return this.intrinsicSelf;
+    return this.INTRINSIC_SELF;
   }
 
   /**
@@ -47,7 +47,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    */
   @Override
   public BufferedImage getImage() {
-    return this.intrinsicSelf.getImages()[0];
+    return this.INTRINSIC_SELF.getImages()[0];
   }
   
   /**
@@ -55,7 +55,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    */
   @Override
   public double getXOffset() {
-    return this.intrinsicSelf.getXOffset();
+    return this.INTRINSIC_SELF.getXOffset();
   }
 
   /**
@@ -63,6 +63,6 @@ public abstract class ExtrinsicTileComponent extends TileComponent
    */
   @Override
   public double getYOffset() {
-    return this.intrinsicSelf.getYOffset();
+    return this.INTRINSIC_SELF.getYOffset();
   }
 }

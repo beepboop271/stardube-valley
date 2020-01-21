@@ -22,7 +22,7 @@ public class Player extends LoopAnimatedMoveable {
   public static final int CHEST_PAGE = 5;
   public static final int ELEVATOR_PAGE = 6;
 
-  private int inventorySize = 12;
+  private int inventorySize = 24;
   private HoldableStack[] inventory;
   private int selectedItemIdx;
   private Point selectedTile;
@@ -40,10 +40,10 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [Player]
    * Constructor to make a new Player.
-   * @param position Point, the position of the player.
-   * @param filePath String, the filePath of the player's images.
-   * @param name     String, the name of the player.
-   * @throws         IOException
+   * @param position The position of the player.
+   * @param filePath The file path of the player's images.
+   * @param name     The name of the player.
+   * @throws IOException
    */
   public Player(Point position, String name) throws IOException {
     super(position, Player.SIZE, name, LoopAnimatedMoveable.WALKSTEP_FRAMES);
@@ -73,8 +73,9 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getMove]
    * Retrieves this player's movement.
-   * @param elapsedNanoTime  The elapsed time.
-   * @return                 Vector2D, the player's movement.
+   * @author Kevin Qiao
+   * @param elapsedNanoTime The elapsed time.
+   * @return Vector2D, the player's movement.
    */
   @Override
   public Vector2D getMove(long elapsedNanoTime) {
@@ -99,6 +100,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [pickUp]
    * Pick up a stack of items.
+   * @author Kevin Qiao
    * @return boolean, true if this player picked the items up, false otherwise.
    */
   public boolean pickUp(HoldableStack items) {
@@ -127,6 +129,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [canPickUp]
    * Determines whether or not an item can be picked up.
+   * @author Candice Zhang
    * @return boolean, true if this player can pick the item up, false otherwise.
    */
   public boolean canPickUp(Holdable item) {
@@ -160,15 +163,14 @@ public class Player extends LoopAnimatedMoveable {
     if (!(this.inventory[this.selectedItemIdx].getContainedHoldable() instanceof Consumable)) {
       return;
     }
-    Consumable thingConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
+    Consumable itemConsumed = (Consumable)(this.inventory[this.selectedItemIdx].getContainedHoldable());
     this.useAtIndex(this.selectedItemIdx);
-    if (thingConsumed instanceof SpecialConsumable) {
-      this.increaseMaxHealth(((SpecialConsumable)thingConsumed).getMaxHealthGain());
-      this.increaseMaxEnergy(((SpecialConsumable)thingConsumed).getMaxEnergyGain());
+    if (itemConsumed instanceof SpecialConsumable) {
+      this.increaseMaxHealth(((SpecialConsumable)itemConsumed).getMaxHealthGain());
+      this.increaseMaxEnergy(((SpecialConsumable)itemConsumed).getMaxEnergyGain());
     }
-    
-    this.increaseEnergy(thingConsumed.getEnergyGain());
-    this.increaseHealth(thingConsumed.getHealthGain());
+    this.increaseEnergy(itemConsumed.getEnergyGain());
+    this.increaseHealth(itemConsumed.getHealthGain());
   }
 
   /**
@@ -177,7 +179,8 @@ public class Player extends LoopAnimatedMoveable {
    * @author Joseph Wang
    */
   public void purchase(Shop shop, String itemName) {
-    if ((this.currentFunds < shop.getPriceOf(itemName)) || !(this.canPickUp(HoldableFactory.getHoldable(itemName)))) {
+    if ((this.currentFunds < shop.getPriceOf(itemName))
+          || !(this.canPickUp(HoldableFactory.getHoldable(itemName)))) {
       return;
     }
     this.currentFunds -= shop.getPriceOf(itemName);
@@ -187,6 +190,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [canCraft]
    * Determines whether or not you can craft an specified item.
+   * @author Candice Zhang, Joseph Wang
    * @return boolean, true if this player can craft the item, false otherwise.
    */
   public boolean canCraft(String product) {
@@ -253,6 +257,15 @@ public class Player extends LoopAnimatedMoveable {
     this.pickUp(new HoldableStack(HoldableFactory.getHoldable(product), 1));
   }
 
+  /**
+   * [quantityOf]
+   * Returns the quantity of a certain Holdable present in
+   * this Player's inventory.
+   * @author Candice Zhang
+   * @param item The Holdable to check quantity of.
+   * @return int, the amount of the Holdable present in this
+   *         Player's inventory.
+   */
   public int quantityOf(Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
       if (this.inventory[i] != null) {
@@ -285,8 +298,8 @@ public class Player extends LoopAnimatedMoveable {
    * If the item at the index is less than the amount decreased, it will set the inventory index as
    * null, effectively removing the item.
    * @author Joseph Wang
-   * @param index   The index of the item of which to decrease quantity of.
-   * @param amount  The amount that will be decreased.
+   * @param index  The index of the item of which to decrease quantity of.
+   * @param amount The amount that will be decreased.
    */
   public void decrementAtIndex(int index, int amount) {
     if (this.inventory[index].getQuantity() <= amount) {
@@ -299,7 +312,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [removeAtIndex]
    * Removes the item at the specified index (ie. set it to null).
-   * @author Candice Zhang
    * @param index The index of the item to remove.
    */
   public void removeAtIndex(int index) {
@@ -309,10 +321,9 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [hasAtIndex]
    * Checks to see if a spot in the inventory at the selected index has an item (ie. is not null).
-   * @author Candice Zhang
-   * @param index     The index to check for an item.
-   * @return          boolean, true if there is something at the index 
-   *                  specified and false if it is null.
+   * @param index The index to check for an item.
+   * @return boolean, true if there is something at the index 
+   *         specified and false if it is null.
    */
   public boolean hasAtIndex(int index) {
     return !(this.inventory[index] == null);
@@ -321,9 +332,8 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getAtIndex]
    * Retrieves the item at the specified index in this player's inventory.
-   * @author Joseph Wang
-   * @param index  The index of the item to get.
-   * @return       HoldableStack, the item at the specified index.
+   * @param index The index of the item to get.
+   * @return HoldableStack, the item at the specified index.
    */
   public HoldableStack getAtIndex(int index) {
     return this.inventory[index];
@@ -333,9 +343,9 @@ public class Player extends LoopAnimatedMoveable {
    * [hasHoldable]
    * Checks to see if the player already has a specified holdable in their inventory.
    * @author Joseph Wang
-   * @param item  The specified holdable that is being compared.
-   * @return      boolean, true if this player's inventory has 
-   *              this holdable already, false otherwise.
+   * @param item The specified holdable that is being compared.
+   * @return boolean, true if this player's inventory has 
+   *         this holdable already, false otherwise.
    */
   public boolean hasHoldable(Holdable item) {
     for (int i = 0; i < this.inventorySize; ++i) {
@@ -349,32 +359,29 @@ public class Player extends LoopAnimatedMoveable {
   }
 
   /**
-   * [setCurrentFishingGame]
-   * Sets this current fishing game to the specified fishingGame.
-   * @author Candice Zhang
-   * @param fishingGame  the fishing game to set
+   * [getCurrentFishingGame]
+   * Retrieves the current fishing game.
+   * @return FishingGame, the fishing game.
    */
-  public void setCurrentFishingGame(FishingGame fishingGame){
-    this.currentFishingGame = fishingGame;
+  public FishingGame getCurrentFishingGame(){
+    return this.currentFishingGame;
   }
 
   /**
    * [endCurrentFishingGame]
    * Ends the current fishing game.
-   * @author Candice Zhang
    */
   public void endCurrentFishingGame() {
     this.currentFishingGame = null;
   }
 
   /**
-   * [getCurrentFishingGame]
-   * Retrieves the current fishing game.
-   * @author Candice Zhang
-   * @return FishingGame, the fishing game.
+   * [setCurrentFishingGame]
+   * Sets this current fishing game to the specified fishingGame.
+   * @param fishingGame  the fishing game to set
    */
-  public FishingGame getCurrentFishingGame(){
-    return this.currentFishingGame;
+  public void setCurrentFishingGame(FishingGame fishingGame){
+    this.currentFishingGame = fishingGame;
   }
 
   /**
@@ -404,9 +411,8 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [isInMenu]
    * Determines whether a menu is being accessed or not.
-   * @author Candice Zhang
    * @return boolean, true if this player is accessing any
-   *                  menu page, false otherwise.
+   *         menu page, false otherwise.
    */
   public boolean isInMenu() {
     return !(this.currentMenuPage == Player.NO_MENU);
@@ -416,7 +422,7 @@ public class Player extends LoopAnimatedMoveable {
    * [enterMenu]
    * Enters the menu at a specified menu page.
    * @author Candice Zhang
-   * @param menuPage  The new menu page.
+   * @param menuPage The new menu page.
    */
   public void enterMenu(int menuPage) {
     this.isImmutable = true;
@@ -441,7 +447,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getCurrentMenuPage]
    * Retrieves the current menu page.
-   * @return Candice Zhang
    * @return int, the current menu page as an int.
    */
   public int getCurrentMenuPage() {
@@ -451,7 +456,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getAmountScrolled]
    * Retrieves how much one has scrolled.
-   * @author Candice Zhang
    * @return int, the amount scrolled.
    */
   public int getAmountScrolled() {
@@ -461,7 +465,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [incrementAmountScrolled]
    * Increments how much one has scrolled.
-   * @author Candice Zhang
    */
   public void incrementAmountScrolled() {
     this.amountScrolled += 1;
@@ -470,7 +473,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [decrementAmountScrolled]
    * Decrements the amount scrolled.
-   * @author Candice Zhang
    */
   public void decrementAmountScrolled() {
     this.amountScrolled -= 1;
@@ -479,7 +481,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getSelectedItemIdx]
    * Retrieves the index number of the current selected item.
-   * @author Kevin Qiao
    * @return int, the index number of the selected item.
    */
   public int getSelectedItemIdx() {
@@ -489,7 +490,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getSelectedItem]
    * Retrieves the current selected item using the selected item index.
-   * @author Kevin Qiao
    * @return HoldableStack, the current selected item.
    */
   public HoldableStack getSelectedItem() {
@@ -554,7 +554,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [setSelectedItemIdx]
    * Sets the selected item index to a specified index.
-   * @param selectedItemIdx  the new selected item index
+   * @param selectedItemIdx the new selected item index
    */
   public void setSelectedItemIdx(int selectedItemIdx) {
     if (this.isImmutable() && !(this.isInMenu())) {
@@ -566,7 +566,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [isImmutable]
    * Checks if this player is currently in its immutable state (ie. cannot move or change items).
-   * @author Candice Zhang
    * @return boolean, true if is immutable and false otherwise.
    */
   public boolean isImmutable() {
@@ -576,8 +575,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [setImmutable]
    * Sets the immutable state of this player to either true or false.
-   * @author Candice Zhang
-   * @param isImmutable  Whether or not the player is immutable.
+   * @param isImmutable Whether or not the player is immutable.
    */
   public void setImmutable(boolean isImmutable){
     this.isImmutable = isImmutable;
@@ -604,7 +602,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getHealth]
    * Retrieves this player's current health.
-   * @author Candice Zhang
    * @return int, the current health of the player.
    */
   public int getHealth() {
@@ -614,8 +611,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [increaseHealth]
    * Increases this player's health by a specified amount.
-   * @author Candice Zhang
-   * @param increment  The amount to increase this player's health by.
+   * @param increment The amount to increase this player's health by.
    */
   public void increaseHealth(int increment) {
     this.health = Math.min(this.health+increment, this.maxHealth);
@@ -624,8 +620,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [decreaseHealth]
    * Decrements this player's health by a specified amount.
-   * @author Candice Zhang
-   * @param decrement  The amount to decrease this player's health by.
+   * @param decrement The amount to decrease this player's health by.
    */
   public void decreaseHealth(int decrement) {
     this.health = Math.max(this.health-decrement, 0);
@@ -634,7 +629,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getMaxHealth]
    * Retrieves this player's maximum health.
-   * @author Candice Zhang
    * @return int, the player's total maximum health.
    */
   public int getMaxHealth() {
@@ -644,8 +638,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [increaseMaxHealth]
    * Increases this player's maximum health.
-   * @author Candice Zhang
-   * @param increment  The amount to increase this player's health by.
+   * @param increment The amount to increase this player's health by.
    */
   public void increaseMaxHealth(int increment) {
     this.maxHealth += increment;
@@ -654,7 +647,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getEnergy]
    * Retrieves this player's current total energy.
-   * @author Joseph Wang
    * @return int, this player's current energy.
    */
   public int getEnergy() {
@@ -666,7 +658,7 @@ public class Player extends LoopAnimatedMoveable {
    * Increases this player's total current energy. After increasing, if
    * energy exceeds maximum energy, set as max energy.
    * @author Joseph Wang
-   * @param increment  The amount to increase the energy by.
+   * @param increment The amount to increase the energy by.
    */
   public void increaseEnergy(int increment) {
     this.energy = Math.min(this.energy+increment, this.maxEnergy);
@@ -677,7 +669,7 @@ public class Player extends LoopAnimatedMoveable {
    * Decreases this player's total current energy. After decreasing,
    * if the energy is less than 0, this player will be set as exhausted.
    * @author Joseph Wang
-   * @param decrement  The amount to decrease the energy by.
+   * @param decrement The amount to decrease the energy by.
    */
   public void decreaseEnergy(int decrement) {
     this.energy -= decrement;
@@ -693,7 +685,7 @@ public class Player extends LoopAnimatedMoveable {
    * on time slept, and whether the player is exhaused or not.
    * Also fully restores health to max.
    * @author Joseph Wang
-   * @param time  The time that the player ended the day at.
+   * @param time The time that the player ended the day at.
    */
   public void recover(long time) {
     /* Recovered energy takes into consideration sleep time
@@ -720,7 +712,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getMaxEnergy]
    * Retrieves the max possible energy that this player can have.
-   * @author Joseph Wang
    * @return int, this player's max possible energy.
    */
   public int getMaxEnergy() {
@@ -730,8 +721,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [increaseMaxEnergy]
    * Increases the max energy of this player.
-   * @author Candice Zhang
-   * @param increment  The amount to increase this player's maximum energy by.
+   * @param increment The amount to increase this player's maximum energy by.
    */
   public void increaseMaxEnergy(int increment) {
     this.maxEnergy += increment;
@@ -740,7 +730,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getExhaustionStatus]
    * Retrieves the exhaustion status of this player.
-   * @author Joseph Wang
    * @return boolean, whether the player has exhausted themself or not.
    */
   public boolean getExhaustionStatus() {
@@ -752,8 +741,8 @@ public class Player extends LoopAnimatedMoveable {
    * Called if the player dies or passes out and must be moved to
    * a specified spawn area at a specified spawn location.
    * @author Joseph Wang
-   * @param spawnLocation  The position to spawn at.
-   * @return               Area, the new area that the player is in.
+   * @param spawnLocation The position to spawn at.
+   * @return Area, the new area that the player is in.
    */
   public Area moveToSpawnPosition(Area currentArea, SpawnableArea spawnArea) {
     Point spawnPos = spawnArea.getSpawnLocation();
@@ -763,7 +752,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getInventorySize]
    * Retrieves this player's inventory's total capacity.
-   * @author Candice Zhang
    * @return int, the total size of this player's inventory.
    */
   public int getInventorySize() {
@@ -773,8 +761,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [setInventorySize]
    * Sets this player's inventory size to a specified quantity.
-   * @author Candice Zhang
-   * @param size  The new capacity of this inventory.
+   * @param size The new capacity of this inventory.
    */
   public void setInventorySize(int size) {
     this.inventorySize = size;
@@ -792,7 +779,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [setCurrentInteractingObj]
    * sets the current object being interacted with
-   * @param component  an Object component
+   * @param component an Object component
    */
   public void setCurrentInteractingObj(Object component) {
     this.currentInteractingObj = component;
@@ -810,7 +797,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getCurrentFunds]
    * Retrieves this player's current funds (ie. the amount of spendable money they have at this instance)
-   * @author Candice Zhang
    * @return int, the total funds of this player.
    */
   public int getCurrentFunds() {
@@ -821,8 +807,7 @@ public class Player extends LoopAnimatedMoveable {
    * [increaseCurrentFunds]
    * Increases this player's current funds by a specified value.
    * Also increases total earnings by the same value.
-   * @author Candice Zhang
-   * @param value  The amount to be increased by.
+   * @param value The amount to be increased by.
    */
   public void increaseCurrentFunds(int value) {
     this.currentFunds += value;
@@ -832,8 +817,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [decreaseCurrentFunds]
    * Decreases this player's current funds by a specified value, clamped at 0.
-   * @author Candice Zhang
-   * @param value  The amount to be removed.
+   * @param value The amount to be removed.
    */
   public void decreaseCurrentFunds(int value) {
     this.currentFunds = Math.max(this.currentFunds-value, 0);
@@ -842,7 +826,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getFutureFunds]
    * Retrives this player's future funds (ie. How much they should earn at the end of this day).
-   * @author Joseph Wang
    * @return int, how much this player should earn.
    */
   public int getFutureFunds() {
@@ -852,8 +835,7 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [increaseFutureFunds]
    * Adds a specified value to this player's future funds.
-   * @author Joseph Wang
-   * @param value  The amount to be added.
+   * @param value The amount to be added.
    */
   public void increaseFutureFunds(int value) {
     this.futureFunds += value;
@@ -862,7 +844,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [resetFutureFunds]
    * Sets this player's future funds (funds to be added) to 0.
-   * @author Joseph Wang
    */
   public void resetFutureFunds() {
     this.futureFunds = 0;
@@ -871,7 +852,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getTotalEarnings]
    * Retrieves this player's total earnings.
-   * @author Candice Zhang
    * @return int, how much this player has earned in total.
    */
   public int getTotalEarnings() {
@@ -881,7 +861,6 @@ public class Player extends LoopAnimatedMoveable {
   /**
    * [getCraftingMachine]
    * Retrieves this player's crafting machine.
-   * @author Candice Zhang
    * @return CraftingMachine, the crafting machine that belongs to the player.
    */
   public CraftingMachine getCraftingMachine () {

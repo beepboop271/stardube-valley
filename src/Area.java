@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public abstract class Area {
-  private final int width, height;
+  private final int WIDTH, HEIGHT;
   private String name;
   private Tile[][] map;
   private Set<Moveable> moveables;
@@ -33,9 +33,9 @@ public abstract class Area {
    */
   public Area(String name, int width, int height) {
     this.name = name;
-    this.width = width;
-    this.height = height;
-    this.map = new Tile[this.height][this.width];
+    this.WIDTH = width;
+    this.HEIGHT = height;
+    this.map = new Tile[this.HEIGHT][this.WIDTH];
     this.moveables = ConcurrentHashMap.newKeySet();
     this.itemsOnGround = ConcurrentHashMap.newKeySet();
     this.neighbourZones = new GatewayZone[4];
@@ -426,7 +426,7 @@ public abstract class Area {
    *         false otherwise.
    */
   public boolean inMap(int x, int y) {
-    return (x >= 0) && (x < this.width) && (y >= 0) && (y < this.height);
+    return (x >= 0) && (x < this.WIDTH) && (y >= 0) && (y < this.HEIGHT);
   }
 
   /**
@@ -454,11 +454,11 @@ public abstract class Area {
     int y = (int)(pos.y);
     if (x < 0) {
       return World.WEST;
-    } else if (x >= this.width) {
+    } else if (x >= this.WIDTH) {
       return World.EAST;
     } else if (y < 0) {
       return World.NORTH;
-    } else if (y >= this.height) {
+    } else if (y >= this.HEIGHT) {
       return World.SOUTH;
     } else {
       return -1;
@@ -471,7 +471,7 @@ public abstract class Area {
    * @return int, the width of this area.
    */
   public int getWidth() {
-    return this.width;
+    return this.WIDTH;
   }
 
   /**
@@ -480,7 +480,7 @@ public abstract class Area {
    * @return int, the height of this area.
    */
   public int getHeight() {
-    return this.height;
+    return this.HEIGHT;
   }
 
   /**

@@ -12,8 +12,8 @@ public class Point implements Cloneable {
   /**
    * [Point]
    * Constructor for a new Point.
-   * @param x  The x position of this point.
-   * @param y  The y position of this point.
+   * @param x The x position of this point.
+   * @param y The y position of this point.
    */
   public Point(double x, double y) {
     this.x = x;
@@ -23,7 +23,7 @@ public class Point implements Cloneable {
   /**
    * [Point]
    * Constructor for a new Point.
-   * @param p  A string array with the x and y positions of this point.
+   * @param p A string array with the x and y positions of this point.
    */
   public Point(String[] p) {
     this.x = Double.parseDouble(p[0]);
@@ -33,7 +33,7 @@ public class Point implements Cloneable {
   /**
    * [Point]
    * Constructor for a new Point.
-   * @param p  A Point with the x and y positions of this point.
+   * @param p A Point with the x and y positions of this point.
    */
   public Point(Point p) {
     this(p.x, p.y);
@@ -50,9 +50,9 @@ public class Point implements Cloneable {
   /**
    * [translate]
    * Shifts this point to another location using the specified dx and dy.
-   * @param dx  The change in x.
-   * @param dy  The change in y.
-   * @return    Point, this Point object.
+   * @param dx The change in x.
+   * @param dy The change in y.
+   * @return Point, this Point object.
    */
   public Point translate(double dx, double dy) {
     this.x += dx;
@@ -63,8 +63,8 @@ public class Point implements Cloneable {
   /**
    * [translate]
    * Shifts this point to another location using the specified point.
-   * @param p  The new point with the dx and dy.
-   * @return   Point, this Point object.
+   * @param p The new point with the dx and dy.
+   * @return Point, this Point object.
    */
   public Point translate(Point p) {
     return this.translate(p.x, p.y);
@@ -74,9 +74,9 @@ public class Point implements Cloneable {
    * [translateNew]
    * Creates a new point which takes this Point's x and y and adds the
    * specified dx and dy.
-   * @param dx  The change in x.
-   * @param dy  The change in y.
-   * @return    Point, a new Point with the new location.
+   * @param dx The change in x.
+   * @param dy The change in y.
+   * @return Point, a new Point with the new location.
    */
   public Point translateNew(double dx, double dy) {
     return new Point(this).translate(dx, dy);
@@ -85,8 +85,8 @@ public class Point implements Cloneable {
   /**
    * [distanceTo]
    * Retrieves the distance to the other point.
-   * @param other  The point to calculate distance with.
-   * @return       double, the distance to the other point.
+   * @param other The point to calculate distance with.
+   * @return double, the distance to the other point.
    */
   public double distanceTo(Point other) {
     return Math.sqrt(Math.pow(other.x-this.x, 2) + Math.pow(other.y-this.y, 2));
@@ -95,7 +95,7 @@ public class Point implements Cloneable {
   /**
    * [round]
    * Calls Math.round on both this x and y, effectively rounding it.
-   * @return Point, this Point object.s
+   * @return Point, this Point object.
    */
   public Point round() {
     this.x = Math.round(this.x);

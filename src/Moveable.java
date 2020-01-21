@@ -14,8 +14,8 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
   /**
    * [Moveable]
    * Constructor for a new Moveable.
-   * @param position  The position of this moveable.
-   * @param size      How large this moveable is.
+   * @param position The position of this moveable.
+   * @param size     How large this moveable is.
    */
   public Moveable(Point position, double size) {
     this.position = position;
@@ -25,8 +25,10 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
 
   /**
    * [getIntersectingTiles] 
-   * @param offset 
-   * @return LinkedHashSet<Point>, all the intersecting tiles.
+   * @param offset The amount to shift the Moveable's current position
+   *               by when finding tiles.
+   * @return LinkedHashSet<Point>, all the coordinates of tiles the
+   *         Moveable intersects.
    */
   public LinkedHashSet<Point> getIntersectingTiles(Vector2D offset) {
     LinkedHashSet<Point> intersections = new LinkedHashSet<Point>();
@@ -51,8 +53,8 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
   /**
    * [translatePos]
    * Translates the position using the specified x and y.
-   * @param dx  The change in x to translate.
-   * @param dy  The change in y to translate.
+   * @param dx The change in x to translate.
+   * @param dy The change in y to translate.
    */
   public void translatePos(double dx, double dy) {
     this.position.translate(dx, dy);
@@ -61,7 +63,7 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
   /**
    * [translatePos]
    * Translate the position using the specified Vector2D.
-   * @param positionChange  The Vector2D with both x and y changes.
+   * @param positionChange The Vector2D with both x and y changes.
    */
   public void translatePos(Vector2D positionChange) {
     this.position.translate(positionChange.getX(), positionChange.getY());
@@ -70,7 +72,7 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
   /**
    * [setPos]
    * Sets this moveable's position to a cloned specified position.
-   * @param position, the new position for this moveable.
+   * @param position The new position for this moveable.
    */
   public void setPos(Point position) {
     this.position = ((Point)position.clone());
@@ -79,7 +81,7 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
   /**
    * [getVelocity]
    * Retrieves the velocity of this moveable.
-   * @return Vector2D, with this moveable's clone velocity.d
+   * @return Vector2D, with this moveable's cloned velocity.
    */
   public Vector2D getVelocity() {
     return (Vector2D)this.velocity.clone();
@@ -87,10 +89,10 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
 
   /**
    * [setVelocity]
-   * Sets this position and length to specified x, y and length
-   * @param dx      The change in x.
-   * @param dy      The change in y.
-   * @param length  The new length to set.
+   * Sets this position and length to specified x, y and length.
+   * @param dx     The change in x.
+   * @param dy     The change in y.
+   * @param length The new length to set.
    */
   public void setVelocity(double dx, double dy, double length) {
     this.velocity.setPos(dx, dy);
@@ -110,7 +112,7 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
    * [setHorizontalSpeed]
    * Sets the x value from this moveable's velocity Vector2D to
    * specified value.
-   * @param dx  The change to the x value.
+   * @param dx The change to the x value.
    */
   public void setHorizontalSpeed(double dx) {
     this.velocity.setPos(dx, this.velocity.getY());
@@ -129,7 +131,7 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
    * [setVericalSpeed]
    * Sets the y value from this moveable's velocity Vector2D to
    * specified value.
-   * @param dx  The change to the y value.
+   * @param dx The change to the y value.
    */
   public void setVerticalSpeed(double dy) {
     this.velocity.setPos(this.velocity.getX(), dy);
@@ -144,8 +146,14 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
     return this.size;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public int compareTo(Moveable other) {
+  public int compareTo(Moveable other) { 
+    // used to draw Moveables which appear higher on the
+    // screen before those that appear lower
+
     if (this.position.equals(other.position)) {
       return 0;
     }
@@ -166,8 +174,11 @@ public abstract class Moveable implements Drawable, Comparable<Moveable> {
 
   /**
    * [getMove]
-   * @param elapsedNanoTime
-   * @return Vector2D
+   * Calculates the Vector2D which describes the distance
+   * a Moveable chooses to move in.
+   * @param elapsedNanoTime The amount of nanoseconds passed since the
+   *                        last movement.
+   * @return Vector2D, the distance this Moveable chooses to move.
    */
   abstract Vector2D getMove(long elapsedNanoTime);
 }

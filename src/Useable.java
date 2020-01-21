@@ -12,9 +12,9 @@ public abstract class Useable extends Holdable {
   /**
    * [Useable]
    * Constructor for a new Usable.
-   * @param name         The name of the useable.
-   * @param description  The description of the useable.
-   * @param imagePath    The path to this useable's images.
+   * @param name        The name of the useable.
+   * @param description The description of the useable.
+   * @param imagePath   The path to this useable's images.
    * @throws IOException
    */
   public Useable(String name, String description, String imagePath) throws IOException {

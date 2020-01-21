@@ -12,8 +12,8 @@ public class RiverTile extends WaterTile {
   /**
    * [RiverTile]
    * Constructor for a new RiverTile.
-   * @param x  int, the x position of the RiverTile.
-   * @param y  int, the y position of the RiverTile.
+   * @param x The x position of the RiverTile.
+   * @param y The y position of the RiverTile.
    */
   public RiverTile(int x, int y) {
     super(x, y);

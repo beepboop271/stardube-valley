@@ -15,10 +15,10 @@ public class Seeds extends Useable implements Placeable {
    * [Seeds]
    * Constructor for new seeds. Seeds will spawn a new crop once used and
    * is how crop planting works.
-   * @param name The name of the seeds package.
+   * @param name        The name of the seeds package.
    * @param description A description about the seeds package.
-   * @param imagePath The image path for the seeds image.
-   * @param crop A String with the crop that is actually produced by these seeds.
+   * @param imagePath   The image path for the seeds image.
+   * @param crop        A String with the crop that is actually produced by these seeds.
    * @throws IOException
    */
   public Seeds(String name, String description, String imagePath, String crop) throws IOException{

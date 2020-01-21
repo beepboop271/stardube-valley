@@ -38,7 +38,7 @@ public class Recipe {
   /**
    * [getPrice]
    * Sets the money needed to craft the product.
-   * @param price  money needed to craft the product.
+   * @param price Money needed to craft the product.
    */
   public void setPrice(double price) {
     this.price = price;
@@ -56,8 +56,8 @@ public class Recipe {
   /**
    * [addIngredient]
    * Adds an ingredient and its quantity to this recipe.
-   * @param name      the name of the ingredient.
-   * @param quantity  the quantity of the ingredient.
+   * @param name     The name of the ingredient.
+   * @param quantity The quantity of the ingredient.
    */
   public void addIngredient(String name, int quantity) {
     this.ingredientQuantities.put(name, quantity);
@@ -66,8 +66,8 @@ public class Recipe {
   /**
    * [quantityOf]
    * Retrieves the quantity needed of an ingredient.
-   * @param name  the name of the ingredient.
-   * @return      int, the required quantity of the ingredient.
+   * @param name The name of the ingredient.
+   * @return int, the required quantity of the ingredient.
    */
   public int quantityOf(String name) {
     if (this.ingredientQuantities.containsKey(name)) {

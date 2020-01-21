@@ -11,7 +11,7 @@ public interface SpawnableArea {
   /**
    * [setSpawnLocation]
    * Assigns this area's stored spawn location to another point.
-   * @param spawnPos  The new spawn location point.
+   * @param spawnPos The new spawn location point.
    */
   public void setSpawnLocation(Point spawnPos);
 

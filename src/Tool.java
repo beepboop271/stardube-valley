@@ -15,12 +15,11 @@ public abstract class Tool extends Useable {
   /**
    * [Tool]
    * Constructor for a new Tool.
-   * @author Kevin Qiao, Joseph Wang
-   * @param name          The name of this tool.
-   * @param description   The description of this tool.
-   * @param imagePath     The path to this tool's images.
-   * @param energyCost    How much energy this tool needs.
-   * @param type          The type of tool this is.
+   * @param name        The name of this tool.
+   * @param description The description of this tool.
+   * @param imagePath   The path to this tool's images.
+   * @param energyCost  How much energy this tool needs.
+   * @param type        The type of tool this is.
    * @throws IOException
    */
   public Tool(String name, String description, 

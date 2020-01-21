@@ -12,8 +12,8 @@ public class OceanTile extends WaterTile {
   /**
    * [OceanTile]
    * Constructor for a new OceanTile.
-   * @param x  the x position of the OceanTile.
-   * @param y  the y position of the OceanTile.
+   * @param x The x position of the OceanTile.
+   * @param y The y position of the OceanTile.
    */
   public OceanTile(int x, int y) {
     super(x, y);

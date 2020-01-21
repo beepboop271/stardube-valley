@@ -8,8 +8,8 @@ import java.util.EventObject;
  * @author Kevin Qiao
  */
 public class TimedEvent implements Comparable<TimedEvent> {
-  private final long time;
-  private final EventObject event;
+  private final long TIME;
+  private final EventObject EVENT;
 
   /**
    * [TimedEvent]
@@ -18,19 +18,8 @@ public class TimedEvent implements Comparable<TimedEvent> {
    * @param event The event that this TimedEvent has.
    */
   public TimedEvent(long time, EventObject event) {
-    this.time = time;
-    this.event = event;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    long time = this.time/1_000_000_000;
-    return "TE("+String.format("%02d:%02d:%d, %s)",
-                               time/60, time%60, this.time%(1_000_000_000),
-                               this.getClass().getName());
+    this.TIME = time;
+    this.EVENT = event;
   }
 
   /**
@@ -41,9 +30,9 @@ public class TimedEvent implements Comparable<TimedEvent> {
     // typically would use this.time-other.time
     // however, compareTo must return an int, which will
     // overflow when the time difference is too high
-    if (this.time > other.time) {
+    if (this.TIME > other.TIME) {
       return 1;
-    } else if (this.time == other.time) {
+    } else if (this.TIME == other.TIME) {
       return 0;
     } else {
       return -1;
@@ -56,7 +45,7 @@ public class TimedEvent implements Comparable<TimedEvent> {
    * @return long, the time.
    */
   public long getTime() {
-    return this.time;
+    return this.TIME;
   }
 
   /**
@@ -65,6 +54,6 @@ public class TimedEvent implements Comparable<TimedEvent> {
    * @return EventObject, the event.
    */
   public EventObject getEvent() {
-    return this.event;
+    return this.EVENT;
   }
 }

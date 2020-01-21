@@ -8,8 +8,8 @@ import java.io.IOException;
  * @author Kevin Qiao, Joseph Wang
  */
 public class IntrinsicHarvestableComponent extends CollectableComponent implements Harvestable {
-  private final String requiredTool;
-  private final int hardness;
+  private final String REQUIRED_TOOL;
+  private final int HARDNESS;
 
   /**
    * [IntrinsicHarvestableComponent]
@@ -26,8 +26,8 @@ public class IntrinsicHarvestableComponent extends CollectableComponent implemen
                                        int hardness, int numProducts,
                                        double[] offsets) throws IOException {
     super(name, imagePath, numProducts, offsets);
-    this.requiredTool = requiredTool;
-    this.hardness = hardness;
+    this.REQUIRED_TOOL = requiredTool;
+    this.HARDNESS = hardness;
   }
 
   /**
@@ -36,7 +36,7 @@ public class IntrinsicHarvestableComponent extends CollectableComponent implemen
    * @return int, the total amount of damage needed.
    */
   public int getHardness() {
-    return this.hardness;
+    return this.HARDNESS;
   }
 
   /**
@@ -44,6 +44,6 @@ public class IntrinsicHarvestableComponent extends CollectableComponent implemen
    */
   @Override
   public String getRequiredTool() {
-    return this.requiredTool;
+    return this.REQUIRED_TOOL;
   }
 }
