@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.awt.GradientPaint;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * [WorldPanel]
@@ -201,36 +202,8 @@ public class WorldPanel extends JPanel {
 
     Point selectedTile = worldPlayer.getSelectedTile();
 
-    // draw tiles
-    for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
-      for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
-        if (playerArea.inMap(x, y)) {
-          Tile currentTile = playerArea.getMapAt(x, y);
-          if (currentTile != null) {
-            int drawX = originX+(screenTileX*Tile.getSize());
-            int drawY = originY+(screenTileY*Tile.getSize());
-            g.drawImage(currentTile.getImage(), drawX, drawY, null);
-          }
-        }
-        ++screenTileX;
-      }
-      screenTileX = 0;
-      ++screenTileY;
-    }
-    
-    // draw items
-    synchronized (playerArea.getItemsOnGroundList()) {
-      Iterator<HoldableStackEntity> items = playerArea.getItemsOnGround();
-      HoldableStackEntity nextItem;
-      while (items.hasNext()) {
-        nextItem = items.next();
-        g.drawImage(nextItem.getImage(),
-                    (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
-                    (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
-                    null);
-      }
-    }
-    
+    // System.out.println(playerPos+" "+playerArea.getName());
+
     // draw building layout
     if (playerArea instanceof BuildingArea) {
       if (((BuildingArea)playerArea).hasInteriorImage()) {
@@ -241,22 +214,54 @@ public class WorldPanel extends JPanel {
       }
     }
 
-    this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
-    this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
-
-    Iterator<Moveable> moveables = playerArea.getMoveables();
-    double nextX, nextY;
-    while (moveables.hasNext()) {
-      Moveable currentMoveable = moveables.next();
-      nextX = (Tile.getSize()*(currentMoveable.getPos().x-tileStartX+currentMoveable.getXOffset())+originX);
-      nextY = (Tile.getSize()*(currentMoveable.getPos().y-tileStartY+currentMoveable.getYOffset())+originY);
-      g.drawImage(currentMoveable.getImage(), (int)nextX, (int)nextY, null);
+    ArrayList<HoldableStackEntity> items = playerArea.getItemsOnGroundList();
+    Collections.sort(items);
+    // HoldableStackEntity[] items;
+    HoldableStackEntity nextItem;
+    ArrayList<Moveable> moveables = playerArea.getMoveableList();
+    Collections.sort(moveables);
+    // Moveable[] moveables;
+    // Moveable nextMoveable;
+    int moveableIdx = 0;
+    while ((moveableIdx < moveables.size())
+           && (Math.floor(moveables.get(moveableIdx).getPos().y) < tileStartY-1)) {
+      ++moveableIdx;
     }
+    int itemIdx = 0;
+    while ((itemIdx < items.size())
+           && (Math.floor(items.get(itemIdx).getPos().y) < tileStartY-1)) {
+      ++itemIdx;
+    }
+    double nextX, nextY;
 
-    // draw tile components
-    screenTileX = 0;
-    screenTileY = 0;
+    // draw tiles
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
+      if (!(playerArea instanceof BuildingArea)) {
+        for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
+          if (playerArea.inMap(x, y)) {
+            Tile currentTile = playerArea.getMapAt(x, y);
+            if (currentTile != null) {
+              int drawX = originX+(screenTileX*Tile.getSize());
+              int drawY = originY+(screenTileY*Tile.getSize());
+              g.drawImage(currentTile.getImage(), drawX, drawY, null);
+              // if (playerArea.walkableAt(new Point(x, y))){
+              //   g.setColor(Color.GREEN);
+              //   g.fillRect(drawX, drawY, 30, 30);
+              // } else {
+              //   g.setColor(Color.RED);
+              //   g.fillRect(drawX, drawY, 30, 30);
+              // }
+              g.setColor(Color.BLACK);
+              g.setFont(this.QUANTITY_FONT);
+              g.drawString(String.format("%d %d", (int)x, (int)y), drawX+8, drawY+40);
+            }
+          }
+          ++screenTileX;
+        }
+        screenTileX = 0;
+      }
+
+      // tile components
       for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
         if (playerArea.inMap(x, y)) {
           Tile currentTile = playerArea.getMapAt(x, y);
@@ -307,10 +312,37 @@ public class WorldPanel extends JPanel {
         ++screenTileX;
       }
       screenTileX = 0;
+
+        // draw moveables
+        while ((moveableIdx < moveables.size())
+               && (Math.floor(moveables.get(moveableIdx).getPos().y) == y-1)) {
+          nextX = (Tile.getSize()*(moveables.get(moveableIdx).getPos().x-tileStartX+moveables.get(moveableIdx).getXOffset())+originX);
+          nextY = (Tile.getSize()*(moveables.get(moveableIdx).getPos().y-tileStartY+moveables.get(moveableIdx).getYOffset())+originY);
+          g.drawImage(moveables.get(moveableIdx).getImage(), (int)nextX, (int)nextY, null);
+          ++moveableIdx;
+        }
+
+        // draw items
+        while ((itemIdx < items.size())
+               && (Math.floor(items.get(itemIdx).getPos().y) == y-1)) {
+          g.drawImage(items.get(itemIdx).getImage(),
+                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().x-tileStartX+0.5)-8+originX),
+                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().y-tileStartY+0.5)-8+originY),
+                      null);
+          ++itemIdx;
+        }
+
       ++screenTileY;
     }
 
-    
+    this.playerScreenPos.x = Tile.getSize()*(playerPos.x-tileStartX+0.5)+originX;
+    this.playerScreenPos.y = Tile.getSize()*(playerPos.y-tileStartY+0.5)+originY;
+
+    g.setColor(Color.RED);
+    g.drawRect((int)((Tile.getSize()*(playerPos.x-tileStartX+0.5-Player.SIZE)+originX)),
+               (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
+   
+
     // hotbar stuff :))
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2){

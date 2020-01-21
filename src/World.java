@@ -8,6 +8,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.ListIterator;
 
 /**
  * [World]
@@ -68,7 +69,7 @@ public class World {
     
     this.player = new Player(new Point(13, 13), "player");
     this.playerArea = this.locations.get("Farm");
-    this.playerArea.addMoveable(this.player);
+    // this.playerArea.addMoveable(this.player);
 
     this.loadWorldMap("assets/gamedata/map/WorldMap");
     this.loadNPCS();
@@ -103,31 +104,42 @@ public class World {
 
     // move holdable entities on the ground
     // towards the player in the current area
-    synchronized (this.playerArea.getItemsOnGroundList()) {
+    // synchronized (this.playerArea.getItemsOnGroundList()) {
       Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
       HoldableStackEntity nextItemEntity;
       double itemDistance;
       while (itemsNearPlayer.hasNext()) {
         nextItemEntity = itemsNearPlayer.next();
+        // itemsNearPlayer.remove();
         itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
         if ((itemDistance < Player.SIZE)
               && (this.player.pickUp(nextItemEntity.getStack()))) {
           itemsNearPlayer.remove();
         } else if (itemDistance < Player.getItemAttractionDistance()) {
-          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
-                                                             this.player.getPos()));
+            nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
+                                                               this.player.getPos()));
+            // this.playerArea.addItemOnGround(nextItemEntity);
+          // itemsNearPlayer.add(nextItemEntity);
         }
       }
-    }
+      // this.playerArea.sortItemsOnGround();
+    // }
     
+    System.out.println("tick");
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;
     if (this.locations.get(this.playerArea.getName()) == null) {
-      this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
+      // synchronized (this.playerArea.getMoveableList()) {
+        this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
+        // this.playerArea.sortMoveables();
+      // }
     }
     while (areas.hasNext()) {
       nextArea = areas.next();
-      this.moveMoveablesInArea(nextArea, currentUpdateTime);
+      // synchronized (nextArea.getMoveableList()) {
+        this.moveMoveablesInArea(nextArea, currentUpdateTime);
+        // nextArea.sortMoveables();
+      // }
     }
 
     this.lastUpdateTime = currentUpdateTime;
@@ -146,28 +158,32 @@ public class World {
     Vector2D move;
     while (moveables.hasNext()) {
       nextMoveable = moveables.next();
-      if (nextMoveable instanceof Enemy) {
-        Enemy nextEnemy = ((Enemy)nextMoveable);
-        if (a.hasLineOfSight(nextEnemy, this.player)) {
-          move = nextEnemy.getMove(updateTime-this.lastUpdateTime, this.player.getPos());
-        } else {
-          move = nextEnemy.getMove(updateTime-this.lastUpdateTime);
-        }
-      } else {
+      // if (nextMoveable instanceof Enemy) {
+      //   Enemy nextEnemy = ((Enemy)nextMoveable);
+      //   if (a.hasLineOfSight(nextEnemy, this.player)) {
+      //     move = nextEnemy.getMove(updateTime-this.lastUpdateTime, this.player.getPos());
+      //   } else {
+      //     move = nextEnemy.getMove(updateTime-this.lastUpdateTime);
+      //   }
+      // } else {
         move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
-      }
+      // }
       if ((move != null) && (move.getLength() > 0)) {
+        // moveables.remove();
         if (nextMoveable instanceof LoopAnimatedMoveable) {
           ((LoopAnimatedMoveable)nextMoveable).updateImage();
         }
         World.doCollision(a, nextMoveable, move.getXVector(), true);
         World.doCollision(a, nextMoveable, move.getYVector(), false);
+        
         if (nextMoveable instanceof Player) {
-          this.playerArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-        } else if (nextMoveable instanceof NPC) {
-          a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-        } else {
-          a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+          Area newArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
+          if (newArea != a) {
+            this.playerArea = newArea;
+            moveables.remove();
+          }
+        } else if (a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator()) != a) {
+            moveables.remove();
         }
       }
     }
@@ -189,9 +205,12 @@ public class World {
     collideDirection = a.collides(intersectingTiles,
                                   m.getPos().translateNew(move.getX(), move.getY()),
                                   isHorizontal);
+    // System.out.println(collideDirection);
     if (collideDirection == -1) {
+      // System.out.printf("translated by %s\n", move.toString());
       m.translatePos(move);
     } else {
+      // System.out.printf("fixing from %s\n", move.toString());
       World.fixCollision(m, collideDirection);
     }
   }

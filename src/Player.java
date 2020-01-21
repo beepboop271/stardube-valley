@@ -76,8 +76,10 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
       return null;
     }
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
+    // System.out.printf("%.5f\n", elapsedSeconds);
     Vector2D positionChange = this.getVelocity();
     positionChange.setLength(Player.SPEED*elapsedSeconds);
+    // System.out.printf("%.5f\n", Player.SPEED*elapsedSeconds);
     // this.translatePos(positionChange);
     return positionChange;
   }

@@ -195,7 +195,7 @@ public class MineLevel extends Area {
                 }
               } else {
                 if (Math.random() < 0.1 && !aaaaaaaaaaaaaaa) {
-                  level.addMoveable(new SlimeEnemy(new Point(realX, realY)));
+                  // level.addMoveable(new SlimeEnemy(new Point(realX, realY)));
                   aaaaaaaaaaaaaaa = true;
                 }
               }
