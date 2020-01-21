@@ -26,9 +26,8 @@ public class GroundTile extends Tile {
   /**
    * [GroundTile]
    * Constructor for a new GroundTile.
-   * @author Joseph Wang, Kevin Qiao
-   * @param x  The x position of this ground tile.
-   * @param y  The y position of this ground tile.
+   * @param x The x position of this ground tile.
+   * @param y The y position of this ground tile.
    */
   public GroundTile(int x, int y) {
     super(x, y);
@@ -48,7 +47,7 @@ public class GroundTile extends Tile {
   /**
    * [setTilledStatus]
    * Assigns this tile's tilled status to the provided status.
-   * @param status  The new tilled status of this tile.
+   * @param status The new tilled status of this tile.
    */
   public void setTilledStatus(boolean status) {
     this.isTilled = status;
@@ -66,7 +65,7 @@ public class GroundTile extends Tile {
   /**
    * [setLastWatered]
    * Sets this tile's last watered date to the specified date.
-   * @param day  The new watered date for this tile.
+   * @param day The new watered date for this tile.
    */
   public void setLastWatered(long day) {
     this.lastWatered = day;
@@ -87,7 +86,7 @@ public class GroundTile extends Tile {
    * Using the current day, determines what image this ground tile
    * should display.
    * @author Joseph Wang, Kevin Qiao
-   * @param currentDay, the day to be used during calculations.
+   * @param currentDay the day to be used during calculations.
    */
   public void determineImage(long currentDay) {
     if (this.imageToDisplay == GroundTile.mineGroundImage) {

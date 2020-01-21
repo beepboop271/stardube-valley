@@ -7,15 +7,15 @@
  */
 
 class FishingGameBar {
-  private double y;
   private final int height;
+  private double y;
   private double velocity;
 
   /**
    * [FishingGameBar]
    * Constructor for a new FishingGameBar that has a initial velocity of 0.
-   * @param y       int, the y position of the FishingGameBar.
-   * @param height  int, the height of the FishingGameBar.
+   * @param y      The y position of the FishingGameBar.
+   * @param height The height of the FishingGameBar.
    */
   public FishingGameBar(int y, int height) {
     this.y = y;
@@ -26,9 +26,9 @@ class FishingGameBar {
   /**
    * [FishingGameBar]
    * Constructor for a new FishingGameBar that does not have a initial velocity of 0.
-   * @param y         int, the y position of the FishingGameBar.
-   * @param height    int, the height of the FishingGameBar.
-   * @param velocity  double, the velocity of the FishingGameBar.
+   * @param y        The y position of the FishingGameBar.
+   * @param height   The height of the FishingGameBar.
+   * @param velocity The velocity of the FishingGameBar.
    */
   public FishingGameBar(int y, int height, double velocity) {
     this.y = y;
@@ -42,7 +42,8 @@ class FishingGameBar {
    * @return boolean, true if this is inside another FishingGameBar, false otherwise.
    */
   public boolean isInside(FishingGameBar otherBar) {
-    return ((this.y>=otherBar.getY()) && ((this.y+this.height)<=(otherBar.getY()+otherBar.getHeight())));
+    return ((this.y >= otherBar.getY())
+            && ((this.y+this.height) <= (otherBar.getY()+otherBar.getHeight())));
   }
 
   /**

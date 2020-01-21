@@ -20,10 +20,9 @@ public class FarmArea extends Area {
   /**
    * [FarmArea]
    * Constructor for a new FarmArea.
-   * @author        Kevin Qiao, Joseph Wang
-   * @param name    the name of this farm area.
-   * @param width   the tile width of this farm area.
-   * @param height  the tile height of this farm area.
+   * @param name   The name of this farm area.
+   * @param width  The tile width of this farm area.
+   * @param height The tile height of this farm area.
    */
   public FarmArea(String name,
                   int width, int height) {
@@ -35,7 +34,7 @@ public class FarmArea extends Area {
    * [addEditedTile]
    * Adds a tile to this area's collection of edited tiles.
    * @author Joseph Wang
-   * @param tile  The tile to be added.
+   * @param tile The tile to be added.
    */
   public void addEditedTile(GroundTile tile) {
     this.editedTiles.add(tile);
@@ -45,7 +44,7 @@ public class FarmArea extends Area {
    * [removeEditedTile]
    * Removes a tile from this area's collection of edited tiles.
    * @author Joseph Wang
-   * @param tile  The tile to be removed.
+   * @param tile The tile to be removed.
    */
   public void removeEditedTile(GroundTile tile) {
     this.editedTiles.remove(tile);
@@ -55,15 +54,11 @@ public class FarmArea extends Area {
    * [hasTile]
    * Checks if a tile exists in thsi area's collection of edited
    * tiles.
-   * @param tile  The tile to check for.
-   * @return      boolean, true if the tile exists, false otherwise.
+   * @param tile The tile to check for.
+   * @return boolean, true if the tile exists, false otherwise.
    */
   public boolean hasTile(GroundTile tile) {
-    if (this.editedTiles.contains(tile)) {
-      return true;
-    }
-
-    return false;
+    return this.editedTiles.contains(tile);
   }
 
   /**
@@ -82,13 +77,14 @@ public class FarmArea extends Area {
       int y = this.random.nextInt(this.getMap().length);
       Tile spawnTile = this.getMapAt(this.random.nextInt(this.getMap()[y].length), y);
       Tile centerTile;
-      if (spawnTile != null && this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
+      if ((spawnTile != null) && this.inMap(spawnTile.getX()-2, spawnTile.getY()-1)) {
         centerTile = this.getMapAt(spawnTile.getX()-2, spawnTile.getY()-1);
       } else {
         centerTile = null;
       }
-      if (spawnTile != null && spawnTile instanceof GroundTile && centerTile != null 
-          && centerTile instanceof GroundTile && spawnTile.getContent() == null) {
+      if ((spawnTile != null) && (spawnTile instanceof GroundTile)
+            && (centerTile != null) && (centerTile instanceof GroundTile)
+            && (spawnTile.getContent() == null)) {
         ExtrinsicTree newTree = new ExtrinsicTree(tree);
         newTree.setStage(17);
         spawnTile.setContent(newTree);
@@ -114,7 +110,7 @@ public class FarmArea extends Area {
     while (allTreeTiles.hasNext()) {
       Tile currentTile = allTreeTiles.next();
       TileComponent currentContent = currentTile.getContent();
-      if (currentContent != null && currentContent instanceof ExtrinsicTree) {
+      if ((currentContent != null) && (currentContent instanceof ExtrinsicTree)) {
         ((ExtrinsicTree)currentTile.getContent()).grow();
       }
     }
@@ -126,8 +122,7 @@ public class FarmArea extends Area {
       if (currentTile.getContent() != null) {
         TileComponent content = currentTile.getContent();
         if (content instanceof ExtrinsicCrop) {
-          if (this.getSeason() != ((IntrinsicCrop)((ExtrinsicCrop)content).getIntrinsicSelf())
-            .getPlantingSeason()) { //- for now the crop just disappears if it's not in the right season
+          if (this.getSeason() != ((IntrinsicCrop)((ExtrinsicCrop)content).getIntrinsicSelf()).getPlantingSeason()) {
             currentTile.setContent(null); 
           } else {
             if (currentTile.getLastWatered() == this.getCurrentDay() - 1) {
@@ -140,7 +135,7 @@ public class FarmArea extends Area {
         }
       } else {
         //- If the tile is tilled but there's nothing on it, untill it
-        if (currentTile.getTilledStatus() == true) { 
+        if (currentTile.getTilledStatus()) { 
           currentTile.setTilledStatus(false);
           currentTile.determineImage(this.getCurrentDay());
           //- Remove the tile from the iterator to prevent ConcurrentModificationException

@@ -15,9 +15,9 @@ public class HoldableDrop {
   /**
    * [HoldableDrop]
    * Constructor for a new HoldableDrop
-   * @param minDropQuantity  The minimum amount of items that can be dropped.
-   * @param maxDropQuantity  The maximum amount of items that can be dropped.
-   * @param holdableToDrop   The holdable to drop.
+   * @param minDropQuantity The minimum amount of items that can be dropped.
+   * @param maxDropQuantity The maximum amount of items that can be dropped.
+   * @param holdableToDrop  The holdable to drop.
    */
   public HoldableDrop(int minDropQuantity, int maxDropQuantity,
                       String holdableToDrop) {
@@ -31,12 +31,13 @@ public class HoldableDrop {
    * Taking into consider the daily luck, produces a new HoldableStack 
    * with the minimum and maximum drop quantity used during the random
    * calculation of how many drops to produce.
-   * @param luck  The daily luck to consider during drop calculations.
-   * @return      HoldableStack, a new stack of items with the random
-   *              quantity calculated.
+   * @param luck The daily luck to consider during drop calculations.
+   * @return HoldableStack, a new stack of items with the random
+   *         quantity calculated.
    */
   public HoldableStack resolveDrop(double luck) { 
-    int quantity = (int)((Math.random()*(this.maxDropQuantity-this.minDropQuantity+1))
+    int quantity = (int)((Math.min(0.999, (0.3*luck)+Math.random())
+                          * (this.maxDropQuantity+1-this.minDropQuantity+1))
                          + this.minDropQuantity);
     if (quantity <= 0) {
       return null;

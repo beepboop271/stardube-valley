@@ -15,7 +15,7 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
   /**
    * [ExtrinsicTree]
    * Constructor for a new ExtrinsicTree.
-   * @param tree  The name of the tree.
+   * @param tree The name of the tree.
    */
   public ExtrinsicTree(String tree) {
     super(tree);
@@ -43,7 +43,7 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
   /**
    * [setStage]
    * Sets the stage this tree is at to a specified stage.
-   * @param stage, the new stage for this tree.
+   * @param stage The new stage for this tree.
    */
   public void setStage(int stage) {
     this.stage = stage;
@@ -54,8 +54,9 @@ public class ExtrinsicTree extends ExtrinsicHarvestableComponent implements Grow
    */
   @Override
   public BufferedImage getImage() {
-    return this.getIntrinsicSelf().getImages()[
-           ((IntrinsicTree)this.getIntrinsicSelf()).getStageToDisplay(this.stage)];
+    return this.getIntrinsicSelf()
+               .getImages()[((IntrinsicTree)this.getIntrinsicSelf())
+                                                .getStageToDisplay(this.stage)];
   }
 
   /**

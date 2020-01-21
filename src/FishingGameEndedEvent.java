@@ -15,7 +15,7 @@ public class FishingGameEndedEvent extends EventObject {
   /**
    * [FishingGameEndedEvent]
    * Constructor for a new FishingGameEndedEvent.
-   * @param gameEnded  FishingGame, the ended fishing game that will be processed.
+   * @param gameEnded FishingGame, the ended fishing game that will be processed.
    */
   public FishingGameEndedEvent(FishingGame gameEnded) {
     super(gameEnded);

@@ -13,8 +13,8 @@ public class HoldableStack {
   /**
    * [HoldableStack]
    * Constructor for a new HoldableStack.
-   * @param containedHoldable  The holdable in this HoldableStack.
-   * @param quantity           The amount of holdables in this HoldableStack.
+   * @param containedHoldable The holdable in this HoldableStack.
+   * @param quantity          The amount of holdables in this HoldableStack.
    */
   public HoldableStack(Holdable containedHoldable, int quantity) {
     this.containedHoldable = containedHoldable;
@@ -24,12 +24,11 @@ public class HoldableStack {
   /**
    * [HoldableStack]
    * Constructor for a new HoldableStack.
-   * @param containedHoldable  A string with the holdable in this HoldableStack
-   * @param quantity           The amount of holdables in this HoldableStack
+   * @param containedHoldable A string with the holdable in this HoldableStack
+   * @param quantity          The amount of holdables in this HoldableStack
    */
   public HoldableStack(String containedHoldable, int quantity) {
-    this.containedHoldable = HoldableFactory.getHoldable(containedHoldable);
-    this.quantity = quantity;
+    this(HoldableFactory.getHoldable(containedHoldable), quantity);
   }
 
   /**
@@ -53,7 +52,7 @@ public class HoldableStack {
   /**
    * [setQuantity]
    * Sets this stored quantity to a new quantity.
-   * @param quantity  The new quantity for this HoldableStack.
+   * @param quantity The new quantity for this HoldableStack.
    */
   public void setQuantity(int quantity) {
     this.quantity = quantity;
@@ -62,7 +61,7 @@ public class HoldableStack {
   /**
    * [addHoldables]
    * Adds a specific amount of holdables to this quantity.
-   * @param quantity  The amount of holdables to add.
+   * @param quantity The amount of holdables to add.
    */
   public void addHoldables(int quantity) {
     this.quantity += quantity;
@@ -71,7 +70,7 @@ public class HoldableStack {
   /**
    * [subtractHoldables]
    * Subtracts a specific amount of holdable to this quantity.
-   * @param quantity  The amount of holdables to subtract.
+   * @param quantity The amount of holdables to subtract.
    */
   public void subtractHoldables(int quantity) {
     this.quantity -= quantity;

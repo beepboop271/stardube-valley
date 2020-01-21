@@ -23,10 +23,10 @@ public class FishingRod extends Tool {
   /**
    * [FishingRod]
    * Constructor for a new FishingRod.
-   * @param name         String, name of the fishing rod.
-   * @param description  String, description of the fishing rod.
-   * @param imagePath    String, image path of the fishing rod.
-   * @param energyCost   int, energy cost for using this rod.
+   * @param name        Name of the fishing rod.
+   * @param description Description of the fishing rod.
+   * @param imagePath   Image path of the fishing rod.
+   * @param energyCost  Energy cost for using this rod.
    * @throws IOException
    */
   public FishingRod(String name, String description, 
@@ -48,7 +48,7 @@ public class FishingRod extends Tool {
    * Sets this fishing rod to cast and records the time.
    */
   public void startCasting() {
-    if(this.currentStatus == FishingRod.CASTING_STATUS){
+    if (this.currentStatus == FishingRod.CASTING_STATUS) {
       return;
     }
     this.currentStatus = FishingRod.CASTING_STATUS;
@@ -61,11 +61,14 @@ public class FishingRod extends Tool {
    * @return int, the casting progress in percentage.
    */
   public int getCastingProgressPercentage() {
-    if(this.currentStatus != FishingRod.CASTING_STATUS){
+    if (this.currentStatus != FishingRod.CASTING_STATUS) {
       return 0;
     }
-    return 100-(int)((Math.abs(((System.nanoTime()-this.castingBeginNanoTime) % (FishingRod.MAX_PROGRESS_NANOTIME*2.0))
-                               - FishingRod.MAX_PROGRESS_NANOTIME) / FishingRod.MAX_PROGRESS_NANOTIME)*100);
+    return 100-(int)((Math.abs(((System.nanoTime()-this.castingBeginNanoTime)
+                                % (FishingRod.MAX_PROGRESS_NANOTIME*2.0))
+                               - FishingRod.MAX_PROGRESS_NANOTIME)
+                      / FishingRod.MAX_PROGRESS_NANOTIME)
+                     * 100);
   }
 
   /**
@@ -80,7 +83,7 @@ public class FishingRod extends Tool {
   /**
    * [setCurrentStatus]
    * Sets the current status of this fishing rod.
-   * @param status int, the current status of this fishing rod.
+   * @param status The current status of this fishing rod.
    */
   public void setCurrentStatus(int status) {
     this.currentStatus = status;
