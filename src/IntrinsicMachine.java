@@ -6,7 +6,7 @@ import java.util.HashMap;
  * [IntrinsicMachine]
  * A class for data that can be shared between the same type of machine.
  * 2020-01-13
- * @version 0.1
+ * @version 0.2
  * @author Joseph Wang
  */
 

@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 /**
  * [BuildingArea]
  * A class for any buildings that are created in Stardube Valley.
- * 2020-01-06
+ * 2020-01-19
  * @version 0.2
  * @author Joseph Wang
  */

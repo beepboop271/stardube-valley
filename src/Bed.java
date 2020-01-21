@@ -1,6 +1,6 @@
 /**
  * [Bed]
- * A point where you are able to end day by right clicking
+ * A point where you are able to end day by right clicking.
  * 2020-1-19
  * @version 0.2
  * @author Joseph Wang

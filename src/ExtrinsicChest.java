@@ -3,7 +3,7 @@
  * A chest that is able to store information about this specific instance of
  * ExtrinsicChest, but uses an intrinsic component for commonly shared information
  * between chests.
- * 2020-01-07
+ * 2020-01-13
  * @version 0.2
  * @author Joseph Wang, Candice Zhang, Kevin Qiao
  */

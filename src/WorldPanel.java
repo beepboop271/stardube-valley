@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.Iterator;
 import javax.swing.JPanel;
 import java.awt.AlphaComposite;
 import java.awt.image.BufferedImage;
@@ -328,7 +327,7 @@ public class WorldPanel extends JPanel {
                (int)((Tile.getSize()*(playerPos.y-tileStartY+0.5-Player.SIZE)+originY)), (int)(2*Player.SIZE*Tile.getSize()), (int)(2*Player.SIZE*Tile.getSize()));
    
 
-    // hotbar stuff :))
+    // hotbar stuff 
     hotbarX = this.getWidth()/2-6*(WorldPanel.INVENTORY_CELLSIZE + WorldPanel.INVENTORY_CELLGAP);
     if ((this.playerScreenPos.y-Player.SIZE*Tile.getSize()) > this.getHeight()/2){
       this.hotbarY = WorldPanel.INVENTORY_CELLGAP*2;

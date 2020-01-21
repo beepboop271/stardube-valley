@@ -6,8 +6,8 @@ import java.util.HashMap;
 /**
  * [HoldableFactory]
  * The factory of all holdables in stardube valley.
- * 2019-12-20
- * @version 0.3
+ * 2020-01-20
+ * @version 0.16
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
 public class HoldableFactory {

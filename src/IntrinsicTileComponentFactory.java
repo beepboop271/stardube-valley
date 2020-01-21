@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 /**
  * [IntrinsicTileComponentFactory]
- * 2019-12-20
- * @version 0.3
+ * 2020-01-20
+ * @version 1.19
  * @author Kevin Qiao, Paula Yuan, Joseph Wang
  */
 

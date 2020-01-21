@@ -58,7 +58,7 @@ class FishingGameBar {
   /**
    * [setY]
    * Sets the y position of this FishingGameBar.
-   * @param y double, the y position of this FishingGameBar.
+   * @param y  The y position of this FishingGameBar.
    */
   public void setY(double y) {
     this.y = y;
@@ -85,7 +85,7 @@ class FishingGameBar {
   /**
    * [setVelocity]
    * Sets the velocity of this FishingGameBar.
-   * @param velocity double, the velocity of this FishingGameBar.
+   * @param velocity  The velocity of this FishingGameBar.
    */
   public void setVelocity(double velocity) {
     this.velocity = velocity;

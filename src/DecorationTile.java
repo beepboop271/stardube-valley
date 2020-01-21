@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 /**
  * [DecorationTile]
  * A set of tiles that are only used for decoration.
- * 2020-1-7
+ * 2020-1-17
  * @version 0.2
  * @author Joseph Wang
  */

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
  * like what is being produced. Uses IntrinsicMachine for information shared between
  * machines of the same type.
  * 2020-01-08
- * @version 0.1
+ * @version 0.2
  * @author Joseph Wang
  */
 

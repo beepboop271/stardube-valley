@@ -6,7 +6,7 @@ import java.io.IOException;
  * A component that is able to be on a tile and gets a product to
  * put into a player's inventory if the player collects it.
  * 2019-12-20
- * @version 0.1
+ * @version 1.2
  * @author Kevin Qiao, Joseph Wang
  */
 public class CollectableComponent extends IntrinsicTileComponent 

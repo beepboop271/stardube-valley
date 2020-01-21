@@ -29,7 +29,7 @@ public class FishingGame {
   /**
    * [FishingGame]
    * Constructor for a new FishingGame.
-   * @param tileToFish WaterTile, the water tile that is casted for fishing.
+   * @param tileToFish  the water tile that is casted for fishing.
    */
   public FishingGame(WaterTile tileToFish) {
     this.currentProgress = FishingGame.INIT_PROGRESS;
@@ -45,7 +45,7 @@ public class FishingGame {
    * [update]
    * Updates the components and status of the game according to the newest mouse events.
    * @author Candice Zhang, Kevin Qiao
-   * @param mouseDown True if the mouse is held down, false otherwise.
+   * @param mouseDown  true if the mouse is held down, false otherwise.
    * @param mouseTimer The Stopwatch for the mouse.
    */
   public void update(boolean mouseDown, Stopwatch mouseTimer) {

@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * [CraftingStore]
  * An IntrinsicTileComponent that stores essential data for shop interations,
  * including items it can craft and the corresponding recipes.
- * 2020-01-14
+ * 2020-01-20
  * @version 0.2
  * @author Candice Zhang
  */

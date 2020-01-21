@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 /**
  * [GroundTile]
  * A tile for specifically ground, which can be tillable and watered.
- * 2019-12-18
+ * 2019-12-25
  * @version 0.2
  * @author Kevin Qiao, Joseph Wang
  */

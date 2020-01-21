@@ -3,7 +3,7 @@
  * A crop that is able to store information specific to the crop,
  * but relies on IntrinsicCrop for shared data between all crops.
  * 2019-12-23
- * @version 0.3
+ * @version 1.0
  * @author Joseph Wang, Paula Yuan
  */
 

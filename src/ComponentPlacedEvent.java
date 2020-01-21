@@ -3,8 +3,8 @@ import java.util.EventObject;
 /**
  * [ComponentPlacedEvent]
  * An event that signals when a component is to be placed onto a tile.
- * 2019-12-26
- * @version 0.2
+ * 2020-01-01
+ * @version 0.3
  * @author Joseph Wang, Candice Zhang
  */
 

@@ -68,7 +68,6 @@ public class World {
     
     this.player = new Player(new Point(13, 13), "player");
     this.playerArea = this.locations.get("Farm");
-    // this.playerArea.addMoveable(this.player);
 
     this.loadWorldMap("assets/gamedata/map/WorldMap");
     this.loadNPCS();
@@ -103,41 +102,29 @@ public class World {
 
     // move holdable entities on the ground
     // towards the player in the current area
-    // synchronized (this.playerArea.getItemsOnGroundList()) {
-      Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
-      HoldableStackEntity nextItemEntity;
-      double itemDistance;
-      while (itemsNearPlayer.hasNext()) {
-        nextItemEntity = itemsNearPlayer.next();
-        // itemsNearPlayer.remove();
-        itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
-        if ((itemDistance < Player.SIZE)
-              && (this.player.pickUp(nextItemEntity.getStack()))) {
-          itemsNearPlayer.remove();
-        } else if (itemDistance < Player.getItemAttractionDistance()) {
-            nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
-                                                               this.player.getPos()));
-            // this.playerArea.addItemOnGround(nextItemEntity);
-          // itemsNearPlayer.add(nextItemEntity);
-        }
+    Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
+    HoldableStackEntity nextItemEntity;
+    double itemDistance;
+    while (itemsNearPlayer.hasNext()) {
+      nextItemEntity = itemsNearPlayer.next();
+      itemDistance = nextItemEntity.getPos().distanceTo(this.player.getPos());
+      if ((itemDistance < Player.SIZE)
+            && (this.player.pickUp(nextItemEntity.getStack()))) {
+        itemsNearPlayer.remove();
+      } else if (itemDistance < Player.getItemAttractionDistance()) {
+          nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
+                                                             this.player.getPos()));
       }
-      // this.playerArea.sortItemsOnGround();
-    // }
+    }
     
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;
     if (this.locations.get(this.playerArea.getName()) == null) {
-      // synchronized (this.playerArea.getMoveableList()) {
-        this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
-        // this.playerArea.sortMoveables();
-      // }
+      this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
     }
     while (areas.hasNext()) {
       nextArea = areas.next();
-      // synchronized (nextArea.getMoveableList()) {
-        this.moveMoveablesInArea(nextArea, currentUpdateTime);
-        // nextArea.sortMoveables();
-      // }
+      this.moveMoveablesInArea(nextArea, currentUpdateTime);
     }
 
     this.lastUpdateTime = currentUpdateTime;
@@ -156,18 +143,8 @@ public class World {
     Vector2D move;
     while (moveables.hasNext()) {
       nextMoveable = moveables.next();
-      // if (nextMoveable instanceof Enemy) {
-      //   Enemy nextEnemy = ((Enemy)nextMoveable);
-      //   if (a.hasLineOfSight(nextEnemy, this.player)) {
-      //     move = nextEnemy.getMove(updateTime-this.lastUpdateTime, this.player.getPos());
-      //   } else {
-      //     move = nextEnemy.getMove(updateTime-this.lastUpdateTime);
-      //   }
-      // } else {
-        move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
-      // }
+      move = nextMoveable.getMove(updateTime-this.lastUpdateTime);
       if ((move != null) && (move.getLength() > 0)) {
-        // moveables.remove();
         if (nextMoveable instanceof LoopAnimatedMoveable) {
           ((LoopAnimatedMoveable)nextMoveable).updateImage();
         }
@@ -730,7 +707,6 @@ public class World {
     while (!nextLine.equals("")) {
       gatewayMatch = gatewayPattern.matcher(nextLine);
       gatewayMatch.matches();
-      //System.out.println("Connecting " + gatewayMatch.group(1) + " to " + gatewayMatch.group(6));
       gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
                              Integer.parseInt(gatewayMatch.group(3)),
                              World.NORTH,
@@ -839,7 +815,6 @@ public class World {
                                                              + a.getName()));
     String nextLine;
     
-    //System.out.println("Initializing " + a.getName());
     Tile createdTile;
     for (int y = 0; y < a.getHeight(); ++y) {
       nextLine = input.readLine();
