@@ -14,8 +14,8 @@ public class HoldableStackEntity extends Moveable implements Drawable {
   /**
    * [HoldableStackEntity]
    * A constructor for a new HoldableStackEntity.
-   * @param stackObject  The HoldableStack stored.
-   * @param position     The position of this entity.
+   * @param stackObject The HoldableStack stored.
+   * @param position    The position of this entity.
    */
   public HoldableStackEntity(HoldableStack stackObject, Point position) {
     super(position, 0.125);
@@ -27,12 +27,11 @@ public class HoldableStackEntity extends Moveable implements Drawable {
    * Uses the elapsed time to figure out movement. However, this object
    * will never know how to move without the player position, so this
    * will always return a new Vector2D of 0, 0.
-   * @param elapsedNanoTime  The elapsed amount of time in the world.
-   * @return                 Vector2D, equal to (0, 0).
+   * @param elapsedNanoTime The elapsed amount of time in the world.
+   * @return Vector2D, equal to (0, 0).
    */
   @Override
   public Vector2D getMove(long elapsedNanoTime) {
-    // does not know how to move without player pos
     return new Vector2D(0, 0);
   }
 
@@ -40,10 +39,9 @@ public class HoldableStackEntity extends Moveable implements Drawable {
    * [getMove]
    * Using the player's position and elapsed time, calculates how the
    * items in this HoldableStackEntity will move. Uses velocity.
-   * @param elapsedNanoTime  The elapsed amount of time in the world.
-   * @param playerPos        The player position.
-   * @return                 Vector2D, with this velocity scaled to the 
-   *                         elapsed time.
+   * @param elapsedNanoTime The elapsed amount of time in the world.
+   * @param playerPos       The player position.
+   * @return Vector2D, the distance vector this entity "wants" to move with.
    */
   public Vector2D getMove(long elapsedNanoTime, Point playerPos) {
     this.setVelocity(

@@ -14,8 +14,7 @@ public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent implem
   /**
    * [ExtrinsicHarvestableComponent]
    * Constructor for a new ExtrinsicHarvestableComponent.
-   * @author      Kevin Qiao, Paula Yuan
-   * @param name  The name of this harvestable component.
+   * @param name The name of this harvestable component.
    */
   public ExtrinsicHarvestableComponent(String name) {
     super(name);
@@ -27,10 +26,10 @@ public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent implem
    * Inflicts a certain amount of damage to this component and
    * checks to see if this component has been destroyed (ie has
    * 0 or less health).
-   * @author unknown
-   * @param damage  The amount of damage to deal to this component
-   * @return        boolean, true if this component has less than 0
-   *                hardness left, false otherwise.
+   * @author Kevin Qiao
+   * @param damage The amount of damage to deal to this component
+   * @return boolean, true if this component has less than 0
+   *         hardness left, false otherwise.
    */
   public boolean damageComponent(int damage) {
     this.hardnessLeft -= damage;
@@ -40,8 +39,7 @@ public class ExtrinsicHarvestableComponent extends ExtrinsicTileComponent implem
   /**
    * [setHardnessLeft]
    * Adjusts this component's hardness left to a specific value.
-   * @author unknown
-   * @param hardnessLeft  The new hardness to be set.
+   * @param hardnessLeft The new hardness to be set.
    */
   public void setHardnessLeft(int hardnessLeft) {
     this.hardnessLeft = hardnessLeft;

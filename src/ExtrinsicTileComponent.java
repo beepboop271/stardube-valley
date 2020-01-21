@@ -10,14 +10,13 @@ import java.awt.image.BufferedImage;
  */
 
 public abstract class ExtrinsicTileComponent extends TileComponent 
-                                            implements Drawable {
+                                             implements Drawable {
   private final IntrinsicTileComponent intrinsicSelf;
 
   /**
    * [ExtrinsicTileComponent]
    * Constructor for a new ExtrinsicTileComponent.
-   * @author Kevin Qiao, Joseph Wang
-   * @param intrinsicSelf an IntrinsicTileComponent that is the associated intrinsic component.
+   * @param intrinsicSelf An IntrinsicTileComponent that is the associated intrinsic component.
    */
   public ExtrinsicTileComponent(IntrinsicTileComponent intrinsicSelf) {
     super();
@@ -27,8 +26,7 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   /**
    * [ExtrinsicTileComponent]
    * Constructor for a new ExtrinsicTileComponent.
-   * @author                Kevin Qiao, Joseph Wang
-   * @param intrinsicSelf   a String with the associated intrinsic component.
+   * @param intrinsicSelf A String with the associated intrinsic component.
    */
   public ExtrinsicTileComponent(String intrinsicSelf) {
     super();
@@ -38,7 +36,6 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   /**
    * [getIntrinsicSelf]
    * Retrieves the intrinsic version of this TileComponent for shared data.
-   * @author Kevin Qiao
    * @return IntrinsicTileComponent, the shared version of this object.
    */
   public IntrinsicTileComponent getIntrinsicSelf() {
@@ -47,7 +44,6 @@ public abstract class ExtrinsicTileComponent extends TileComponent
 
   /**
    * {@inheritDoc}
-   * @author Joseph Wang
    */
   @Override
   public BufferedImage getImage() {
@@ -56,7 +52,6 @@ public abstract class ExtrinsicTileComponent extends TileComponent
   
   /**
    * {@inheritDoc}
-   * @author Joseph Wang
    */
   @Override
   public double getXOffset() {
@@ -65,7 +60,6 @@ public abstract class ExtrinsicTileComponent extends TileComponent
 
   /**
    * {@inheritDoc}
-   * @author Joseph Wang
    */
   @Override
   public double getYOffset() {

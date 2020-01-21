@@ -113,7 +113,7 @@ public class ExtrinsicMachine extends ExtrinsicHarvestableComponent implements N
    */
   public void processItem() {
     this.product = ((IntrinsicMachine)this.getIntrinsicSelf())
-                                        .getProcessedItem(this.itemToProcess);
+                                          .getProcessedItem(this.itemToProcess);
     this.itemToProcess = null;
     this.phase = 0; //- for every machine, the 0th image should be for a finished product.
   }

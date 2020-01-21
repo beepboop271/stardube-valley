@@ -19,10 +19,10 @@ public class Gateway {
   /**
    * [Gateway]
    * Constructor for a new Gateway.
-   * @param originX         The x of this gateway.
-   * @param originY         The y of this gateway.
-   * @param orientation     The orientation of the gateway in int.
-   * @param interactToMove  Whetner you need to interact to move or not.
+   * @param originX        The x of this gateway.
+   * @param originY        The y of this gateway.
+   * @param orientation    The orientation of the gateway, as an int.
+   * @param interactToMove Whether you need to interact to travel or not.
    */
   public Gateway(int originX, int originY,
                  int orientation, boolean interactToMove) {
@@ -34,10 +34,10 @@ public class Gateway {
   /**
    * [Gateway]
    * Constructor for a new Gateway.
-   * @param originX         The x of this gateway.
-   * @param originY         The y of this gateway.
-   * @param orientation     The orientation of the gateway as String.
-   * @param interactToMove  Whetner you need to interact to move or not.
+   * @param originX        The x of this gateway.
+   * @param originY        The y of this gateway.
+   * @param orientation    The orientation of the gateway, as a String.
+   * @param interactToMove Whether you need to interact to move or not.
    */
   public Gateway(int originX, int originY,
                  String orientation, boolean interactToMove) {
@@ -54,8 +54,8 @@ public class Gateway {
 
   /**
    * [canMove]
-   * Checks if the moveable can move through the gateway.
-   * @param m  The moveable that is being checked.
+   * Checks if the moveable can move through the gateway based on position.
+   * @param m The moveable that is being checked.
    * @return true if the moveable can move, false otherwise.
    */
   public boolean canMove(Moveable m) {
@@ -73,10 +73,11 @@ public class Gateway {
 
   /**
    * [toDestinationPoint]
-   * Gets the destination point of the destination gateway.
-   * @param p     The Point of the moveable.
-   * @param size  The size of the moveable.
-   * @return      Point, the destination point.
+   * Gets the destination point of a Moveable travelling through
+   * the Gateway.
+   * @param p    The position of the moveable.
+   * @param size The size of the moveable.
+   * @return Point, the destination point.
    */
   public Point toDestinationPoint(Point p, double size) {
     if (this.orientation == Gateway.OMNIDIRECTIONAL) {
@@ -111,7 +112,7 @@ public class Gateway {
   /**
    * [setDestinationArea]
    * Assigns this destination area to a specified area.
-   * @param destinationArea  The new destination area.
+   * @param destinationArea The new destination area.
    */
   public void setDestinationArea(Area destinationArea) {
     this.destinationArea = destinationArea;
@@ -129,7 +130,7 @@ public class Gateway {
   /**
    * [setDestinationGateway]
    * Assigns this destination area to a specified gateway.
-   * @param destinationgateway  The new destination gateway.
+   * @param destinationgateway The new destination gateway.
    */
   public void setDestinationGateway(Gateway destinationGateway) {
     this.destinationGateway = destinationGateway;

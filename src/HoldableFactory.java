@@ -44,10 +44,10 @@ public class HoldableFactory {
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], 
-                                          "assets/images/"+nextLineData[1]+".png",
-                                          Integer.parseInt(nextLineData[3]),
-                                          Integer.parseInt(nextLineData[4]),
-                                          nextLineData[5]);
+                                           "assets/images/"+nextLineData[1]+".png",
+                                           Integer.parseInt(nextLineData[3]),
+                                           Integer.parseInt(nextLineData[4]),
+                                           nextLineData[5]);
         HoldableFactory.holdablePool.put(tool.getName(), tool);
         lineToRead = input.readLine();
       }
@@ -66,10 +66,12 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        Seeds seed = new Seeds(nextLineData[0], nextLineData[2], 
-                        "assets/images/" + nextLineData[1] + ".png", nextLineData[3]);
+        Seeds seed = new Seeds(nextLineData[0],
+                               nextLineData[2], 
+                               "assets/images/"+nextLineData[1]+".png",
+                               nextLineData[3]);
 
-        HoldableFactory.holdablePool.put(seed.getName(), seed);   
+        HoldableFactory.holdablePool.put(seed.getName(), seed);
         lineToRead = input.readLine();
       }
       input.close();
@@ -103,9 +105,11 @@ public class HoldableFactory {
       // initialize items
       input = new BufferedReader(new FileReader("assets/gamedata/Items"));
       lineToRead = input.readLine();
-      while(lineToRead.length() > 0) {
+      while (lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        Item item = new Item(nextLineData[0], nextLineData[2], "assets/images"+nextLineData[1]+nextLineData[0]+".png");
+        Item item = new Item(nextLineData[0],
+                             nextLineData[2],
+                             "assets/images"+nextLineData[1]+nextLineData[0]+".png");
         HoldableFactory.holdablePool.put(item.getName(), item);
         lineToRead = input.readLine();
       }
@@ -115,7 +119,8 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        PlaceableItem item = new PlaceableItem(nextLineData[0], nextLineData[2],
+        PlaceableItem item = new PlaceableItem(nextLineData[0],
+                                               nextLineData[2],
                                                "assets/images"+nextLineData[1]+nextLineData[0]+".png",
                                                nextLineData[3]);
         HoldableFactory.holdablePool.put(item.getName(), item);
@@ -131,8 +136,8 @@ public class HoldableFactory {
   /**
    * [getHoldable]
    * Retrieves the corresponding holdable for the given holdable name.
-   * @param holdable  String, the name of the holdable.
-   * @return          Holdable, the holdable with the given name.
+   * @param holdable The name of the holdable.
+   * @return Holdable, the holdable with the given name.
    */
   public static Holdable getHoldable(String holdable) {
     if (!HoldableFactory.isInitialized) {
