@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 /**
  * [World]
  * Contains essential components and methods for a world to function.
- * 2019-12-19
+ * 2020-01-20
  * @version 0.1
  * @author Kevin Qiao, Paula Yuan, Candice Zhang, Joseph Wang
  */
@@ -124,7 +124,6 @@ public class World {
       // this.playerArea.sortItemsOnGround();
     // }
     
-    System.out.println("tick");
     Iterator<Area> areas = this.locations.values().iterator();
     Area nextArea;
     if (this.locations.get(this.playerArea.getName()) == null) {
@@ -218,8 +217,8 @@ public class World {
    * [fixCollision]
    * Fix collisions of a moveable entity, given the direction it is colliding in
    * @author Kevin Qiao
-   * @param m, the moveable that is colliding
-   * @param collideDirection, the direction of the collision, with ints 0-1 representing cardinal directions
+   * @param m                  the moveable that is colliding
+   * @param collideDirection   the direction of the collision, with ints 0-1 representing cardinal directions
    */
   public static void fixCollision(Moveable m, int collideDirection) {
     if (collideDirection == World.EAST) {
@@ -655,7 +654,7 @@ public class World {
     Area nextArea;
     while (areas.hasNext()) {
       nextArea = areas.next();
-      nextArea.updateDay(); //- someone can improve this i guess
+      nextArea.updateDay();
       nextArea.updateSeason();
       nextArea.doDayEndActions();
     }
@@ -815,6 +814,7 @@ public class World {
     }
     input.close();
 
+    // add crafting stores
     input = new BufferedReader(new FileReader("assets/gamedata/CraftingStores"));
     nextLine = input.readLine();
     while (nextLine.length() > 0) {
@@ -954,7 +954,7 @@ public class World {
     String profileDescription;
     Area npcArea;
     NPC newNPC;
-    int totalNPCs = 8;
+    int totalNPCs = 10;
     this.npcs = new NPC[totalNPCs];
     for (int i = 0; i < totalNPCs; i++) { 
       name = nextLineData[0];
@@ -971,6 +971,10 @@ public class World {
         spawnPoint = new Point(2, 5);
       } else if (nextLineData[1].equals("Blacksmith")) {
         spawnPoint = new Point(6, 2);
+      } else if (nextLineData[1].equals("Clinic")) {
+        spawnPoint = new Point(6, 3);
+      } else if (nextLineData[1].equals("McDonlads")) {
+        spawnPoint = new Point(8, 3);
       } else {
         spawnPoint = new Point(5, 3);
       }
@@ -1157,6 +1161,4 @@ public class World {
   public static int getDaysPerSeason() {
     return DAYS_PER_SEASON;
   }
-
- 
 }

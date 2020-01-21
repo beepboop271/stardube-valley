@@ -6,8 +6,8 @@ import java.util.ArrayList;
  * [WorldArea] 
  * The area which manages all the world sections, where foragables can
  * spawn freely.
- * 2019-12-17
- * @version 0.1
+ * 2020-01-17
+ * @version 0.10
  * @author Kevin Qiao, Paula Yuan
  */
 public class WorldArea extends Area {
@@ -101,7 +101,7 @@ public class WorldArea extends Area {
 
   /**
    * [spawnTrees]
-   * Spawns trees randomly for the area, but making sure that they meet certain citeria
+   * Spawns trees randomly for the area, but making sure that they meet certain criteria
    * @author Paula Yuan
    */
   private void spawnTrees() {
