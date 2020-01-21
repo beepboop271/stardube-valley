@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Player extends LoopAnimatedMoveable implements Animatable {
   public static final double SIZE = 0.35;
-  private static final double SPEED = 3;
+  private static final double SPEED = 6;
   private static final double ITEM_ATTRACTION_DISTANCE = 2;
 
   public static final int NO_MENU = -1;

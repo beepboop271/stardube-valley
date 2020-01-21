@@ -69,7 +69,7 @@ public class World {
     
     this.player = new Player(new Point(13, 13), "player");
     this.playerArea = this.locations.get("Farm");
-    this.playerArea.addMoveable(this.player);
+    // this.playerArea.addMoveable(this.player);
 
     this.loadWorldMap("assets/gamedata/map/WorldMap");
     this.loadNPCS();
@@ -105,7 +105,7 @@ public class World {
     // move holdable entities on the ground
     // towards the player in the current area
     // synchronized (this.playerArea.getItemsOnGroundList()) {
-      ListIterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
+      Iterator<HoldableStackEntity> itemsNearPlayer = this.playerArea.getItemsOnGround();
       HoldableStackEntity nextItemEntity;
       double itemDistance;
       while (itemsNearPlayer.hasNext()) {
@@ -115,16 +115,14 @@ public class World {
         if ((itemDistance < Player.SIZE)
               && (this.player.pickUp(nextItemEntity.getStack()))) {
           itemsNearPlayer.remove();
-        } else {
-          if (itemDistance < Player.getItemAttractionDistance()) {
+        } else if (itemDistance < Player.getItemAttractionDistance()) {
             nextItemEntity.translatePos(nextItemEntity.getMove(currentUpdateTime-this.lastUpdateTime,
                                                                this.player.getPos()));
             // this.playerArea.addItemOnGround(nextItemEntity);
-          }
           // itemsNearPlayer.add(nextItemEntity);
         }
       }
-      this.playerArea.sortItemsOnGround();
+      // this.playerArea.sortItemsOnGround();
     // }
     
     System.out.println("tick");
@@ -133,14 +131,14 @@ public class World {
     if (this.locations.get(this.playerArea.getName()) == null) {
       // synchronized (this.playerArea.getMoveableList()) {
         this.moveMoveablesInArea(this.playerArea, currentUpdateTime);
-        this.playerArea.sortMoveables();
+        // this.playerArea.sortMoveables();
       // }
     }
     while (areas.hasNext()) {
       nextArea = areas.next();
       // synchronized (nextArea.getMoveableList()) {
         this.moveMoveablesInArea(nextArea, currentUpdateTime);
-        nextArea.sortMoveables();
+        // nextArea.sortMoveables();
       // }
     }
 
@@ -155,7 +153,7 @@ public class World {
    * @param updateTime, the long time the update will be happening
    */
   public void moveMoveablesInArea(Area a, long updateTime) {
-    ListIterator<Moveable> moveables = a.getMoveables();
+    Iterator<Moveable> moveables = a.getMoveables();
     Moveable nextMoveable;
     Vector2D move;
     while (moveables.hasNext()) {
@@ -180,19 +178,12 @@ public class World {
         
         if (nextMoveable instanceof Player) {
           Area newArea = a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator());
-          if (newArea == a) {
-            // moveables.add(nextMoveable);
-          } else {
+          if (newArea != a) {
             this.playerArea = newArea;
             moveables.remove();
           }
-        } else {
-          if (a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator()) == a) {
-            
-            // moveables.add(nextMoveable);
-          } else {
+        } else if (a.moveAreas(nextMoveable, nextMoveable.getIntersectingTiles(move).iterator()) != a) {
             moveables.remove();
-          }
         }
       }
     }
@@ -324,11 +315,10 @@ public class World {
 
               HoldableDrop[] drops = ic.getProducts();
               HoldableStack product;
-              ListIterator<HoldableStackEntity> items = this.playerArea.getItemsOnGround();
               for (int i = 0; i < drops.length; ++i) {
                 product = drops[i].resolveDrop(this.luckOfTheDay);
                 if (product != null) {
-                  items.add(//).addItemOnGround(
+                  this.playerArea.addItemOnGround(
                     new HoldableStackEntity(
                         product,
                         toolEvent.getLocationUsed().translateNew(Math.random()-0.5, Math.random()-0.5)
@@ -993,8 +983,8 @@ public class World {
                        profileDescription);
       npcArea.addMoveable(newNPC);      
       this.npcs[i] = newNPC;
-      // this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
-      //                         new AutoMovementEvent(newNPC));
+      this.emplaceFutureEvent((long)(Math.random()*1_000_000_000L*10),
+                              new AutoMovementEvent(newNPC));
       lineToRead = input.readLine();
       nextLineData = lineToRead.split("\\s+");
     }

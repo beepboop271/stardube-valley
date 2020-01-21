@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.awt.GradientPaint;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * [WorldPanel]
@@ -200,13 +201,6 @@ public class WorldPanel extends JPanel {
     int screenTileY = 0;
 
     Point selectedTile = worldPlayer.getSelectedTile();
-    Iterator<HoldableStackEntity> items;
-    // HoldableStackEntity[] items;
-    HoldableStackEntity nextItem;
-    Iterator<Moveable> moveables;
-    // Moveable[] moveables;
-    Moveable nextMoveable;
-    double nextX, nextY;
 
     // System.out.println(playerPos+" "+playerArea.getName());
 
@@ -220,8 +214,27 @@ public class WorldPanel extends JPanel {
       }
     }
 
+    ArrayList<HoldableStackEntity> items = playerArea.getItemsOnGroundList();
+    Collections.sort(items);
+    // HoldableStackEntity[] items;
+    HoldableStackEntity nextItem;
+    ArrayList<Moveable> moveables = playerArea.getMoveableList();
+    Collections.sort(moveables);
+    // Moveable[] moveables;
+    // Moveable nextMoveable;
+    int moveableIdx = 0;
+    while ((moveableIdx < moveables.size())
+           && (Math.floor(moveables.get(moveableIdx).getPos().y) < tileStartY-1)) {
+      ++moveableIdx;
+    }
+    int itemIdx = 0;
+    while ((itemIdx < items.size())
+           && (Math.floor(items.get(itemIdx).getPos().y) < tileStartY-1)) {
+      ++itemIdx;
+    }
+    double nextX, nextY;
+
     // draw tiles
-    //System.out.println("hi--------------------------------");
     for (int y = tileStartY; y < Math.max(playerPos.y+this.tileHeight/2+1, tileStartY+this.tileHeight); ++y) {
       if (!(playerArea instanceof BuildingArea)) {
         for (int x = tileStartX; x < Math.max(playerPos.x+this.tileWidth/2+1, tileStartX+this.tileWidth); ++x) {
@@ -300,42 +313,24 @@ public class WorldPanel extends JPanel {
       }
       screenTileX = 0;
 
-      // synchronized (playerArea.getMoveableList()) {
         // draw moveables
-        //System.out.println("start------------------");
-        moveables = playerArea.getMoveables(y-1);
-        // for (int i = 0; i < moveables.length; ++i) {
-        //   System.out.println(moveables[i].getClass().getName());
-        //   nextX = (Tile.getSize()*(moveables[i].getPos().x-tileStartX+moveables[i].getXOffset())+originX);
-        //   nextY = (Tile.getSize()*(moveables[i].getPos().y-tileStartY+moveables[i].getYOffset())+originY);
-        //   g.drawImage(moveables[i].getImage(), (int)nextX, (int)nextY, null);
-        // }
-        while (moveables.hasNext()) {
-          nextMoveable = moveables.next();
-          // System.out.println(nextMoveable.getClass().getName());
-          nextX = (Tile.getSize()*(nextMoveable.getPos().x-tileStartX+nextMoveable.getXOffset())+originX);
-          nextY = (Tile.getSize()*(nextMoveable.getPos().y-tileStartY+nextMoveable.getYOffset())+originY);
-          g.drawImage(nextMoveable.getImage(), (int)nextX, (int)nextY, null);
+        while ((moveableIdx < moveables.size())
+               && (Math.floor(moveables.get(moveableIdx).getPos().y) == y-1)) {
+          nextX = (Tile.getSize()*(moveables.get(moveableIdx).getPos().x-tileStartX+moveables.get(moveableIdx).getXOffset())+originX);
+          nextY = (Tile.getSize()*(moveables.get(moveableIdx).getPos().y-tileStartY+moveables.get(moveableIdx).getYOffset())+originY);
+          g.drawImage(moveables.get(moveableIdx).getImage(), (int)nextX, (int)nextY, null);
+          ++moveableIdx;
         }
-      // }
 
-      // synchronized (playerArea.getItemsOnGroundList()) {
         // draw items
-        items = playerArea.getItemsOnGround(y-1);
-        while (items.hasNext()) {
-          nextItem = items.next();
-          g.drawImage(nextItem.getImage(),
-                      (int)(Tile.getSize()*(nextItem.getPos().x-tileStartX+0.5)-8+originX),
-                      (int)(Tile.getSize()*(nextItem.getPos().y-tileStartY+0.5)-8+originY),
+        while ((itemIdx < items.size())
+               && (Math.floor(items.get(itemIdx).getPos().y) == y-1)) {
+          g.drawImage(items.get(itemIdx).getImage(),
+                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().x-tileStartX+0.5)-8+originX),
+                      (int)(Tile.getSize()*(items.get(itemIdx).getPos().y-tileStartY+0.5)-8+originY),
                       null);
+          ++itemIdx;
         }
-        // for (int i = 0; i < items.length; ++i) {
-        //   g.drawImage(items[i].getImage(),
-        //               (int)(Tile.getSize()*(items[i].getPos().x-tileStartX+0.5)-8+originX),
-        //               (int)(Tile.getSize()*(items[i].getPos().y-tileStartY+0.5)-8+originY),
-        //               null);
-        // }
-      // }
 
       ++screenTileY;
     }

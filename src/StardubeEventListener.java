@@ -385,13 +385,15 @@ public class StardubeEventListener implements KeyListener,
         if (this.worldPanel.isPosInElevatorButtons((int)this.mousePos.x, (int)this.mousePos.y)) {
           // get the button# clicked (button 1 -> floor 5, button 2 -> floor 10)
           int buttonSelected = this.worldPanel.elevatorButtonIdxAt((int)this.mousePos.x, (int)this.mousePos.y)+1;
-          this.stardubeWorld.getMines().setElevatorDestination(buttonSelected*5);
-          this.stardubePlayer.exitMenu();
-          this.stardubeWorld.emplaceFutureEvent(
-              0,
-              new PlayerInteractEvent(this.stardubeWorld.getMines().getElevatorPosition(),
-                                      this.stardubePlayer.getSelectedItemIdx())
-          );
+          if (this.stardubeWorld.getMines().hasElevatorFloorUnlocked(buttonSelected*5)) {
+            this.stardubeWorld.getMines().setElevatorDestination(buttonSelected*5);
+            this.stardubePlayer.exitMenu();
+            this.stardubeWorld.emplaceFutureEvent(
+                0,
+                new PlayerInteractEvent(this.stardubeWorld.getMines().getElevatorPosition(),
+                                        this.stardubePlayer.getSelectedItemIdx())
+            );
+          }
         }        
       }
     }
