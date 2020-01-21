@@ -43,11 +43,13 @@ public class HoldableFactory {
       lineToRead = input.readLine();
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
-        UtilityTool tool = new UtilityTool(nextLineData[0], nextLineData[2], 
-                                           "assets/images/"+nextLineData[1]+".png",
-                                           Integer.parseInt(nextLineData[3]),
-                                           Integer.parseInt(nextLineData[4]),
-                                           nextLineData[5]);
+        UtilityTool tool = new UtilityTool(
+            nextLineData[0], nextLineData[2], 
+            "assets/images/"+nextLineData[1]+".png",
+            Integer.parseInt(nextLineData[3]),
+            Integer.parseInt(nextLineData[4]),
+            nextLineData[5]
+        );
         HoldableFactory.holdablePool.put(tool.getName(), tool);
         lineToRead = input.readLine();
       }
@@ -82,13 +84,15 @@ public class HoldableFactory {
       while(lineToRead.length() > 0) {
         nextLineData = lineToRead.split("\\s+");
         if (nextLineData.length > 5) {
-          SpecialConsumable consumable = new SpecialConsumable(nextLineData[0], 
-                                                               nextLineData[2],
-                                                               "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
-                                                               Integer.parseInt(nextLineData[3]), 
-                                                               Integer.parseInt(nextLineData[4]),
-                                                               Integer.parseInt(nextLineData[5]),
-                                                               Integer.parseInt(nextLineData[6]));
+          SpecialConsumable consumable = new SpecialConsumable(
+              nextLineData[0], 
+              nextLineData[2],
+              "assets/images/"+nextLineData[1]+nextLineData[0]+".png",
+              Integer.parseInt(nextLineData[3]), 
+              Integer.parseInt(nextLineData[4]),
+              Integer.parseInt(nextLineData[5]),
+              Integer.parseInt(nextLineData[6])
+          );
           HoldableFactory.holdablePool.put(consumable.getName(), consumable);
         } else {
           Consumable consumable = new Consumable(nextLineData[0], 

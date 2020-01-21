@@ -20,10 +20,10 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   /**
    * [IntrinsicTileComponent]
    * Constructor for a new IntrinsicTileComponent.
-   * @author            Joseph Wang, Kevin Qiao
-   * @param name        String, the name of this IntrinsicTileComponent.
-   * @param imagesPath  String, the path for the images of this IntrinsicTileComponent.
-   * @param offsets     double[], the offsets (in tiles) that should be considered during drawing.
+   * @author Joseph Wang, Kevin Qiao
+   * @param name       String, the name of this IntrinsicTileComponent.
+   * @param imagesPath String, the path for the images of this IntrinsicTileComponent.
+   * @param offsets    double[], the offsets (in tiles) that should be considered during drawing.
    * @throws IOException
    */
   public IntrinsicTileComponent(String name,
@@ -66,7 +66,6 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   /**
    * [getXOffset]
    * Retrives the x offset of this IntrinsicTileComponent for image-drawing purposes.
-   * @author Joseph Wang
    * @return double, the x offset (in tiles) of which to consider during drawing.
    */
   public double getXOffset() {
@@ -76,7 +75,6 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   /**
    * [getYOffset]
    * Retrives the y offset of this IntrinsicTileComponent for image-drawing purposes.
-   * @author Joseph Wang
    * @return double, the y offset (in tiles) of which to consider during drawing.
    */
   public double getYOffset() {
@@ -86,7 +84,6 @@ public abstract class IntrinsicTileComponent extends TileComponent {
   /**
    * [getImages]
    * Retrieves all the images associated with this IntrinsicTileComponent.
-   * @author Joseph Wang
    * @return BufferedImage[], all the images for this IntrinsicTileComponent.
    */
   public BufferedImage[] getImages() {

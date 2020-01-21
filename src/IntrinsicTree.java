@@ -15,13 +15,13 @@ public class IntrinsicTree extends IntrinsicHarvestableComponent {
   /**
    * [IntrinsicTree]
    * Constructor for a new IntrinsicTree.
-   * @param name          The name of the tree.
-   * @param imagesPath    The path for the tree image.
-   * @param requiredTool  The tool used to harvest this tree.
-   * @param hardness      How tough this tree is.
-   * @param numProducts   The amount of different products dropped by this tree.
-   * @param growthData    The growth data, like stages, of this tree.
-   * @param offsets       The offsets in tiles used during drawing.
+   * @param name         The name of the tree.
+   * @param imagesPath   The path for the tree image.
+   * @param requiredTool The tool used to harvest this tree.
+   * @param hardness     How tough this tree is.
+   * @param numProducts  The amount of different products dropped by this tree.
+   * @param growthData   The growth data, like stages, of this tree.
+   * @param offsets      The offsets in tiles used during drawing.
    * @throws IOException
    */
   public IntrinsicTree(String name, String imagesPath, String requiredTool,
@@ -54,8 +54,8 @@ public class IntrinsicTree extends IntrinsicHarvestableComponent {
   /**
    * [getStageToDisplay]
    * Retrieves the image index to display.
-   * @param stage  The current stage of the tree.
-   * @return       int, the image index to display.
+   * @param stage The current stage of the tree.
+   * @return int, the image index to display.
    */
   public int getStageToDisplay(int stage) {
     return stageToDisplay[stage];

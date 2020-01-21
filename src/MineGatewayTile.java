@@ -12,19 +12,19 @@ import javax.imageio.ImageIO;
  */
 public class MineGatewayTile extends Tile implements NotWalkable {
   public static final int DOWNWARDS_LADDER = 1;
-  private static BufferedImage downwardsLadderImage;
   public static final int UPWARDS_LADDER = 2;
-  private static BufferedImage upwardsLadderImage;
   public static final int ELEVATOR = 3;
+  private static BufferedImage downwardsLadderImage;
+  private static BufferedImage upwardsLadderImage;
   private static BufferedImage elevatorImage;
   private BufferedImage image;
 
   /**
    * [MineGatewayTile]
    * Constructor for a new MineGatewayTile.
-   * @param x, the x int position of the tile
-   * @param y, the y int position of the tile
-   * @param image, the int representing what image should be drawn for the tile
+   * @param x     The x position of the tile
+   * @param y     The y position of the tile
+   * @param image The int representing what image should be drawn for the tile
    */
   public MineGatewayTile(int x, int y, int image) {
     super(x, y);
@@ -39,23 +39,23 @@ public class MineGatewayTile extends Tile implements NotWalkable {
         this.image = MineGatewayTile.elevatorImage;
         break;
       default:
-        throw new IllegalArgumentException("invalid image type");
+        throw new IllegalArgumentException("invalid image code");
     }
   }
 
-  @Override
   /**
    * {@inheritDocs}
    */
+  @Override
   public BufferedImage getImage() {
     return this.image;
   }
 
   /**
-   * [setLadderImage]
-   * Sets the image for the ladder tile.
+   * [setLadderImages]
+   * Sets the image for the ladder tiles.
    */
-  public static void setLadderImage() {
+  public static void setLadderImages() {
     try {
       MineGatewayTile.downwardsLadderImage = ImageIO.read(new File("assets/images/tiles/downwardsLadder.png"));
       MineGatewayTile.upwardsLadderImage = ImageIO.read(new File("assets/images/tiles/upwardsLadder.png"));

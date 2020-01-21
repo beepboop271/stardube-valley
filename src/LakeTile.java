@@ -12,8 +12,8 @@ public class LakeTile extends WaterTile {
   /**
    * [LakeTile]
    * Constructor for a new LakeTile.
-   * @param x  int, the x position of the LakeTile.
-   * @param y  int, the y position of the LakeTile.
+   * @param x int, the x position of the LakeTile.
+   * @param y int, the y position of the LakeTile.
    */
   public LakeTile(int x, int y) {
     super(x, y);

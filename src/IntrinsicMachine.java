@@ -18,13 +18,16 @@ public class IntrinsicMachine extends IntrinsicHarvestableComponent {
   /**
    * [IntrinsicMachine]
    * Constructor for a new IntrinsicMachine.
-   * @param name The name of this machine.
-   * @param imagePath The path for the images related to this machine.
-   * @param offsets The offsets (in tiles) of which to be considered during the drawing of this image.
-   * @param processableItems An array of all the items that can be process by this type of machine.
+   * @param name                  The name of this machine.
+   * @param imagePath             The path for the images related to this machine.
+   * @param offsets               The offsets (in tiles) of which to be considered
+   *                              during the drawing of this image.
+   * @param processableItems      An array of all the items that can be process
+   *                              by this type of machine.
    * @param totalProcessableItems How many items that this machine can process.
-   * @param requiredItemQuantity How many of said items must be used for processing.
-   * @param catalyst A secondary item that is used to process. Only uses 1 of this. If none, is "None".
+   * @param requiredItemQuantity  How many of said items must be used for processing.
+   * @param catalyst              A secondary item that is used to process. Only
+   *                              uses 1 of this. If none, is "None".
    * @throws IOException
    */
   public IntrinsicMachine(String name, String imagePath, double[] offsets,
@@ -40,7 +43,7 @@ public class IntrinsicMachine extends IntrinsicHarvestableComponent {
     }
 
     this.requiredItemQuantity = requiredItemQuantity;
-    if (!(catalyst.equals("None"))) { //- you might wanna redo this? no clue
+    if (!(catalyst.equals("None"))) {
       this.catalyst = HoldableFactory.getHoldable(catalyst);
     } //- catalysts are always 1 so we don't need to specify that
   }

@@ -1,7 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 /**
@@ -13,9 +12,8 @@ import javax.imageio.ImageIO;
  */
 
 public abstract class LoopAnimatedMoveable extends Moveable { 
-  public final static int WALKSTEP_FRAMES = 8;
-  public final static int RUNSTEP_FRAMES = 12;
-
+  public static final int WALKSTEP_FRAMES = 8;
+  public static final int RUNSTEP_FRAMES = 12;
   private static final String[] DIRECTIONS = {"/north", "/east", "/south", "/west"};
 
   private int orientation;
@@ -121,7 +119,7 @@ public abstract class LoopAnimatedMoveable extends Moveable {
    * Retrieves the image of this moveable to display in profiles.
    * @return BufferedImage, the profile image of this moveable.
    */
-  public BufferedImage getProfileImage() { // 
-    return this.images[Arrays.asList(DIRECTIONS).indexOf("/south")][0];
+  public BufferedImage getProfileImage() {
+    return this.images[World.SOUTH][0];
   }
 }
