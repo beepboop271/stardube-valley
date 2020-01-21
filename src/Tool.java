@@ -51,8 +51,7 @@ public abstract class Tool extends Useable {
   /**
    * [getType]
    * Retrieves this tool's type. Since tools that are upgraded have different
-   * names, a type variable is necessary to see what category of tool this
-   * is.
+   * names, a type variable is necessary to see what category of tool this is.
    * @return String, the type of this tool.
    */
   public String getType() {

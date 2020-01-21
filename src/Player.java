@@ -420,10 +420,12 @@ public class Player extends LoopAnimatedMoveable implements Animatable {
    * @author Candice Zhang
    */
   public void exitMenu() {
-    this.isImmutable = false;
-    this.currentMenuPage = Player.NO_MENU;
-    this.amountScrolled = 0;
-    this.currentInteractingObj = null;
+    if (this.currentMenuPage != Player.NO_MENU) {
+      this.isImmutable = false;
+      this.currentMenuPage = Player.NO_MENU;
+      this.amountScrolled = 0;
+      this.currentInteractingObj = null;
+    }
   }
 
   /**

@@ -18,6 +18,13 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [NPC]
+   * Constructor for a new NPC.
+   * @param position            A Point that represents the position of the NPC.
+   * @param name                A Srting that represents the name of the NPC.
+   * @param index               An int that represents the index of this NPC.
+   * @param dialogueRotation    An String[] that holds all dialogues of this NPC.
+   * @param profileDescription  An String that represents the description of this NPC.
+   * @throws IOException
    */
   public NPC(Point position, String name, int index,
             String[] dialogueRotation, String profileDescription) throws IOException {
@@ -67,13 +74,12 @@ public class NPC extends LoopAnimatedMoveable {
     double elapsedSeconds = elapsedNanoTime/1_000_000_000.0;
     Vector2D positionChange = this.getVelocity();
     positionChange.setLength(NPC.MAX_SPEED*elapsedSeconds);
-    // this.translatePos(positionChange);
     return positionChange;
   }
 
   /**
    * [getIndex]
-   * Retrieves the index of this NPC
+   * Retrieves the index of this NPC.
    * @author Paula Yuan
    * @return int index
    */
@@ -83,7 +89,7 @@ public class NPC extends LoopAnimatedMoveable {
 
   /**
    * [setIndex]
-   * Sets the index of this NPC
+   * Sets the index of this NPC.
    * @author Paula Yuan
    * @param int index
    */

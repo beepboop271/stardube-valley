@@ -713,7 +713,7 @@ public class World {
     while (!nextLine.equals("")) {
       gatewayMatch = gatewayPattern.matcher(nextLine);
       gatewayMatch.matches();
-      System.out.println("Connecting " + gatewayMatch.group(1) + " to " + gatewayMatch.group(6));
+      //System.out.println("Connecting " + gatewayMatch.group(1) + " to " + gatewayMatch.group(6));
       gateway1 = new Gateway(Integer.parseInt(gatewayMatch.group(2)),
                              Integer.parseInt(gatewayMatch.group(3)),
                              World.NORTH,
@@ -821,7 +821,7 @@ public class World {
                                                              + a.getName()));
     String nextLine;
     
-    System.out.println("Initializing " + a.getName());
+    //System.out.println("Initializing " + a.getName());
     Tile createdTile;
     for (int y = 0; y < a.getHeight(); ++y) {
       nextLine = input.readLine();

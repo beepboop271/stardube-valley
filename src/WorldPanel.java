@@ -99,7 +99,7 @@ public class WorldPanel extends JPanel {
     this.shopX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.shopY = (int)Math.round(this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.5);
     this.shopW = 11*(WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE);
-    this.shopItemH = (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*5/4;
+    this.shopItemH = (int)Math.round((WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*1.35);
 
     this.craftX = this.menuX + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)/2;
     this.craftY = this.menuY + (WorldPanel.INVENTORY_CELLGAP + WorldPanel.INVENTORY_CELLSIZE)*2;
@@ -449,8 +449,11 @@ public class WorldPanel extends JPanel {
         String farmString = "Stardube Farm";
         String fundString = "Current Funds: " + worldPlayer.getCurrentFunds() + " $D";
         String earningString = "Total Earnings: " + worldPlayer.getTotalEarnings() + "$D";
+
         g.setColor(WorldPanel.PROFILE_COLOR);
         g.fillRect(profileX, profileY, profileW, profileH);
+        g.drawImage(worldPlayer.getImage(), profileX+100, profileY+50, null);
+
         Graphics2D profileGraphics = (Graphics2D)g;
         profileGraphics.setColor(WorldPanel.INVENTORY_TEXT_COLOR);
         profileGraphics.setFont(this.PROFILE_FONT);
@@ -670,8 +673,12 @@ public class WorldPanel extends JPanel {
             }
 
             textGraphics.setFont(this.DESCRIPTION_BOLD_FONT);
-            textGraphics.drawString(" - " + itemToDraw.getDescription(),
-                        this.shopX + 10, (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*1.2));
+            String[] discriptionStrings = this.splitParagraph(75, "- " + itemToDraw.getDescription());
+            for (int idx = 0; idx < discriptionStrings.length; idx++) {
+              textGraphics.drawString(discriptionStrings[idx],
+                  this.shopX + WorldPanel.INVENTORY_CELLSIZE + 15,
+                  (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*0.85) + idx*20);
+            }
           }
         }
 
@@ -950,20 +957,26 @@ public class WorldPanel extends JPanel {
 
     if (worldPlayer.getCurrentInteractingObj() instanceof NPC) {
       Graphics2D dialogueGraphics = (Graphics2D)g;
-      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      g.setColor(WorldPanel.DARK_BROWN_COLOR);
       g.fillRect(dialogueX, dialogueY, dialogueW, dialogueH);
-      g.setColor(Color.BLACK);
+      g.setColor(WorldPanel.PALE_YELLOW_COLOR);
+      g.fillRect(dialogueX+10, dialogueY+10, dialogueW-20, dialogueH-20);
       
       NPC currentNPC = ((NPC)worldPlayer.getCurrentInteractingObj());
 
+      g.drawImage(currentNPC.getProfileImage(),
+                  dialogueX+dialogueW-currentNPC.getProfileImage().getWidth()-25,
+                  dialogueY+dialogueH-currentNPC.getProfileImage().getHeight()-25,
+                  null);
+      g.setColor(Color.BLACK); 
       g.setFont(this.LETTER_FONT);
-      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+20, dialogueY+10+g.getFontMetrics().getHeight());
+      dialogueGraphics.drawString(currentNPC.getName(), dialogueX+40, dialogueY+25+g.getFontMetrics().getHeight());
 
       g.setFont(this.STRING_FONT);
-      String[] dialogueStrings = this.splitParagraph(40, currentNPC.getDialogue(currentNPC.getIndex()));
+      String[] dialogueStrings = this.splitParagraph(60, currentNPC.getDialogue(currentNPC.getIndex()));
       for (int i = 0; i < dialogueStrings.length; i++) {
         dialogueGraphics.drawString(dialogueStrings[i],
-                                    dialogueX+20, dialogueY+50+(i+1)*(g.getFontMetrics().getHeight()+10));
+                                    dialogueX+40, dialogueY+70+(i+1)*(g.getFontMetrics().getHeight()+10));
       }
     }
   }

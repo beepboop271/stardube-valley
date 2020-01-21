@@ -143,6 +143,7 @@ public abstract class Moveable implements Drawable {
   public double getSize() {
     return this.size;
   }
+  
   /**
    * [getMove]
    * @param elapsedNanoTime

@@ -105,9 +105,6 @@ public class StardubeEventListener implements KeyListener,
     if (e.getKeyCode() < this.keyStates.length) {
       this.keyStates[e.getKeyCode()] = true;
     }
-    //if (this.stardubePlayer.isImmutable()) {
-    //  return;
-    //}
     this.updateSelectedTile();
     switch (e.getKeyCode()) {
       case KeyEvent.VK_E:
@@ -118,7 +115,9 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_ESCAPE:
         this.stardubePlayer.exitMenu();
         break;
-      // temp stuff below this comment
+
+      // testing stuff
+      /*
       case KeyEvent.VK_P:
         this.stardubeWorld.doDayEndActions();
         break;
@@ -149,6 +148,7 @@ public class StardubeEventListener implements KeyListener,
       case KeyEvent.VK_L:
         this.stardubePlayer.setPos(this.stardubePlayer.getPos().translateNew(1, 0));
         break;
+      */
     }
   }
 

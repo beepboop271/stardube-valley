@@ -38,10 +38,6 @@ public class TimedEvent implements Comparable<TimedEvent> {
    */
   @Override
   public int compareTo(TimedEvent other) {
-    // System.out.printf("comparing this:%s to other:%s and returning %d\n",
-    //                   this.toString(), other.toString(),
-    //                   (int)(this.time-other.time));
-    
     // typically would use this.time-other.time
     // however, compareTo must return an int, which will
     // overflow when the time difference is too high
@@ -52,7 +48,6 @@ public class TimedEvent implements Comparable<TimedEvent> {
     } else {
       return -1;
     }
-    // return (int)(this.time-other.time);
   }
 
   /**

@@ -18,14 +18,27 @@ public class Main {
     
     MineLevel.loadComponents();
 
+    // menu display(start game, lore, credits)
+    MenuSystemFrame menuDisplay = new MenuSystemFrame();
+    MenuSystemEventListener menuSystemListener = ((MenuSystemPanel)menuDisplay.getContentPane()).getListener();
+    while (!(menuSystemListener.shouldStartGame())) {
+      menuDisplay.refresh();
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+      }
+    }
+
+    // exits menu system and game starts
     World stardube = new World();
-    StardubeFrame display = new StardubeFrame(stardube);
-    StardubeEventListener listener = ((WorldPanel)display.getContentPane()).getListener();
-    System.out.println("Welcome to Stardube Valley!");
+    StardubeFrame gameDisplay = new StardubeFrame(stardube);
+    StardubeEventListener gameListener = ((WorldPanel)gameDisplay.getContentPane()).getListener();
+    menuDisplay.dispose(); // dispose after the new display has been initialized
+
     while (true) {
-      listener.update();
+      gameListener.update();
       stardube.update();
-      display.refresh();
+      gameDisplay.refresh();
       try {
         Thread.sleep(10);
       } catch (InterruptedException e) {
