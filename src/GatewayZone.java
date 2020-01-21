@@ -1,7 +1,8 @@
 /**
  * [GatewayZone]
+ * A much larger gateway, used for large entrances.
  * 2019-12-19
- * @version 0.1
+ * @version 0.5
  * @author Kevin Qiao
  */
 public class GatewayZone extends Gateway {

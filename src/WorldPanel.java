@@ -21,8 +21,8 @@ import java.util.Collections;
 /**
  * [WorldPanel]
  * A JPanel for graphic display of a World.
- * 2019-12-19
- * @version 0.4
+ * 2020-01-20
+ * @version 1.48
  * @author Kevin Qiao, Candice Zhang, Paula Yuan, Joseph Wang
  */
 @SuppressWarnings("serial")
@@ -201,9 +201,7 @@ public class WorldPanel extends JPanel {
     int screenTileY = 0;
 
     Point selectedTile = worldPlayer.getSelectedTile();
-
-    // System.out.println(playerPos+" "+playerArea.getName());
-
+    
     // draw building layout
     if (playerArea instanceof BuildingArea) {
       if (((BuildingArea)playerArea).hasInteriorImage()) {

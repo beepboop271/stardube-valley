@@ -5,7 +5,7 @@ import java.io.IOException;
  * A class for any utility tool, ie. any tool that uses the 
  * current selected tile as its use location.
  * 2019-12-23
- * @version 0.3
+ * @version 0.4
  * @author Kevin Qiao, Joseph Wang
  */
 
