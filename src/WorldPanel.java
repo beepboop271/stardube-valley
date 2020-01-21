@@ -556,7 +556,7 @@ public class WorldPanel extends JPanel {
         int drawX = startX, drawY = startY;
         int maxHeight;
 
-        int playerMapSize = 10;
+        int playerMapSize = 15;
         int playerMapX = -playerMapSize, playerMapY = -playerMapSize;
 
         for(int y = 0; y < worldMap.length; y++) {
@@ -610,6 +610,7 @@ public class WorldPanel extends JPanel {
           g.fillRect(this.socialX, curDrawY, this.socialW, this.socialCellH);
           if ((i+startIdx) < worldToDisplay.getNPCs().length) {
             NPC npcToDraw = worldToDisplay.getNPCs()[i+startIdx];
+            String[] descriptionStrings = this.splitParagraph(70, npcToDraw.getProfileDescription());
             // draw image
             g.drawImage(npcToDraw.getProfileImage(), this.socialX+WorldPanel.INVENTORY_CELLSIZE/2, curDrawY, null);
             // draw name
@@ -619,8 +620,11 @@ public class WorldPanel extends JPanel {
                          curDrawY+WorldPanel.INVENTORY_CELLSIZE/4+g.getFontMetrics().getHeight());
             // draw description
             g.setFont(this.DESCRIPTION_BOLD_FONT);
-            g.drawString(npcToDraw.getProfileDescription(), this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
-                         curDrawY+WorldPanel.INVENTORY_CELLSIZE+g.getFontMetrics().getHeight());
+            for (int idx = 0; idx < descriptionStrings.length; idx++) {
+              g.drawString(descriptionStrings[idx], this.socialX+WorldPanel.INVENTORY_CELLSIZE*2,
+                curDrawY+WorldPanel.INVENTORY_CELLSIZE+g.getFontMetrics().getHeight()+idx*(g.getFontMetrics().getHeight()+5));
+            }
+            
           }
         }
             
@@ -647,7 +651,8 @@ public class WorldPanel extends JPanel {
             textGraphics.setFont(this.STRING_FONT);
             textGraphics.drawString(itemToDraw.getName().replace("Item", "") + ":  " + Double.toString(shop.getPriceOf(itemToDraw.getName())) + " $D",
                                     this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2);
-            
+
+            int yShift = 0;
             if (itemToDraw instanceof Consumable) {
               textGraphics.setFont(this.DESCRIPTION_FONT);
               String consumableText = "";
@@ -670,14 +675,15 @@ public class WorldPanel extends JPanel {
                 consumableText = "( " + consumableText.substring(0, consumableText.length()-2) + " )"; 
               }
               textGraphics.drawString(consumableText, this.shopX + WorldPanel.INVENTORY_CELLSIZE*4/3, curDrawY + WorldPanel.INVENTORY_CELLSIZE/2+25);
+              yShift = 25;
             }
-
+            
             textGraphics.setFont(this.DESCRIPTION_BOLD_FONT);
             String[] discriptionStrings = this.splitParagraph(75, "- " + itemToDraw.getDescription());
             for (int idx = 0; idx < discriptionStrings.length; idx++) {
               textGraphics.drawString(discriptionStrings[idx],
                   this.shopX + WorldPanel.INVENTORY_CELLSIZE + 15,
-                  (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*0.85) + idx*20);
+                  (int)Math.round(curDrawY + WorldPanel.INVENTORY_CELLSIZE*0.85) + idx*20 + yShift);
             }
           }
         }
